@@ -16,7 +16,7 @@ from experiment.sweeper import Sweeper
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="run_file")
     parser.add_argument('--id', default=0, type=int, help='identifies param_setting number and parameter configuration')
-    parser.add_argument('--config-file', default='experiment/config_files/dqn_test.json')
+    parser.add_argument('--config-file')
     parser.add_argument('--device', default=-1, type=int, )
     args = parser.parse_args()
 

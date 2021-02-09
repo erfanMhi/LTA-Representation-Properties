@@ -1,0 +1,15 @@
+python run_dqn.py --id 0 --config-file experiment/config_files/linear_vf/gridhard/representations/dqn_lta/bin8/sweep.json
+python run_dqn.py --id 1 --config-file experiment/config_files/linear_vf/gridhard/representations/dqn_lta/bin8/sweep.json
+python run_dqn.py --id 2 --config-file experiment/config_files/linear_vf/gridhard/representations/dqn_lta/bin8/sweep.json
+python run_dqn.py --id 3 --config-file experiment/config_files/linear_vf/gridhard/representations/dqn_lta/bin8/sweep.json
+python run_dqn.py --id 4 --config-file experiment/config_files/linear_vf/gridhard/representations/dqn_lta/bin8/sweep.json
+python run_dqn.py --id 5 --config-file experiment/config_files/linear_vf/gridhard/representations/dqn_lta/bin8/sweep.json
+python run_dqn.py --id 6 --config-file experiment/config_files/linear_vf/gridhard/representations/dqn_lta/bin8/sweep.json
+python run_dqn.py --id 7 --config-file experiment/config_files/linear_vf/gridhard/representations/dqn_lta/bin8/sweep.json
+python run_dqn.py --id 8 --config-file experiment/config_files/linear_vf/gridhard/representations/dqn_lta/bin8/sweep.json
+python run_dqn.py --id 9 --config-file experiment/config_files/linear_vf/gridhard/representations/dqn_lta/bin8/sweep.json
+python run_dqn.py --id 10 --config-file experiment/config_files/linear_vf/gridhard/representations/dqn_lta/bin8/sweep.json
+python run_dqn.py --id 11 --config-file experiment/config_files/linear_vf/gridhard/representations/dqn_lta/bin8/sweep.json
+python run_dqn.py --id 12 --config-file experiment/config_files/linear_vf/gridhard/representations/dqn_lta/bin8/sweep.json
+python run_dqn.py --id 13 --config-file experiment/config_files/linear_vf/gridhard/representations/dqn_lta/bin8/sweep.json
+python run_dqn.py --id 14 --config-file experiment/config_files/linear_vf/gridhard/representations/dqn_lta/bin8/sweep.json

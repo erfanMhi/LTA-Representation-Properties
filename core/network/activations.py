@@ -22,8 +22,8 @@ class LTA:
         # print(self.c_mat)
         #temp = torch.clamp(reps, self.bound_low, self.bound_high)
         # print(temp)
-        # temp = reps
-        temp = torch.tanh(reps)
+        temp = reps
+        # temp = torch.tanh(reps)
         # temp = torch.clamp(reps, self.bound_low, self.bound_high)
         temp = temp.reshape([-1, self.d, 1, 1])
         onehots = 1.0 - self.i_plus_eta(self.sum_relu(self.c_mat, temp))

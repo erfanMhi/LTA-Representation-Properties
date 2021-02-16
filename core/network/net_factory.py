@@ -14,8 +14,8 @@ class NetFactory:
         elif cfg.val_fn_config['val_fn_type'] == 'conv':
             return lambda: network_architectures.ConvNetwork(cfg.device, cfg.state_dim,
                                                              cfg.action_dim, cfg.val_fn_config['conv_architecture'])
-        elif cfg.val_fn_config['val_fn_type'] == 'linear':
+        elif cfg.val_fn_config['val_fn_type'] == 'linear': #TODO: init_type should be added to other functions as well
             return lambda: network_architectures.LinearNetwork(cfg.device, np.prod(cfg.rep_fn().output_dim),
-                                                               cfg.action_dim)
+                                                               cfg.action_dim, cfg.val_fn_config['init_type'])
         else:
             raise NotImplementedError

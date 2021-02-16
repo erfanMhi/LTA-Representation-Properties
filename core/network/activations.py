@@ -16,18 +16,22 @@ class LTA:
         self.eta = cfg.activation_config['eta']
         self.d = cfg.activation_config['input']
 
-        return
-
     def __call__(self, reps):
         # temp = torch.tanh(reps)
-        temp = torch.clamp(reps, self.bound_low, self.bound_high)
+        # print(reps.shape)
+        # print(self.c_mat)
+        #temp = torch.clamp(reps, self.bound_low, self.bound_high)
+        # print(temp)
+        temp = reps
         temp = temp.reshape([-1, self.d, 1, 1])
         onehots = 1.0 - self.i_plus_eta(self.sum_relu(self.c_mat, temp))
         out = torch.reshape(torch.cat([v for v in onehots], axis=1), [-1, int(self.d * self.n_tiles * self.n_tilings)])
+        # print('out: ', torch.sum(out>0))
         return out
 
     def sum_relu(self, c, x):
         out = functional.relu(c - x) + functional.relu(x - self.delta - c)
+        # print('sum_relu: ', out)
         return out
 
     def i_plus_eta(self, x):

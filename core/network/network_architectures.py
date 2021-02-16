@@ -8,9 +8,17 @@ from core.utils import torch_utils
 
 
 class LinearNetwork(nn.Module):
-    def __init__(self, device, input_units, output_units):
+    def __init__(self, device, input_units, output_units, init_type='xavier'):
         super().__init__()
-        self.fc_head = network_utils.layer_init_xavier(nn.Linear(input_units, output_units))
+
+        if init_type == 'xavier':
+            self.fc_head = network_utils.layer_init_xavier(nn.Linear(input_units, output_units))
+        elif init_type == 'lta':
+            print('here!?')
+            self.fc_head = network_utils.layer_init_lta(nn.Linear(input_units, output_units))
+        else:
+            raise ValueError('init_type is not defined: {}'.format(init_type)) 
+
         self.to(device)
         self.device = device
 
@@ -18,11 +26,14 @@ class LinearNetwork(nn.Module):
         if not isinstance(x, torch.Tensor): x = torch_utils.tensor(x, self.device)
         if len(x.shape) > 2: x = x.view(x.shape[0], -1)
         y = self.fc_head(x)
+        #print('weights: ', self.fc_head.weight)
+        # if self.fc_head.weight.grad is not None:
+        #    print('weights more than 0: ', torch.max(self.fc_head.weight.grad))
+        #print('weights grads: ', self.fc_head.weight.grad)
         return y
 
     def compute_lipschitz_upper(self):
         return [np.linalg.norm(self.fc_head.weight.detach().numpy(), ord=2)]
-
 
 class FCNetwork(nn.Module):
     def __init__(self, device, input_units, hidden_units, output_units, head_activation=None):
@@ -85,6 +96,7 @@ class ConvNetwork(nn.Module):
         else:
             self.fc_body = None
             self.fc_head = network_utils.layer_init_xavier(nn.Linear(self.conv_body.feature_dim, output_units))
+
         self.to(device)
         self.device = device
         self.head_activation = head_activation
@@ -98,6 +110,14 @@ class ConvNetwork(nn.Module):
         phi = self.fc_head(phi)
         if self.head_activation is not None:
             phi = self.head_activation(phi)
+        #if self.fc_body.layers[-1].grad is not None:
+            #print('weights more than 0: ', torch.max(self.fc_body.layers[-1].grad))
+        #if self.conv_body.layers[-1].weight.grad is not None:
+        #    print('weights con more than 0: ', torch.max(self.conv_body.layers[-1].weight.grad))
+        #    print('weights con more than 0: ', torch.sum(self.conv_body.layers[-1].weight.grad >0))
+        #if self.fc_head.weight.grad is not None:
+        #    print('weights more than 0: ', torch.max(self.fc_head.weight.grad))
+        #    print('weights more than 0: ', torch.sum(self.fc_head.weight.grad >0))
         return phi
 
     def compute_lipschitz_upper(self):

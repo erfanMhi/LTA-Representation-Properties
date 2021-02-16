@@ -19,6 +19,6 @@ def layer_init_xavier(layer):
     return layer
 
 def layer_init_lta(layer):
-    nn.init.uniform_(layer.weight)
+    nn.init.uniform_(layer.weight, -0.003, 0.003)
     nn.init.constant_(layer.bias.data, 0)
     return layer

@@ -5,6 +5,7 @@ from core.environment.gridworlds_goal import GridHardXYGoal, GridHardRGBGoal
 from core.environment.gridworlds_noise import *
 from core.environment.collectworlds import CollectRGB, CollectColor, CollectTwoColorRGB, CollectTwoColor, CollectTwoColorLip, \
     CollectTwoColorRGBFix, CollectTwoColorRGBSimple
+from core.environment.mountaincar import *
 from core.environment.collectworlds_random import CollectRandomRGB
 
 
@@ -73,6 +74,8 @@ class EnvFactory:
             return lambda: grid_background("GridTwoRoomRGB", cfg.id, cfg.change_pxl)
         elif cfg.env_name == 'BackgroundGridOneRoomRGB':
             return lambda: grid_background("GridOneRoomRGB", cfg.id, cfg.change_pxl)
+        elif cfg.env_name == 'MountainCar':
+            return lambda: MountainCar(cfg.id)
 
         # elif cfg.env_name in ['FakeAgentGridHardRGBSimple', 'FakeAgentGridTwoRoomRGBSimple', 'FakeAgentGridOneRoomRGBSimple']:
         #     return lambda: grid_fake_agent_simple(cfg.env_name, cfg.id)

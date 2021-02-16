@@ -19,8 +19,8 @@ class LTA:
         return
 
     def __call__(self, reps):
-        # temp = torch.tanh(reps)
-        temp = torch.clamp(reps, self.bound_low, self.bound_high)
+        temp = torch.tanh(reps)
+        # temp = torch.clamp(reps, self.bound_low, self.bound_high)
         temp = temp.reshape([-1, self.d, 1, 1])
         onehots = 1.0 - self.i_plus_eta(self.sum_relu(self.c_mat, temp))
         out = torch.reshape(torch.cat([v for v in onehots], axis=1), [-1, int(self.d * self.n_tiles * self.n_tilings)])

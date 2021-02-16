@@ -10,7 +10,7 @@ class MountainCar:
         self.state_dim = (2,)
         self.action_dim = 3
         self.env = gym.make('MountainCar-v0')
-        self.env.max_episode_steps = np.inf # control timeout setting in agent
+        self.env._max_episode_steps = np.inf # control timeout setting in agent
         # self.env._max_episode_steps = 2000
 
     def generate_state(self, coords):

@@ -14,7 +14,6 @@ class LinearNetwork(nn.Module):
         if init_type == 'xavier':
             self.fc_head = network_utils.layer_init_xavier(nn.Linear(input_units, output_units))
         elif init_type == 'lta':
-            print('here!?')
             self.fc_head = network_utils.layer_init_lta(nn.Linear(input_units, output_units))
         else:
             raise ValueError('init_type is not defined: {}'.format(init_type)) 

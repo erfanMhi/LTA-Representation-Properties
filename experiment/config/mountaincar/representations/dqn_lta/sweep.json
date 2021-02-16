@@ -1,0 +1,57 @@
+{
+    "config_class": "DQNAgentConfig",
+    "fixed_parameters": {
+        "exp_name": "mountaincar/representations/dqn_lta/sweep",
+        "env_name": "MountainCar",
+        "agent": "DQNAgent",
+        "discount": 0.99,
+        "state_norm_coef": 1.0,
+
+        "epsilon": 0.05,
+
+        "rep_config": {
+            "rep_type": "modular",
+            "network_type": "fc",
+            "hidden_units": [64],
+            "in_dim": [2],
+            "out_dim": 64,
+            "load_params": false,
+            "train_rep": true
+        },
+
+        "activation_config": {
+            "name": "LTA",
+            "input": 64,
+            "tile": 20,
+            "eta": 2,
+            "bound_high": 20,
+            "bound_low": -20
+        },
+
+        "val_fn_config": {
+            "val_fn_type": "linear"
+        },
+
+        "replay": true,
+        "memory_size": 100000,
+        "batch_size": 64,
+
+        "optimizer_type": "Adam",
+        "use_target_network": true,
+        "target_network_update_freq": 1000,
+
+        "max_steps": 500000,
+        "log_interval": 10000,
+        "eval_interval": 10000,
+        "eval_episodes": 5,
+        "save_interval": 0,
+        "timeout": 2000,
+        "stats_queue_size": 5,
+
+        "save_params": false,
+        "visualize": false
+    },
+    "sweep_parameters": {
+        "learning_rate": [0.0001]
+    }
+}

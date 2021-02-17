@@ -26,20 +26,20 @@ class DQNAgent(base.Agent):
         params = list(rep_net.parameters()) + list(val_net.parameters())
         optimizer = cfg.optimizer_fn(params)
 
-        # Creating target networks for value, representation, and auxiliary val_net
-        rep_net_target = cfg.rep_fn()
-        rep_net_target.load_state_dict(rep_net.state_dict())
-        val_net_target = cfg.val_fn()
-        val_net_target.load_state_dict(val_net.state_dict())
+        # # Creating target networks for value, representation, and auxiliary val_net
+        # rep_net_target = cfg.rep_fn()
+        # rep_net_target.load_state_dict(rep_net.state_dict())
+        # val_net_target = cfg.val_fn()
+        # val_net_target.load_state_dict(val_net.state_dict())
 
-        # Creating Target Networks
-        TargetNets = namedtuple('TargetNets', ['rep_net', 'val_net'])
-        targets = TargetNets(rep_net=rep_net_target, val_net=val_net_target)
+        # # Creating Target Networks
+        # TargetNets = namedtuple('TargetNets', ['rep_net', 'val_net'])
+        # targets = TargetNets(rep_net=rep_net_target, val_net=val_net_target)
 
         self.rep_net = rep_net
         self.val_net = val_net
         self.optimizer = optimizer
-        self.targets = targets
+        # self.targets = targets
 
         self.env = cfg.env_fn()
         self.vf_loss = cfg.vf_loss_fn()
@@ -89,7 +89,9 @@ class DQNAgent(base.Agent):
 
         # Constructing the target
         with torch.no_grad():
-            q_next = self.targets.val_net(self.targets.rep_net(next_states))
+            # q_next = self.targets.val_net(self.targets.rep_net(next_states))
+            q_next = self.val_net(self.rep_net(next_states))
+
             q_next = q_next.max(1)[0]
             terminals = torch_utils.tensor(terminals, self.cfg.device)
             rewards = torch_utils.tensor(rewards, self.cfg.device)
@@ -112,9 +114,9 @@ class DQNAgent(base.Agent):
         if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
             self.cfg.logger.tensorboard_writer.add_scalar('dqn/loss/val_loss', loss.item(), self.total_steps)
 
-        if self.cfg.use_target_network and self.total_steps % self.cfg.target_network_update_freq == 0:
-            self.targets.rep_net.load_state_dict(self.rep_net.state_dict())
-            self.targets.val_net.load_state_dict(self.val_net.state_dict())
+        # if self.cfg.use_target_network and self.total_steps % self.cfg.target_network_update_freq == 0:
+        #     self.targets.rep_net.load_state_dict(self.rep_net.state_dict())
+        #     self.targets.val_net.load_state_dict(self.val_net.state_dict())
 
     def eval_step(self, state):
         if np.random.rand() < self.cfg.eps_schedule.read_only():
@@ -210,8 +212,8 @@ class DQNAgent(base.Agent):
         path = os.path.join(parameters_dir, "val_net")
         self.val_net.load_state_dict(torch.load(path))
 
-        self.targets.rep_net.load_state_dict(self.rep_net.state_dict())
-        self.targets.val_net.load_state_dict(self.val_net.state_dict())
+        # self.targets.rep_net.load_state_dict(self.rep_net.state_dict())
+        # self.targets.val_net.load_state_dict(self.val_net.state_dict())
 
     # def visualize_rep(self):
     #     """
@@ -375,8 +377,10 @@ class DQNModelLearning(DQNAgent):
         q = q[self.batch_indices, actions]
         pred_r = pred_r[self.batch_indices, 0]
         pred_t = pred_t[self.batch_indices, 0]
-        q_next = self.targets.val_net(self.rep_net(next_states))[0] if self.cfg.use_target_network else \
-                 self.val_net(self.rep_net(next_states))[0]
+        # q_next = self.targets.val_net(self.targets.rep_net(next_states))[0] if self.cfg.use_target_network else \
+        #          self.val_net(self.rep_net(next_states))[0]
+        q_next = self.val_net(self.rep_net(next_states))[0]
+
         q_next = q_next.detach().max(1)[0]
         next_states = torch_utils.tensor(next_states, self.cfg.device)
         terminals = torch_utils.tensor(terminals, self.cfg.device)
@@ -394,8 +398,8 @@ class DQNModelLearning(DQNAgent):
         loss.backward()
         self.optimizer.step()
 
-        if self.cfg.use_target_network and self.total_steps % self.cfg.target_network_update_freq == 0:
-            self.targets.val_net.load_state_dict(self.val_net.state_dict())
+        # if self.cfg.use_target_network and self.total_steps % self.cfg.target_network_update_freq == 0:
+        #     self.targets.val_net.load_state_dict(self.val_net.state_dict())
 
     def eval_model(self, trajectory):
         states = trajectory["states"]

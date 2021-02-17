@@ -19,16 +19,21 @@ class LTA:
     def __call__(self, reps):
         # temp = torch.tanh(reps)
         # print(reps.shape)
+        # input()
+
         # print(self.c_mat)
         #temp = torch.clamp(reps, self.bound_low, self.bound_high)
         # print(temp)
         temp = reps
         # temp = torch.tanh(reps)
         # temp = torch.clamp(reps, self.bound_low, self.bound_high)
-        temp = temp.reshape([-1, self.d, 1, 1])
+        temp = temp.reshape([-1, self.d, 1])
+        # temp = temp.reshape([-1, self.d, 1, 1])
+        # print(temp.shape)
         onehots = 1.0 - self.i_plus_eta(self.sum_relu(self.c_mat, temp))
         out = torch.reshape(torch.cat([v for v in onehots], axis=1), [-1, int(self.d * self.n_tiles * self.n_tilings)])
-        # print('out: ', torch.sum(out>0))
+        # print('out: ', out.size(), len(np.where(out!=0)[0]), out)
+        # input()
         return out
 
     def sum_relu(self, c, x):
@@ -37,6 +42,8 @@ class LTA:
         return out
 
     def i_plus_eta(self, x):
+        if self.eta == 0:
+            return torch.sign(x)
         out = (x <= self.eta).type(torch.float32) * x + (x > self.eta).type(torch.float32)
         return out
 
@@ -52,3 +59,4 @@ class ActvFactory:
             return LTA(cfg)
         else:
             raise NotImplementedError
+

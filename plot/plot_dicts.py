@@ -27,6 +27,7 @@ violin_colors = {
     "Sparse0.4": "lightgreen",
 
     "DQN+LTA": "C2",
+    "DQN+LTA(no target)": "springgreen",
 
     "Laplace": "gray",
     "Scratch DQN": "black",
@@ -41,4 +42,16 @@ mc_learn = [
     {"label": "DQN+LTA", "property": "data/output/test/",
      "control": "data/output/test/mountaincar/representations/dqn_lta/sweep/",
      },
+    {"label": "DQN+LTA(no target)", "property": "data/output/test/",
+     "control": "data/output/test/mountaincar/representations/dqn_lta/no_target/",
+     },
+]
+
+gh_learn = [
+    {"label": "DQN", "property": "data/output/test/",
+     "control": "data/output/test/gridhard/representations/dqn/best/",
+    },
+    {"label": "DQN+LTA", "property": "data/output/test/",
+     "control": "data/output/test/gridhard/representations/dqn_lta/best/",
+    },
 ]

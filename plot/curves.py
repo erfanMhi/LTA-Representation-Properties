@@ -41,20 +41,20 @@ def learning_curve(all_paths_dict, title):
         draw_curve(returns, plt, label, violin_colors[label])
     # plt.title(title)
     plt.legend()
+    # plt.xlim(0, 30)
     plt.xlabel('step ($10^4$)')
     plt.ylabel('return')
     plt.savefig("plot/img/{}.png".format(title), dpi=300, bbox_inches='tight')
     plt.close()
     plt.clf()
 
-
 def mountain_car():
     print("\nRep learning")
     learning_curve(mc_learn, "mountain car learning")
 
-# def simple_maze():
-#     print("\nRep learning")
-#     learning_curve(maze_learn, "maze learning")
+def simple_maze():
+    print("\nRep learning")
+    learning_curve(gh_learn, "maze learning")
 #
 #     print("\nSame task")
 #     learning_curve(maze_same, "maze same")
@@ -83,6 +83,6 @@ def mountain_car():
 
 
 if __name__ == '__main__':
-    mountain_car()
-    # simple_maze()
+    # mountain_car()
+    simple_maze()
     # picky_eater()

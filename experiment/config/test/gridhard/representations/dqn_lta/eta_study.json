@@ -1,0 +1,99 @@
+{
+    "config_class": "DQNAgentConfig",
+    "fixed_parameters": {
+        "exp_name": "test/gridhard/representations/dqn_lta/eta_study",
+        "env_name": "GridHardRGB",
+        "agent": "DQNAgent",
+        "discount": 0.99,
+        "state_norm_coef": 255.0,
+
+        "epsilon": 0.1,
+
+        "rep_config": {
+            "rep_type": "modular",
+            "network_type": "conv",
+            "conv_architecture": {
+                "conv_layers": [
+                   {"in": 3,  "out": 16, "kernel": 4, "stride": 2, "pad": 2},
+                   {"in": 16,  "out": 16, "kernel": 4, "stride": 2, "pad": 2},
+                   {"in": 16,  "out": 8, "kernel": 4, "stride": 2, "pad": 2}
+                ]
+            },
+            "in_dim": [15, 15, 3],
+            "out_dim": 32,
+            "load_params": false,
+            "train_rep": true
+        },
+
+        "activation_config": {
+            "name": "LTA",
+            "input": 32,
+            "tile": 10,
+            "eta": 0.2,
+            "bound_high": 1,
+            "bound_low": -1
+        },
+
+        "val_fn_config": {
+            "val_fn_type": "linear",
+	        "init_type": "lta"
+         },
+
+        "replay": true,
+        "memory_size": 10000,
+        "batch_size": 32,
+
+        "optimizer_type": "Adam",
+        "use_target_network": true,
+        "target_network_update_freq": 64,
+
+        "max_steps": 150000,
+        "log_interval": 10000,
+        "eval_interval": 50000,
+        "eval_episodes": 5,
+        "save_interval": 0,
+        "timeout": 100,
+        "stats_queue_size": 100,
+
+        "tensorboard_logs": false,
+        "save_params": true,
+        "visualize": false
+    },
+    "sweep_parameters": {
+        "learning_rate": [0.0003, 0.0001, 0.00003],
+        "activation_config": [
+            {
+                "name": "LTA",
+                "input": 32,
+                "tile": 20,
+                "eta": 0.2,
+                "bound_high": 2,
+                "bound_low": -2
+            },
+            {
+                "name": "LTA",
+                "input": 32,
+                "tile": 20,
+                "eta": 0.4,
+                "bound_high": 2,
+                "bound_low": -2
+            },
+            {
+                "name": "LTA",
+                "input": 32,
+                "tile": 20,
+                "eta": 0.6,
+                "bound_high": 2,
+                "bound_low": -2
+            },
+            {
+                "name": "LTA",
+                "input": 32,
+                "tile": 20,
+                "eta": 0.8,
+                "bound_high": 2,
+                "bound_low": -2
+            }
+        ]
+    }
+}

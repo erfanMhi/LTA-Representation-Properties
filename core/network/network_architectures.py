@@ -109,14 +109,6 @@ class ConvNetwork(nn.Module):
         phi = self.fc_head(phi)
         if self.head_activation is not None:
             phi = self.head_activation(phi)
-        #if self.fc_body.layers[-1].grad is not None:
-            #print('weights more than 0: ', torch.max(self.fc_body.layers[-1].grad))
-        #if self.conv_body.layers[-1].weight.grad is not None:
-        #    print('weights con more than 0: ', torch.max(self.conv_body.layers[-1].weight.grad))
-        #    print('weights con more than 0: ', torch.sum(self.conv_body.layers[-1].weight.grad >0))
-        #if self.fc_head.weight.grad is not None:
-        #    print('weights more than 0: ', torch.max(self.fc_head.weight.grad))
-        #    print('weights more than 0: ', torch.sum(self.fc_head.weight.grad >0))
         return phi
 
     def compute_lipschitz_upper(self):

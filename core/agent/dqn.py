@@ -152,9 +152,9 @@ class DQNAgent(base.Agent):
         log_str = 'total steps %d, total episodes %3d, ' \
                   'Lipschitz: %.3f/%.5f/%.5f/%.5f/%.5f (upper/mean/median/min/max)'
         self.cfg.logger.info(log_str % (self.total_steps, len(self.episode_rewards), lipschitz_upper, mean, median, min, max))
-        log_str = 'total steps %d, total episodes %3d, ' \
-                  'Specialization: %.5f'
-        self.cfg.logger.info(log_str % (self.total_steps, len(self.episode_rewards), corr))
+        # log_str = 'total steps %d, total episodes %3d, ' \
+        #           'Specialization: %.5f'
+        # self.cfg.logger.info(log_str % (self.total_steps, len(self.episode_rewards), corr))
 
     def visualize(self):
         """

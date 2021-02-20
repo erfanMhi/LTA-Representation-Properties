@@ -38,6 +38,14 @@ class MinMaxNormalizer(BaseNormalizer):
         return np.true_divide(x, range, out=np.zeros_like(x), where=range != 0, casting='unsafe')
 
 
+class Identity(BaseNormalizer):
+    def __init__(self):
+        BaseNormalizer.__init__(self)
+
+    def __call__(self, x):
+        return x
+
+
 class RescaleNormalizer(BaseNormalizer):
     def __init__(self, coef=1.0):
         BaseNormalizer.__init__(self)
@@ -131,7 +139,11 @@ class RunningStats:
 class NormalizerFactory:
     @classmethod
     def get_normalizer(cls, cfg):
-        state_normalizer = RescaleNormalizer(cfg.state_norm_coef)
-        reward_normalizer = RescaleNormalizer(cfg.reward_norm_coef)
+        if cfg.state_norm_coef == 0:
+            state_normalizer = Identity()
+            reward_normalizer = Identity()
+        else:
+            state_normalizer = RescaleNormalizer(cfg.state_norm_coef)
+            reward_normalizer = RescaleNormalizer(cfg.reward_norm_coef)
         return state_normalizer, reward_normalizer
 

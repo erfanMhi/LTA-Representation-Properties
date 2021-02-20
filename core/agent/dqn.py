@@ -152,9 +152,9 @@ class DQNAgent(base.Agent):
         log_str = 'total steps %d, total episodes %3d, ' \
                   'Lipschitz: %.3f/%.5f/%.5f/%.5f/%.5f (upper/mean/median/min/max)'
         self.cfg.logger.info(log_str % (self.total_steps, len(self.episode_rewards), lipschitz_upper, mean, median, min, max))
-        log_str = 'total steps %d, total episodes %3d, ' \
-                  'Specialization: %.5f'
-        self.cfg.logger.info(log_str % (self.total_steps, len(self.episode_rewards), corr))
+        # log_str = 'total steps %d, total episodes %3d, ' \
+        #           'Specialization: %.5f'
+        # self.cfg.logger.info(log_str % (self.total_steps, len(self.episode_rewards), corr))
 
     def visualize(self):
         """
@@ -375,7 +375,7 @@ class DQNModelLearning(DQNAgent):
         q = q[self.batch_indices, actions]
         pred_r = pred_r[self.batch_indices, 0]
         pred_t = pred_t[self.batch_indices, 0]
-        q_next = self.targets.val_net(self.rep_net(next_states))[0] if self.cfg.use_target_network else \
+        q_next = self.targets.val_net(self.targets.rep_net(next_states))[0] if self.cfg.use_target_network else \
                  self.val_net(self.rep_net(next_states))[0]
         q_next = q_next.detach().max(1)[0]
         next_states = torch_utils.tensor(next_states, self.cfg.device)

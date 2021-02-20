@@ -17,6 +17,7 @@ class FCBody(nn.Module):
 
     def forward(self, x):
         for layer in self.layers:
+            # print(layer(x).min(), layer(x).max())
             x = self.activation(layer(x))
         return x
 

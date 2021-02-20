@@ -188,10 +188,11 @@ class DQNAgent(base.Agent):
             ax.set_title('Value Function')
 
             viz_dir = self.cfg.get_visualization_dir()
-            # viz_file = 'visualization_{}.png'.format(self.num_episodes)
-            viz_file = 'visualization.png'
+            viz_file = 'visualization_{}.png'.format(self.num_episodes)
+            #viz_file = 'visualization.png'
             plt.savefig(os.path.join(viz_dir, viz_file))
             plt.close()
+
         except NotImplementedError:
             return
 

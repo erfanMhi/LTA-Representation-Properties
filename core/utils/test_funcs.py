@@ -1,14 +1,19 @@
 import time
-import numpy as np
-import pickle as pkl
 import torch
 import os
-from itertools import combinations
-from core.environment.gridworlds import GridHardXY
 import copy
-from core.utils import torch_utils
 import string
 
+import pickle as pkl
+import numpy as np
+import core.network.optimizer as optimizer
+
+from importlib import import_module
+from itertools import combinations
+from core.utils import torch_utils
+from core.environment.gridworlds import GridHardXY
+from core.agent import linear_probing, dqn, laplace
+from core.utils import schedule, logger
 
 def dqn_rep_distance_viz(agent):
     agent.visualize()
@@ -34,7 +39,6 @@ def noisy_difference(rep1, rep2):
     # if np.isnan(diff):
     #     diff = 1
     return diff
-
 
 # def test_laplace_changeNoise(agent):
 #     agent.load(os.path.join(agent.cfg.data_root, agent.cfg.rep_config['path']))
@@ -183,6 +187,7 @@ def generate_linear_probing_dataset(env, cfg):
     test_obs = observations[test_idx]
     test_if = info[test_idx]
     return validation_obs, validation_if, test_obs, test_if
+
 # def generate_linear_probing_dataset(env, action_dim, retain):
     # state, coord, action, next_state, next_coord = [], [], [], [], []
     # reset = True
@@ -225,6 +230,7 @@ def dist_difference(base_rep, similar_rep, different_idx):
     if np.isinf(prop) or np.isnan(prop) or prop < 0:
         prop = 0
     return prop
+
 def dist_difference_v2(base_rep, similar_rep, different_idx):
     if type(base_rep) == torch.Tensor:
         base_rep = base_rep.data.numpy()
@@ -239,7 +245,6 @@ def dist_difference_v2(base_rep, similar_rep, different_idx):
     if np.isinf(prop) or np.isnan(prop):# or prop < 0:
         prop = 0
     return prop
-
 
 # def test_laplace_distance(agent):
 #     agent.load(os.path.join(agent.cfg.data_root, agent.cfg.rep_config['path']))
@@ -274,7 +279,11 @@ def test_dqn_distance(agent):
         f.write("Alpha={}. Distance {:.8f}"
           .format(agent.cfg.learning_rate, prop))
     return
+
 def online_distance(agent, base_obs, similar_obs, different_idx):
+    """
+    Dynamic Awareness
+    """
     with torch.no_grad():
         base_rep = agent.rep_net(agent.cfg.state_normalizer(base_obs))
         similar_rep = agent.rep_net(agent.cfg.state_normalizer(similar_obs))
@@ -696,6 +705,8 @@ def test_noninterference(agent):
     # print(np.array(rhos).mean())
     with open(os.path.join(agent.cfg.get_parameters_dir(), "../interference.txt"), "w") as f:
         f.write("Interference: {:.8f}".format(np.array(rhos).mean()))
+
+
 def online_noninterference(agent, state_all, next_s_all, action_all, reward_all, terminal_all):
     def loss(val_net, rep_net, states, actions, next_states, rewards, terminals):
         q = val_net(rep_net(states))[np.array(range(len(actions))), actions[:, 0]]
@@ -793,19 +804,26 @@ def online_decorrelation(agent, state_all):
     agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), decorr))#np.array(rhos).mean()))
 
 
-def run_steps_onlineProperty(agent):
+def run_steps_onlineProperty(agent): # We should add sparsity and regression 
+    """
+    In this function we are going to log and measure learned properties of DQN & its variants during learning
+    """
+
     t0 = time.time()
     agent.populate_returns()
     state_all, next_s_all, different_idx, action_all, reward_all, terminal_all = generate_distance_dataset(agent.cfg)
+    
     while True:
+        
         if agent.cfg.log_interval and not agent.total_steps % agent.cfg.log_interval:
             if agent.cfg.tensorboard_logs: agent.log_tensorboard()
             agent.log_file(elapsed_time=agent.cfg.log_interval / (time.time() - t0))
             t0 = time.time()
+        
         if agent.cfg.eval_interval and not agent.total_steps % agent.cfg.eval_interval:
             agent.eval_episodes()
             if agent.cfg.visualize:
-                agent.visualize()
+                agent.visualize() 
             if agent.cfg.save_params:
                 agent.save()
             if agent.cfg.evaluate_lipschitz:
@@ -818,14 +836,44 @@ def run_steps_onlineProperty(agent):
                 online_noninterference(agent, state_all, next_s_all, action_all, reward_all, terminal_all)
             if agent.cfg.evaluate_decorrelation:
                 online_decorrelation(agent, state_all)
+            if agent.cfg.evaluate_sparsity:
+                test_sparsity(agent)
+            if agent.cfg.evaluate_regression:
+                
+                if agent.cfg.linear_probing_parent == "LaplaceEvaluate":
+                    parent = import_module("core.agent.laplace")
+                    parent = getattr(parent, "LaplaceEvaluate")
+                    agent = laplace.LaplaceEvaluate(agent.cfg)
+                elif agent.cfg.linear_probing_parent == "DQNAgent":
+                    agent.cfg.vf_loss_fn = optimizer.OptFactory.get_vf_loss_fn(agent.cfg)
+                    agent.cfg.vf_constr_fn = optimizer.OptFactory.get_constr_fn(agent.cfg)
+                    agent.cfg.eps_schedule = schedule.ScheduleFactory.get_eps_schedule(agent.cfg)
+                    parent = import_module("core.agent.dqn")
+                    parent = getattr(parent, "DQNAgent")
+                    agent = dqn.DQNRepDistance(agent.cfg)
+                else:
+                    raise NotImplementedError
+
+                # # linear probing
+                lptask_all = agent.cfg.linearprob_tasks
+                for lptask in lptask_all:
+                    if "learning_rate" in lptask.keys(): # Sweeping does not use this block
+                        agent.cfg.learning_rate = lptask["learning_rate"]
+                    agent.cfg.linearprob_tasks = [lptask]
+                    agent.cfg.linear_prob_task = linear_probing_tasks.get_linear_probing_task(agent.cfg)
+                    agent.cfg.logger.info("Linear Probing: training {}".format(lptask["task"]))
+                    lpagent = linear_probing.linear_probing(parent, agent.cfg)
+                    run_linear_probing(lpagent)
+                    test_linear_probing(lpagent)
+                agent.cfg.logger.info("Linear Probing Ends")
+            
             t0 = time.time()
+        
         if agent.cfg.max_steps and agent.total_steps >= agent.cfg.max_steps:
             agent.save()
             break
+        
         agent.step()
-
-
-
 
 def draw(state):
     import matplotlib.pyplot as plt

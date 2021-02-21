@@ -18,7 +18,6 @@ from core.utils import schedule, logger
 def dqn_rep_distance_viz(agent):
     agent.visualize()
 
-
 def generate_noisy_dataset(env):
     # state_coords = [[x, y] for x in range(15)
     #                 for y in range(15) if not int(env.obstacles_map[x][y])]
@@ -287,11 +286,11 @@ def online_distance(agent, base_obs, similar_obs, different_idx):
     with torch.no_grad():
         base_rep = agent.rep_net(agent.cfg.state_normalizer(base_obs))
         similar_rep = agent.rep_net(agent.cfg.state_normalizer(similar_obs))
+    
     prop = dist_difference(base_rep, similar_rep, different_idx)
     log_str = 'total steps %d, total episodes %3d, ' \
               'Distance: %.8f/'
     agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), prop))
-    return
 
 def run_linear_probing(agent):
     env = agent.env
@@ -361,6 +360,7 @@ def test_orthogonality(agent):
     rho = 1 - np.array(rhos).mean()
     with open(os.path.join(agent.cfg.get_parameters_dir(), "../orthogonality.txt"), "w") as f:
         f.write("Orthogonality: {:.8f}".format(rho))
+
 def online_orthogonality(agent, states):
     states = agent.cfg.state_normalizer(states)
     rhos = []
@@ -423,6 +423,38 @@ def online_robustness(agent, img):
               'Robustness: %.8f/'
     agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), change))
 
+def online_sparsity(agent, img):
+    
+    with torch.no_grad():
+        img = agent.cfg.state_normalizer(img)
+        rep = agent.rep_net(img).detach().numpy()
+    # print('rep: ', rep.shape)
+    # rep = rep.reshape((rep.shape[0], rep.shape[1], 1))
+    # print('new rep: ', rep.shape)
+    # zeros = np.all(rep==0, axis=2).astype(int)
+    # print('zeros: ', zeros.shape)
+    # print(zeros)
+    # print(np.sum(zeros))
+    # print(len(np.where(rep==0)[0]))
+    zeros = (rep==0).astype(int) #TODO: Recheck with chen
+
+    # lifetime sparsity
+    lifetime_inact = np.sum(zeros, axis=0)
+    num_sample = rep.shape[0]
+    lifetime_sparsity = (lifetime_inact / num_sample).mean()
+
+    # instance sparsity
+    feature_inact = np.sum(zeros, axis=1)
+    num_f = rep.shape[1]
+    instance_sparsity = (feature_inact / num_f).mean()
+    
+    log_str = 'total steps %d, total episodes %3d, ' \
+              'Insurace Sparsity: %.8f, Lifetime Sparsity: %.8f'
+    
+    agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), instance_sparsity, lifetime_sparsity))
+
+    print("Instance sparsity: {:.8f}".format(instance_sparsity))
+    print("Lifetime sparsity: {:.8f}".format(lifetime_sparsity))
 
 def test_sparsity(agent):
     img, _, _, _, _, _ = generate_distance_dataset(agent.cfg)
@@ -703,11 +735,13 @@ def test_noninterference(agent):
         rho = 1 - (np.sum(ntk_mat) - np.trace(ntk_mat)) / (data_size * (data_size - 1))
         rhos.append(rho)
     # print(np.array(rhos).mean())
+    
     with open(os.path.join(agent.cfg.get_parameters_dir(), "../interference.txt"), "w") as f:
         f.write("Interference: {:.8f}".format(np.array(rhos).mean()))
 
 
 def online_noninterference(agent, state_all, next_s_all, action_all, reward_all, terminal_all):
+    
     def loss(val_net, rep_net, states, actions, next_states, rewards, terminals):
         q = val_net(rep_net(states))[np.array(range(len(actions))), actions[:, 0]]
         with torch.no_grad():
@@ -722,6 +756,7 @@ def online_noninterference(agent, state_all, next_s_all, action_all, reward_all,
     state_all = agent.cfg.state_normalizer(state_all)
     next_s_all = agent.cfg.state_normalizer(next_s_all)
     action_all = action_all.reshape([-1, 1])
+
     rhos = []
     for i in range(10):
         sample_idx = np.random.choice(list(range(len(state_all))), size=100)
@@ -732,9 +767,11 @@ def online_noninterference(agent, state_all, next_s_all, action_all, reward_all,
         terminal_batch = terminal_all[sample_idx]
         data_size = state_batch.shape[0]
         all_param = agent.val_net.parameters()
+
         param_num = 0
         for p in all_param:
             param_num += np.product(p.size())
+
         grad_mat = np.zeros([data_size, param_num])
         for i in range(data_size):
             agent.val_net.zero_grad()
@@ -746,6 +783,7 @@ def online_noninterference(agent, state_all, next_s_all, action_all, reward_all,
                 if para.grad is not None:
                     grad_list.append(para.grad.flatten().numpy())
             grad_mat[i] = np.concatenate(grad_list)
+
         ntk_mat = np.matmul(grad_mat, grad_mat.T)
         sample_norm = np.linalg.norm(grad_mat, axis=1).reshape((-1, 1))
         norm = np.matmul(sample_norm, sample_norm.T)
@@ -753,6 +791,7 @@ def online_noninterference(agent, state_all, next_s_all, action_all, reward_all,
         ntk_mat = np.clip(ntk_mat * (-1), 0, np.inf)
         rho = 1 - (np.sum(ntk_mat) - np.trace(ntk_mat)) / (data_size * (data_size - 1))
         rhos.append(rho)
+
     agent.val_net.zero_grad()
     agent.rep_net.zero_grad()
     log_str = 'total steps %d, total episodes %3d, ' \
@@ -803,7 +842,6 @@ def online_decorrelation(agent, state_all):
               'Decorrelation: %.8f/'
     agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), decorr))#np.array(rhos).mean()))
 
-
 def run_steps_onlineProperty(agent): # We should add sparsity and regression 
     """
     In this function we are going to log and measure learned properties of DQN & its variants during learning
@@ -837,7 +875,7 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
             if agent.cfg.evaluate_decorrelation:
                 online_decorrelation(agent, state_all)
             if agent.cfg.evaluate_sparsity:
-                test_sparsity(agent)
+                online_sparsity(agent, state_all)
             if agent.cfg.evaluate_regression:
                 
                 if agent.cfg.linear_probing_parent == "LaplaceEvaluate":

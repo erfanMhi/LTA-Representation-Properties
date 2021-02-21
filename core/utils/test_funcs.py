@@ -7,6 +7,7 @@ import string
 import pickle as pkl
 import numpy as np
 import core.network.optimizer as optimizer
+import core.component.linear_probing_tasks as linear_probing_tasks
 
 from importlib import import_module
 from itertools import combinations
@@ -449,12 +450,10 @@ def online_sparsity(agent, img):
     instance_sparsity = (feature_inact / num_f).mean()
     
     log_str = 'total steps %d, total episodes %3d, ' \
-              'Insurace Sparsity: %.8f, Lifetime Sparsity: %.8f'
+              'Instance Sparsity: %.8f, Lifetime Sparsity: %.8f'
     
     agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), instance_sparsity, lifetime_sparsity))
 
-    print("Instance sparsity: {:.8f}".format(instance_sparsity))
-    print("Lifetime sparsity: {:.8f}".format(lifetime_sparsity))
 
 def test_sparsity(agent):
     img, _, _, _, _, _ = generate_distance_dataset(agent.cfg)
@@ -881,28 +880,36 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
                 if agent.cfg.linear_probing_parent == "LaplaceEvaluate":
                     parent = import_module("core.agent.laplace")
                     parent = getattr(parent, "LaplaceEvaluate")
-                    agent = laplace.LaplaceEvaluate(agent.cfg)
+                    eval_agent = laplace.LaplaceEvaluate(agent.cfg)
                 elif agent.cfg.linear_probing_parent == "DQNAgent":
-                    agent.cfg.vf_loss_fn = optimizer.OptFactory.get_vf_loss_fn(agent.cfg)
-                    agent.cfg.vf_constr_fn = optimizer.OptFactory.get_constr_fn(agent.cfg)
-                    agent.cfg.eps_schedule = schedule.ScheduleFactory.get_eps_schedule(agent.cfg)
+                    cfg = agent.cfg
+                    #cfg.vf_loss_fn = optimizer.OptFactory.get_vf_loss_fn(cfg)
+                    #cfg.vf_constr_fn = optimizer.OptFactory.get_constr_fn(cfg)
+                    #cfg.eps_schedule = schedule.ScheduleFactory.get_eps_schedule(cfg)
                     parent = import_module("core.agent.dqn")
                     parent = getattr(parent, "DQNAgent")
-                    agent = dqn.DQNRepDistance(agent.cfg)
+                    #eval_agent = dqn.DQNRepDistance(cfg)
                 else:
                     raise NotImplementedError
 
                 # # linear probing
-                lptask_all = agent.cfg.linearprob_tasks
+                lptask_all = cfg.linearprob_tasks
+                lr = cfg.learning_rate
+
                 for lptask in lptask_all:
                     if "learning_rate" in lptask.keys(): # Sweeping does not use this block
-                        agent.cfg.learning_rate = lptask["learning_rate"]
-                    agent.cfg.linearprob_tasks = [lptask]
-                    agent.cfg.linear_prob_task = linear_probing_tasks.get_linear_probing_task(agent.cfg)
+                        cfg.learning_rate = lptask["learning_rate"]
+                    cfg.linearprob_tasks = [lptask]
+                    cfg.linear_prob_task = linear_probing_tasks.get_linear_probing_task(cfg)
                     agent.cfg.logger.info("Linear Probing: training {}".format(lptask["task"]))
-                    lpagent = linear_probing.linear_probing(parent, agent.cfg)
+                    lpagent = linear_probing.linear_probing(parent, cfg)
                     run_linear_probing(lpagent)
                     test_linear_probing(lpagent)
+                
+                cfg.learning_rate = lr
+                cfg.linearprob_tasks = lptask_all
+                del cfg.linear_prob_task
+
                 agent.cfg.logger.info("Linear Probing Ends")
             
             t0 = time.time()

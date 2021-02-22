@@ -1,18 +1,23 @@
 import time
-import numpy as np
-import pickle as pkl
 import torch
 import os
-from itertools import combinations
-from core.environment.gridworlds import GridHardXY
 import copy
-from core.utils import torch_utils
 import string
 
+import pickle as pkl
+import numpy as np
+import core.network.optimizer as optimizer
+import core.component.linear_probing_tasks as linear_probing_tasks
+
+from importlib import import_module
+from itertools import combinations
+from core.utils import torch_utils
+from core.environment.gridworlds import GridHardXY
+from core.agent import linear_probing, dqn, laplace
+from core.utils import schedule, logger
 
 def dqn_rep_distance_viz(agent):
     agent.visualize()
-
 
 def generate_noisy_dataset(env):
     # state_coords = [[x, y] for x in range(15)
@@ -34,7 +39,6 @@ def noisy_difference(rep1, rep2):
     # if np.isnan(diff):
     #     diff = 1
     return diff
-
 
 # def test_laplace_changeNoise(agent):
 #     agent.load(os.path.join(agent.cfg.data_root, agent.cfg.rep_config['path']))
@@ -183,6 +187,7 @@ def generate_linear_probing_dataset(env, cfg):
     test_obs = observations[test_idx]
     test_if = info[test_idx]
     return validation_obs, validation_if, test_obs, test_if
+
 # def generate_linear_probing_dataset(env, action_dim, retain):
     # state, coord, action, next_state, next_coord = [], [], [], [], []
     # reset = True
@@ -225,6 +230,7 @@ def dist_difference(base_rep, similar_rep, different_idx):
     if np.isinf(prop) or np.isnan(prop) or prop < 0:
         prop = 0
     return prop
+
 def dist_difference_v2(base_rep, similar_rep, different_idx):
     if type(base_rep) == torch.Tensor:
         base_rep = base_rep.data.numpy()
@@ -239,7 +245,6 @@ def dist_difference_v2(base_rep, similar_rep, different_idx):
     if np.isinf(prop) or np.isnan(prop):# or prop < 0:
         prop = 0
     return prop
-
 
 # def test_laplace_distance(agent):
 #     agent.load(os.path.join(agent.cfg.data_root, agent.cfg.rep_config['path']))
@@ -274,15 +279,19 @@ def test_dqn_distance(agent):
         f.write("Alpha={}. Distance {:.8f}"
           .format(agent.cfg.learning_rate, prop))
     return
+
 def online_distance(agent, base_obs, similar_obs, different_idx):
+    """
+    Dynamic Awareness
+    """
     with torch.no_grad():
         base_rep = agent.rep_net(agent.cfg.state_normalizer(base_obs))
         similar_rep = agent.rep_net(agent.cfg.state_normalizer(similar_obs))
+    
     prop = dist_difference(base_rep, similar_rep, different_idx)
     log_str = 'total steps %d, total episodes %3d, ' \
               'Distance: %.8f/'
     agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), prop))
-    return
 
 def run_linear_probing(agent):
     env = agent.env
@@ -352,6 +361,7 @@ def test_orthogonality(agent):
     rho = 1 - np.array(rhos).mean()
     with open(os.path.join(agent.cfg.get_parameters_dir(), "../orthogonality.txt"), "w") as f:
         f.write("Orthogonality: {:.8f}".format(rho))
+
 def online_orthogonality(agent, states):
     states = agent.cfg.state_normalizer(states)
     rhos = []
@@ -413,6 +423,36 @@ def online_robustness(agent, img):
     log_str = 'total steps %d, total episodes %3d, ' \
               'Robustness: %.8f/'
     agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), change))
+
+def online_sparsity(agent, img):
+    
+    with torch.no_grad():
+        img = agent.cfg.state_normalizer(img)
+        rep = agent.rep_net(img).detach().numpy()
+    # print('rep: ', rep.shape)
+    # rep = rep.reshape((rep.shape[0], rep.shape[1], 1))
+    # print('new rep: ', rep.shape)
+    # zeros = np.all(rep==0, axis=2).astype(int)
+    # print('zeros: ', zeros.shape)
+    # print(zeros)
+    # print(np.sum(zeros))
+    # print(len(np.where(rep==0)[0]))
+    zeros = (rep==0).astype(int) #TODO: Recheck with chen
+
+    # lifetime sparsity
+    lifetime_inact = np.sum(zeros, axis=0)
+    num_sample = rep.shape[0]
+    lifetime_sparsity = (lifetime_inact / num_sample).mean()
+
+    # instance sparsity
+    feature_inact = np.sum(zeros, axis=1)
+    num_f = rep.shape[1]
+    instance_sparsity = (feature_inact / num_f).mean()
+    
+    log_str = 'total steps %d, total episodes %3d, ' \
+              'Instance Sparsity: %.8f, Lifetime Sparsity: %.8f'
+    
+    agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), instance_sparsity, lifetime_sparsity))
 
 
 def test_sparsity(agent):
@@ -694,9 +734,13 @@ def test_noninterference(agent):
         rho = 1 - (np.sum(ntk_mat) - np.trace(ntk_mat)) / (data_size * (data_size - 1))
         rhos.append(rho)
     # print(np.array(rhos).mean())
+    
     with open(os.path.join(agent.cfg.get_parameters_dir(), "../interference.txt"), "w") as f:
         f.write("Interference: {:.8f}".format(np.array(rhos).mean()))
+
+
 def online_noninterference(agent, state_all, next_s_all, action_all, reward_all, terminal_all):
+    
     def loss(val_net, rep_net, states, actions, next_states, rewards, terminals):
         q = val_net(rep_net(states))[np.array(range(len(actions))), actions[:, 0]]
         with torch.no_grad():
@@ -711,6 +755,7 @@ def online_noninterference(agent, state_all, next_s_all, action_all, reward_all,
     state_all = agent.cfg.state_normalizer(state_all)
     next_s_all = agent.cfg.state_normalizer(next_s_all)
     action_all = action_all.reshape([-1, 1])
+
     rhos = []
     for i in range(10):
         sample_idx = np.random.choice(list(range(len(state_all))), size=100)
@@ -721,9 +766,11 @@ def online_noninterference(agent, state_all, next_s_all, action_all, reward_all,
         terminal_batch = terminal_all[sample_idx]
         data_size = state_batch.shape[0]
         all_param = agent.val_net.parameters()
+
         param_num = 0
         for p in all_param:
             param_num += np.product(p.size())
+
         grad_mat = np.zeros([data_size, param_num])
         for i in range(data_size):
             agent.val_net.zero_grad()
@@ -735,6 +782,7 @@ def online_noninterference(agent, state_all, next_s_all, action_all, reward_all,
                 if para.grad is not None:
                     grad_list.append(para.grad.flatten().numpy())
             grad_mat[i] = np.concatenate(grad_list)
+
         ntk_mat = np.matmul(grad_mat, grad_mat.T)
         sample_norm = np.linalg.norm(grad_mat, axis=1).reshape((-1, 1))
         norm = np.matmul(sample_norm, sample_norm.T)
@@ -742,6 +790,7 @@ def online_noninterference(agent, state_all, next_s_all, action_all, reward_all,
         ntk_mat = np.clip(ntk_mat * (-1), 0, np.inf)
         rho = 1 - (np.sum(ntk_mat) - np.trace(ntk_mat)) / (data_size * (data_size - 1))
         rhos.append(rho)
+
     agent.val_net.zero_grad()
     agent.rep_net.zero_grad()
     log_str = 'total steps %d, total episodes %3d, ' \
@@ -792,20 +841,26 @@ def online_decorrelation(agent, state_all):
               'Decorrelation: %.8f/'
     agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), decorr))#np.array(rhos).mean()))
 
+def run_steps_onlineProperty(agent): # We should add sparsity and regression 
+    """
+    In this function we are going to log and measure learned properties of DQN & its variants during learning
+    """
 
-def run_steps_onlineProperty(agent):
     t0 = time.time()
     agent.populate_returns()
     state_all, next_s_all, different_idx, action_all, reward_all, terminal_all = generate_distance_dataset(agent.cfg)
+    
     while True:
+        
         if agent.cfg.log_interval and not agent.total_steps % agent.cfg.log_interval:
             if agent.cfg.tensorboard_logs: agent.log_tensorboard()
             agent.log_file(elapsed_time=agent.cfg.log_interval / (time.time() - t0))
             t0 = time.time()
+        
         if agent.cfg.eval_interval and not agent.total_steps % agent.cfg.eval_interval:
             agent.eval_episodes()
             if agent.cfg.visualize:
-                agent.visualize()
+                agent.visualize() 
             if agent.cfg.save_params:
                 agent.save()
             if agent.cfg.evaluate_lipschitz:
@@ -818,14 +873,52 @@ def run_steps_onlineProperty(agent):
                 online_noninterference(agent, state_all, next_s_all, action_all, reward_all, terminal_all)
             if agent.cfg.evaluate_decorrelation:
                 online_decorrelation(agent, state_all)
+            if agent.cfg.evaluate_sparsity:
+                online_sparsity(agent, state_all)
+            if agent.cfg.evaluate_regression:
+                
+                if agent.cfg.linear_probing_parent == "LaplaceEvaluate":
+                    parent = import_module("core.agent.laplace")
+                    parent = getattr(parent, "LaplaceEvaluate")
+                    eval_agent = laplace.LaplaceEvaluate(agent.cfg)
+                elif agent.cfg.linear_probing_parent == "DQNAgent":
+                    cfg = agent.cfg
+                    #cfg.vf_loss_fn = optimizer.OptFactory.get_vf_loss_fn(cfg)
+                    #cfg.vf_constr_fn = optimizer.OptFactory.get_constr_fn(cfg)
+                    #cfg.eps_schedule = schedule.ScheduleFactory.get_eps_schedule(cfg)
+                    parent = import_module("core.agent.dqn")
+                    parent = getattr(parent, "DQNAgent")
+                    #eval_agent = dqn.DQNRepDistance(cfg)
+                else:
+                    raise NotImplementedError
+
+                # # linear probing
+                lptask_all = cfg.linearprob_tasks
+                lr = cfg.learning_rate
+
+                for lptask in lptask_all:
+                    if "learning_rate" in lptask.keys(): # Sweeping does not use this block
+                        cfg.learning_rate = lptask["learning_rate"]
+                    cfg.linearprob_tasks = [lptask]
+                    cfg.linear_prob_task = linear_probing_tasks.get_linear_probing_task(cfg)
+                    agent.cfg.logger.info("Linear Probing: training {}".format(lptask["task"]))
+                    lpagent = linear_probing.linear_probing(parent, cfg)
+                    run_linear_probing(lpagent)
+                    test_linear_probing(lpagent)
+                
+                cfg.learning_rate = lr
+                cfg.linearprob_tasks = lptask_all
+                del cfg.linear_prob_task
+
+                agent.cfg.logger.info("Linear Probing Ends")
+            
             t0 = time.time()
+        
         if agent.cfg.max_steps and agent.total_steps >= agent.cfg.max_steps:
             agent.save()
             break
+        
         agent.step()
-
-
-
 
 def draw(state):
     import matplotlib.pyplot as plt

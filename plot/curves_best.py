@@ -6,35 +6,25 @@ sys.path.insert(0, '..')
 import matplotlib.pyplot as plt
 
 from plot.plot_utils import *
-from plot.plot_dicts import *
+from plot.plot_paths import *
 
 os.chdir("..")
 print("Change dir to", os.getcwd())
 
-def arrange_order(dict1):
-    lst = []
-    min_l = np.inf
-    for i in sorted(dict1):
-        v1 = dict1[i]
-        lst.append(v1)
-        l = len(v1)
-        min_l = l if l < min_l else min_l
-    for i in range(len(lst)):
-        lst[i] = lst[i][:min_l]
-    return np.array(lst)
+# def load_return(paths):
+#     all_rt = {}
+#     for i in paths:
+#         path = i["control"]
+#         # print("Loading returns from", path)
+#         returns = extract_from_setting(path, 0)
+#         all_rt[i["label"]] = returns
+#     return all_rt
 
-def load_return(paths):
-    all_rt = {}
-    for i in paths:
-        path = i["control"]
-        # print("Loading returns from", path)
-        returns = extract_return_setting(path, 0)
-        all_rt[i["label"]] = returns
-    return all_rt
 
 def learning_curve(all_paths_dict, title):
     labels = [i["label"] for i in all_paths_dict]
-    control = load_return(all_paths_dict)
+    # control = load_return(all_paths_dict)
+    control = load_info(all_paths_dict, 0, "return")
     plt.figure()
     for label in labels:
         returns = arrange_order(control[label])
@@ -54,39 +44,17 @@ def mountain_car():
 
 def simple_maze():
     print("\nRep learning")
-    learning_curve(gh_learn, "maze learning")
+    # learning_curve(gh_learn, "maze learning")
+    # learning_curve(gh_online, "maze online measure")
 
-    print("\nTransfer")
-    learning_curve(gh_same, "maze same")
-    learning_curve(gh_similar, "maze similar")
-    learning_curve(gh_diff, "maze different (fix)")
+    # # print("\nTransfer")
+    # learning_curve(gh_etaStudy_diff_fix, "maze eta different (fix)")
+    # learning_curve(gh_etaStudy_diff_tune, "maze eta different (fine tune)")
+
+    # learning_curve(gh_same, "maze same")
+    # learning_curve(gh_similar, "maze similar")
+    # learning_curve(gh_diff, "maze different (fix)")
     learning_curve(gh_diff_tune, "maze different (fine tune)")
-#
-#     print("\nSame task")
-#     learning_curve(maze_same, "maze same")
-#
-#     print("\nSimilar task")
-#     learning_curve(maze_similar, "maze similar")
-#
-#     print("\nDifferent task - fix")
-#     learning_curve(maze_different_fix, "maze different (fix)")
-#
-#     print("\nDifferent task - tune")
-#     learning_curve(maze_different_tune, "maze different (fine tune)")
-#
-# def picky_eater():
-#     print("\nRep learning")
-#     learning_curve(eater_learn, "picky eater learning")
-#
-#     print("\nSame task")
-#     learning_curve(eater_same, "picky eater same")
-#
-#     print("\nDifferent task - fix")
-#     learning_curve(eater_different_fix, "picky eater different (fix)")
-#
-#     print("\nDifferent task - tune")
-#     learning_curve(eater_different_tune, "picky eater: different (fine tune)")
-
 
 if __name__ == '__main__':
     # mountain_car()

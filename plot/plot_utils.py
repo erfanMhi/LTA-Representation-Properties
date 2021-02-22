@@ -3,6 +3,36 @@ import numpy as np
 
 flatten = lambda t: [item for sublist in t for item in sublist]
 
+
+def arrange_order(dict1):
+    lst = []
+    min_l = np.inf
+    for i in sorted(dict1):
+        v1 = dict1[i]
+        lst.append(v1)
+        l = len(v1)
+        min_l = l if l < min_l else min_l
+    for i in range(len(lst)):
+        lst[i] = lst[i][:min_l]
+    return np.array(lst)
+
+def load_info(paths, param, key):
+    all_rt = {}
+    for i in paths:
+        path = i["control"]
+        res = extract_from_setting(path, param, key)
+        all_rt[i["label"]] = res
+    return all_rt
+
+def load_return(paths, total_param, start_param):
+    all_rt = {}
+    for i in paths:
+        path = i["control"]
+        # print("Loading returns from", path)
+        returns = extract_return_all(path, total_param, start_param)
+        all_rt[i["label"]] = returns
+    return all_rt
+
 def draw_curve(all_res, ax, label, color):
     mu = all_res.mean(axis=0)
     std = all_res.std(axis=0)
@@ -11,7 +41,7 @@ def draw_curve(all_res, ax, label, color):
     ax.plot(mu, label=label, color=color)
     ax.fill_between(list(range(len(mu))), mu-ste*2, mu+ste*2, color=color, alpha=0.1, linewidth=0.)
 
-def extract_return_single_run(file):
+def extract_from_single_run(file, key):
     with open(file, "r") as f:
         content = f.readlines()
     returns = []
@@ -19,11 +49,34 @@ def extract_return_single_run(file):
         info = l.split("|")[1].strip()
         i_list = info.split(" ")
         if "total" == i_list[0]:
-            if "returns" in i_list:
+            if key=="return" and "returns" in i_list:
                 returns.append(float(i_list[i_list.index("returns")+1].split("/")[0].strip())) # mean
+            elif key == "lipschitz" and "Lipschitz:" in i_list:
+                returns.append(float(i_list[i_list.index("Lipschitz:") + 1].split("/")[1].strip()))  # mean
+            elif key == "distance" and "Distance:" in i_list:
+                returns.append(float(i_list[i_list.index("Distance:") + 1].split("/")[0].strip()))
+            elif key == "otho" and "Orthogonality:" in i_list:
+                returns.append(float(i_list[i_list.index("Orthogonality:") + 1].split("/")[0].strip()))
+            elif key == "noninterf" and "Noninterference:" in i_list:
+                returns.append(float(i_list[i_list.index("Noninterference:") + 1].split("/")[0].strip()))
+            elif key == "decorr" and "Decorrelation:" in i_list:
+                returns.append(float(i_list[i_list.index("Decorrelation:") + 1].split("/")[0].strip()))
     return returns
+#
+# def extract_lipschitz_single_run(file):
+#     with open(file, "r") as f:
+#         content = f.readlines()
+#     returns = []
+#     for l in content:
+#         info = l.split("|")[1].strip()
+#         i_list = info.split(" ")
+#         if "total" == i_list[0]:
+#             if "Lipschitz:" in i_list:
+#                 returns.append(float(i_list[i_list.index("Lipschitz:")+1].split("/")[1].strip())) # mean
+#     return returns
+#
 
-def extract_return_setting(find_in, setting):
+def extract_from_setting(find_in, setting, key="return"):
     setting_folder = "{}_param_setting".format(setting)
     all_runs = {}
     assert os.path.isdir(find_in), print("\nERROR: {} is not a directory\n".format(find_in))
@@ -31,14 +84,24 @@ def extract_return_setting(find_in, setting):
         for name in files:
             if name in ["log"] and setting_folder in path:
                 file = os.path.join(path, name)
-                returns = extract_return_single_run(file)
-                all_runs[int(file.split("_run")[0].split("/")[-1])] = returns
+                res = extract_from_single_run(file, key)
+                all_runs[int(file.split("_run")[0].split("/")[-1])] = res
     return all_runs
 
-def extract_return_all(path, setting_list):
+def extract_return_all(path, total=None, start=0):
+    if total is None:
+        all_param = os.listdir(path+"/0_run")
+        setting_list = []
+        for p in all_param:
+            idx = int(p.split("_param")[0])
+            setting_list.append(idx)
+        setting_list.sort()
+    else:
+        setting_list = list(range(start, total))
+
     all_sets = {}
     for setting in setting_list:
-        all_sets[setting] = extract_return_setting(path, setting)
+        all_sets[setting] = extract_from_setting(path, setting)
     return all_sets
 
 def extract_property_single_run(file, keyword):

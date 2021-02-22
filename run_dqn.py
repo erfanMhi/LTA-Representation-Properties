@@ -9,7 +9,7 @@ import core.component.replay as replay
 import core.utils.normalizer as normalizer
 import core.component.representation as representation
 from core.agent import dqn
-from core.utils import torch_utils, schedule, logger, run_funcs
+from core.utils import torch_utils, schedule, logger, run_funcs, test_funcs
 from experiment.sweeper import Sweeper
 
 
@@ -52,4 +52,7 @@ if __name__ == '__main__':
 
     # Initializing the agent and running the experiment
     agent = dqn.DQNAgent(cfg)
-    run_funcs.run_steps(agent)
+    if cfg.online_property:
+        test_funcs.run_steps_onlineProperty(agent)
+    else:
+        run_funcs.run_steps(agent)

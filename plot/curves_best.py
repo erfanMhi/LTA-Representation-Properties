@@ -55,6 +55,12 @@ def mountain_car():
 def simple_maze():
     print("\nRep learning")
     learning_curve(gh_learn, "maze learning")
+
+    print("\nTransfer")
+    learning_curve(gh_same, "maze same")
+    learning_curve(gh_similar, "maze similar")
+    learning_curve(gh_diff, "maze different (fix)")
+    learning_curve(gh_diff_tune, "maze different (fine tune)")
 #
 #     print("\nSame task")
 #     learning_curve(maze_same, "maze same")

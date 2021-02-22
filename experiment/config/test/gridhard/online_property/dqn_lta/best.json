@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test/gridhard/representations/dqn_lta/best",
+        "exp_name": "test/gridhard/online_property/dqn_lta/best",
         "env_name": "GridHardRGB",
         "agent": "DQNAgent",
         "discount": 0.99,
@@ -49,7 +49,7 @@
 
         "max_steps": 300000,
         "log_interval": 10000,
-        "eval_interval": 50000,
+        "eval_interval": 10000,
         "eval_episodes": 5,
         "save_interval": 0,
         "timeout": 100,
@@ -57,7 +57,15 @@
 
         "tensorboard_logs": false,
         "save_params": true,
-        "visualize": false
+        "visualize": false,
+
+        "online_property": true,
+        "evaluate_lipschitz": true,
+        "evaluate_distance": true,
+        "evaluate_orthogonality": true,
+        "evaluate_noninterference": true,
+        "evaluate_decorrelation": true,
+        "distance_path": {"current": "test/gridhard/random_dqn/distance_current_states.npy", "action": "test/gridhard/random_dqn/distance_actions.npy", "next": "test/gridhard/random_dqn/distance_next_states.npy", "reward": "test/gridhard/random_dqn/distance_rewards.npy", "terminal": "test/gridhard/random_dqn/distance_terminals.npy"}
     },
     "sweep_parameters": {
         "learning_rate": [0.0001],

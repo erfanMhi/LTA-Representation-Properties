@@ -1,0 +1,49 @@
+{
+    "config_class": "DQNAgentConfig",
+    "fixed_parameters": {
+        "exp_name": "test/gridhard/control/similar_task/fix_rep/input/best",
+        "env_name": "GridHardRGBGoal",
+        "agent": "DQNAgent",
+        "discount": 0.99,
+        "state_norm_coef": 255.0,
+
+        "epsilon": 0.1,
+
+        "replay": true,
+        "memory_size": 10000,
+        "batch_size": 32,
+
+        "optimizer_type": "Adam",
+        "use_target_network": true,
+        "target_network_update_freq": 64,
+
+        "max_steps": 150000,
+        "log_interval": 10000,
+        "eval_interval": 10000,
+        "eval_episodes": 5,
+        "save_interval": 0,
+        "timeout": 100,
+        "stats_queue_size": 100,
+
+        "rep_config": {
+            "rep_type": "identity",
+            "in_dim": [15, 15, 3],
+            "out_dim": 675,
+            "train_rep": false,
+            "load_params": false
+        },
+
+        "val_fn_config": {
+            "val_fn_type": "linear",
+            "init_type": "xavier"
+         },
+
+        "evaluate_lipschitz": true,
+        "lipschitz_sampled_states_path": "test/gridhard/random_dqn/lip_sampled_states.npy"
+    },
+
+    "sweep_parameters": {
+        "learning_rate": [0.0001],
+        "goal_id": [4]
+    }
+}

@@ -46,14 +46,15 @@ def simple_maze():
     print("\nRep learning")
     # learning_curve(gh_learn, "maze learning")
     # learning_curve(gh_online, "maze online measure")
+    learning_curve(gh_etaStudy_online, "maze eta study online measure")
 
     # # print("\nTransfer")
     # learning_curve(gh_etaStudy_diff_fix, "maze eta different (fix)")
     # learning_curve(gh_etaStudy_diff_tune, "maze eta different (fine tune)")
 
-    # learning_curve(gh_same, "maze same")
-    # learning_curve(gh_similar, "maze similar")
-    # learning_curve(gh_diff, "maze different (fix)")
+    learning_curve(gh_same, "maze same")
+    learning_curve(gh_similar, "maze similar")
+    learning_curve(gh_diff, "maze different (fix)")
     learning_curve(gh_diff_tune, "maze different (fine tune)")
 
 if __name__ == '__main__':

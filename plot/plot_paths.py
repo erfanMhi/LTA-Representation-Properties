@@ -4,12 +4,19 @@ cmap = matplotlib.cm.get_cmap('cool')
 target_keywords = {
     "decorrelation.txt": "Decorrelation:",
     "distance.txt": "Distance",
-    "interference.txt": "Interference:",
+    "noninterference.txt": "Noninterference:",
     "linear_probing_xy.txt": "Percentage error",
     "linear_probing_color.txt": "Percentage error",
     "linear_probing_count.txt": "Percentage error",
     "orthogonality.txt": "Orthogonality:",
     "sparsity_instance.txt": "sparsity:",
+}
+target_files = {
+    "decorr": "decorrelation.txt",
+    "distance": "distance.txt",
+    "noninterf": "noninterference.txt",
+    "ortho": "orthogonality.txt",
+    "sparsity": "sparsity_instance.txt"
 }
 
 violin_colors = {
@@ -97,21 +104,27 @@ gh_same_sweep = [
 gh_same = [
     {"label": "DQN", "property": "data/output/test/",
      "control": "data/output/test/gridhard/control/same_task/fix_rep/dqn/best/",
-    },
+     "online_measure": "data/output/test/gridhard/online_property/dqn/best/"
+     },
     {"label": "DQN+Reward",
      "control": "data/output/test/gridhard/control/same_task/fix_rep/dqn_aux/reward/best/",
+     "online_measure": "data/output/test/gridhard/online_property/dqn_aux/reward/best/"
      },
     {"label": "DQN+LTA", "property": "data/output/test/",
      "control": "data/output/test/gridhard/control/same_task/fix_rep/dqn_lta/best/",
-    },
+     "online_measure": "data/output/test/gridhard/online_property/dqn_lta/best/"
+     },
     {"label": "DQN+LTA+Reward",
      "control": "data/output/test/gridhard/control/same_task/fix_rep/dqn_lta_aux/reward/best/",
+     "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/reward/best/"
      },
-    {"label": "Random", "property": "data/output/test/",
+    {"label": "Random",
      "control": "data/output/test/gridhard/control/same_task/fix_rep/random/best/",
+     "property": "data/output/test/gridhard/property/random/best",
      },
-    {"label": "Input", "property": "data/output/test/",
+    {"label": "Input",
      "control": "data/output/test/gridhard/control/same_task/fix_rep/input/best/",
+     "property": "data/output/test/gridhard/property/input/best",
      },
 ]
 
@@ -138,21 +151,27 @@ gh_similar_sweep = [
 gh_similar = [
     {"label": "DQN", "property": "data/output/test/",
      "control": "data/output/test/gridhard/control/similar_task/fix_rep/dqn/best/",
-    },
+     "online_measure": "data/output/test/gridhard/online_property/dqn/best/"
+     },
     {"label": "DQN+Reward",
      "control": "data/output/test/gridhard/control/similar_task/fix_rep/dqn_aux/reward/best/",
+     "online_measure": "data/output/test/gridhard/online_property/dqn_aux/reward/best/"
      },
     {"label": "DQN+LTA", "property": "data/output/test/",
      "control": "data/output/test/gridhard/control/similar_task/fix_rep/dqn_lta/best/",
-    },
+     "online_measure": "data/output/test/gridhard/online_property/dqn_lta/best/"
+     },
     {"label": "DQN+LTA+Reward",
      "control": "data/output/test/gridhard/control/similar_task/fix_rep/dqn_lta_aux/reward/best/",
+     "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/reward/best/"
      },
-    {"label": "Random", "property": "data/output/test/",
+    {"label": "Random",
      "control": "data/output/test/gridhard/control/similar_task/fix_rep/random/best/",
+     "property": "data/output/test/gridhard/property/random/best",
      },
-    {"label": "Input", "property": "data/output/test/",
+    {"label": "Input",
      "control": "data/output/test/gridhard/control/similar_task/fix_rep/input/best/",
+     "property": "data/output/test/gridhard/property/input/best",
      },
 ]
 
@@ -179,22 +198,41 @@ gh_diff_sweep = [
 gh_diff = [
     {"label": "DQN", "property": "data/output/test/",
      "control": "data/output/test/gridhard/control/different_task/fix_rep/dqn/best/",
-    },
+     "online_measure": "data/output/test/gridhard/online_property/dqn/best/"
+     },
     {"label": "DQN+Reward",
      "control": "data/output/test/gridhard/control/different_task/fix_rep/dqn_aux/reward/best/",
+     "online_measure": "data/output/test/gridhard/online_property/dqn_aux/reward/best/"
      },
     {"label": "DQN+LTA", "property": "data/output/test/",
      "control": "data/output/test/gridhard/control/different_task/fix_rep/dqn_lta/best/",
-    },
+     "online_measure": "data/output/test/gridhard/online_property/dqn_lta/best/"
+     },
     {"label": "DQN+LTA+Reward",
      "control": "data/output/test/gridhard/control/different_task/fix_rep/dqn_lta_aux/reward/best/",
+     "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/reward/best/"
      },
-    {"label": "Random", "property": "data/output/test/",
+    {"label": "Random",
      "control": "data/output/test/gridhard/control/different_task/fix_rep/random/best/",
+     "property": "data/output/test/gridhard/property/random/best",
      },
-    {"label": "Input", "property": "data/output/test/",
+    {"label": "Input",
      "control": "data/output/test/gridhard/control/different_task/fix_rep/input/best/",
+     "property": "data/output/test/gridhard/property/input/best",
      },
+
+    # {"label": "DQN+LTA eta=0.2",
+    #  "control": "data/output/test/gridhard/control/different_task/fix_rep/dqn_lta/eta_study_0.2_best/",
+    #  "online_measure": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.2_best/"
+    #  },
+    # {"label": "DQN+LTA eta=0.6",
+    #  "control": "data/output/test/gridhard/control/different_task/fix_rep/dqn_lta/eta_study_0.6_best/",
+    #  "online_measure": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.6_best/"
+    #  },
+    # {"label": "DQN+LTA eta=0.8",
+    #  "control": "data/output/test/gridhard/control/different_task/fix_rep/dqn_lta/eta_study_0.8_best/",
+    #  "online_measure": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.8_best/"
+    #  }
 ]
 
 gh_diff_tune_sweep = [
@@ -217,19 +255,37 @@ gh_diff_tune_sweep = [
 gh_diff_tune = [
     {"label": "DQN", "property": "data/output/test/",
      "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn/best/",
-    },
+     "online_measure": "data/output/test/gridhard/online_property/dqn/best/"
+     },
     {"label": "DQN+Reward",
      "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn_aux/reward/best/",
+     "online_measure": "data/output/test/gridhard/online_property/dqn_aux/reward/best/"
      },
     {"label": "DQN+LTA", "property": "data/output/test/",
      "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn_lta/best/",
-    },
+     "online_measure": "data/output/test/gridhard/online_property/dqn_lta/best/"
+     },
     {"label": "DQN+LTA+Reward",
      "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn_lta_aux/reward/best/",
+     "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/reward/best/"
      },
-    {"label": "Random", "property": "data/output/test/",
+    {"label": "Random",
      "control": "data/output/test/gridhard/control/different_task/fine_tune/random/best/",
+     "property": "data/output/test/gridhard/property/random/best",
      },
+    #
+    # {"label": "DQN+LTA eta=0.2",
+    #  "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn_lta/eta_study_0.2_best/",
+    #  "online_measure": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.2_best/"
+    #  },
+    # {"label": "DQN+LTA eta=0.6",
+    #  "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn_lta/eta_study_0.6_best/",
+    #  "online_measure": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.6_best/"
+    #  },
+    # {"label": "DQN+LTA eta=0.8",
+    #  "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn_lta/eta_study_0.8_best/",
+    #  "online_measure": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.8_best/"
+    #  }
 ]
 
 gh_etaStudy_diff_fix_sweep = [
@@ -263,29 +319,37 @@ gh_etaStudy_diff_tune_sweep = [
 gh_etaStudy_diff_fix = [
     {"label": "DQN+LTA eta=0.2",
      "control": "data/output/test/gridhard/control/different_task/fix_rep/dqn_lta/eta_study_0.2_best/",
-    },
+     "online_measure": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.2_best/"
+     },
     {"label": "DQN+LTA eta=0.4",
      "control": "data/output/test/gridhard/control/different_task/fix_rep/dqn_lta/best/",
-    },
+     "online_measure": "data/output/test/gridhard/online_property/dqn_lta/best/"
+     },
     {"label": "DQN+LTA eta=0.6",
      "control": "data/output/test/gridhard/control/different_task/fix_rep/dqn_lta/eta_study_0.6_best/",
+     "online_measure": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.6_best/"
      },
     {"label": "DQN+LTA eta=0.8",
      "control": "data/output/test/gridhard/control/different_task/fix_rep/dqn_lta/eta_study_0.8_best/",
+     "online_measure": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.8_best/"
      },
 ]
 gh_etaStudy_diff_tune = [
     {"label": "DQN+LTA eta=0.2",
      "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn_lta/eta_study_0.2_best/",
+     "online_measure": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.2_best/"
      },
     {"label": "DQN+LTA eta=0.4",
      "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn_lta/best/",
+     "online_measure": "data/output/test/gridhard/online_property/dqn_lta/best/"
     },
     {"label": "DQN+LTA eta=0.6",
      "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn_lta/eta_study_0.6_best/",
+     "online_measure": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.6_best/"
      },
     {"label": "DQN+LTA eta=0.8",
      "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn_lta/eta_study_0.8_best/",
+     "online_measure": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.8_best/"
      },
 ]
 
@@ -318,4 +382,20 @@ gh_online = [
     {"label": "DQN+LTA+Reward",
      "control": "data/output/test/gridhard/online_property/dqn_lta_aux/reward/best/",
      },
+]
+
+gh_etaStudy_online = [
+    {"label": "DQN+LTA eta=0.2",
+     "control": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.2_best/",
+     },
+    {"label": "DQN+LTA eta=0.4",
+     "control": "data/output/test/gridhard/online_property/dqn_lta/best/",
+     },
+    {"label": "DQN+LTA eta=0.6",
+     "control": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.6_best/",
+     },
+    {"label": "DQN+LTA eta=0.8",
+     "control": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.8_best/",
+     },
+
 ]

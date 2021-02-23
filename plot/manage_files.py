@@ -3,15 +3,16 @@ import shutil
 
 def walk_through():
     from distutils.dir_util import copy_tree
-    root = "../data/output/test/gridhard/control/different_task/fine_tune/dqn_lta/eta_study_0.8"
+    root = "../data/output/test/gridhard/property/"
     assert os.path.isdir(root)
     for path, subdirs, files in os.walk(root):
 
         # for f in files:
-        #     if f in ["linear_probing_xy.txt"]:
+        #     if f in ["interference.txt"]:
         #         file1 = os.path.join(path, f)
-        #         file2 = os.path.join(path, "linear_probing_color.txt")
-        #         # os.rename(file1, file2)
+        #         file2 = os.path.join(path, "noninterference.txt")
+        #         # print(file1, file2)
+        #         os.rename(file1, file2)
 
         for name in subdirs:
             if "1_param_setting" in name:
@@ -27,9 +28,9 @@ def walk_through():
                 # shutil.copy(file1+"/linear_probing_count.txt", file2+"/linear_probing_count.txt")
                 # shutil.copy(file1+"/parameters/linear_probing_count", file2+"/parameters/linear_probing_count")
 
-                if not os.path.isdir(file2):
-                    os.makedirs(file2)
-                copy_tree(file1, file2)
+                # if not os.path.isdir(file2):
+                #     os.makedirs(file2)
+                # copy_tree(file1, file2)
 
             # if name == "0_run":
             #     file1 = os.path.join(path, name)

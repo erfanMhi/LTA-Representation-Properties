@@ -33,9 +33,10 @@ def simple_maze():
     learning_curve(gh_online, "maze return", key="return")
     learning_curve(gh_online, "maze online lipschitz", key="lipschitz")
     learning_curve(gh_online, "maze online distance", key="distance")
-    learning_curve(gh_online, "maze online othogonal", key="otho")
+    learning_curve(gh_online, "maze online orthogonal", key="ortho")
     learning_curve(gh_online, "maze online noninterf", key="noninterf")
     learning_curve(gh_online, "maze online decorr", key="decorr")
+    learning_curve(gh_online, "maze online sparsity", key="sparsity")
 
 if __name__ == '__main__':
     # mountain_car()

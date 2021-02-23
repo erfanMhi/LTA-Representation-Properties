@@ -55,12 +55,18 @@ def extract_from_single_run(file, key):
                 returns.append(float(i_list[i_list.index("Lipschitz:") + 1].split("/")[1].strip()))  # mean
             elif key == "distance" and "Distance:" in i_list:
                 returns.append(float(i_list[i_list.index("Distance:") + 1].split("/")[0].strip()))
-            elif key == "otho" and "Orthogonality:" in i_list:
+            elif key == "ortho" and "Orthogonality:" in i_list:
                 returns.append(float(i_list[i_list.index("Orthogonality:") + 1].split("/")[0].strip()))
             elif key == "noninterf" and "Noninterference:" in i_list:
-                returns.append(float(i_list[i_list.index("Noninterference:") + 1].split("/")[0].strip()))
+                interf = float(i_list[i_list.index("Noninterference:") + 1].split("/")[0].strip())
+                if not (np.isnan(interf) or np.isinf(interf) or np.isinf(-interf)):
+                    returns.append(interf)
+                else:
+                    print("{} non-interference has {} value".format(file, interf))
             elif key == "decorr" and "Decorrelation:" in i_list:
                 returns.append(float(i_list[i_list.index("Decorrelation:") + 1].split("/")[0].strip()))
+            elif key == "sparsity" and "Instance Sparsity:" in info:
+                returns.append(float(i_list[i_list.index("Sparsity:") + 1].split(",")[0].strip()))
     return returns
 #
 # def extract_lipschitz_single_run(file):
@@ -76,7 +82,7 @@ def extract_from_single_run(file, key):
 #     return returns
 #
 
-def extract_from_setting(find_in, setting, key="return"):
+def extract_from_setting(find_in, setting, key="return", final_only=False):
     setting_folder = "{}_param_setting".format(setting)
     all_runs = {}
     assert os.path.isdir(find_in), print("\nERROR: {} is not a directory\n".format(find_in))
@@ -85,6 +91,9 @@ def extract_from_setting(find_in, setting, key="return"):
             if name in ["log"] and setting_folder in path:
                 file = os.path.join(path, name)
                 res = extract_from_single_run(file, key)
+                if final_only:
+                    # print("--", res)
+                    res = res[-1]
                 all_runs[int(file.split("_run")[0].split("/")[-1])] = res
     return all_runs
 

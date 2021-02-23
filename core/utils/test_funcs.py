@@ -669,6 +669,7 @@ def eval_noninterference(agent, param_num, state, next_s, action, reward, termin
     return record
 
 def test_noninterference(agent):
+
     def loss(val_net, rep_net, states, actions, next_states, rewards, terminals):#, true_val=None):
         # if true_val is None:
         #     true_val = val_net
@@ -735,8 +736,8 @@ def test_noninterference(agent):
         rhos.append(rho)
     # print(np.array(rhos).mean())
     
-    with open(os.path.join(agent.cfg.get_parameters_dir(), "../interference.txt"), "w") as f:
-        f.write("Interference: {:.8f}".format(np.array(rhos).mean()))
+    with open(os.path.join(agent.cfg.get_parameters_dir(), "../noninterference.txt"), "w") as f:
+        f.write("Noninterference: {:.8f}".format(np.array(rhos).mean()))
 
 
 def online_noninterference(agent, state_all, next_s_all, action_all, reward_all, terminal_all):

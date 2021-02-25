@@ -730,10 +730,16 @@ def test_noninterference(agent):
         ntk_mat = np.matmul(grad_mat, grad_mat.T)
         sample_norm = np.linalg.norm(grad_mat, axis=1).reshape((-1, 1))
         norm = np.matmul(sample_norm, sample_norm.T)
+
+        # add small number when norm = 0, to prevent dividing by 0 and get NAN
+        if len(np.where(norm==0)[0]) != 0:
+            norm[np.where(norm==0)] += 1e-05
+
         ntk_mat = np.divide(ntk_mat, norm)
         ntk_mat = np.clip(ntk_mat * (-1), 0, np.inf)
         rho = 1 - (np.sum(ntk_mat) - np.trace(ntk_mat)) / (data_size * (data_size - 1))
         rhos.append(rho)
+        # print(rho)
     # print(np.array(rhos).mean())
     
     with open(os.path.join(agent.cfg.get_parameters_dir(), "../noninterference.txt"), "w") as f:
@@ -787,10 +793,16 @@ def online_noninterference(agent, state_all, next_s_all, action_all, reward_all,
         ntk_mat = np.matmul(grad_mat, grad_mat.T)
         sample_norm = np.linalg.norm(grad_mat, axis=1).reshape((-1, 1))
         norm = np.matmul(sample_norm, sample_norm.T)
+
+        # add small number when norm = 0, to prevent dividing by 0 and get NAN
+        if len(np.where(norm==0)[0]) != 0:
+            norm[np.where(norm==0)] += 1e-05
+
         ntk_mat = np.divide(ntk_mat, norm)
         ntk_mat = np.clip(ntk_mat * (-1), 0, np.inf)
         rho = 1 - (np.sum(ntk_mat) - np.trace(ntk_mat)) / (data_size * (data_size - 1))
         rhos.append(rho)
+        # print(rho, data_size, np.sum(ntk_mat), np.where(norm==0))
 
     agent.val_net.zero_grad()
     agent.rep_net.zero_grad()

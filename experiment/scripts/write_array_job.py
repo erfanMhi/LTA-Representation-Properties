@@ -127,10 +127,7 @@ if __name__ == '__main__':
     # use "run_dqn" when you are learning representation for dqn or dqn_lta, or running transfer learning with any representation.
     # use "run_dqn_aux" when you are learning representation for any representation with auxiliary tasks.
     rep_learning([
-        ["run_dqn", "config/test/gridhard/online_property/dqn_lta/best.json"],
-        ["run_dqn_aux", "config/test/gridhard/online_property/dqn_lta_aux/best.json"],
-
-        ["run_dqn", "config/test/gridhard/control/same_task/fix_rep/dqn_lta/best.json"],
+        ["run_dqn", "config/test/picky_eater/online_property/dqn_lta/sweep.json"],
         # ["property_measure", "config_files/linear_vf/gridhard_xy/property/dqn_aux/aux_control/sweep_1g.json"],
     ], prev_file=0, line_per_file=1, num_run=30)
 

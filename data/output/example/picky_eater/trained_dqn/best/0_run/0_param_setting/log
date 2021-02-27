@@ -1,0 +1,103 @@
+2020-06-05 11:18:49,136 | exp_name: paper_results/collect_two/trained_dqn/best
+2020-06-05 11:18:49,136 | data_root: /home/han/Projects/plan_rep/data/output
+2020-06-05 11:18:49,136 | device: cpu
+2020-06-05 11:18:49,136 | run: 0
+2020-06-05 11:18:49,136 | param_setting: 0
+2020-06-05 11:18:49,136 | env_name: CollectTwoColorRGB
+2020-06-05 11:18:49,136 | state_dim: (15, 15, 3)
+2020-06-05 11:18:49,136 | action_dim: 4
+2020-06-05 11:18:49,136 | max_steps: 250000
+2020-06-05 11:18:49,136 | log_interval: 10000
+2020-06-05 11:18:49,136 | save_interval: 0
+2020-06-05 11:18:49,137 | eval_interval: 50000
+2020-06-05 11:18:49,137 | num_eval_episodes: 5
+2020-06-05 11:18:49,137 | timeout: 500
+2020-06-05 11:18:49,137 | stats_queue_size: 10
+2020-06-05 11:18:49,137 | tensorboard_logs: True
+2020-06-05 11:18:49,137 | tensorboard_interval: 100
+2020-06-05 11:18:49,137 | converge_window: 10
+2020-06-05 11:18:49,137 | converge_threshold: 0.0001
+2020-06-05 11:18:49,137 | linear_hidden_units: []
+2020-06-05 11:18:49,137 | coord_dim: 2
+2020-06-05 11:18:49,137 | state_norm_coef: 255.0
+2020-06-05 11:18:49,137 | reward_norm_coef: 1.0
+2020-06-05 11:18:49,137 | agent: DQNAgent
+2020-06-05 11:18:49,137 | decay_epsilon: False
+2020-06-05 11:18:49,137 | epsilon: 0.1
+2020-06-05 11:18:49,137 | epsilon_start: None
+2020-06-05 11:18:49,137 | epsilon_end: None
+2020-06-05 11:18:49,137 | epsilon_schedule_steps: None
+2020-06-05 11:18:49,137 | random_action_prob: None
+2020-06-05 11:18:49,137 | discount: 0.99
+2020-06-05 11:18:49,137 | network_type: flat
+2020-06-05 11:18:49,137 | batch_size: 32
+2020-06-05 11:18:49,138 | use_target_network: True
+2020-06-05 11:18:49,138 | memory_size: 100000
+2020-06-05 11:18:49,138 | optimizer_type: Adam
+2020-06-05 11:18:49,138 | val_net: None
+2020-06-05 11:18:49,138 | target_network_update_freq: 1024
+2020-06-05 11:18:49,138 | evaluation_criteria: return
+2020-06-05 11:18:49,138 | vf_loss: mse
+2020-06-05 11:18:49,138 | rep_type: default
+2020-06-05 11:18:49,138 | evaluate_lipschitz: True
+2020-06-05 11:18:49,138 | save_params: True
+2020-06-05 11:18:49,138 | visualize: False
+2020-06-05 11:18:49,138 | rep_config: {'rep_type': 'default', 'network_type': 'conv', 'conv_architecture': {'conv_layers': [{'in': 3, 'out': 32, 'kernel': 4, 'stride': 1, 'pad': 1}, {'in': 32, 'out': 16, 'kernel': 4, 'stride': 2, 'pad': 2}]}, 'in_dim': [15, 15, 3], 'out_dim': 32, 'load_params': False, 'train_rep': True, 'path': 'paper_results/collect_two/representations/dqn/best/0_run/0_param_setting/parameters/rep_net'}
+2020-06-05 11:18:49,138 | val_fn_config: {'val_fn_type': 'fc', 'hidden_units': [128, 128], 'path': 'paper_results/collect_two/representations/dqn/best/0_run/0_param_setting/parameters/val_net'}
+2020-06-05 11:18:49,138 | replay: True
+2020-06-05 11:18:49,138 | eval_episodes: 5
+2020-06-05 11:18:49,138 | rewarding_color: red
+2020-06-05 11:18:49,138 | learning_rate: 3e-05
+2020-06-05 11:18:49,138 | id: 0
+2020-06-05 11:18:51,158 | total steps 0, total episodes   0, returns 5.30/5.50/4.50/5.50/10 (mean/median/min/max/num), 5027.25 steps/s
+2020-06-05 11:18:55,113 | total steps 10000, total episodes  20, returns 4.80/5.50/2.50/5.50/10 (mean/median/min/max/num), 2528.62 steps/s
+2020-06-05 11:19:00,120 | total steps 20000, total episodes  40, returns 5.20/5.50/3.50/5.50/10 (mean/median/min/max/num), 1997.29 steps/s
+2020-06-05 11:19:05,790 | total steps 30000, total episodes  60, returns 5.20/5.50/4.50/5.50/10 (mean/median/min/max/num), 1763.61 steps/s
+2020-06-05 11:19:10,332 | total steps 40000, total episodes  80, returns 4.10/5.50/-0.50/5.50/10 (mean/median/min/max/num), 2201.83 steps/s
+2020-06-05 11:19:15,322 | total steps 50000, total episodes 100, returns 4.60/5.00/1.50/5.50/10 (mean/median/min/max/num), 2004.25 steps/s
+2020-06-05 11:19:19,875 | total steps 60000, total episodes 121, returns 5.03/5.50/3.50/5.61/10 (mean/median/min/max/num), 2196.48 steps/s
+2020-06-05 11:19:26,025 | total steps 70000, total episodes 141, returns 4.90/5.50/2.50/5.50/10 (mean/median/min/max/num), 1626.04 steps/s
+2020-06-05 11:19:32,743 | total steps 80000, total episodes 161, returns 4.50/5.50/1.50/5.50/10 (mean/median/min/max/num), 1488.52 steps/s
+2020-06-05 11:19:39,466 | total steps 90000, total episodes 182, returns 5.34/5.50/4.50/5.90/10 (mean/median/min/max/num), 1487.55 steps/s
+2020-06-05 11:19:47,177 | total steps 100000, total episodes 202, returns 5.11/5.50/2.50/5.50/10 (mean/median/min/max/num), 1296.93 steps/s
+2020-06-05 11:19:53,807 | total steps 110000, total episodes 222, returns 5.10/5.50/4.50/5.50/10 (mean/median/min/max/num), 1508.26 steps/s
+2020-06-05 11:19:59,967 | total steps 120000, total episodes 243, returns 4.70/4.50/2.50/5.50/10 (mean/median/min/max/num), 1623.65 steps/s
+2020-06-05 11:20:05,738 | total steps 130000, total episodes 263, returns 5.20/5.50/2.50/5.50/10 (mean/median/min/max/num), 1732.67 steps/s
+2020-06-05 11:20:12,241 | total steps 140000, total episodes 284, returns 4.95/5.50/0.50/5.76/10 (mean/median/min/max/num), 1537.84 steps/s
+2020-06-05 11:20:19,325 | total steps 150000, total episodes 307, returns 5.32/5.50/4.50/5.50/10 (mean/median/min/max/num), 1411.79 steps/s
+2020-06-05 11:20:25,151 | total steps 160000, total episodes 327, returns 4.80/5.50/2.50/5.50/10 (mean/median/min/max/num), 1716.56 steps/s
+2020-06-05 11:20:30,546 | total steps 170000, total episodes 347, returns 4.70/4.50/3.50/5.50/10 (mean/median/min/max/num), 1853.60 steps/s
+2020-06-05 11:20:36,038 | total steps 180000, total episodes 367, returns 5.50/5.50/5.50/5.50/10 (mean/median/min/max/num), 1820.93 steps/s
+2020-06-05 11:20:42,216 | total steps 190000, total episodes 387, returns 5.20/5.50/3.50/5.50/10 (mean/median/min/max/num), 1618.59 steps/s
+2020-06-05 11:20:47,349 | total steps 200000, total episodes 408, returns 5.00/5.50/2.50/5.50/10 (mean/median/min/max/num), 1948.51 steps/s
+2020-06-05 11:20:53,383 | total steps 210000, total episodes 428, returns 5.33/5.50/4.50/5.78/10 (mean/median/min/max/num), 1657.14 steps/s
+2020-06-05 11:21:00,930 | total steps 220000, total episodes 449, returns 5.03/5.50/3.50/5.81/10 (mean/median/min/max/num), 1325.16 steps/s
+2020-06-05 11:21:07,928 | total steps 230000, total episodes 469, returns 5.22/5.50/4.50/5.50/10 (mean/median/min/max/num), 1429.00 steps/s
+2020-06-05 11:21:13,740 | total steps 240000, total episodes 489, returns 5.00/5.50/2.50/5.50/10 (mean/median/min/max/num), 1720.63 steps/s
+2020-06-05 11:21:19,573 | total steps 250000, total episodes 509, returns 5.10/5.50/4.50/5.50/10 (mean/median/min/max/num), 1714.54 steps/s
+2020-06-05 11:21:22,774 | total steps 0, total episodes   0, returns 4.80/5.00/2.50/5.50/10 (mean/median/min/max/num), 3217.46 steps/s
+2020-06-05 11:21:28,200 | total steps 10000, total episodes  20, returns 5.40/5.50/4.50/5.50/10 (mean/median/min/max/num), 1842.96 steps/s
+2020-06-05 11:21:33,849 | total steps 20000, total episodes  40, returns 5.50/5.50/5.50/5.50/10 (mean/median/min/max/num), 1770.36 steps/s
+2020-06-05 11:21:39,316 | total steps 30000, total episodes  60, returns 5.22/5.50/4.50/5.72/10 (mean/median/min/max/num), 1829.16 steps/s
+2020-06-05 11:21:45,730 | total steps 40000, total episodes  80, returns 4.80/5.50/2.50/5.50/10 (mean/median/min/max/num), 1559.17 steps/s
+2020-06-05 11:21:52,497 | total steps 50000, total episodes 101, returns 5.40/5.50/4.50/5.50/10 (mean/median/min/max/num), 1477.94 steps/s
+2020-06-05 11:21:58,478 | total steps 60000, total episodes 122, returns 4.82/5.00/2.50/5.69/10 (mean/median/min/max/num), 1671.93 steps/s
+2020-06-05 11:22:03,980 | total steps 70000, total episodes 142, returns 5.00/5.50/2.50/5.50/10 (mean/median/min/max/num), 1817.71 steps/s
+2020-06-05 11:22:09,433 | total steps 80000, total episodes 163, returns 5.34/5.50/4.50/5.86/10 (mean/median/min/max/num), 1834.09 steps/s
+2020-06-05 11:22:15,516 | total steps 90000, total episodes 183, returns 4.80/5.50/0.50/5.50/10 (mean/median/min/max/num), 1643.82 steps/s
+2020-06-05 11:22:21,379 | total steps 100000, total episodes 203, returns 4.40/4.50/-0.50/5.50/10 (mean/median/min/max/num), 1705.80 steps/s
+2020-06-05 11:22:28,201 | total steps 110000, total episodes 223, returns 5.11/5.50/4.50/5.50/10 (mean/median/min/max/num), 1465.77 steps/s
+2020-06-05 11:22:34,085 | total steps 120000, total episodes 244, returns 5.42/5.50/4.50/5.69/10 (mean/median/min/max/num), 1699.82 steps/s
+2020-06-05 11:22:39,775 | total steps 130000, total episodes 264, returns 4.61/5.50/-0.50/5.62/10 (mean/median/min/max/num), 1757.65 steps/s
+2020-06-05 11:22:45,722 | total steps 140000, total episodes 284, returns 4.92/5.50/2.50/5.68/10 (mean/median/min/max/num), 1681.59 steps/s
+2020-06-05 11:22:52,888 | total steps 150000, total episodes 304, returns 4.50/4.50/2.50/5.50/10 (mean/median/min/max/num), 1395.42 steps/s
+2020-06-05 11:23:00,653 | total steps 160000, total episodes 324, returns 5.20/5.50/3.50/5.50/10 (mean/median/min/max/num), 1287.97 steps/s
+2020-06-05 11:23:07,752 | total steps 170000, total episodes 345, returns 5.00/5.50/1.50/5.50/10 (mean/median/min/max/num), 1408.73 steps/s
+2020-06-05 11:23:14,307 | total steps 180000, total episodes 365, returns 4.50/4.50/1.50/5.50/10 (mean/median/min/max/num), 1525.66 steps/s
+2020-06-05 11:23:20,078 | total steps 190000, total episodes 385, returns 4.60/5.50/1.50/5.54/10 (mean/median/min/max/num), 1732.78 steps/s
+2020-06-05 11:23:26,282 | total steps 200000, total episodes 405, returns 4.71/5.50/2.50/5.62/10 (mean/median/min/max/num), 1611.83 steps/s
+2020-06-05 11:23:32,154 | total steps 210000, total episodes 427, returns 4.72/5.00/2.50/5.69/10 (mean/median/min/max/num), 1703.35 steps/s
+2020-06-05 11:23:37,967 | total steps 220000, total episodes 447, returns 4.90/5.50/2.50/5.50/10 (mean/median/min/max/num), 1720.28 steps/s
+2020-06-05 11:23:43,900 | total steps 230000, total episodes 467, returns 4.30/4.50/-0.50/5.50/10 (mean/median/min/max/num), 1685.69 steps/s
+2020-06-05 11:23:49,939 | total steps 240000, total episodes 487, returns 5.00/5.50/3.50/5.50/10 (mean/median/min/max/num), 1656.06 steps/s
+2020-06-05 11:23:55,851 | total steps 250000, total episodes 507, returns 4.40/5.50/-0.50/5.50/10 (mean/median/min/max/num), 1691.59 steps/s

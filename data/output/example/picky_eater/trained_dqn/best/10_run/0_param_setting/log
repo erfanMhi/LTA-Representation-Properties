@@ -1,0 +1,75 @@
+2020-05-29 18:49:21,886 | exp_name: paper_results/collect_two/trained_dqn/best
+2020-05-29 18:49:21,886 | data_root: /home/han/Projects/plan_rep/data/output
+2020-05-29 18:49:21,886 | device: cpu
+2020-05-29 18:49:21,886 | run: 10
+2020-05-29 18:49:21,886 | param_setting: 0
+2020-05-29 18:49:21,886 | env_name: CollectTwoColorRGB
+2020-05-29 18:49:21,886 | state_dim: (15, 15, 3)
+2020-05-29 18:49:21,886 | action_dim: 4
+2020-05-29 18:49:21,886 | max_steps: 100000
+2020-05-29 18:49:21,886 | log_interval: 10000
+2020-05-29 18:49:21,886 | save_interval: 0
+2020-05-29 18:49:21,886 | eval_interval: 50000
+2020-05-29 18:49:21,886 | num_eval_episodes: 5
+2020-05-29 18:49:21,886 | timeout: 500
+2020-05-29 18:49:21,887 | stats_queue_size: 10
+2020-05-29 18:49:21,887 | tensorboard_logs: True
+2020-05-29 18:49:21,887 | tensorboard_interval: 100
+2020-05-29 18:49:21,887 | converge_window: 10
+2020-05-29 18:49:21,887 | converge_threshold: 0.0001
+2020-05-29 18:49:21,887 | linear_hidden_units: []
+2020-05-29 18:49:21,887 | coord_dim: 2
+2020-05-29 18:49:21,887 | state_norm_coef: 255.0
+2020-05-29 18:49:21,887 | reward_norm_coef: 1.0
+2020-05-29 18:49:21,887 | eval_set_size: 1000
+2020-05-29 18:49:21,887 | retain_tasks: 1
+2020-05-29 18:49:21,887 | agent: DQNAgent
+2020-05-29 18:49:21,887 | decay_epsilon: False
+2020-05-29 18:49:21,887 | epsilon: 0.1
+2020-05-29 18:49:21,887 | epsilon_start: None
+2020-05-29 18:49:21,887 | epsilon_end: None
+2020-05-29 18:49:21,887 | epsilon_schedule_steps: None
+2020-05-29 18:49:21,887 | random_action_prob: None
+2020-05-29 18:49:21,887 | discount: 0.99
+2020-05-29 18:49:21,887 | network_type: flat
+2020-05-29 18:49:21,887 | batch_size: 32
+2020-05-29 18:49:21,887 | use_target_network: True
+2020-05-29 18:49:21,887 | memory_size: 100000
+2020-05-29 18:49:21,887 | optimizer_type: Adam
+2020-05-29 18:49:21,887 | val_net: None
+2020-05-29 18:49:21,887 | target_network_update_freq: 1024
+2020-05-29 18:49:21,887 | evaluation_criteria: return
+2020-05-29 18:49:21,887 | vf_loss: mse
+2020-05-29 18:49:21,887 | rep_type: default
+2020-05-29 18:49:21,887 | evaluate_lipschitz: True
+2020-05-29 18:49:21,887 | save_params: True
+2020-05-29 18:49:21,887 | visualize: False
+2020-05-29 18:49:21,888 | rep_config: {'rep_type': 'default', 'network_type': 'conv', 'conv_architecture': {'conv_layers': [{'in': 3, 'out': 32, 'kernel': 4, 'stride': 1, 'pad': 1}, {'in': 32, 'out': 16, 'kernel': 4, 'stride': 2, 'pad': 2}]}, 'in_dim': [15, 15, 3], 'out_dim': 32, 'load_params': False, 'train_rep': True, 'path': 'paper_results/collect_two/representations/dqn/best/0_run/0_param_setting/parameters/rep_net'}
+2020-05-29 18:49:21,888 | val_fn_config: {'val_fn_type': 'fc', 'hidden_units': [128, 128], 'path': 'paper_results/collect_two/representations/dqn/best/0_run/0_param_setting/parameters/val_net'}
+2020-05-29 18:49:21,888 | replay: True
+2020-05-29 18:49:21,888 | eval_episodes: 5
+2020-05-29 18:49:21,888 | rewarding_color: red
+2020-05-29 18:49:21,888 | learning_rate: 3e-05
+2020-05-29 18:49:21,888 | id: 10
+2020-05-29 18:49:23,771 | total steps 0, total episodes   0, returns 4.60/4.50/1.50/5.50/10 (mean/median/min/max/num), 5391.66 steps/s
+2020-05-29 18:49:27,623 | total steps 10000, total episodes  20, returns 5.03/5.50/2.50/5.77/10 (mean/median/min/max/num), 2595.96 steps/s
+2020-05-29 18:49:31,568 | total steps 20000, total episodes  40, returns 5.30/5.50/4.50/5.50/10 (mean/median/min/max/num), 2535.61 steps/s
+2020-05-29 18:49:35,906 | total steps 30000, total episodes  61, returns 4.94/5.00/3.50/5.88/10 (mean/median/min/max/num), 2305.31 steps/s
+2020-05-29 18:49:40,390 | total steps 40000, total episodes  81, returns 5.22/5.50/4.50/5.66/10 (mean/median/min/max/num), 2230.29 steps/s
+2020-05-29 18:49:44,804 | total steps 50000, total episodes 101, returns 5.10/5.50/4.50/5.50/10 (mean/median/min/max/num), 2265.26 steps/s
+2020-05-29 18:49:49,072 | total steps 60000, total episodes 122, returns 4.65/5.50/-0.00/5.50/10 (mean/median/min/max/num), 2343.08 steps/s
+2020-05-29 18:49:53,221 | total steps 70000, total episodes 142, returns 5.52/5.50/5.50/5.66/10 (mean/median/min/max/num), 2410.58 steps/s
+2020-05-29 18:49:57,444 | total steps 80000, total episodes 162, returns 5.00/5.00/4.50/5.50/10 (mean/median/min/max/num), 2368.19 steps/s
+2020-05-29 18:50:01,580 | total steps 90000, total episodes 182, returns 5.10/5.50/2.50/5.50/10 (mean/median/min/max/num), 2418.12 steps/s
+2020-05-29 18:50:05,679 | total steps 100000, total episodes 203, returns 4.42/5.00/-0.50/5.70/10 (mean/median/min/max/num), 2439.53 steps/s
+2020-05-29 18:50:07,745 | total steps 0, total episodes   0, returns 4.40/5.50/-1.50/5.50/10 (mean/median/min/max/num), 5027.33 steps/s
+2020-05-29 18:50:11,835 | total steps 10000, total episodes  20, returns 4.50/4.50/2.50/5.50/10 (mean/median/min/max/num), 2444.66 steps/s
+2020-05-29 18:50:16,099 | total steps 20000, total episodes  40, returns 5.00/5.50/3.50/5.50/10 (mean/median/min/max/num), 2345.37 steps/s
+2020-05-29 18:50:20,750 | total steps 30000, total episodes  60, returns 5.50/5.50/5.50/5.50/10 (mean/median/min/max/num), 2150.26 steps/s
+2020-05-29 18:50:25,447 | total steps 40000, total episodes  80, returns 4.90/5.50/0.50/5.50/10 (mean/median/min/max/num), 2129.11 steps/s
+2020-05-29 18:50:29,753 | total steps 50000, total episodes 100, returns 5.12/5.50/4.50/5.65/10 (mean/median/min/max/num), 2322.46 steps/s
+2020-05-29 18:50:34,050 | total steps 60000, total episodes 120, returns 4.20/5.00/-0.50/5.50/10 (mean/median/min/max/num), 2327.48 steps/s
+2020-05-29 18:50:38,495 | total steps 70000, total episodes 141, returns 4.91/5.00/3.50/5.61/10 (mean/median/min/max/num), 2250.13 steps/s
+2020-05-29 18:50:42,840 | total steps 80000, total episodes 161, returns 5.22/5.50/3.50/5.69/10 (mean/median/min/max/num), 2301.28 steps/s
+2020-05-29 18:50:47,155 | total steps 90000, total episodes 181, returns 4.50/5.00/2.50/5.50/10 (mean/median/min/max/num), 2317.56 steps/s
+2020-05-29 18:50:51,445 | total steps 100000, total episodes 201, returns 5.00/5.50/2.50/5.50/10 (mean/median/min/max/num), 2331.56 steps/s

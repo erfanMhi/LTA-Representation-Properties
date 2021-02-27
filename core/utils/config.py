@@ -132,6 +132,7 @@ class DQNAgentConfig(Config):
         self.visualize = False
 
         self.activation_config = {'name': 'None'}
+        self.online_property = False
 
     def get_print_attrs(self):
         attrs = dict(self.__dict__)

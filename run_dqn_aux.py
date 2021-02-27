@@ -4,12 +4,13 @@ import argparse
 import core.environment.env_factory as environment
 import core.network.net_factory as network
 import core.network.optimizer as optimizer
+import core.network.activations as activations
 import core.component.replay as replay
 import core.utils.normalizer as normalizer
 import core.component.representation as representation
 import core.component.auxiliary_tasks as auxiliary_tasks
 from core.agent import dqn_aux
-from core.utils import torch_utils, schedule, logger, run_funcs
+from core.utils import torch_utils, schedule, logger, run_funcs, test_funcs
 from experiment.sweeper import Sweeper
 
 
@@ -27,6 +28,7 @@ if __name__ == '__main__':
     cfg = Sweeper(project_root, args.config_file).parse(args.id)
     cfg.device = torch_utils.select_device(args.device)
 
+    cfg.rep_activation_fn = activations.ActvFactory.get_activation_fn(cfg)
     cfg.rep_fn = representation.RepFactory.get_rep_fn(cfg)
     cfg.env_fn = environment.EnvFactory.create_env_fn(cfg)
     cfg.val_fn = network.NetFactory.get_val_fn(cfg)
@@ -44,4 +46,7 @@ if __name__ == '__main__':
 
     # Initializing the agent and running the experiment
     agent = getattr(dqn_aux, cfg.agent)(cfg)
-    run_funcs.run_steps(agent)
+    if cfg.online_property:
+        test_funcs.run_steps_onlineProperty(agent)
+    else:
+        run_funcs.run_steps(agent)

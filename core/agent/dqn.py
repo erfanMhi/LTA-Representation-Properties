@@ -156,6 +156,10 @@ class DQNAgent(base.Agent):
         #           'Specialization: %.5f'
         # self.cfg.logger.info(log_str % (self.total_steps, len(self.episode_rewards), corr))
 
+        # for param in list(self.val_net.parameters()):
+        #     print(param.data.mean(), end=" ")
+        # print()
+
     def visualize(self):
         """
         def get_visualization_segment: states, goal_states, map_coords

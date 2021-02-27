@@ -85,7 +85,7 @@ if __name__ == '__main__':
     # Orthogonality
     test_funcs.test_orthogonality(agent)
 
-    # Interference
+    # Noninterference
     test_funcs.test_noninterference(agent)
     #
     # Decorrelation

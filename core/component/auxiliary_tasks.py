@@ -225,7 +225,7 @@ class RewardPredictor(AuxTask):
         s, a = x
         return self.aux_predictor(s, a)
 
-    def compute_loss(self, transition, phi, nphi, actions_next):
+    def compute_loss(self, transition, phi, nphi, actions_next=None):
         _, action, rewards, _, _ = transition
         prediction = self.forward((phi, action))
         rewards = torch_utils.tensor(np.expand_dims(rewards, axis=1), self.device)

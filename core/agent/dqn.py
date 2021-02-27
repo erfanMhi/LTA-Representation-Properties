@@ -143,6 +143,7 @@ class DQNAgent(base.Agent):
         self.cfg.logger.info(log_str % (self.total_steps, total_episodes, mean, median,
                                         min, max, len(rewards),
                                         elapsed_time))
+        return mean
 
     def log_lipschitz(self):
         lips, ratio_dv_dphi, corr = compute_lipschitz(self.cfg, self.rep_net, self.val_net, self.env)
@@ -200,19 +201,31 @@ class DQNAgent(base.Agent):
         except NotImplementedError:
             return
 
-    def save(self):
+    def save(self, early=False):
         parameters_dir = self.cfg.get_parameters_dir()
-        path = os.path.join(parameters_dir, "rep_net")
+        if early:
+            path = os.path.join(parameters_dir, "rep_net_earlystop")
+        else:
+            path = os.path.join(parameters_dir, "rep_net")
         torch.save(self.rep_net.state_dict(), path)
 
-        path = os.path.join(parameters_dir, "val_net")
+        if early:
+            path = os.path.join(parameters_dir, "val_net_earlystop")
+        else:
+            path = os.path.join(parameters_dir, "val_net")
         torch.save(self.val_net.state_dict(), path)
 
-    def load(self, parameters_dir):
-        path = os.path.join(parameters_dir, "rep_net")
+    def load(self, parameters_dir, early):
+        if early:
+            path = os.path.join(parameters_dir, "rep_net_earlystop")
+        else:
+            path = os.path.join(parameters_dir, "rep_net")
         self.rep_net.load_state_dict(torch.load(path))
 
-        path = os.path.join(parameters_dir, "val_net")
+        if early:
+            path = os.path.join(parameters_dir, "val_net_earlystop")
+        else:
+            path = os.path.join(parameters_dir, "val_net")
         self.val_net.load_state_dict(torch.load(path))
 
         self.targets.rep_net.load_state_dict(self.rep_net.state_dict())

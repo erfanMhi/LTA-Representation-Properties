@@ -581,7 +581,7 @@ def test_trainedVF_interf(agent):
     next_s_all = agent.cfg.state_normalizer(next_s_all)
     action_all = action_all.reshape([-1, 1])
 
-    agent.load(agent.cfg.get_parameters_dir())
+    agent.load(agent.cfg.get_parameters_dir(), agent.cfg.load_early)
 
     all_param = agent.val_net.parameters()
     param_num = 0
@@ -890,13 +890,16 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
         
         if agent.cfg.log_interval and not agent.total_steps % agent.cfg.log_interval:
             if agent.cfg.tensorboard_logs: agent.log_tensorboard()
-            agent.log_file(elapsed_time=agent.cfg.log_interval / (time.time() - t0))
+            mean_return = agent.log_file(elapsed_time=agent.cfg.log_interval / (time.time() - t0))
+            if agent.cfg.save_early is not None and mean_return >= agent.cfg.save_early:
+                agent.save(early=True)
+                agent.cfg.logger.info('Save early-stopping model')
             t0 = time.time()
         
         if agent.cfg.eval_interval and not agent.total_steps % agent.cfg.eval_interval:
             agent.eval_episodes()
             if agent.cfg.visualize:
-                agent.visualize() 
+                agent.visualize()
             if agent.cfg.save_params:
                 agent.save()
             if agent.cfg.evaluate_lipschitz:

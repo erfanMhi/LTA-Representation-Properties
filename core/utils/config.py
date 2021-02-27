@@ -129,6 +129,7 @@ class DQNAgentConfig(Config):
         self.evaluate_sparsity = False
         self.evaluate_regression = False
         self.save_params = False
+        self.save_early = None
         self.visualize = False
 
         self.activation_config = {'name': 'None'}

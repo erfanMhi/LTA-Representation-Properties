@@ -141,9 +141,12 @@ class Laplace(base.Agent):
         repulsive_loss = dot_product - norm_fu - norm_fv + d
         return torch.mean(repulsive_loss)
 
-    def save(self):
+    def save(self, early=False):
         parameters_dir = self.cfg.get_parameters_dir()
-        path = os.path.join(parameters_dir, "laplace")
+        if early:
+            path = os.path.join(parameters_dir, "laplace_earlystop")
+        else:
+            path = os.path.join(parameters_dir, "laplace")
         torch.save(self.rep_net.state_dict(), path)
 
     def load(self, parameters_dir):

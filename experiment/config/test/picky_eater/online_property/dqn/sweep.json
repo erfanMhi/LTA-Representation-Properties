@@ -1,0 +1,66 @@
+{
+    "config_class": "DQNAgentConfig",
+    "fixed_parameters": {
+        "exp_name": "test/picky_eater/online_property/dqn/sweep",
+        "env_name": "CollectTwoColorRGB",
+        "agent": "DQNAgent",
+        "discount": 0.99,
+        "state_norm_coef": 255.0,
+
+        "epsilon": 0.1,
+
+        "rep_config": {
+            "rep_type": "modular",
+            "network_type": "conv",
+            "conv_architecture": {
+                "conv_layers": [
+                   {"in": 3,  "out": 32, "kernel": 4, "stride": 1, "pad": 1},
+                   {"in": 32,  "out": 32, "kernel": 4, "stride": 2, "pad": 2},
+                   {"in": 32,  "out": 16, "kernel": 4, "stride": 2, "pad": 2}
+                ]
+            },
+            "in_dim": [15, 15, 3],
+            "out_dim": 32,
+            "load_params": false,
+            "train_rep": true
+        },
+
+        "val_fn_config": {
+            "val_fn_type": "linear",
+	        "init_type": "xavier"
+        },
+
+        "replay": true,
+        "memory_size": 100000,
+        "batch_size": 32,
+
+        "optimizer_type": "Adam",
+        "use_target_network": true,
+        
+        "max_steps": 1000000,
+        "log_interval": 10000,
+        "eval_interval": 50000,
+        "eval_episodes": 5,
+        "save_interval": 0,
+        "timeout": 500,
+        "stats_queue_size": 100,
+        
+	"distance_path": {"current": "example/picky_eater/trained_dqn/distance_current_states.npy", "action": "example/picky_eater/trained_dqn/distance_actions.npy", "next": "example/picky_eater/trained_dqn/distance_next_states.npy", "reward": "example/picky_eater/trained_dqn/distance_rewards.npy", "terminal": "example/picky_eater/trained_dqn/distance_terminals.npy"},
+ 
+        "tensorboard_logs": false,
+        "save_params": true,
+        "visualize": false,
+        "evaluate_lipschitz": true,
+        "evaluate_distance": true,
+        "evaluate_orthogonality": true,
+        "evaluate_noninterference": true,
+        "evaluate_decorrelation": true,
+        "evaluate_sparsity": true,
+        "evaluate_regression": false
+ 
+    },
+    "sweep_parameters": {
+        "learning_rate": [0.0019531, 0.00048828, 0.00012207],
+	"target_network_update_freq": [512, 1024, 2048]
+    }
+}

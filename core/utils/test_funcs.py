@@ -226,9 +226,13 @@ def dist_difference(base_rep, similar_rep, different_idx):
     diff_rep1 = base_rep[different_idx[:, 0]]
     diff_rep2 = base_rep[different_idx[:, 1]]
     diff_dist = np.linalg.norm(diff_rep1 - diff_rep2, axis=1).mean()
-    prop = (diff_dist - similar_dist) / diff_dist
-    if np.isinf(prop) or np.isnan(prop) or prop < 0:
+
+    if diff_dist == 0:
         prop = 0
+    else:
+        prop = (diff_dist - similar_dist) / diff_dist
+        if np.isinf(prop) or np.isnan(prop) or prop < 0:
+            prop = 0
     return prop
 
 def dist_difference_v2(base_rep, similar_rep, different_idx):
@@ -354,6 +358,9 @@ def test_orthogonality(agent):
         dot_prod = np.matmul(reps, reps.T)
         norm = np.linalg.norm(reps, axis=1).reshape((-1, 1))
         norm_prod = np.matmul(norm, norm.T)
+        if len(np.where(norm_prod==0)[0]) != 0:
+            norm_prod[np.where(norm_prod==0)] += 1e-05
+
         normalized = np.abs(np.divide(dot_prod, norm_prod))
         rho = (normalized.sum() - np.diagonal(normalized).sum()) / (normalized.shape[0] * (normalized.shape[0]-1))
         rhos.append(rho)
@@ -375,6 +382,9 @@ def online_orthogonality(agent, states):
         dot_prod = np.matmul(reps, reps.T)
         norm = np.linalg.norm(reps, axis=1).reshape((-1, 1))
         norm_prod = np.matmul(norm, norm.T)
+        if len(np.where(norm_prod==0)[0]) != 0:
+            norm_prod[np.where(norm_prod==0)] += 1e-05
+
         normalized = np.abs(np.divide(dot_prod, norm_prod))
         rho = (normalized.sum() - np.diagonal(normalized).sum()) / (normalized.shape[0] * (normalized.shape[0]-1))
         rhos.append(rho)
@@ -403,7 +413,12 @@ def test_robustness(agent):
         img_n2 = agent.cfg.state_normalizer(img_n2)
         rep_n1 = agent.rep_net(img_n1)
         rep_n2 = agent.rep_net(img_n2)
-    change = 1 - np.linalg.norm(rep_n1 - rep_n2) / np.linalg.norm(rep_n1)
+
+    rep_norm = np.linalg.norm(rep_n1)
+    if len(np.where(rep_norm == 0)[0]) != 0:
+        rep_norm[np.where(rep_norm == 0)] += 1e-05
+
+    change = 1 - np.linalg.norm(rep_n1 - rep_n2) / rep_norm
 
     with open(os.path.join(agent.cfg.get_parameters_dir(), "../robustness.txt"), "w") as f:
         f.write("Robustness: {:.8f}".format(change))
@@ -419,7 +434,12 @@ def online_robustness(agent, img):
         img_n2 = agent.cfg.state_normalizer(img_n2)
         rep_n1 = agent.rep_net(img_n1)
         rep_n2 = agent.rep_net(img_n2)
-    change = 1 - np.linalg.norm(rep_n1 - rep_n2) / np.linalg.norm(rep_n1)
+
+    rep_norm = np.linalg.norm(rep_n1)
+    if len(np.where(rep_norm == 0)[0]) != 0:
+        rep_norm[np.where(rep_norm == 0)] += 1e-05
+
+    change = 1 - np.linalg.norm(rep_n1 - rep_n2) / rep_norm
     log_str = 'total steps %d, total episodes %3d, ' \
               'Robustness: %.8f/'
     agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), change))
@@ -847,9 +867,12 @@ def online_decorrelation(agent, state_all):
         correlation_matrix[np.tril_indices(dim)] = 0.0
         correlation_matrix = np.abs(correlation_matrix)
         total_correlation = np.sum(np.abs(correlation_matrix))
-        total_off_diag_upper = dim * (dim-1) / 2 # N(N-1)/2
-        average_correlation = total_correlation / total_off_diag_upper
-        decorr = 1 - average_correlation
+        if dim != 0:
+            total_off_diag_upper = dim * (dim-1) / 2 # N(N-1)/2
+            average_correlation = total_correlation / total_off_diag_upper
+            decorr = 1 - average_correlation
+        else: # if all representations are 0, log the worst decorrelation value
+            decorr = 0
     log_str = 'total steps %d, total episodes %3d, ' \
               'Decorrelation: %.8f/'
     agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), decorr))#np.array(rhos).mean()))

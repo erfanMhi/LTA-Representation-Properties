@@ -170,7 +170,10 @@ class DQNAgent(base.Agent):
             states, state_coords, _, _ = segment
 
             states = self.cfg.state_normalizer(states)
-            values = self.val_net(self.rep_net(states)).max(dim=1)[0]
+
+            with torch.no_grad():
+                values = self.val_net(self.rep_net(states)).max(dim=1)[0]
+            
             # a plot with rows = num of goal-states and cols = 1
             fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 6))
             max_x = max(state_coords, key=lambda xy: xy[0])[0]
@@ -310,8 +313,9 @@ class DQNRepDistance(DQNAgent):
         states, state_coords, goal_states, goal_coords = segment
         assert len(states) == len(state_coords)
 
-        f_s = self.rep_net(self.cfg.state_normalizer(states))
-        f_g = self.rep_net(self.cfg.state_normalizer(goal_states))
+        with torch.no_grad():
+            f_s = self.rep_net(self.cfg.state_normalizer(states))
+            f_g = self.rep_net(self.cfg.state_normalizer(goal_states))
 
         # a plot with rows = num of goal-states and cols = 1
         fig, ax = plt.subplots(nrows=len(goal_states), ncols=1, figsize=(6, 6 * len(goal_states)))
@@ -435,7 +439,9 @@ class DQNModelLearning(DQNAgent):
         assert len(states) == len(state_coords)
 
         states = self.cfg.state_normalizer(states)
-        values = self.val_net(self.rep_net(states))[0].max(dim=1)[0]
+        
+        with torch.no_grad():
+            values = self.val_net(self.rep_net(states))[0].max(dim=1)[0]
         # a plot with rows = num of goal-states and cols = 1
         fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 6))
         max_x = max(state_coords, key=lambda xy: xy[0])[0]

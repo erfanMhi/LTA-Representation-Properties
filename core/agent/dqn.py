@@ -143,7 +143,7 @@ class DQNAgent(base.Agent):
         self.cfg.logger.info(log_str % (self.total_steps, total_episodes, mean, median,
                                         min, max, len(rewards),
                                         elapsed_time))
-        return mean
+        return mean, median, min, max
 
     def log_lipschitz(self):
         lips, ratio_dv_dphi, corr = compute_lipschitz(self.cfg, self.rep_net, self.val_net, self.env)

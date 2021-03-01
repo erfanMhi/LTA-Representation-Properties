@@ -53,6 +53,7 @@ class Sweeper(object):
         cfg.id = id
         self.total_combinations = cumulative
         self.seed = cfg.run
+        cfg.seed = cfg.run
         return cfg
 
     def param_setting_from_id(self, idx):

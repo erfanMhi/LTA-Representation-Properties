@@ -5,6 +5,7 @@ from importlib import import_module
 import core.environment.env_factory as environment
 import core.network.net_factory as network
 import core.network.optimizer as optimizer
+import core.network.activations as activations
 import core.component.replay as replay
 import core.component.representation as representation
 import core.component.linear_probing_tasks as linear_probing_tasks
@@ -22,11 +23,12 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     torch_utils.set_one_thread()
-    torch_utils.random_seed(args.id)
+    # torch_utils.random_seed(args.id)
 
     project_root = os.path.abspath(os.path.dirname(__file__))
     cfg = Sweeper(project_root, args.config_file).parse(args.id)
     cfg.device = torch_utils.select_device(args.device)
+    torch_utils.random_seed(cfg.seed)
 
     if cfg.rep_config["load_params"]:
         run_num = int(args.id / cfg.cumulative)
@@ -36,6 +38,7 @@ if __name__ == '__main__':
             print("Run {} doesn't exist. {}".format(args.id, path))
             exit(1)
 
+    cfg.rep_activation_fn = activations.ActvFactory.get_activation_fn(cfg)
     cfg.rep_fn = representation.RepFactory.get_rep_fn(cfg)
     cfg.env_fn = environment.EnvFactory.create_env_fn(cfg)
 
@@ -64,37 +67,32 @@ if __name__ == '__main__':
         raise NotImplementedError
 
     # # linear probing
-    lptask_all = cfg.linearprob_tasks
-    for lptask in lptask_all:
-        if "learning_rate" in lptask.keys(): # Sweeping does not use this block
-            cfg.learning_rate = lptask["learning_rate"]
-        cfg.linearprob_tasks = [lptask]
-        cfg.linear_prob_task = linear_probing_tasks.get_linear_probing_task(cfg)
-        cfg.logger.info("Linear Probing: training {}".format(lptask["task"]))
-        lpagent = linear_probing.linear_probing(parent, cfg)
-        test_funcs.run_linear_probing(lpagent)
-        test_funcs.test_linear_probing(lpagent)
-    cfg.logger.info("Linear Probing Ends")
+    # lptask_all = cfg.linearprob_tasks
+    # for lptask in lptask_all:
+    #     if "learning_rate" in lptask.keys(): # Sweeping does not use this block
+    #         cfg.learning_rate = lptask["learning_rate"]
+    #     cfg.linearprob_tasks = [lptask]
+    #     cfg.linear_prob_task = linear_probing_tasks.get_linear_probing_task(cfg)
+    #     cfg.logger.info("Linear Probing: training {}".format(lptask["task"]))
+    #     lpagent = linear_probing.linear_probing(parent, cfg)
+    #     test_funcs.run_linear_probing(lpagent)
+    #     test_funcs.test_linear_probing(lpagent)
+    # cfg.logger.info("Linear Probing Ends")
 
     # distance
     """ Generate distance plot """
-    # test_funcs.dqn_rep_distance_viz(agent)
+    # # test_funcs.dqn_rep_distance_viz(agent)
     """ Evaluate representation distance """
-    test_funcs.test_dqn_distance(agent)
-
-    # Orthogonality
-    test_funcs.test_orthogonality(agent)
+    # test_funcs.test_dqn_distance(agent)
+    #
+    # # Orthogonality
+    # test_funcs.test_orthogonality(agent)
 
     # Noninterference
     test_funcs.test_noninterference(agent)
+
+    # # Decorrelation
+    # test_funcs.test_decorrelation(agent)
     #
-    # Decorrelation
-    test_funcs.test_decorrelation(agent)
-
-    # Sparsity
-    test_funcs.test_sparsity(agent)
-
-    # # Robustness
-    # agent = dqn.DQNAgent(cfg)
-    # test_funcs.test_robustness(agent)
-
+    # # Sparsity
+    # test_funcs.test_sparsity(agent)

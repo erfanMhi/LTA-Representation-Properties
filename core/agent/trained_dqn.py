@@ -122,10 +122,10 @@ class TrainedDQNAgent(base.Agent):
             next_s = self.trajectory[si+1]
             self.sampled_states.append(state)
             self.sampled_next_states.append(next_s)
-            self.sampled_different.append(self.trajectory[np.random.randint(len(self.trajectory) - 1)]) # remove last state
             self.sampled_actions.append(action)
             self.sampled_rewards.append(reward)
             self.sampled_termins.append(termin)
+            self.sampled_different.append(self.trajectory[np.random.randint(len(self.trajectory) - 1)]) # remove last state
             self.trajectory = []
             self.actions = []
             self.rewards = []
@@ -210,7 +210,8 @@ class RandomAgent(base.Agent):
         self.sampled_actions = []
         self.sampled_rewards = []
         self.sampled_termins = []
-
+        self.sampled_different = []
+    
     def step(self):
         if self.reset is True:
             self.state = self.env.reset()
@@ -254,6 +255,7 @@ class RandomAgent(base.Agent):
             self.sampled_actions.append(action)
             self.sampled_rewards.append(reward)
             self.sampled_termins.append(termin)
+            self.sampled_different.append(self.trajectory[np.random.randint(len(self.trajectory) - 1)]) # remove last state
             self.trajectory = []
             self.actions = []
             self.rewards = []

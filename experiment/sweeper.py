@@ -52,7 +52,8 @@ class Sweeper(object):
         cfg.data_root = os.path.join(self.project_root, 'data/output')
         cfg.id = id
         self.total_combinations = cumulative
-        self.seed = id
+        self.seed = cfg.run
+        cfg.seed = cfg.run
         return cfg
 
     def param_setting_from_id(self, idx):

@@ -22,11 +22,12 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     torch_utils.set_one_thread()
-    torch_utils.random_seed(args.id)
+    # torch_utils.random_seed(args.id)
 
     project_root = os.path.abspath(os.path.dirname(__file__))
     cfg = Sweeper(project_root, args.config_file).parse(args.id)
     cfg.device = torch_utils.select_device(args.device)
+    torch_utils.random_seed(cfg.seed)
 
     cfg.rep_activation_fn = activations.ActvFactory.get_activation_fn(cfg)
     cfg.rep_fn = representation.RepFactory.get_rep_fn(cfg)

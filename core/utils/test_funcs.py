@@ -85,6 +85,23 @@ def test_input_changeNoise(agent):
     with open(os.path.join(agent.cfg.get_parameters_dir(), "../denoise.txt"), "w") as f:
         f.write("Random representation baseline. Change {:.8f}".format(diff))
 
+def generate_distance_datasets(cfg):
+
+    datasets = []
+    for distance_path in cfg.distance_paths:
+        base_obs = np.load(os.path.join(cfg.data_root, distance_path["current"]))
+        similar_obs = np.load(os.path.join(cfg.data_root, distance_path["next"]))
+        actions = np.load(os.path.join(cfg.data_root, distance_path["action"]))
+        rewards = np.load(os.path.join(cfg.data_root, distance_path["reward"]))
+        terminal = np.load(os.path.join(cfg.data_root, distance_path["terminal"]))
+        samples = len(base_obs)
+        different_idx = np.random.randint(samples, size=samples*2).reshape((samples, 2))
+        label = None if 'label' not in distance_path.keys() else distance_path["label"]
+        datasets.append((base_obs, similar_obs, different_idx, actions, rewards, terminal, label))
+    
+    return datasets
+
+
 def generate_distance_dataset(cfg):
     # base_obs = np.load(os.path.join(cfg.data_root, cfg.distance_path["current"].replace("distance_current_states.npy", "distance_current_states_sameEP.npy")))
     # similar_obs = np.load(os.path.join(cfg.data_root, cfg.distance_path["next"].replace("distance_next_states.npy", "distance_next_states_sameEP.npy")))
@@ -284,7 +301,7 @@ def test_dqn_distance(agent):
           .format(agent.cfg.learning_rate, prop))
     return
 
-def online_distance(agent, base_obs, similar_obs, different_idx):
+def online_distance(agent, base_obs, similar_obs, different_idx, label=None):
     """
     Dynamic Awareness
     """
@@ -293,9 +310,14 @@ def online_distance(agent, base_obs, similar_obs, different_idx):
         similar_rep = agent.rep_net(agent.cfg.state_normalizer(similar_obs))
     
     prop = dist_difference(base_rep, similar_rep, different_idx)
-    log_str = 'total steps %d, total episodes %3d, ' \
+    if label is None:
+        log_str = 'total steps %d, total episodes %3d, ' \
               'Distance: %.8f/'
-    agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), prop))
+        agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), prop))
+    else:
+        log_str = 'total steps %d, total episodes %3d, ' \
+              '%s Distance: %.8f/'
+        agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, prop))
 
 def run_linear_probing(agent):
     env = agent.env
@@ -369,7 +391,7 @@ def test_orthogonality(agent):
     with open(os.path.join(agent.cfg.get_parameters_dir(), "../orthogonality.txt"), "w") as f:
         f.write("Orthogonality: {:.8f}".format(rho))
 
-def online_orthogonality(agent, states):
+def online_orthogonality(agent, states, label):
     states = agent.cfg.state_normalizer(states)
     rhos = []
     for i in range(10):
@@ -390,10 +412,15 @@ def online_orthogonality(agent, states):
         rhos.append(rho)
         # rho = np.sum(reps1 * reps2, axis=1).mean() / (np.linalg.norm(reps1, axis=1).mean() * np.linalg.norm(reps2, axis=1).mean())
     rho = 1 - np.array(rhos).mean()
-    log_str = 'total steps %d, total episodes %3d, ' \
+    if label is None:
+        log_str = 'total steps %d, total episodes %3d, ' \
               'Orthogonality: %.8f/'
-    agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), rho))
-
+        agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), rho))
+    else:
+        log_str = 'total steps %d, total episodes %3d, ' \
+              '%s Orthogonality: %.8f/'
+        agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, rho))
+ 
 
 def test_robustness(agent):
     rs = np.random.RandomState(0)
@@ -444,7 +471,7 @@ def online_robustness(agent, img):
               'Robustness: %.8f/'
     agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), change))
 
-def online_sparsity(agent, img):
+def online_sparsity(agent, img, label):
     
     with torch.no_grad():
         img = agent.cfg.state_normalizer(img)
@@ -469,11 +496,14 @@ def online_sparsity(agent, img):
     num_f = rep.shape[1]
     instance_sparsity = (feature_inact / num_f).mean()
     
-    log_str = 'total steps %d, total episodes %3d, ' \
+    if label is None:
+        log_str = 'total steps %d, total episodes %3d, ' \
               'Instance Sparsity: %.8f, Lifetime Sparsity: %.8f'
-    
-    agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), instance_sparsity, lifetime_sparsity))
-
+        agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), instance_sparsity, lifetime_sparsity))
+    else: 
+        log_str = 'total steps %d, total episodes %3d, ' \
+              '%s Instance Sparsity: %.8f, %s Lifetime Sparsity: %.8f'
+        agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, instance_sparsity, label, lifetime_sparsity))
 
 def test_sparsity(agent):
     img, _, _, _, _, _ = generate_distance_dataset(agent.cfg)
@@ -766,7 +796,7 @@ def test_noninterference(agent):
         f.write("Noninterference: {:.8f}".format(np.array(rhos).mean()))
 
 
-def online_noninterference(agent, state_all, next_s_all, action_all, reward_all, terminal_all):
+def online_noninterference(agent, state_all, next_s_all, action_all, reward_all, terminal_all, label):
     
     def loss(val_net, rep_net, states, actions, next_states, rewards, terminals):
         q = val_net(rep_net(states))[np.array(range(len(actions))), actions[:, 0]]
@@ -826,10 +856,16 @@ def online_noninterference(agent, state_all, next_s_all, action_all, reward_all,
 
     agent.val_net.zero_grad()
     agent.rep_net.zero_grad()
-    log_str = 'total steps %d, total episodes %3d, ' \
-              'Noninterference: %.8f/'
-    agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), np.array(rhos).mean()))
 
+    if label is None:
+        log_str = 'total steps %d, total episodes %3d, ' \
+                  'Noninterference: %.8f/'
+        agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), np.array(rhos).mean()))
+    else:
+        log_str = 'total steps %d, total episodes %3d, ' \
+                  '%s Noninterference: %.8f/'
+        agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, np.array(rhos).mean()))
+ 
 def test_decorrelation(agent):
     state_all, next_s_all, _, action_all, reward_all, terminal_all = generate_distance_dataset(agent.cfg)
     with torch.no_grad():
@@ -854,7 +890,7 @@ def test_decorrelation(agent):
     with open(os.path.join(agent.cfg.get_parameters_dir(), "../decorrelation.txt"), "w") as f:
         f.write("Decorrelation: {:.8f}".format(np.array(decorr).mean()))
 
-def online_decorrelation(agent, state_all):
+def online_decorrelation(agent, state_all, label):
     with torch.no_grad():
         representations = agent.rep_net(agent.cfg.state_normalizer(state_all)).numpy()
         # remove dead features
@@ -873,9 +909,16 @@ def online_decorrelation(agent, state_all):
             decorr = 1 - average_correlation
         else: # if all representations are 0, log the worst decorrelation value
             decorr = 0
-    log_str = 'total steps %d, total episodes %3d, ' \
-              'Decorrelation: %.8f/'
-    agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), decorr))#np.array(rhos).mean()))
+
+    if label is None:
+        log_str = 'total steps %d, total episodes %3d, ' \
+                  'Decorrelation: %.8f/'
+        agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), decorr))#np.array(rhos).mean()))
+    else:
+        log_str = 'total steps %d, total episodes %3d, ' \
+                  '%s Decorrelation: %.8f/'
+        agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, decorr))#np.array(rhos).mean()))
+
 
 def run_steps_onlineProperty(agent): # We should add sparsity and regression 
     """
@@ -884,7 +927,8 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
 
     t0 = time.time()
     agent.populate_returns()
-    state_all, next_s_all, different_idx, action_all, reward_all, terminal_all = generate_distance_dataset(agent.cfg)
+    # state_all, next_s_all, different_idx, action_all, reward_all, terminal_all = generate_distance_dataset(agent.cfg)
+    datasets = generate_distance_datasets(agent.cfg)
     early_model_saved = False
 
     while True:
@@ -908,52 +952,54 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
                 agent.save()
             if agent.cfg.evaluate_lipschitz:
                 agent.log_lipschitz()
-            if agent.cfg.evaluate_distance:
-                online_distance(agent, state_all, next_s_all, different_idx)
-            if agent.cfg.evaluate_orthogonality:
-                online_orthogonality(agent, state_all)
-            if agent.cfg.evaluate_noninterference:
-                online_noninterference(agent, state_all, next_s_all, action_all, reward_all, terminal_all)
-            if agent.cfg.evaluate_decorrelation:
-                online_decorrelation(agent, state_all)
-            if agent.cfg.evaluate_sparsity:
-                online_sparsity(agent, state_all)
-            if agent.cfg.evaluate_regression:
-                
-                if agent.cfg.linear_probing_parent == "LaplaceEvaluate":
-                    parent = import_module("core.agent.laplace")
-                    parent = getattr(parent, "LaplaceEvaluate")
-                    eval_agent = laplace.LaplaceEvaluate(agent.cfg)
-                elif agent.cfg.linear_probing_parent == "DQNAgent":
-                    cfg = agent.cfg
-                    #cfg.vf_loss_fn = optimizer.OptFactory.get_vf_loss_fn(cfg)
-                    #cfg.vf_constr_fn = optimizer.OptFactory.get_constr_fn(cfg)
-                    #cfg.eps_schedule = schedule.ScheduleFactory.get_eps_schedule(cfg)
-                    parent = import_module("core.agent.dqn")
-                    parent = getattr(parent, "DQNAgent")
-                    #eval_agent = dqn.DQNRepDistance(cfg)
-                else:
-                    raise NotImplementedError
+            for dataset in datasets:
+                state_all, next_s_all, different_idx, action_all, reward_all, terminal_all, label = dataset
+                if agent.cfg.evaluate_distance:
+                    online_distance(agent, state_all, next_s_all, different_idx, label)
+                if agent.cfg.evaluate_orthogonality:
+                    online_orthogonality(agent, state_all, label)
+                if agent.cfg.evaluate_noninterference:
+                    online_noninterference(agent, state_all, next_s_all, action_all, reward_all, terminal_all, label)
+                if agent.cfg.evaluate_decorrelation:
+                    online_decorrelation(agent, state_all, label)
+                if agent.cfg.evaluate_sparsity:
+                    online_sparsity(agent, state_all, label)
+#                 if agent.cfg.evaluate_regression:
+                    
+                    # if agent.cfg.linear_probing_parent == "LaplaceEvaluate":
+                        # parent = import_module("core.agent.laplace")
+                        # parent = getattr(parent, "LaplaceEvaluate")
+                        # eval_agent = laplace.LaplaceEvaluate(agent.cfg)
+                    # elif agent.cfg.linear_probing_parent == "DQNAgent":
+                        # cfg = agent.cfg
+                        # #cfg.vf_loss_fn = optimizer.OptFactory.get_vf_loss_fn(cfg)
+                        # #cfg.vf_constr_fn = optimizer.OptFactory.get_constr_fn(cfg)
+                        # #cfg.eps_schedule = schedule.ScheduleFactory.get_eps_schedule(cfg)
+                        # parent = import_module("core.agent.dqn")
+                        # parent = getattr(parent, "DQNAgent")
+                        # #eval_agent = dqn.DQNRepDistance(cfg)
+                    # else:
+                        # raise NotImplementedError
 
-                # # linear probing
-                lptask_all = cfg.linearprob_tasks
-                lr = cfg.learning_rate
+                    # # # linear probing
+                    # lptask_all = cfg.linearprob_tasks
+                    # lr = cfg.learning_rate
 
-                for lptask in lptask_all:
-                    if "learning_rate" in lptask.keys(): # Sweeping does not use this block
-                        cfg.learning_rate = lptask["learning_rate"]
-                    cfg.linearprob_tasks = [lptask]
-                    cfg.linear_prob_task = linear_probing_tasks.get_linear_probing_task(cfg)
-                    agent.cfg.logger.info("Linear Probing: training {}".format(lptask["task"]))
-                    lpagent = linear_probing.linear_probing(parent, cfg)
-                    run_linear_probing(lpagent)
-                    test_linear_probing(lpagent)
-                
-                cfg.learning_rate = lr
-                cfg.linearprob_tasks = lptask_all
-                del cfg.linear_prob_task
+                    # for lptask in lptask_all:
+                        # if "learning_rate" in lptask.keys(): # Sweeping does not use this block
+                            # cfg.learning_rate = lptask["learning_rate"]
+                        # cfg.linearprob_tasks = [lptask]
+                        # cfg.linear_prob_task = linear_probing_tasks.get_linear_probing_task(cfg)
+                        # agent.cfg.logger.info("Linear Probing: training {}".format(lptask["task"]))
+                        # lpagent = linear_probing.linear_probing(parent, cfg)
+                        # run_linear_probing(lpagent)
+                        # test_linear_probing(lpagent)
+                    
+                    # cfg.learning_rate = lr
+                    # cfg.linearprob_tasks = lptask_all
+                    # del cfg.linear_prob_task
 
-                agent.cfg.logger.info("Linear Probing Ends")
+                    # agent.cfg.logger.info("Linear Probing Ends")
             
             t0 = time.time()
         

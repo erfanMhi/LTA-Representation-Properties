@@ -24,22 +24,29 @@ def load_info(paths, param, key):
         all_rt[i["label"]] = res
     return all_rt
 
-def load_return(paths, total_param, start_param):
+# def load_return(paths, total_param, start_param):
+def load_return(paths, setting_list):
     all_rt = {}
     for i in paths:
         path = i["control"]
         # print("Loading returns from", path)
-        returns = extract_return_all(path, total_param, start_param)
+        returns = extract_return_all(path, setting_list)#total_param, start_param)
         all_rt[i["label"]] = returns
     return all_rt
 
-def draw_curve(all_res, ax, label, color):
+def draw_curve(all_res, ax, label, color=None):
     mu = all_res.mean(axis=0)
     std = all_res.std(axis=0)
     # ste = std / np.sqrt(len(std))
     ste = std / np.sqrt(all_res.shape[0])
-    ax.plot(mu, label=label, color=color)
-    ax.fill_between(list(range(len(mu))), mu-ste*2, mu+ste*2, color=color, alpha=0.1, linewidth=0.)
+    if color is None:
+        ax.plot(mu, label=label)
+        ax.fill_between(list(range(len(mu))), mu - ste * 2, mu + ste * 2, alpha=0.1, linewidth=0.)
+    else:
+        ax.plot(mu, label=label, color=color)
+        ax.fill_between(list(range(len(mu))), mu-ste*2, mu+ste*2, color=color, alpha=0.1, linewidth=0.)
+    print(label, "auc =", np.sum(mu))
+    return mu
 
 def extract_from_single_run(file, key):
     with open(file, "r") as f:
@@ -97,17 +104,24 @@ def extract_from_setting(find_in, setting, key="return", final_only=False):
                 all_runs[int(file.split("_run")[0].split("/")[-1])] = res
     return all_runs
 
-def extract_return_all(path, total=None, start=0):
-    if total is None:
-        all_param = os.listdir(path+"/0_run")
+# def extract_return_all(path, total=None, start=0):
+#     if total is None:
+#         all_param = os.listdir(path + "/0_run")
+#         setting_list = []
+#         for p in all_param:
+#             idx = int(p.split("_param")[0])
+#             setting_list.append(idx)
+#         setting_list.sort()
+#     else:
+#         setting_list = list(range(start, total))
+def extract_return_all(path, setting_list):
+    if setting_list is None:
+        all_param = os.listdir(path + "/0_run")
         setting_list = []
         for p in all_param:
             idx = int(p.split("_param")[0])
             setting_list.append(idx)
         setting_list.sort()
-    else:
-        setting_list = list(range(start, total))
-
     all_sets = {}
     for setting in setting_list:
         all_sets[setting] = extract_from_setting(path, setting)

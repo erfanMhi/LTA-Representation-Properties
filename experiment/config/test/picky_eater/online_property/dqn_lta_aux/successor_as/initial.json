@@ -1,12 +1,12 @@
 {
-    "config_class": "DQNAgentConfig",
+    "config_class": "DQNAuxAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test/picky_eater/online_property/dqn_lta/sweep",
+        "exp_name": "test/picky_eater/online_property/dqn_lta_aux/successor_as/initial",
         "env_name": "CollectTwoColorRGB",
-        "agent": "DQNAgent",
+        "agent": "DQNAuxSuccessorAgent",
         "discount": 0.99,
         "state_norm_coef": 255.0,
-	
+
         "epsilon": 0.1,
 
         "rep_config": {
@@ -25,6 +25,11 @@
             "train_rep": true
         },
 
+        "val_fn_config": {
+            "val_fn_type": "linear",
+            "init_type": "lta"
+         },
+
 	"activation_config": {
             "name": "LTA",
             "input": 32,
@@ -34,17 +39,30 @@
             "bound_low": -20
         },
 
-        "val_fn_config": {
-            "val_fn_type": "linear",
-	    "init_type": "lta"
-        },
+
+        "aux_config": [
+            {
+            "aux_fn_type":  "fc",
+            "aux_in_dim": 640,
+            "aux_out_dim": 32,
+            "hidden_units": [128, 128],
+            "aux_task": "successor_as",
+            "successor_lmbda":  0.9},
+            {
+            "aux_fn_type":  "linear",
+            "aux_in_dim": 640,
+            "aux_out_dim": 1,
+            "aux_task": "reward_predictor"
+            }
+        ],
 
         "replay": true,
-        "memory_size": 100000,
+        "memory_size": 10000,
         "batch_size": 32,
 
         "optimizer_type": "Adam",
         "use_target_network": true,
+        "target_network_update_freq": 2048,
         
         "max_steps": 1000000,
         "log_interval": 10000,
@@ -66,10 +84,9 @@
         "evaluate_noninterference": true,
         "evaluate_decorrelation": true,
         "evaluate_sparsity": true,
-        "evaluate_regression": false
+        "evaluate_regression": false 
     },
-    "sweep_parameters": {
-        "learning_rate": [0.0003, 0.0001, 0.00003, 0.00001],
-	"target_network_update_freq": [512, 1024, 2048]
+   "sweep_parameters": {
+        "learning_rate": [0.00003]
     }
 }

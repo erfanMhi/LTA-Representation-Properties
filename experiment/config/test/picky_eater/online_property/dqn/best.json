@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test/picky_eater/online_property/dqn_lta/sweep",
+        "exp_name": "test/picky_eater/online_property/dqn/sweep",
         "env_name": "CollectTwoColorRGB",
         "agent": "DQNAgent",
         "discount": 0.99,
@@ -25,15 +25,6 @@
             "train_rep": true
         },
 
-	"activation_config": {
-            "name": "LTA",
-            "input": 32,
-            "tile": 20,
-            "eta": 2.0,
-            "bound_high": 20,
-            "bound_low": -20
-        },
-
         "val_fn_config": {
             "val_fn_type": "linear",
 	    "init_type": "lta"
@@ -45,7 +36,8 @@
 
         "optimizer_type": "Adam",
         "use_target_network": true,
-        
+        "target_network_update_freq": 2048,
+
         "max_steps": 1000000,
         "log_interval": 10000,
         "eval_interval": 10000,
@@ -69,7 +61,6 @@
         "evaluate_regression": false
     },
     "sweep_parameters": {
-        "learning_rate": [0.0003, 0.0001, 0.00003, 0.00001],
-	"target_network_update_freq": [512, 1024, 2048]
+        "learning_rate": [0.00003]    
     }
 }

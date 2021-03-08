@@ -944,8 +944,8 @@ def online_lipschitz(agent, state_all, label=None):
                     diff_v[idx] = torch.abs(vi - vj).max().item() # for lipschitz
                     diff_phi[idx] = np.linalg.norm((phi_i - phi_j).numpy())  # for lipschitz
 
-                    diff_v_all.append(torch.abs(vi - vj).max().item()) # for diversity
-                    diff_phi_all.append(np.linalg.norm((phi_i - phi_j).numpy())) # for diversity
+                    diff_v_all.append(torch.abs(vi - vj).max().item()) # for specialization
+                    diff_phi_all.append(np.linalg.norm((phi_i - phi_j).numpy())) # for specialization
 
                     idx += 1
 
@@ -982,14 +982,14 @@ def online_lipschitz(agent, state_all, label=None):
                   'Lipschitz: %.3f/%.5f/%.5f/%.5f/%.5f (upper/mean/median/min/max)'
         agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), lipschitz_upper, mean, median, min, max))
         log_str = 'total steps %d, total episodes %3d, ' \
-                  'Diversity: %.5f'
+                  'Specialization: %.5f'
         agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), normalized_div))
     else:
         log_str = 'total steps %d, total episodes %3d, ' \
                   '%s Lipschitz: %.3f/%.5f/%.5f/%.5f/%.5f (upper/mean/median/min/max)'
         agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, lipschitz_upper, mean, median, min, max))
         log_str = 'total steps %d, total episodes %3d, ' \
-                  '%s Diversity: %.5f'
+                  '%s Specialization: %.5f'
         agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, normalized_div))
 
 def run_steps_onlineProperty(agent): # We should add sparsity and regression 
@@ -1024,7 +1024,7 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
                 agent.save()
             for dataset in datasets:
                 state_all, next_s_all, different_idx, action_all, reward_all, terminal_all, label = dataset
-                if agent.cfg.evaluate_lipschitz or agent.cfg.evaluate_diversity:
+                if agent.cfg.evaluate_lipschitz or agent.cfg.evaluate_specialization:
                     online_lipschitz(agent, state_all, label)
                     # agent.log_lipschitz()
                 if agent.cfg.evaluate_distance:

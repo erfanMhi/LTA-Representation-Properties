@@ -918,6 +918,7 @@ def eval_noninterference(agent, param_num, state, next_s, action, reward, termin
 #                   '%s Decorrelation: %.8f/'
 #         agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, decorr))#np.array(rhos).mean()))
 
+
 def online_lipschitz(agent, state_all, label=None):
     try:
         ratio_dv_dphi_all = []
@@ -944,7 +945,7 @@ def online_lipschitz(agent, state_all, label=None):
                     diff_phi[idx] = np.linalg.norm((phi_i - phi_j).numpy())  # for lipschitz
 
                     diff_v_all.append(torch.abs(vi - vj).max().item()) # for specialization
-                    diff_phi_all.append(np.linalg.norm((phi_i - phi_j).numpy())) # for specialization
+                    diff_phi_all.append(diff_phi[idx]) # for specialization
 
                     idx += 1
 
@@ -956,12 +957,18 @@ def online_lipschitz(agent, state_all, label=None):
         diff_phi_all = np.array(diff_phi_all)
         max_dv = diff_v_all.max()
         max_dphi = diff_phi_all.max()
-        normalized_dv = diff_v_all / max_dv
-        normalized_dphi = diff_phi_all / max_dphi
-        if len(np.where(normalized_dphi==0)[0]) != 0:
-            normalized_dphi[np.where(normalized_dphi==0)] += 1e-05
-        if len(np.where(diff_phi_all==0)[0]) != 0:
-            diff_phi_all[np.where(diff_phi_all==0)] += 1e-05
+        normalized_dv = diff_v_all / max_dv 
+        normalized_dphi = diff_phi_all / max_dphi 
+        
+        # Removing the indexes with zero value of representation difference
+        nonzero_idx = normalized_dphi!=0
+        normalized_dv = normalized_dv[nonzero_idx]
+        normalized_dphi = normalized_dphi[nonzero_idx]
+
+#         if len(np.where(normalized_dphi==0)[0]) != 0:
+            # normalized_dphi[np.where(normalized_dphi==0)] += 1e-05
+        # if len(np.where(diff_phi_all==0)[0]) != 0:
+            # diff_phi_all[np.where(diff_phi_all==0)] += 1e-05
 
         normalized_div = 1 - np.clip(normalized_dv / normalized_dphi, 0, 1).mean() # 1 - specialization
         # divs = np.clip(normalized_dv / normalized_dphi, 0, np.inf)

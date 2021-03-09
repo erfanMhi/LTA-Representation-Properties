@@ -124,8 +124,9 @@ class DQNAgentConfig(Config):
         self.evaluate_lipschitz = False
         self.evaluate_distance = False
         self.evaluate_orthogonality = False
-        self.evaluate_noninterference = False
-        self.evaluate_decorrelation = False
+        self.evaluate_interference = False
+        # self.evaluate_decorrelation = False
+        self.evaluate_diversity = False
         self.evaluate_sparsity = False
         self.evaluate_regression = False
         self.save_params = False

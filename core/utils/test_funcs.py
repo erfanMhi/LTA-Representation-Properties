@@ -964,7 +964,7 @@ def online_lipschitz(agent, state_all, label=None):
         if len(np.where(diff_phi_all==0)[0]) != 0:
             diff_phi_all[np.where(diff_phi_all==0)] += 1e-05
 
-        normalized_div = np.clip(normalized_dv / normalized_dphi, 0, 1).mean()
+        normalized_div = 1 - np.clip(normalized_dv / normalized_dphi, 0, 1).mean() # 1 - specialization
         # divs = np.clip(normalized_dv / normalized_dphi, 0, np.inf)
 
         lips = agent.val_net.compute_lipschitz_upper()
@@ -982,14 +982,14 @@ def online_lipschitz(agent, state_all, label=None):
                   'Lipschitz: %.3f/%.5f/%.5f/%.5f/%.5f (upper/mean/median/min/max)'
         agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), lipschitz_upper, mean, median, min, max))
         log_str = 'total steps %d, total episodes %3d, ' \
-                  'Specialization: %.5f'
+                  'Diversity: %.5f/'
         agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), normalized_div))
     else:
         log_str = 'total steps %d, total episodes %3d, ' \
                   '%s Lipschitz: %.3f/%.5f/%.5f/%.5f/%.5f (upper/mean/median/min/max)'
         agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, lipschitz_upper, mean, median, min, max))
         log_str = 'total steps %d, total episodes %3d, ' \
-                  '%s Specialization: %.5f'
+                  '%s Diversity: %.5f/'
         agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, normalized_div))
 
 def run_steps_onlineProperty(agent): # We should add sparsity and regression 
@@ -1024,7 +1024,7 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
                 agent.save()
             for dataset in datasets:
                 state_all, next_s_all, different_idx, action_all, reward_all, terminal_all, label = dataset
-                if agent.cfg.evaluate_lipschitz or agent.cfg.evaluate_specialization:
+                if agent.cfg.evaluate_lipschitz or agent.cfg.evaluate_diversity:
                     online_lipschitz(agent, state_all, label)
                     # agent.log_lipschitz()
                 if agent.cfg.evaluate_distance:

@@ -1,5 +1,5 @@
 import matplotlib
-cmap = matplotlib.cm.get_cmap('cool')
+cmap = matplotlib.cm.get_cmap('hsv')
 
 target_keywords = {
     "decorrelation.txt": "Decorrelation:",
@@ -397,5 +397,26 @@ gh_etaStudy_online = [
     {"label": "DQN+LTA eta=0.8",
      "control": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.8_best/",
      },
-
 ]
+
+
+# ------------------------- Picky Eater Environment --------------------
+
+dqn_lta_learn_sweep = [
+    {"label": "DQN+LTA",
+     "control": "data/output/test/picky_eater/online_property/dqn_lta/sweep",
+     },
+    ]
+
+dqn_lta_1_learn_sweep = [
+    {"label": "DQN+LTA+1",
+     "control": "data/output/test/picky_eater/online_property/dqn_lta_1/sweep",
+     },
+    ]
+
+
+dqn_learn_sweep = [
+    {"label": "DQN",
+     "control": "data/output/test/picky_eater/online_property/dqn/sweep",
+     },
+    ]

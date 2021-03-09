@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAuxAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test/gridhard/online_property/dqn_aux/freq8/aux_control/sweep_1g",
+        "exp_name": "test/gridhard/online_property/dqn_aux/freq8/aux_control/sweep_1g_2",
         "env_name": "GridHardRGB",
         "agent": "DQNAuxSuccessorAgent",
         "discount": 0.99,
@@ -52,7 +52,7 @@
 
         "max_steps": 300000,
         "log_interval": 10000,
-        "eval_interval": 50000,
+        "eval_interval": 10000,
         "eval_episodes": 5,
         "save_interval": 0,
         "timeout": 100,
@@ -68,11 +68,11 @@
         "evaluate_distance": true,
         "evaluate_orthogonality": true,
         "evaluate_noninterference": true,
-        "evaluate_decorrelation": true,
+        "evaluate_diversity": true,
         "evaluate_sparsity": true,
-        "distance_path": {"current": "../dataset/gridhard/random_dqn/distance_current_states.npy", "action": "../dataset/gridhard/random_dqn/distance_actions.npy", "next": "../dataset/gridhard/random_dqn/distance_next_states.npy", "reward": "../dataset/gridhard/random_dqn/distance_rewards.npy", "terminal": "../dataset/gridhard/random_dqn/distance_terminals.npy"}
+        "distance_paths": [{"current": "../dataset/gridhard/random_dqn/distance_current_states.npy", "action": "../dataset/gridhard/random_dqn/distance_actions.npy", "next": "../dataset/gridhard/random_dqn/distance_next_states.npy", "reward": "../dataset/gridhard/random_dqn/distance_rewards.npy", "terminal": "../dataset/gridhard/random_dqn/distance_terminals.npy"}]
     },
     "sweep_parameters": {
-        "learning_rate": [0.0003, 0.0001, 0.00003, 0.00001]
+        "learning_rate": [0.003, 0.001]
     }
 }

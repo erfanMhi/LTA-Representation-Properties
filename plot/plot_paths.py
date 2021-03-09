@@ -1,5 +1,15 @@
 import matplotlib
-cmap = matplotlib.cm.get_cmap('cool')
+
+def cmap(idx, total):
+    c_default = ['#377eb8', '#ff7f00', '#4daf4a',
+                 '#f781bf', '#a65628', '#984ea3',
+                 '#999999', '#e41a1c', '#dede00']
+    if idx < len(c_default):
+        return c_default[idx]
+    else:
+        getc = matplotlib.cm.get_cmap('cool')
+        return getc(float(idx - len(c_default))/(total- len(c_default)))
+
 
 target_keywords = {
     "decorrelation.txt": "Decorrelation:",
@@ -32,10 +42,6 @@ violin_colors = {
     "DQN+AuxControl1g": "C0",
     "DQN+AuxControl5g": "C9",
     "DQN+Reward": "C10",
-
-    "Sparse0.1": "C2",
-    "Sparse0.2": "springgreen",
-    "Sparse0.4": "lightgreen",
 
     "DQN+LTA": "C2",
     "DQN+LTA(no target)": "springgreen",

@@ -26,13 +26,15 @@ print("Change dir to", os.getcwd())
 
 def learning_curve(all_paths_dict, title, total_param=None, start_param=0):
     labels = [i["label"] for i in all_paths_dict]
-    control = load_return(all_paths_dict, total_param, start_param)
+    control = load_return(all_paths_dict, total_param)#, start_param)
     fig, axs = plt.subplots(nrows=1, ncols=len(labels), figsize=(30, 4))
     for idx, label in enumerate(labels):
+        print("------", label, "------")
         all_params = control[label]
         for param, returns in all_params.items():
             returns = arrange_order(returns)
-            draw_curve(returns, axs[idx], param, cmap(float(param)/len(list(all_params.keys()))))
+            # draw_curve(returns, axs[idx], param, cmap(float(param)/len(list(all_params.keys()))))
+            draw_curve(returns, axs[idx], param, cmap(param, len(list(all_params.keys()))))
         axs[idx].set_title(label)
         axs[idx].legend()
 
@@ -51,7 +53,7 @@ def mountain_car():
 def simple_maze():
     # print("\nRep learning")
     # learning_curve(gh_learn_sweep, "maze learning sweep")
-    # learning_curve(gh_online_sweep, "maze online property sweep")
+    learning_curve(gh_online_sweep, "maze online property sweep")
 
     # # print("\nControl")
     # learning_curve(gh_same_sweep, "maze same sweep")
@@ -59,8 +61,8 @@ def simple_maze():
     # learning_curve(gh_diff_sweep, "maze different (fix) sweep")
     # learning_curve(gh_diff_tune_sweep, "maze different (fine tune) sweep")
 
-    learning_curve(gh_etaStudy_diff_fix_sweep, "maze different (fix) eta study")
-    learning_curve(gh_etaStudy_diff_tune_sweep, "maze different (fine tune) eta study")
+    # learning_curve(gh_etaStudy_diff_fix_sweep, "maze different (fix) eta study")
+    # learning_curve(gh_etaStudy_diff_tune_sweep, "maze different (fine tune) eta study")
 
 
 

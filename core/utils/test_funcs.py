@@ -422,54 +422,54 @@ def online_orthogonality(agent, states, label):
         agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, rho))
  
 
-def test_robustness(agent):
-    rs = np.random.RandomState(0)
-    img, _, _, _, _, _ = generate_distance_dataset(agent.cfg)
-    ns_std = 1
-    noise1 = rs.normal(loc=0, scale=ns_std, size=np.product(img.shape)).reshape(img.shape)
-    noise2 = rs.normal(loc=0, scale=ns_std, size=np.product(img.shape)).reshape(img.shape)
-    img_n1 = img + noise1
-    img_n2 = img + noise2
-
-    # draw(img_n1[10])
-    # draw(img_n2[10])
-    # draw(img[10])
-
-    with torch.no_grad():
-        img_n1 = agent.cfg.state_normalizer(img_n1)
-        img_n2 = agent.cfg.state_normalizer(img_n2)
-        rep_n1 = agent.rep_net(img_n1)
-        rep_n2 = agent.rep_net(img_n2)
-
-    rep_norm = np.linalg.norm(rep_n1)
-    if len(np.where(rep_norm == 0)[0]) != 0:
-        rep_norm[np.where(rep_norm == 0)] += 1e-05
-
-    change = 1 - np.linalg.norm(rep_n1 - rep_n2) / rep_norm
-
-    with open(os.path.join(agent.cfg.get_parameters_dir(), "../robustness.txt"), "w") as f:
-        f.write("Robustness: {:.8f}".format(change))
-def online_robustness(agent, img):
-    rs = np.random.RandomState(0)
-    ns_std = 1
-    noise1 = rs.normal(loc=0, scale=ns_std, size=np.product(img.shape)).reshape(img.shape)
-    noise2 = rs.normal(loc=0, scale=ns_std, size=np.product(img.shape)).reshape(img.shape)
-    img_n1 = img + noise1
-    img_n2 = img + noise2
-    with torch.no_grad():
-        img_n1 = agent.cfg.state_normalizer(img_n1)
-        img_n2 = agent.cfg.state_normalizer(img_n2)
-        rep_n1 = agent.rep_net(img_n1)
-        rep_n2 = agent.rep_net(img_n2)
-
-    rep_norm = np.linalg.norm(rep_n1)
-    if len(np.where(rep_norm == 0)[0]) != 0:
-        rep_norm[np.where(rep_norm == 0)] += 1e-05
-
-    change = 1 - np.linalg.norm(rep_n1 - rep_n2) / rep_norm
-    log_str = 'total steps %d, total episodes %3d, ' \
-              'Robustness: %.8f/'
-    agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), change))
+# def test_robustness(agent):
+#     rs = np.random.RandomState(0)
+#     img, _, _, _, _, _ = generate_distance_dataset(agent.cfg)
+#     ns_std = 1
+#     noise1 = rs.normal(loc=0, scale=ns_std, size=np.product(img.shape)).reshape(img.shape)
+#     noise2 = rs.normal(loc=0, scale=ns_std, size=np.product(img.shape)).reshape(img.shape)
+#     img_n1 = img + noise1
+#     img_n2 = img + noise2
+#
+#     # draw(img_n1[10])
+#     # draw(img_n2[10])
+#     # draw(img[10])
+#
+#     with torch.no_grad():
+#         img_n1 = agent.cfg.state_normalizer(img_n1)
+#         img_n2 = agent.cfg.state_normalizer(img_n2)
+#         rep_n1 = agent.rep_net(img_n1)
+#         rep_n2 = agent.rep_net(img_n2)
+#
+#     rep_norm = np.linalg.norm(rep_n1)
+#     if len(np.where(rep_norm == 0)[0]) != 0:
+#         rep_norm[np.where(rep_norm == 0)] += 1e-05
+#
+#     change = 1 - np.linalg.norm(rep_n1 - rep_n2) / rep_norm
+#
+#     with open(os.path.join(agent.cfg.get_parameters_dir(), "../robustness.txt"), "w") as f:
+#         f.write("Robustness: {:.8f}".format(change))
+# def online_robustness(agent, img):
+#     rs = np.random.RandomState(0)
+#     ns_std = 1
+#     noise1 = rs.normal(loc=0, scale=ns_std, size=np.product(img.shape)).reshape(img.shape)
+#     noise2 = rs.normal(loc=0, scale=ns_std, size=np.product(img.shape)).reshape(img.shape)
+#     img_n1 = img + noise1
+#     img_n2 = img + noise2
+#     with torch.no_grad():
+#         img_n1 = agent.cfg.state_normalizer(img_n1)
+#         img_n2 = agent.cfg.state_normalizer(img_n2)
+#         rep_n1 = agent.rep_net(img_n1)
+#         rep_n2 = agent.rep_net(img_n2)
+#
+#     rep_norm = np.linalg.norm(rep_n1)
+#     if len(np.where(rep_norm == 0)[0]) != 0:
+#         rep_norm[np.where(rep_norm == 0)] += 1e-05
+#
+#     change = 1 - np.linalg.norm(rep_n1 - rep_n2) / rep_norm
+#     log_str = 'total steps %d, total episodes %3d, ' \
+#               'Robustness: %.8f/'
+#     agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), change))
 
 def online_sparsity(agent, img, label):
     
@@ -718,207 +718,278 @@ def eval_noninterference(agent, param_num, state, next_s, action, reward, termin
         record["interference-count"].append(i_count)
     return record
 
-def test_noninterference(agent):
+# def test_noninterference(agent):
+#
+#     def loss(val_net, rep_net, states, actions, next_states, rewards, terminals):#, true_val=None):
+#         # if true_val is None:
+#         #     true_val = val_net
+#         q = val_net(rep_net(states))[np.array(range(len(actions))), actions[:, 0]]
+#         # Constructing the target
+#         with torch.no_grad():
+#             q_next = val_net(rep_net(next_states))
+#             # q_next = true_val(rep_net(next_states))
+#             q_next = q_next.max(1)[0]
+#             terminals = torch_utils.tensor(terminals, agent.cfg.device)
+#             rewards = torch_utils.tensor(rewards, agent.cfg.device)
+#             target = agent.cfg.discount * q_next * (1 - terminals).float()
+#             target.add_(rewards.float())
+#             # print("{:.4f}, \t{:.4f}, \t{:.4f}".format(q_next.item(), q.item(), target.item(), rewards.item()))
+#         return torch.nn.functional.mse_loss(q, target)
+#         # return target - q
+#
+#     # if agent.cfg.rep_config["load_params"]:
+#     #     path = os.path.join(agent.cfg.data_root, agent.cfg.rep_config["path"])
+#     #     agent.rep_net.load_state_dict(torch.load(path))
+#     #     path = path[:-7] + "val_net"
+#     #     true_val = copy.deepcopy(agent.val_net)
+#     #     true_val.load_state_dict(torch.load(path))
+#
+#     state_all, next_s_all, _, action_all, reward_all, terminal_all = generate_distance_dataset(agent.cfg)
+#     state_all = agent.cfg.state_normalizer(state_all)
+#     next_s_all = agent.cfg.state_normalizer(next_s_all)
+#     action_all = action_all.reshape([-1, 1])
+#     rhos = []
+#     for i in range(10):
+#         sample_idx = np.random.choice(list(range(len(state_all))), size=100)
+#         state_batch = state_all[sample_idx]
+#         action_batch = action_all[sample_idx]
+#         next_s_batch = next_s_all[sample_idx]
+#         reward_batch = reward_all[sample_idx]
+#         terminal_batch = terminal_all[sample_idx]
+#
+#         model = agent.cfg.val_fn() # use cfg to deal with the case when Laplace object does not have val_net
+#         rep_net = agent.rep_net
+#         # print(list(agent.val_net.parameters())[0])
+#         data_size = state_batch.shape[0]
+#         all_param = model.parameters()
+#         param_num = 0
+#         for p in all_param:
+#             param_num += np.product(p.size())
+#         grad_mat = np.zeros([data_size, param_num])
+#         for i in range(data_size):
+#             model.zero_grad()
+#             rep_net.zero_grad()
+#             l = loss(model, rep_net, state_batch[i:(i + 1)], action_batch[i:(i + 1)], next_s_batch[i:(i + 1)], reward_batch[i:(i + 1)], terminal_batch[i:(i + 1)])
+#             l.backward()
+#             grad_list = []
+#             for para in model.parameters():
+#                 if para.grad is not None:
+#                     grad_list.append(para.grad.flatten().numpy())
+#             grad_mat[i] = np.concatenate(grad_list)
+#
+#         ntk_mat = np.matmul(grad_mat, grad_mat.T)
+#         sample_norm = np.linalg.norm(grad_mat, axis=1).reshape((-1, 1))
+#         norm = np.matmul(sample_norm, sample_norm.T)
+#
+#         # add small number when norm = 0, to prevent dividing by 0 and get NAN
+#         if len(np.where(norm==0)[0]) != 0:
+#             norm[np.where(norm==0)] += 1e-05
+#
+#         ntk_mat = np.divide(ntk_mat, norm)
+#         ntk_mat = np.clip(ntk_mat * (-1), 0, np.inf)
+#         rho = 1 - (np.sum(ntk_mat) - np.trace(ntk_mat)) / (data_size * (data_size - 1))
+#         rhos.append(rho)
+#         # print(rho)
+#     # print(np.array(rhos).mean())
+#
+#     with open(os.path.join(agent.cfg.get_parameters_dir(), "../noninterference.txt"), "w") as f:
+#         f.write("Noninterference: {:.8f}".format(np.array(rhos).mean()))
 
-    def loss(val_net, rep_net, states, actions, next_states, rewards, terminals):#, true_val=None):
-        # if true_val is None:
-        #     true_val = val_net
-        q = val_net(rep_net(states))[np.array(range(len(actions))), actions[:, 0]]
-        # Constructing the target
-        with torch.no_grad():
-            q_next = val_net(rep_net(next_states))
-            # q_next = true_val(rep_net(next_states))
-            q_next = q_next.max(1)[0]
-            terminals = torch_utils.tensor(terminals, agent.cfg.device)
-            rewards = torch_utils.tensor(rewards, agent.cfg.device)
-            target = agent.cfg.discount * q_next * (1 - terminals).float()
-            target.add_(rewards.float())
-            # print("{:.4f}, \t{:.4f}, \t{:.4f}".format(q_next.item(), q.item(), target.item(), rewards.item()))
-        return torch.nn.functional.mse_loss(q, target)
-        # return target - q
 
-    # if agent.cfg.rep_config["load_params"]:
-    #     path = os.path.join(agent.cfg.data_root, agent.cfg.rep_config["path"])
-    #     agent.rep_net.load_state_dict(torch.load(path))
-    #     path = path[:-7] + "val_net"
-    #     true_val = copy.deepcopy(agent.val_net)
-    #     true_val.load_state_dict(torch.load(path))
-
-    state_all, next_s_all, _, action_all, reward_all, terminal_all = generate_distance_dataset(agent.cfg)
-    state_all = agent.cfg.state_normalizer(state_all)
-    next_s_all = agent.cfg.state_normalizer(next_s_all)
-    action_all = action_all.reshape([-1, 1])
-    rhos = []
-    for i in range(10):
-        sample_idx = np.random.choice(list(range(len(state_all))), size=100)
-        state_batch = state_all[sample_idx]
-        action_batch = action_all[sample_idx]
-        next_s_batch = next_s_all[sample_idx]
-        reward_batch = reward_all[sample_idx]
-        terminal_batch = terminal_all[sample_idx]
-
-        model = agent.cfg.val_fn() # use cfg to deal with the case when Laplace object does not have val_net
-        rep_net = agent.rep_net
-        # print(list(agent.val_net.parameters())[0])
-        data_size = state_batch.shape[0]
-        all_param = model.parameters()
-        param_num = 0
-        for p in all_param:
-            param_num += np.product(p.size())
-        grad_mat = np.zeros([data_size, param_num])
-        for i in range(data_size):
-            model.zero_grad()
-            rep_net.zero_grad()
-            l = loss(model, rep_net, state_batch[i:(i + 1)], action_batch[i:(i + 1)], next_s_batch[i:(i + 1)], reward_batch[i:(i + 1)], terminal_batch[i:(i + 1)])
-            l.backward()
-            grad_list = []
-            for para in model.parameters():
-                if para.grad is not None:
-                    grad_list.append(para.grad.flatten().numpy())
-            grad_mat[i] = np.concatenate(grad_list)
-
-        ntk_mat = np.matmul(grad_mat, grad_mat.T)
-        sample_norm = np.linalg.norm(grad_mat, axis=1).reshape((-1, 1))
-        norm = np.matmul(sample_norm, sample_norm.T)
-
-        # add small number when norm = 0, to prevent dividing by 0 and get NAN
-        if len(np.where(norm==0)[0]) != 0:
-            norm[np.where(norm==0)] += 1e-05
-
-        ntk_mat = np.divide(ntk_mat, norm)
-        ntk_mat = np.clip(ntk_mat * (-1), 0, np.inf)
-        rho = 1 - (np.sum(ntk_mat) - np.trace(ntk_mat)) / (data_size * (data_size - 1))
-        rhos.append(rho)
-        # print(rho)
-    # print(np.array(rhos).mean())
-    
-    with open(os.path.join(agent.cfg.get_parameters_dir(), "../noninterference.txt"), "w") as f:
-        f.write("Noninterference: {:.8f}".format(np.array(rhos).mean()))
-
-
-def online_noninterference(agent, state_all, next_s_all, action_all, reward_all, terminal_all, label):
-    
-    def loss(val_net, rep_net, states, actions, next_states, rewards, terminals):
-        q = val_net(rep_net(states))[np.array(range(len(actions))), actions[:, 0]]
-        with torch.no_grad():
-            q_next = val_net(rep_net(next_states))
-            q_next = q_next.max(1)[0]
-            terminals = torch_utils.tensor(terminals, agent.cfg.device)
-            rewards = torch_utils.tensor(rewards, agent.cfg.device)
-            target = agent.cfg.discount * q_next * (1 - terminals).float()
-            target.add_(rewards.float())
-        return torch.nn.functional.mse_loss(q, target)
-
-    state_all = agent.cfg.state_normalizer(state_all)
-    next_s_all = agent.cfg.state_normalizer(next_s_all)
-    action_all = action_all.reshape([-1, 1])
-
-    rhos = []
-    for i in range(10):
-        sample_idx = np.random.choice(list(range(len(state_all))), size=100)
-        state_batch = state_all[sample_idx]
-        action_batch = action_all[sample_idx]
-        next_s_batch = next_s_all[sample_idx]
-        reward_batch = reward_all[sample_idx]
-        terminal_batch = terminal_all[sample_idx]
-        data_size = state_batch.shape[0]
-        all_param = agent.val_net.parameters()
-
-        param_num = 0
-        for p in all_param:
-            param_num += np.product(p.size())
-
-        grad_mat = np.zeros([data_size, param_num])
-        for i in range(data_size):
-            agent.val_net.zero_grad()
-            agent.rep_net.zero_grad()
-            l = loss(agent.val_net, agent.rep_net, state_batch[i:(i + 1)], action_batch[i:(i + 1)], next_s_batch[i:(i + 1)], reward_batch[i:(i + 1)], terminal_batch[i:(i + 1)])
-            l.backward()
-            grad_list = []
-            for para in agent.val_net.parameters():
-                if para.grad is not None:
-                    grad_list.append(para.grad.flatten().numpy())
-            grad_mat[i] = np.concatenate(grad_list)
-
-        ntk_mat = np.matmul(grad_mat, grad_mat.T)
-        sample_norm = np.linalg.norm(grad_mat, axis=1).reshape((-1, 1))
-        norm = np.matmul(sample_norm, sample_norm.T)
-
-        # add small number when norm = 0, to prevent dividing by 0 and get NAN
-        if len(np.where(norm==0)[0]) != 0:
-            norm[np.where(norm==0)] += 1e-05
-
-        ntk_mat = np.divide(ntk_mat, norm)
-        ntk_mat = np.clip(ntk_mat * (-1), 0, np.inf)
-        rho = 1 - (np.sum(ntk_mat) - np.trace(ntk_mat)) / (data_size * (data_size - 1))
-        rhos.append(rho)
-        # print(rho, data_size, np.sum(ntk_mat), np.where(norm==0))
-
-    agent.val_net.zero_grad()
-    agent.rep_net.zero_grad()
-
-    if label is None:
-        log_str = 'total steps %d, total episodes %3d, ' \
-                  'Noninterference: %.8f/'
-        agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), np.array(rhos).mean()))
-    else:
-        log_str = 'total steps %d, total episodes %3d, ' \
-                  '%s Noninterference: %.8f/'
-        agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, np.array(rhos).mean()))
+# def online_noninterference(agent, state_all, next_s_all, action_all, reward_all, terminal_all, label):
+#     def loss(val_net, rep_net, states, actions, next_states, rewards, terminals):
+#         q = val_net(rep_net(states))[np.array(range(len(actions))), actions[:, 0]]
+#         with torch.no_grad():
+#             q_next = val_net(rep_net(next_states))
+#             q_next = q_next.max(1)[0]
+#             terminals = torch_utils.tensor(terminals, agent.cfg.device)
+#             rewards = torch_utils.tensor(rewards, agent.cfg.device)
+#             target = agent.cfg.discount * q_next * (1 - terminals).float()
+#             target.add_(rewards.float())
+#         return torch.nn.functional.mse_loss(q, target)
+#
+#     state_all = agent.cfg.state_normalizer(state_all)
+#     next_s_all = agent.cfg.state_normalizer(next_s_all)
+#     action_all = action_all.reshape([-1, 1])
+#
+#     rhos = []
+#     for i in range(10):
+#         sample_idx = np.random.choice(list(range(len(state_all))), size=100)
+#         state_batch = state_all[sample_idx]
+#         action_batch = action_all[sample_idx]
+#         next_s_batch = next_s_all[sample_idx]
+#         reward_batch = reward_all[sample_idx]
+#         terminal_batch = terminal_all[sample_idx]
+#         data_size = state_batch.shape[0]
+#         all_param = agent.val_net.parameters()
+#
+#         param_num = 0
+#         for p in all_param:
+#             param_num += np.product(p.size())
+#
+#         grad_mat = np.zeros([data_size, param_num])
+#         for i in range(data_size):
+#             agent.val_net.zero_grad()
+#             agent.rep_net.zero_grad()
+#             l = loss(agent.val_net, agent.rep_net, state_batch[i:(i + 1)], action_batch[i:(i + 1)], next_s_batch[i:(i + 1)], reward_batch[i:(i + 1)], terminal_batch[i:(i + 1)])
+#             l.backward()
+#             grad_list = []
+#             for para in agent.val_net.parameters():
+#                 if para.grad is not None:
+#                     grad_list.append(para.grad.flatten().numpy())
+#             grad_mat[i] = np.concatenate(grad_list)
+#
+#         ntk_mat = np.matmul(grad_mat, grad_mat.T)
+#         sample_norm = np.linalg.norm(grad_mat, axis=1).reshape((-1, 1))
+#         norm = np.matmul(sample_norm, sample_norm.T)
+#
+#         # add small number when norm = 0, to prevent dividing by 0 and get NAN
+#         if len(np.where(norm==0)[0]) != 0:
+#             norm[np.where(norm==0)] += 1e-05
+#
+#         ntk_mat = np.divide(ntk_mat, norm)
+#         ntk_mat = np.clip(ntk_mat * (-1), 0, np.inf)
+#         rho = 1 - (np.sum(ntk_mat) - np.trace(ntk_mat)) / (data_size * (data_size - 1))
+#         rhos.append(rho)
+#         # print(rho, data_size, np.sum(ntk_mat), np.where(norm==0))
+#
+#     agent.val_net.zero_grad()
+#     agent.rep_net.zero_grad()
+#
+#     if label is None:
+#         log_str = 'total steps %d, total episodes %3d, ' \
+#                   'Noninterference: %.8f/'
+#         agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), np.array(rhos).mean()))
+#     else:
+#         log_str = 'total steps %d, total episodes %3d, ' \
+#                   '%s Noninterference: %.8f/'
+#         agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, np.array(rhos).mean()))
  
-def test_decorrelation(agent):
-    state_all, next_s_all, _, action_all, reward_all, terminal_all = generate_distance_dataset(agent.cfg)
-    with torch.no_grad():
-        representations = agent.rep_net(agent.cfg.state_normalizer(state_all)).numpy()
+# def test_decorrelation(agent):
+#     state_all, next_s_all, _, action_all, reward_all, terminal_all = generate_distance_dataset(agent.cfg)
+#     with torch.no_grad():
+#         representations = agent.rep_net(agent.cfg.state_normalizer(state_all)).numpy()
+#
+#         # remove dead features
+#         std_test = np.std(representations, axis=0)
+#         zeros = np.where(std_test == 0)[0]
+#         representations = np.delete(representations, zeros, 1)
+#
+#         correlation_matrix = np.corrcoef(representations.transpose(1, 0))
+#         # correlation_matrix = np.nan_to_num(correlation_matrix, nan=0)
+#
+#         # assert representations.shape[1] == 32
+#         dim = representations.shape[1]
+#         correlation_matrix[np.tril_indices(dim)] = 0.0
+#         correlation_matrix = np.abs(correlation_matrix)
+#         total_correlation = np.sum(np.abs(correlation_matrix))
+#         total_off_diag_upper = dim * (dim-1) / 2 # N(N-1)/2
+#         average_correlation = total_correlation / total_off_diag_upper
+#         decorr = 1 - average_correlation
+#     with open(os.path.join(agent.cfg.get_parameters_dir(), "../decorrelation.txt"), "w") as f:
+#         f.write("Decorrelation: {:.8f}".format(np.array(decorr).mean()))
+#
+# def online_decorrelation(agent, state_all, label):
+#     with torch.no_grad():
+#         representations = agent.rep_net(agent.cfg.state_normalizer(state_all)).numpy()
+#         # remove dead features
+#         std_test = np.std(representations, axis=0)
+#         zeros = np.where(std_test == 0)[0]
+#         representations = np.delete(representations, zeros, 1)
+#
+#         correlation_matrix = np.corrcoef(representations.transpose(1, 0))
+#         dim = representations.shape[1]
+#         correlation_matrix[np.tril_indices(dim)] = 0.0
+#         correlation_matrix = np.abs(correlation_matrix)
+#         total_correlation = np.sum(np.abs(correlation_matrix))
+#         if dim != 0:
+#             total_off_diag_upper = dim * (dim-1) / 2 # N(N-1)/2
+#             average_correlation = total_correlation / total_off_diag_upper
+#             decorr = 1 - average_correlation
+#         else: # if all representations are 0, log the worst decorrelation value
+#             decorr = 0
+#
+#     if label is None:
+#         log_str = 'total steps %d, total episodes %3d, ' \
+#                   'Decorrelation: %.8f/'
+#         agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), decorr))#np.array(rhos).mean()))
+#     else:
+#         log_str = 'total steps %d, total episodes %3d, ' \
+#                   '%s Decorrelation: %.8f/'
+#         agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, decorr))#np.array(rhos).mean()))
 
-        # remove dead features
-        std_test = np.std(representations, axis=0)
-        zeros = np.where(std_test == 0)[0]
-        representations = np.delete(representations, zeros, 1)
+def online_lipschitz(agent, state_all, label=None):
+    try:
+        ratio_dv_dphi_all = []
+        diff_v_all = []
+        diff_phi_all = []
+        for i in range(10):
+            random = np.random.choice(list(range(len(state_all))), size=100, replace=False)
+            states = state_all[random]
+            with torch.no_grad():
+                phi_s = agent.rep_net(agent.cfg.state_normalizer(states))#.numpy()
+                values = agent.val_net(phi_s)
 
-        correlation_matrix = np.corrcoef(representations.transpose(1, 0))
-        # correlation_matrix = np.nan_to_num(correlation_matrix, nan=0)
+            num_states = len(states)
+            N = num_states * (num_states - 1) // 2
+            diff_v = np.zeros(N)
+            diff_phi = np.zeros(N)
 
-        # assert representations.shape[1] == 32
-        dim = representations.shape[1]
-        correlation_matrix[np.tril_indices(dim)] = 0.0
-        correlation_matrix = np.abs(correlation_matrix)
-        total_correlation = np.sum(np.abs(correlation_matrix))
-        total_off_diag_upper = dim * (dim-1) / 2 # N(N-1)/2
-        average_correlation = total_correlation / total_off_diag_upper
-        decorr = 1 - average_correlation
-    with open(os.path.join(agent.cfg.get_parameters_dir(), "../decorrelation.txt"), "w") as f:
-        f.write("Decorrelation: {:.8f}".format(np.array(decorr).mean()))
+            idx = 0
+            for i in range(len(states)):
+                for j in range(i + 1, len(states)):
+                    phi_i, phi_j = phi_s[i], phi_s[j]
+                    vi, vj = values[i], values[j]
+                    diff_v[idx] = torch.abs(vi - vj).max().item() # for lipschitz
+                    diff_phi[idx] = np.linalg.norm((phi_i - phi_j).numpy())  # for lipschitz
 
-def online_decorrelation(agent, state_all, label):
-    with torch.no_grad():
-        representations = agent.rep_net(agent.cfg.state_normalizer(state_all)).numpy()
-        # remove dead features
-        std_test = np.std(representations, axis=0)
-        zeros = np.where(std_test == 0)[0]
-        representations = np.delete(representations, zeros, 1)
+                    diff_v_all.append(torch.abs(vi - vj).max().item()) # for specialization
+                    diff_phi_all.append(np.linalg.norm((phi_i - phi_j).numpy())) # for specialization
 
-        correlation_matrix = np.corrcoef(representations.transpose(1, 0))
-        dim = representations.shape[1]
-        correlation_matrix[np.tril_indices(dim)] = 0.0
-        correlation_matrix = np.abs(correlation_matrix)
-        total_correlation = np.sum(np.abs(correlation_matrix))
-        if dim != 0:
-            total_off_diag_upper = dim * (dim-1) / 2 # N(N-1)/2
-            average_correlation = total_correlation / total_off_diag_upper
-            decorr = 1 - average_correlation
-        else: # if all representations are 0, log the worst decorrelation value
-            decorr = 0
+                    idx += 1
+
+            dv_dphi = np.divide(diff_v, diff_phi, out=np.zeros_like(diff_phi), where=diff_phi != 0)
+            ratio_dv_dphi_all.append(dv_dphi)
+            # print(ratio_dv_dphi_all)
+
+        diff_v_all = np.array(diff_v_all)
+        diff_phi_all = np.array(diff_phi_all)
+        max_dv = diff_v_all.max()
+        max_dphi = diff_phi_all.max()
+        normalized_dv = diff_v_all / max_dv
+        normalized_dphi = diff_phi_all / max_dphi
+        if len(np.where(normalized_dphi==0)[0]) != 0:
+            normalized_dphi[np.where(normalized_dphi==0)] += 1e-05
+        if len(np.where(diff_phi_all==0)[0]) != 0:
+            diff_phi_all[np.where(diff_phi_all==0)] += 1e-05
+
+        normalized_div = 1 - np.clip(normalized_dv / normalized_dphi, 0, 1).mean() # 1 - specialization
+        # divs = np.clip(normalized_dv / normalized_dphi, 0, np.inf)
+
+        lips = agent.val_net.compute_lipschitz_upper()
+        ratio_dv_dphi_all = np.array(ratio_dv_dphi_all)
+    except NotImplementedError:
+        # lips, ratio_dv_dphi, corr = agent.val_net.compute_lipschitz_upper(), 0.0, 0.0
+        raise NotImplementedError
+
+    lipschitz_upper = np.prod(lips)
+    mean, median, min, max = np.mean(ratio_dv_dphi_all), np.median(ratio_dv_dphi_all), \
+                             np.min(ratio_dv_dphi_all), np.max(ratio_dv_dphi_all)
 
     if label is None:
         log_str = 'total steps %d, total episodes %3d, ' \
-                  'Decorrelation: %.8f/'
-        agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), decorr))#np.array(rhos).mean()))
+                  'Lipschitz: %.3f/%.5f/%.5f/%.5f/%.5f (upper/mean/median/min/max)'
+        agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), lipschitz_upper, mean, median, min, max))
+        log_str = 'total steps %d, total episodes %3d, ' \
+                  'Diversity: %.5f/'
+        agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), normalized_div))
     else:
         log_str = 'total steps %d, total episodes %3d, ' \
-                  '%s Decorrelation: %.8f/'
-        agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, decorr))#np.array(rhos).mean()))
-
+                  '%s Lipschitz: %.3f/%.5f/%.5f/%.5f/%.5f (upper/mean/median/min/max)'
+        agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, lipschitz_upper, mean, median, min, max))
+        log_str = 'total steps %d, total episodes %3d, ' \
+                  '%s Diversity: %.5f/'
+        agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, normalized_div))
 
 def run_steps_onlineProperty(agent): # We should add sparsity and regression 
     """
@@ -927,7 +998,6 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
 
     t0 = time.time()
     agent.populate_returns()
-    # state_all, next_s_all, different_idx, action_all, reward_all, terminal_all = generate_distance_dataset(agent.cfg)
     datasets = generate_distance_datasets(agent.cfg)
     early_model_saved = False
 
@@ -943,27 +1013,29 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
                 early_model_saved = True
                 agent.cfg.logger.info('Save early-stopping model')
             t0 = time.time()
-        
+
         if agent.cfg.eval_interval and not agent.total_steps % agent.cfg.eval_interval:
             agent.eval_episodes()
             if agent.cfg.visualize:
                 agent.visualize()
             if agent.cfg.save_params:
                 agent.save()
-            if agent.cfg.evaluate_lipschitz:
-                agent.log_lipschitz()
             for dataset in datasets:
                 state_all, next_s_all, different_idx, action_all, reward_all, terminal_all, label = dataset
+                if agent.cfg.evaluate_lipschitz or agent.cfg.evaluate_diversity:
+                    online_lipschitz(agent, state_all, label)
+                    # agent.log_lipschitz()
                 if agent.cfg.evaluate_distance:
                     online_distance(agent, state_all, next_s_all, different_idx, label)
                 if agent.cfg.evaluate_orthogonality:
                     online_orthogonality(agent, state_all, label)
-                if agent.cfg.evaluate_noninterference:
-                    online_noninterference(agent, state_all, next_s_all, action_all, reward_all, terminal_all, label)
-                if agent.cfg.evaluate_decorrelation:
-                    online_decorrelation(agent, state_all, label)
+                if agent.cfg.evaluate_interference:
+                    agent.log_interference(label)
+                # if agent.cfg.evaluate_decorrelation:
+                #     online_decorrelation(agent, state_all, label)
                 if agent.cfg.evaluate_sparsity:
                     online_sparsity(agent, state_all, label)
+
 #                 if agent.cfg.evaluate_regression:
                     
                     # if agent.cfg.linear_probing_parent == "LaplaceEvaluate":
@@ -1012,6 +1084,11 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
             break
         
         agent.step()
+        if agent.cfg.evaluate_interference:
+            # for dataset in datasets:
+                # state_all, next_s_all, different_idx, action_all, reward_all, terminal_all, label = dataset
+                # agent.update_interference(state_all, next_s_all, action_all, reward_all, terminal_all)
+            agent.update_interference()
 
 def draw(state):
     import matplotlib.pyplot as plt

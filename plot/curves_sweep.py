@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 
 from plot.plot_utils import *
 from plot.plot_paths import *
+from experiment.sweeper import Sweeper
 
 os.chdir("..")
 print("Change dir to", os.getcwd())
@@ -23,16 +24,64 @@ print("Change dir to", os.getcwd())
 #         lst[i] = lst[i][:min_l]
 #     return np.array(lst)
 
+def compare_learning_curve(all_paths_dict, title, total_param=None,
+        start_param=0, label_keys = None, config_paths=None):
 
-def learning_curve(all_paths_dict, title, total_param=None, start_param=0):
     labels = [i["label"] for i in all_paths_dict]
     control = load_return(all_paths_dict, total_param, start_param)
     fig, axs = plt.subplots(nrows=1, ncols=len(labels), figsize=(30, 4))
+    
+    if len(labels) == 1:
+        axs = [axs]
+ 
     for idx, label in enumerate(labels):
         all_params = control[label]
+        
+        for param, returns in all_params.items():
+
+            if label_keys is not None:
+                assert config_paths is not None
+                project_root = os.path.abspath(os.path.dirname(__file__))
+                print(project_root)
+                cfg = Sweeper(project_root, config_paths[idx]).parse(param)
+                l = ''
+                for label_key in label_keys[idx]:
+                    l += str(getattr(cfg, label_key)) + ' '
+            
+            returns = arrange_order(returns)
+            draw_curve(returns, axs[idx], l, cmap(float(param)/len(list(all_params.keys()))))
+        
+        axs[idx].set_title(label)
+        axs[idx].legend()
+
+    fig.suptitle(title)
+    # plt.xlim(0, 30)
+    plt.xlabel('step ($10^4$)')
+    plt.ylabel('return')
+    # plt.savefig("plot/img/{}.png".format(title), dpi=300, bbox_inches='tight')
+    plt.show()
+    plt.close()
+    # plt.clf()
+
+
+
+def learning_curve(all_paths_dict, title, total_param=None,
+        start_param=0, labels_map=None):
+
+    labels = [i["label"] for i in all_paths_dict]
+    control = load_return(all_paths_dict, total_param, start_param)
+    fig, axs = plt.subplots(nrows=1, ncols=len(labels), figsize=(30, 4))
+
+    if len(labels) == 1:
+        axs = [axs]
+    
+    for idx, label in enumerate(labels):
+        all_params = control[label]
+        
         for param, returns in all_params.items():
             returns = arrange_order(returns)
             draw_curve(returns, axs[idx], param, cmap(float(param)/len(list(all_params.keys()))))
+        
         axs[idx].set_title(label)
         axs[idx].legend()
 
@@ -62,9 +111,22 @@ def simple_maze():
     learning_curve(gh_etaStudy_diff_fix_sweep, "maze different (fix) eta study")
     learning_curve(gh_etaStudy_diff_tune_sweep, "maze different (fine tune) eta study")
 
+def picky_eater():
 
+    #compare_learning_curve(pe_learn_sweep, "picky eater learning curve",
+    #        label_keys = [['target_network_update_freq', 'learning_rate']], config_paths = ['experiment/config/test/picky_eater/online_property/dqn_lta/sweep.json'])
+  
+    compare_learning_curve(dqn_learn_sweep, "picky eater learning curve",
+            label_keys = [['target_network_update_freq', 'learning_rate']], config_paths = ['experiment/config/test/picky_eater/online_property/dqn/sweep.json'])
+    # compare_learning_curve(dqn_lta_1_learn_sweep,
+    compare_learning_curve(dqn_lta_learn_sweep, "picky eater learning curve",
+            label_keys = [['target_network_update_freq', 'learning_rate']], config_paths = ['experiment/config/test/picky_eater/online_property/dqn_lta/sweep.json'])
+    # compare_learning_curve(dqn_lta_1_learn_sweep, "picky eater learning curve (DQN+LTA+Without target)",
+            # label_keys = [['target_network_update_freq', 'learning_rate']], config_paths = ['experiment/config/test/picky_eater/online_property/dqn_lta/sweep.json'])
+    
+   
 
 if __name__ == '__main__':
     # mountain_car()
-    simple_maze()
-    # picky_eater()
+    # simple_maze()
+    picky_eater()

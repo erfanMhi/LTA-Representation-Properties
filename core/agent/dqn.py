@@ -208,7 +208,8 @@ class DQNAgent(base.Agent):
 
         # for dataset in self.cfg.eval_datasets:  # if there are multiple datasets, save them independently
         #     states, next_states, _, actions, rewards, terminals, _ = dataset
-        states, actions, rewards, next_states, terminals = self.replay.sample()
+
+        states, actions, rewards, next_states, terminals = self.cfg.eval_dataset.sample()
 
         states = self.cfg.state_normalizer(states)
         next_s = self.cfg.state_normalizer(next_states)

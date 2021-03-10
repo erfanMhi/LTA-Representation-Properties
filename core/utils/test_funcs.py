@@ -15,6 +15,7 @@ from core.utils import torch_utils
 from core.environment.gridworlds import GridHardXY
 from core.agent import linear_probing, dqn, laplace
 from core.utils import schedule, logger
+from core.component.replay import Replay
 
 def dqn_rep_distance_viz(agent):
     agent.visualize()
@@ -1005,8 +1006,18 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
 
     t0 = time.time()
     agent.populate_returns()
+
     datasets = generate_distance_datasets(agent.cfg)
-    agent.cfg.eval_datasets = datasets
+    if agent.cfg.evaluate_interference:
+        totalsize = 0
+        for dataset in datasets:
+            totalsize += len(dataset[0])
+        agent.cfg.eval_dataset = Replay(memory_size=totalsize, batch_size=agent.cfg.batch_size)
+        for dataset in datasets:
+            state_all, next_s_all, _, action_all, reward_all, terminal_all, _ = dataset
+            for i in range(len(state_all)):
+                agent.cfg.eval_dataset.feed([state_all[i], action_all[i], reward_all[i], next_s_all[i], int(terminal_all[i])])
+        agent.cfg.logger.info('Save eval_dataset buffer')
 
     early_model_saved = False
 
@@ -1029,6 +1040,8 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
                 agent.visualize()
             if agent.cfg.save_params:
                 agent.save()
+            if agent.cfg.evaluate_interference: # dataset is saved in agent
+                agent.log_interference()
             for dataset in datasets:
                 state_all, next_s_all, different_idx, action_all, reward_all, terminal_all, label = dataset
                 if agent.cfg.evaluate_lipschitz or agent.cfg.evaluate_diversity:
@@ -1038,8 +1051,6 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
                     online_distance(agent, state_all, next_s_all, different_idx, label)
                 if agent.cfg.evaluate_orthogonality:
                     online_orthogonality(agent, state_all, label)
-                if agent.cfg.evaluate_interference:
-                    agent.log_interference(label)
                 # if agent.cfg.evaluate_decorrelation:
                 #     online_decorrelation(agent, state_all, label)
                 if agent.cfg.evaluate_sparsity:

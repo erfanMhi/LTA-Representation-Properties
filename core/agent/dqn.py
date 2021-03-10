@@ -128,13 +128,6 @@ class DQNAgent(base.Agent):
             self.targets.rep_net.load_state_dict(self.rep_net.state_dict())
             self.targets.val_net.load_state_dict(self.val_net.state_dict())
 
-        if self.cfg.evaluate_interference:
-            self.update_interference()
-            if (not self.cfg.use_target_network or self.total_steps % self.cfg.target_network_update_freq==0):
-                # target net changes, calculate interference for the beginning and ending of iteration
-                self.iteration_interference()
-
-
     def eval_step(self, state):
         if np.random.rand() < self.cfg.eps_schedule.read_only():
             return np.random.randint(0, self.cfg.action_dim)

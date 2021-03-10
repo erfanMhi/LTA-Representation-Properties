@@ -1093,7 +1093,11 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
             break
         
         agent.step()
-
+        if agent.cfg.evaluate_interference:
+            agent.update_interference()
+            if (not agent.cfg.use_target_network or agent.total_steps % agent.cfg.target_network_update_freq==0):
+                # target net changes, calculate interference for the beginning and ending of iteration
+                agent.iteration_interference()
 def draw(state):
     import matplotlib.pyplot as plt
     frame = state.astype(np.uint8)

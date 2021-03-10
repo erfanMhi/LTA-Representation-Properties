@@ -57,6 +57,7 @@ class DQNAgent(base.Agent):
                                    val_net=copy.deepcopy(self.val_net),
                                    rep_target=copy.deepcopy(rep_net_target),
                                    val_target=copy.deepcopy(val_net_target))
+            self.update_interfs = []
             self.itera_interfs = []
 
     def step(self):
@@ -127,10 +128,12 @@ class DQNAgent(base.Agent):
             self.targets.rep_net.load_state_dict(self.rep_net.state_dict())
             self.targets.val_net.load_state_dict(self.val_net.state_dict())
 
-        if self.cfg.evaluate_interference and \
-            (not self.cfg.use_target_network or self.total_steps % self.cfg.target_network_update_freq==0):
-            # target net changes, calculate interference for the beginning and ending of iteration
-            self.iteration_interference()
+        if self.cfg.evaluate_interference:
+            self.update_interference()
+            if (not self.cfg.use_target_network or self.total_steps % self.cfg.target_network_update_freq==0):
+                # target net changes, calculate interference for the beginning and ending of iteration
+                self.iteration_interference()
+
 
     def eval_step(self, state):
         if np.random.rand() < self.cfg.eps_schedule.read_only():
@@ -178,7 +181,7 @@ class DQNAgent(base.Agent):
         # print()
 
 
-    def iteration_interference(self):
+    def update_interference(self):
         def td_square(rep_net, val_net, rep_target, val_target, states, actions, next_states, rewards, terminals):
             with torch.no_grad():
                 q = val_net(rep_net(states))[np.array(range(len(actions))), actions[:, 0]]
@@ -195,12 +198,12 @@ class DQNAgent(base.Agent):
             return (target - q)**2
 
         def accuracy_change(s, a, next_s, reward, terminal):
-            delta_start2 = td_square(self.netlogs.rep_net,
+            delta_t2 = td_square(self.netlogs.rep_net,
                                  self.netlogs.val_net,
                                  self.netlogs.rep_target,
                                  self.netlogs.val_target,
                                  s, a, next_s, reward, terminal)
-            delta_current2 = td_square(self.rep_net,
+            delta_tp2 = td_square(self.rep_net,
                                   self.val_net,
                                   self.targets.rep_net,
                                   self.targets.val_net,
@@ -208,17 +211,18 @@ class DQNAgent(base.Agent):
             # print(list(self.netlogs.rep_net.parameters())[-1])
             # print(list(self.rep_net.parameters())[-1])
             # print()
-            return delta_start2 - delta_current2
+            return delta_tp2 - delta_t2
 
-        for dataset in self.cfg.eval_datasets:  # if there are multiple datasets, save them independently
-            states, next_states, _, actions, rewards, terminals, _ = dataset
+        # for dataset in self.cfg.eval_datasets:  # if there are multiple datasets, save them independently
+        #     states, next_states, _, actions, rewards, terminals, _ = dataset
+        states, actions, rewards, next_states, terminals = self.replay.sample()
 
-            states = self.cfg.state_normalizer(states)
-            next_s = self.cfg.state_normalizer(next_states)
-            actions = actions.reshape([-1, 1])
-            ac = accuracy_change(states, actions, next_s, rewards, terminals) / float(self.cfg.target_network_update_freq) # average over steps
-            ii = max(ac.mean(), 0) # average over samples
-            self.itera_interfs.append(ii)
+        states = self.cfg.state_normalizer(states)
+        next_s = self.cfg.state_normalizer(next_states)
+        actions = actions.reshape([-1, 1])
+        ac = accuracy_change(states, actions, next_s, rewards, terminals)
+        ui = np.clip(ac.mean(), 0, np.inf) # average over samples
+        self.update_interfs.append(ui)
         self.copy_nn()
 
     def copy_nn(self):
@@ -226,6 +230,10 @@ class DQNAgent(base.Agent):
         self.netlogs.val_net.load_state_dict(self.val_net.state_dict())
         self.netlogs.rep_target.load_state_dict(self.targets.rep_net.state_dict())
         self.netlogs.val_target.load_state_dict(self.targets.val_net.state_dict())
+
+    def iteration_interference(self):
+        self.itera_interfs.append(np.array(self.update_interfs).mean())
+        self.update_interfs = []
 
     def log_interference(self, label=None):
         if len(self.itera_interfs) > 0:
@@ -235,8 +243,8 @@ class DQNAgent(base.Agent):
             itf = np.mean(self.itera_interfs[target_idx])
         else:
             itf = np.nan
-
         self.itera_interfs = []
+
         if label is None:
             log_str = 'total steps %d, total episodes %3d, ' \
                       'Interference: %.8f/'

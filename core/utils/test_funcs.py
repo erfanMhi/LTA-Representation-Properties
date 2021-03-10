@@ -1006,6 +1006,8 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
     t0 = time.time()
     agent.populate_returns()
     datasets = generate_distance_datasets(agent.cfg)
+    agent.cfg.eval_datasets = datasets
+
     early_model_saved = False
 
     while True:
@@ -1091,11 +1093,6 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
             break
         
         agent.step()
-        if agent.cfg.evaluate_interference:
-            # for dataset in datasets:
-                # state_all, next_s_all, different_idx, action_all, reward_all, terminal_all, label = dataset
-                # agent.update_interference(state_all, next_s_all, action_all, reward_all, terminal_all)
-            agent.update_interference()
 
 def draw(state):
     import matplotlib.pyplot as plt
@@ -1105,4 +1102,3 @@ def draw(state):
     plt.axis('off')
     plt.show()
     plt.close()
-

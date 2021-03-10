@@ -57,7 +57,7 @@ class DQNAgent(base.Agent):
                                    val_net=copy.deepcopy(self.val_net),
                                    rep_target=copy.deepcopy(rep_net_target),
                                    val_target=copy.deepcopy(val_net_target))
-            self.update_interfs = []
+            self.itera_interfs = []
 
     def step(self):
         if self.reset is True:
@@ -79,12 +79,6 @@ class DQNAgent(base.Agent):
         self.state = next_state
 
         self.update_stats(reward, done)
-
-        if self.cfg.evaluate_interference:
-            self.netlogs.rep_net.load_state_dict(self.rep_net.state_dict())
-            self.netlogs.val_net.load_state_dict(self.val_net.state_dict())
-            self.netlogs.rep_target.load_state_dict(self.targets.rep_net.state_dict())
-            self.netlogs.val_target.load_state_dict(self.targets.val_net.state_dict())
 
         self.update()
 
@@ -133,6 +127,11 @@ class DQNAgent(base.Agent):
             self.targets.rep_net.load_state_dict(self.rep_net.state_dict())
             self.targets.val_net.load_state_dict(self.val_net.state_dict())
 
+        if self.cfg.evaluate_interference and \
+            (not self.cfg.use_target_network or self.total_steps % self.cfg.target_network_update_freq==0):
+            # target net changes, calculate interference for the beginning and ending of iteration
+            self.iteration_interference()
+
     def eval_step(self, state):
         if np.random.rand() < self.cfg.eps_schedule.read_only():
             return np.random.randint(0, self.cfg.action_dim)
@@ -178,8 +177,8 @@ class DQNAgent(base.Agent):
         #     print(param.data.mean(), end=" ")
         # print()
 
-    # def update_interference(self, states, next_states, actions, rewards, terminals):
-    def update_interference(self):
+
+    def iteration_interference(self):
         def td_square(rep_net, val_net, rep_target, val_target, states, actions, next_states, rewards, terminals):
             with torch.no_grad():
                 q = val_net(rep_net(states))[np.array(range(len(actions))), actions[:, 0]]
@@ -187,7 +186,7 @@ class DQNAgent(base.Agent):
                 q_next = q_next.max(1)[0]
                 terminals = torch_utils.tensor(terminals, self.cfg.device)
                 rewards = torch_utils.tensor(rewards, self.cfg.device)
-                target = q_next * (1 - terminals).float()
+                target = self.cfg.discount * q_next * (1 - terminals).float()
                 target.add_(rewards.float())
 
                 q = torch_utils.to_np(q)
@@ -196,42 +195,56 @@ class DQNAgent(base.Agent):
             return (target - q)**2
 
         def accuracy_change(s, a, next_s, reward, terminal):
-            delta_t2 = td_square(self.netlogs.rep_net,
+            delta_start2 = td_square(self.netlogs.rep_net,
                                  self.netlogs.val_net,
                                  self.netlogs.rep_target,
                                  self.netlogs.val_target,
                                  s, a, next_s, reward, terminal)
-            delta_tp2 = td_square(self.rep_net,
+            delta_current2 = td_square(self.rep_net,
                                   self.val_net,
                                   self.targets.rep_net,
                                   self.targets.val_net,
                                   s, a, next_s, reward, terminal)
-            return delta_tp2 - delta_t2
+            # print(list(self.netlogs.rep_net.parameters())[-1])
+            # print(list(self.rep_net.parameters())[-1])
+            # print()
+            return delta_start2 - delta_current2
 
-        states, actions, rewards, next_states, terminals = self.replay.sample()
-        states = self.cfg.state_normalizer(states)
-        next_s = self.cfg.state_normalizer(next_states)
-        actions = actions.reshape([-1, 1])
-        ac = accuracy_change(states, actions, next_s, rewards, terminals)
-        # ui = ac.clip(0, np.inf).mean()
-        ui = max(ac.mean(), 0)
-        self.update_interfs.append(ui)
+        for dataset in self.cfg.eval_datasets:  # if there are multiple datasets, save them independently
+            states, next_states, _, actions, rewards, terminals, _ = dataset
 
-    def iteration_interference(self):
-        ii = np.array(self.update_interfs).mean()
-        self.update_interfs = []
-        return ii
+            states = self.cfg.state_normalizer(states)
+            next_s = self.cfg.state_normalizer(next_states)
+            actions = actions.reshape([-1, 1])
+            ac = accuracy_change(states, actions, next_s, rewards, terminals) / float(self.cfg.target_network_update_freq) # average over steps
+            ii = max(ac.mean(), 0) # average over samples
+            self.itera_interfs.append(ii)
+        self.copy_nn()
+
+    def copy_nn(self):
+        self.netlogs.rep_net.load_state_dict(self.rep_net.state_dict())
+        self.netlogs.val_net.load_state_dict(self.val_net.state_dict())
+        self.netlogs.rep_target.load_state_dict(self.targets.rep_net.state_dict())
+        self.netlogs.val_target.load_state_dict(self.targets.val_net.state_dict())
 
     def log_interference(self, label=None):
-        ii = self.iteration_interference()
+        if len(self.itera_interfs) > 0:
+            self.itera_interfs = np.array(self.itera_interfs)
+            pct = np.percentile(self.itera_interfs, 90)
+            target_idx = np.where(self.itera_interfs >= pct)[0]
+            itf = np.mean(self.itera_interfs[target_idx])
+        else:
+            itf = np.nan
+
+        self.itera_interfs = []
         if label is None:
             log_str = 'total steps %d, total episodes %3d, ' \
                       'Interference: %.8f/'
-            self.cfg.logger.info(log_str % (self.total_steps, len(self.episode_rewards), ii))
+            self.cfg.logger.info(log_str % (self.total_steps, len(self.episode_rewards), itf))
         else:
             log_str = 'total steps %d, total episodes %3d, ' \
                       '%s Interference: %.8f/'
-            self.cfg.logger.info(log_str % (self.total_steps, len(self.episode_rewards), label, ii))
+            self.cfg.logger.info(log_str % (self.total_steps, len(self.episode_rewards), label, itf))
 
     def visualize(self):
         """

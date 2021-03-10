@@ -52,11 +52,8 @@ class DQNAgent(base.Agent):
         self.next_state = None
 
         if self.cfg.evaluate_interference:
-            NetLogs = namedtuple('NetLogs', ['rep_net', 'val_net', 'rep_target', 'val_target'])
-            self.netlogs = NetLogs(rep_net=copy.deepcopy(self.rep_net),
-                                   val_net=copy.deepcopy(self.val_net),
-                                   rep_target=copy.deepcopy(rep_net_target),
-                                   val_target=copy.deepcopy(val_net_target))
+            self.ac_last_sample = None
+            self.ac_last_td2 = None
             self.update_interfs = []
             self.itera_interfs = []
 
@@ -165,17 +162,10 @@ class DQNAgent(base.Agent):
         log_str = 'total steps %d, total episodes %3d, ' \
                   'Lipschitz: %.3f/%.5f/%.5f/%.5f/%.5f (upper/mean/median/min/max)'
         self.cfg.logger.info(log_str % (self.total_steps, len(self.episode_rewards), lipschitz_upper, mean, median, min, max))
-        # log_str = 'total steps %d, total episodes %3d, ' \
-        #           'Specialization: %.5f'
-        # self.cfg.logger.info(log_str % (self.total_steps, len(self.episode_rewards), corr))
-
-        # for param in list(self.val_net.parameters()):
-        #     print(param.data.mean(), end=" ")
-        # print()
-
 
     def update_interference(self):
-        def td_square(rep_net, val_net, rep_target, val_target, states, actions, next_states, rewards, terminals):
+        def td_square(rep_net, val_net, rep_target, val_target, samples):
+            states, actions, next_states, rewards, terminals = samples
             with torch.no_grad():
                 q = val_net(rep_net(states))[np.array(range(len(actions))), actions[:, 0]]
                 q_next = val_target(rep_target(next_states))
@@ -187,46 +177,35 @@ class DQNAgent(base.Agent):
 
                 q = torch_utils.to_np(q)
                 target = torch_utils.to_np(target)
-            self.optimizer.zero_grad() # we might be able to remove this line though...
             return (target - q)**2
 
-        def accuracy_change(s, a, next_s, reward, terminal):
-            delta_t2 = td_square(self.netlogs.rep_net,
-                                 self.netlogs.val_net,
-                                 self.netlogs.rep_target,
-                                 self.netlogs.val_target,
-                                 s, a, next_s, reward, terminal)
-            delta_tp2 = td_square(self.rep_net,
+        def accuracy_change():
+            delta2 = td_square(self.rep_net,
                                   self.val_net,
                                   self.targets.rep_net,
                                   self.targets.val_net,
-                                  s, a, next_s, reward, terminal)
-            # print(list(self.netlogs.rep_net.parameters())[-1])
-            # print(list(self.rep_net.parameters())[-1])
-            # print()
-            return delta_tp2 - delta_t2
+                                  self.ac_last_sample)
+            return delta2 - self.ac_last_td2
 
-        # for dataset in self.cfg.eval_datasets:  # if there are multiple datasets, save them independently
-        #     states, next_states, _, actions, rewards, terminals, _ = dataset
+        if self.ac_last_sample is not None:
+            ac = accuracy_change()
+            ui = np.clip(ac.mean(), 0, np.inf) # average over samples
+            self.update_interfs.append(ui)
 
-        states, actions, rewards, next_states, terminals = self.cfg.eval_dataset.sample()
-
+        states, actions, next_states, rewards, terminals = self.cfg.eval_dataset.sample()
         states = self.cfg.state_normalizer(states)
         next_s = self.cfg.state_normalizer(next_states)
         actions = actions.reshape([-1, 1])
-        ac = accuracy_change(states, actions, next_s, rewards, terminals)
-        ui = np.clip(ac.mean(), 0, np.inf) # average over samples
-        self.update_interfs.append(ui)
-        self.copy_nn()
-
-    def copy_nn(self):
-        self.netlogs.rep_net.load_state_dict(self.rep_net.state_dict())
-        self.netlogs.val_net.load_state_dict(self.val_net.state_dict())
-        self.netlogs.rep_target.load_state_dict(self.targets.rep_net.state_dict())
-        self.netlogs.val_target.load_state_dict(self.targets.val_net.state_dict())
+        self.ac_last_sample = states, actions, next_s, rewards, terminals
+        self.ac_last_td2 = td_square(self.rep_net,
+                                    self.val_net,
+                                    self.targets.rep_net,
+                                    self.targets.val_net,
+                                    self.ac_last_sample)
 
     def iteration_interference(self):
-        self.itera_interfs.append(np.array(self.update_interfs).mean())
+        if len(self.update_interfs) > 0:
+            self.itera_interfs.append(np.array(self.update_interfs).mean())
         self.update_interfs = []
 
     def log_interference(self, label=None):

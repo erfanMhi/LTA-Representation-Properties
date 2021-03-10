@@ -1009,14 +1009,12 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
 
     datasets = generate_distance_datasets(agent.cfg)
     if agent.cfg.evaluate_interference:
-        totalsize = 0
-        for dataset in datasets:
-            totalsize += len(dataset[0])
+        totalsize = np.sum(np.array([len(dataset[0]) for dataset in datasets]))
         agent.cfg.eval_dataset = Replay(memory_size=totalsize, batch_size=agent.cfg.batch_size)
         for dataset in datasets:
             state_all, next_s_all, _, action_all, reward_all, terminal_all, _ = dataset
             for i in range(len(state_all)):
-                agent.cfg.eval_dataset.feed([state_all[i], action_all[i], reward_all[i], next_s_all[i], int(terminal_all[i])])
+                agent.cfg.eval_dataset.feed([state_all[i], action_all[i], next_s_all[i], reward_all[i], int(terminal_all[i])])
         agent.cfg.logger.info('Save eval_dataset buffer')
 
     early_model_saved = False
@@ -1105,9 +1103,9 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
         
         agent.step()
         if agent.cfg.evaluate_interference:
-            agent.update_interference()
             if (not agent.cfg.use_target_network or agent.total_steps % agent.cfg.target_network_update_freq==0):
                 # target net changes, calculate interference for the beginning and ending of iteration
+                agent.update_interference()
                 agent.iteration_interference()
 def draw(state):
     import matplotlib.pyplot as plt

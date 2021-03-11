@@ -945,7 +945,7 @@ def online_lipschitz(agent, state_all, label=None):
                     diff_v[idx] = torch.abs(vi - vj).max().item() # for lipschitz
                     diff_phi[idx] = np.linalg.norm((phi_i - phi_j).numpy())  # for lipschitz
 
-                    diff_v_all.append(torch.abs(vi - vj).max().item()) # for specialization
+                    diff_v_all.append(torch.abs(vi.max() - vj.max()).item()) # for specialization
                     diff_phi_all.append(diff_phi[idx]) # for specialization
 
                     idx += 1

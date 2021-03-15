@@ -44,7 +44,7 @@
             {
             "aux_fn_type":  "fc",
             "aux_in_dim": 640,
-            "aux_out_dim": 32,
+            "aux_out_dim": 640,
             "hidden_units": [128, 128],
             "aux_task": "successor_as",
             "successor_lmbda":  0.9},
@@ -81,8 +81,8 @@
         "evaluate_lipschitz": true,
         "evaluate_distance": true,
         "evaluate_orthogonality": true,
-        "evaluate_noninterference": true,
-        "evaluate_decorrelation": true,
+    	"evaluate_interference": true,
+	"evaluate_diversity": true,
         "evaluate_sparsity": true,
         "evaluate_regression": false 
     },

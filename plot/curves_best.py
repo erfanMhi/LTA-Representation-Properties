@@ -83,7 +83,7 @@ def mountain_car():
 
 def simple_maze():
     print("\nRep learning")
-    targets = ["LTA eta=0.2", "DQN+LTA+Control1g", "DQN+LTA+Control5g",
+    targets = ["LTA eta=0.2", "LTA+Control1g", "LTA+Control5g",
                "LTA+XY", "LTA+Decoder", "LTA+NAS", "LTA+Reward", "LTA+SF",
                "ReLU", "Random", "Input"]
 

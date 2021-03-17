@@ -61,7 +61,7 @@ violin_colors = {
     "LTA(no target)": c_default[0],
 
     "LTA eta=0.2": c_default[1],
-    "LTA eta=0.4": c_default[10],
+    "LTA eta=0.4": c_default[0],
     "LTA eta=0.6": c_default[11],
     "LTA eta=0.8": c_default[12],
 
@@ -76,8 +76,6 @@ violin_colors = {
     "LTA+Reward": c_default[9],
     "LTA+SF": c_default[10],
 
-    "Laplace": "gray",
-    "Scratch DQN": "black",
     "Random": c_default[12],
     "Input": c_default[11],
 }
@@ -158,10 +156,10 @@ mc_learn_sweep = [
     {"label": "ReLU",
      "control": "data/output/test/mountaincar/representations/dqn/sweep/",
      },
-    {"label": "ReLU+LTA",
+    {"label": "LTA",
      "control": "data/output/test/mountaincar/representations/dqn_lta/sweep/",
      },
-    {"label": "ReLU+LTA(no target)",
+    {"label": "LTA(no target)",
      "control": "data/output/test/mountaincar/representations/dqn_lta/no_target/",
      },
 ]
@@ -371,25 +369,25 @@ gh_diff_early_sweep = [
     # {"label": "ReLU",
     #  "control": "data/output/test_v3/gridhard/control/different_task/fix_rep/dqn/sweep/",
     #  },
-    # {"label": "DQN+Control1g",
+    # {"label": "ReLU+Control1g",
     #  "control": "data/output/test_v3/gridhard/control/different_task/fix_rep/dqn_aux/aux_control/sweep_1g/",
     #  },
-    {"label": "DQN+Control5g",
+    {"label": "ReLU+Control5g",
      "control": "data/output/test/gridhard/control/early_stop/different_task/fix_rep/dqn_aux/aux_control/sweep_5g/",
      },
-    # {"label": "DQN+XY",
+    # {"label": "ReLU+XY",
     #  "control": "data/output/test_v3/gridhard/control/different_task/fix_rep/dqn_aux/info/sweep/",
     #  },
-    # {"label": "DQN+Decoder",
+    # {"label": "ReLU+Decoder",
     #  "control": "data/output/test_v3/gridhard/control/different_task/fix_rep/dqn_aux/input_decoder/sweep/",
     #  },
-    # {"label": "DQN+NAS",
+    # {"label": "ReLU+NAS",
     #  "control": "data/output/test_v3/gridhard/control/different_task/fix_rep/dqn_aux/nas_v2_delta/sweep/",
     #  },
-    # {"label": "DQN+Reward",
+    # {"label": "ReLU+Reward",
     #  "control": "data/output/test_v3/gridhard/control/different_task/fix_rep/dqn_aux/reward/sweep/",
     #  },
-    # {"label": "DQN+SF",
+    # {"label": "ReLU+SF",
     #  "control": "data/output/test_v3/gridhard/control/different_task/fix_rep/dqn_aux/successor_as/sweep/",
     #  },
     # {"label": "LTA eta=0.2",
@@ -404,10 +402,10 @@ gh_diff_early_sweep = [
     # {"label": "LTA eta=0.8",
     #  "control": "data/output/test_v3/gridhard/control/different_task/fix_rep/dqn_lta/eta_study_0.8_sweep/",
     #  },
-    # {"label": "DQN+LTA+Control1g",
+    # {"label": "LTA+Control1g",
     #  "control": "data/output/test_v3/gridhard/control/different_task/fix_rep/dqn_lta_aux/aux_control/sweep_1g/",
     #  },
-    # {"label": "DQN+LTA+Control5g",
+    # {"label": "LTA+Control5g",
     #  "control": "data/output/test_v3/gridhard/control/different_task/fix_rep/dqn_lta_aux/aux_control/sweep_5g/",
     #  },
     # {"label": "LTA+XY",
@@ -437,25 +435,25 @@ gh_diff_tune_early_sweep = [
     # {"label": "ReLU",
     #  "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn/sweep/",
     #  },
-    # {"label": "DQN+Control1g",
+    # {"label": "ReLU+Control1g",
     #  "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn_aux/aux_control/sweep_1g/",
     #  },
-    {"label": "DQN+Control5g",
+    {"label": "ReLU+Control5g",
      "control": "data/output/test/gridhard/control/early_stop/different_task/fine_tune/dqn_aux/aux_control/sweep_5g/",
      },
-    # {"label": "DQN+XY",
+    # {"label": "ReLU+XY",
     #  "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn_aux/info/sweep/",
     #  },
-    # {"label": "DQN+Decoder",
+    # {"label": "ReLU+Decoder",
     #  "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn_aux/input_decoder/sweep/",
     #  },
-    # {"label": "DQN+NAS",
+    # {"label": "ReLU+NAS",
     #  "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn_aux/nas_v2_delta/sweep/",
     #  },
-    # {"label": "DQN+Reward",
+    # {"label": "ReLU+Reward",
     #  "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn_aux/reward/sweep/",
     #  },
-    # {"label": "DQN+SF",
+    # {"label": "ReLU+SF",
     #  "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn_aux/successor_as/sweep/",
     #  },
     # {"label": "LTA eta=0.2",
@@ -470,10 +468,10 @@ gh_diff_tune_early_sweep = [
     # {"label": "LTA eta=0.8",
     #  "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn_lta/eta_study_0.8_sweep/",
     #  },
-    # {"label": "DQN+LTA+Control1g",
+    # {"label": "LTA+Control1g",
     #  "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn_lta_aux/aux_control/sweep_1g/",
     #  },
-    # {"label": "DQN+LTA+Control5g",
+    # {"label": "LTA+Control5g",
     #  "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn_lta_aux/aux_control/sweep_5g/",
     #  },
     # {"label": "LTA+XY",
@@ -500,25 +498,25 @@ gh_online = [
     {"label": "ReLU",
      "control": "data/output/test/gridhard/online_property/dqn/best/",
      },
-    {"label": "DQN+Control1g",
+    {"label": "ReLU+Control1g",
      "control": "data/output/test/gridhard/online_property/dqn_aux/freq8/aux_control/best_1g/",
      },
-    {"label": "DQN+Control5g",
+    {"label": "ReLU+Control5g",
      "control": "data/output/test/gridhard/online_property/dqn_aux/freq128/aux_control/best_5g/",
      },
-    {"label": "DQN+XY",
+    {"label": "ReLU+XY",
      "control": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/",
      },
-    {"label": "DQN+Decoder",
+    {"label": "ReLU+Decoder",
      "control": "data/output/test/gridhard/online_property/dqn_aux/freq8/input_decoder/best/",
      },
-    {"label": "DQN+NAS",
+    {"label": "ReLU+NAS",
      "control": "data/output/test/gridhard/online_property/dqn_aux/freq8/nas_v2_delta/best/",
      },
-    {"label": "DQN+Reward",
+    {"label": "ReLU+Reward",
      "control": "data/output/test/gridhard/online_property/dqn_aux/freq8/reward/best/",
      },
-    {"label": "DQN+SF",
+    {"label": "ReLU+SF",
      "control": "data/output/test/gridhard/online_property/dqn_aux/freq8/successor_as/best/",
      },
     {"label": "LTA eta=0.2",
@@ -533,10 +531,10 @@ gh_online = [
     {"label": "LTA eta=0.8",
      "control": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.8_best/",
      },
-    {"label": "DQN+LTA+Control1g",
+    {"label": "LTA+Control1g",
      "control": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_1g/",
      },
-    {"label": "DQN+LTA+Control5g",
+    {"label": "LTA+Control5g",
      "control": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_5g/",
      },
     {"label": "LTA+XY",
@@ -561,31 +559,31 @@ gh_same_early = [
      "control": "data/output/test/gridhard/control/early_stop/same_task/fix_rep/dqn/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn/best/"
      },
-    {"label": "DQN+Control1g",
+    {"label": "ReLU+Control1g",
      "control": "data/output/test/gridhard/control/early_stop/same_task/fix_rep/dqn_aux/aux_control/best_1g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/aux_control/best_1g/"
      },
-    {"label": "DQN+Control5g",
+    {"label": "ReLU+Control5g",
      "control": "data/output/test/gridhard/control/early_stop/same_task/fix_rep/dqn_aux/aux_control/best_5g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq128/aux_control/best_5g/"
      },
-    {"label": "DQN+XY",
+    {"label": "ReLU+XY",
      "control": "data/output/test/gridhard/control/early_stop/same_task/fix_rep/dqn_aux/info/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
      },
-    {"label": "DQN+Decoder",
+    {"label": "ReLU+Decoder",
      "control": "data/output/test/gridhard/control/early_stop/same_task/fix_rep/dqn_aux/input_decoder/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
      },
-    {"label": "DQN+NAS",
+    {"label": "ReLU+NAS",
      "control": "data/output/test/gridhard/control/early_stop/same_task/fix_rep/dqn_aux/nas_v2_delta/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/nas_v2_delta/best/"
      },
-    {"label": "DQN+Reward",
+    {"label": "ReLU+Reward",
      "control": "data/output/test/gridhard/control/early_stop/same_task/fix_rep/dqn_aux/reward/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/reward/best/"
      },
-    {"label": "DQN+SF",
+    {"label": "ReLU+SF",
      "control": "data/output/test/gridhard/control/early_stop/same_task/fix_rep/dqn_aux/successor_as/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/successor_as/best/"
      },
@@ -605,11 +603,11 @@ gh_same_early = [
      "control": "data/output/test/gridhard/control/early_stop/same_task/fix_rep/dqn_lta/eta_study_0.8_best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.8_best/"
      },
-    {"label": "DQN+LTA+Control1g",
+    {"label": "LTA+Control1g",
      "control": "data/output/test/gridhard/control/early_stop/same_task/fix_rep/dqn_lta_aux/aux_control/best_1g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_1g/"
      },
-    {"label": "DQN+LTA+Control5g",
+    {"label": "LTA+Control5g",
      "control": "data/output/test/gridhard/control/early_stop/same_task/fix_rep/dqn_lta_aux/aux_control/best_5g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_5g/"
      },
@@ -648,31 +646,31 @@ gh_similar_early = [
      "control": "data/output/test/gridhard/control/early_stop/similar_task/fix_rep/dqn/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn/best/"
      },
-    {"label": "DQN+Control1g",
+    {"label": "ReLU+Control1g",
      "control": "data/output/test/gridhard/control/early_stop/similar_task/fix_rep/dqn_aux/aux_control/best_1g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/aux_control/best_1g/"
      },
-    {"label": "DQN+Control5g",
+    {"label": "ReLU+Control5g",
      "control": "data/output/test/gridhard/control/early_stop/similar_task/fix_rep/dqn_aux/aux_control/best_5g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq128/aux_control/best_5g/"
      },
-    {"label": "DQN+XY",
+    {"label": "ReLU+XY",
      "control": "data/output/test/gridhard/control/early_stop/similar_task/fix_rep/dqn_aux/info/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
      },
-    {"label": "DQN+Decoder",
+    {"label": "ReLU+Decoder",
      "control": "data/output/test/gridhard/control/early_stop/similar_task/fix_rep/dqn_aux/input_decoder/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
      },
-    {"label": "DQN+NAS",
+    {"label": "ReLU+NAS",
      "control": "data/output/test/gridhard/control/early_stop/similar_task/fix_rep/dqn_aux/nas_v2_delta/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/nas_v2_delta/best/"
      },
-    {"label": "DQN+Reward",
+    {"label": "ReLU+Reward",
      "control": "data/output/test/gridhard/control/early_stop/similar_task/fix_rep/dqn_aux/reward/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/reward/best/"
      },
-    {"label": "DQN+SF",
+    {"label": "ReLU+SF",
      "control": "data/output/test/gridhard/control/early_stop/similar_task/fix_rep/dqn_aux/successor_as/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/successor_as/best/"
      },
@@ -692,11 +690,11 @@ gh_similar_early = [
      "control": "data/output/test/gridhard/control/early_stop/similar_task/fix_rep/dqn_lta/eta_study_0.8_best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.8_best/"
      },
-    {"label": "DQN+LTA+Control1g",
+    {"label": "LTA+Control1g",
      "control": "data/output/test/gridhard/control/early_stop/similar_task/fix_rep/dqn_lta_aux/aux_control/best_1g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_1g/"
      },
-    {"label": "DQN+LTA+Control5g",
+    {"label": "LTA+Control5g",
      "control": "data/output/test/gridhard/control/early_stop/similar_task/fix_rep/dqn_lta_aux/aux_control/best_5g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_5g/"
      },
@@ -735,31 +733,31 @@ gh_diff_early = [
      "control": "data/output/test/gridhard/control/early_stop/different_task/fix_rep/dqn/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn/best/"
      },
-    {"label": "DQN+Control1g",
+    {"label": "ReLU+Control1g",
      "control": "data/output/test/gridhard/control/early_stop/different_task/fix_rep/dqn_aux/aux_control/best_1g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/aux_control/best_1g/"
      },
-    {"label": "DQN+Control5g",
+    {"label": "ReLU+Control5g",
      "control": "data/output/test/gridhard/control/early_stop/different_task/fix_rep/dqn_aux/aux_control/best_5g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq128/aux_control/best_5g/"
      },
-    {"label": "DQN+XY",
+    {"label": "ReLU+XY",
      "control": "data/output/test/gridhard/control/early_stop/different_task/fix_rep/dqn_aux/info/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
      },
-    {"label": "DQN+Decoder",
+    {"label": "ReLU+Decoder",
      "control": "data/output/test/gridhard/control/early_stop/different_task/fix_rep/dqn_aux/input_decoder/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
      },
-    {"label": "DQN+NAS",
+    {"label": "ReLU+NAS",
      "control": "data/output/test/gridhard/control/early_stop/different_task/fix_rep/dqn_aux/nas_v2_delta/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/nas_v2_delta/best/"
      },
-    {"label": "DQN+Reward",
+    {"label": "ReLU+Reward",
      "control": "data/output/test/gridhard/control/early_stop/different_task/fix_rep/dqn_aux/reward/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/reward/best/"
      },
-    {"label": "DQN+SF",
+    {"label": "ReLU+SF",
      "control": "data/output/test/gridhard/control/early_stop/different_task/fix_rep/dqn_aux/successor_as/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/successor_as/best/"
      },
@@ -779,11 +777,11 @@ gh_diff_early = [
      "control": "data/output/test/gridhard/control/early_stop/different_task/fix_rep/dqn_lta/eta_study_0.8_best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.8_best/"
      },
-    {"label": "DQN+LTA+Control1g",
+    {"label": "LTA+Control1g",
      "control": "data/output/test/gridhard/control/early_stop/different_task/fix_rep/dqn_lta_aux/aux_control/best_1g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_1g/"
      },
-    {"label": "DQN+LTA+Control5g",
+    {"label": "LTA+Control5g",
      "control": "data/output/test/gridhard/control/early_stop/different_task/fix_rep/dqn_lta_aux/aux_control/best_5g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_5g/"
      },
@@ -822,31 +820,31 @@ gh_diff_tune_early = [
      "control": "data/output/test/gridhard/control/early_stop/different_task/fine_tune/dqn/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn/best/"
      },
-    {"label": "DQN+Control1g",
+    {"label": "ReLU+Control1g",
      "control": "data/output/test/gridhard/control/early_stop/different_task/fine_tune/dqn_aux/aux_control/best_1g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/aux_control/best_1g/"
      },
-    {"label": "DQN+Control5g",
+    {"label": "ReLU+Control5g",
      "control": "data/output/test/gridhard/control/early_stop/different_task/fine_tune/dqn_aux/aux_control/best_5g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq128/aux_control/best_5g/"
      },
-    {"label": "DQN+XY",
+    {"label": "ReLU+XY",
      "control": "data/output/test/gridhard/control/early_stop/different_task/fine_tune/dqn_aux/info/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
      },
-    {"label": "DQN+Decoder",
+    {"label": "ReLU+Decoder",
      "control": "data/output/test/gridhard/control/early_stop/different_task/fine_tune/dqn_aux/input_decoder/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
      },
-    {"label": "DQN+NAS",
+    {"label": "ReLU+NAS",
      "control": "data/output/test/gridhard/control/early_stop/different_task/fine_tune/dqn_aux/nas_v2_delta/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/nas_v2_delta/best/"
      },
-    {"label": "DQN+Reward",
+    {"label": "ReLU+Reward",
      "control": "data/output/test/gridhard/control/early_stop/different_task/fine_tune/dqn_aux/reward/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/reward/best/"
      },
-    {"label": "DQN+SF",
+    {"label": "ReLU+SF",
      "control": "data/output/test/gridhard/control/early_stop/different_task/fine_tune/dqn_aux/successor_as/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/successor_as/best/"
      },
@@ -866,11 +864,11 @@ gh_diff_tune_early = [
      "control": "data/output/test/gridhard/control/early_stop/different_task/fine_tune/dqn_lta/eta_study_0.8_best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.8_best/"
      },
-    {"label": "DQN+LTA+Control1g",
+    {"label": "LTA+Control1g",
      "control": "data/output/test/gridhard/control/early_stop/different_task/fine_tune/dqn_lta_aux/aux_control/best_1g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_1g/"
      },
-    {"label": "DQN+LTA+Control5g",
+    {"label": "LTA+Control5g",
      "control": "data/output/test/gridhard/control/early_stop/different_task/fine_tune/dqn_lta_aux/aux_control/best_5g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_5g/"
      },
@@ -905,31 +903,31 @@ gh_same_last = [
      "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn/best/"
      },
-    {"label": "DQN+Control1g",
+    {"label": "ReLU+Control1g",
      "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_aux/aux_control/best_1g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/aux_control/best_1g/"
      },
-    {"label": "DQN+Control5g",
+    {"label": "ReLU+Control5g",
      "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_aux/aux_control/best_5g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq128/aux_control/best_5g/"
      },
-    {"label": "DQN+XY",
+    {"label": "ReLU+XY",
      "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_aux/info/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
      },
-    {"label": "DQN+Decoder",
+    {"label": "ReLU+Decoder",
      "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_aux/input_decoder/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
      },
-    {"label": "DQN+NAS",
+    {"label": "ReLU+NAS",
      "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_aux/nas_v2_delta/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/nas_v2_delta/best/"
      },
-    {"label": "DQN+Reward",
+    {"label": "ReLU+Reward",
      "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_aux/reward/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/reward/best/"
      },
-    {"label": "DQN+SF",
+    {"label": "ReLU+SF",
      "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_aux/successor_as/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/successor_as/best/"
      },
@@ -949,11 +947,11 @@ gh_same_last = [
      "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_lta/eta_study_0.8_best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.8_best/"
      },
-    {"label": "DQN+LTA+Control1g",
+    {"label": "LTA+Control1g",
      "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_lta_aux/aux_control/best_1g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_1g/"
      },
-    {"label": "DQN+LTA+Control5g",
+    {"label": "LTA+Control5g",
      "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_lta_aux/aux_control/best_5g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_5g/"
      },
@@ -992,31 +990,31 @@ gh_similar_last = [
      "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn/best/"
      },
-    {"label": "DQN+Control1g",
+    {"label": "ReLU+Control1g",
      "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/aux_control/best_1g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/aux_control/best_1g/"
      },
-    {"label": "DQN+Control5g",
+    {"label": "ReLU+Control5g",
      "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/aux_control/best_5g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq128/aux_control/best_5g/"
      },
-    {"label": "DQN+XY",
+    {"label": "ReLU+XY",
      "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/info/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
      },
-    {"label": "DQN+Decoder",
+    {"label": "ReLU+Decoder",
      "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/input_decoder/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
      },
-    {"label": "DQN+NAS",
+    {"label": "ReLU+NAS",
      "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/nas_v2_delta/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/nas_v2_delta/best/"
      },
-    {"label": "DQN+Reward",
+    {"label": "ReLU+Reward",
      "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/reward/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/reward/best/"
      },
-    {"label": "DQN+SF",
+    {"label": "ReLU+SF",
      "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/successor_as/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/successor_as/best/"
      },
@@ -1036,11 +1034,11 @@ gh_similar_last = [
      "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_lta/eta_study_0.8_best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.8_best/"
      },
-    {"label": "DQN+LTA+Control1g",
+    {"label": "LTA+Control1g",
      "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_lta_aux/aux_control/best_1g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_1g/"
      },
-    {"label": "DQN+LTA+Control5g",
+    {"label": "LTA+Control5g",
      "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_lta_aux/aux_control/best_5g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_5g/"
      },
@@ -1079,31 +1077,31 @@ gh_diff_last = [
      "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn/best/"
      },
-    {"label": "DQN+Control1g",
+    {"label": "ReLU+Control1g",
      "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/aux_control/best_1g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/aux_control/best_1g/"
      },
-    {"label": "DQN+Control5g",
+    {"label": "ReLU+Control5g",
      "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/aux_control/best_5g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq128/aux_control/best_5g/"
      },
-    {"label": "DQN+XY",
+    {"label": "ReLU+XY",
      "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/info/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
      },
-    {"label": "DQN+Decoder",
+    {"label": "ReLU+Decoder",
      "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/input_decoder/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
      },
-    {"label": "DQN+NAS",
+    {"label": "ReLU+NAS",
      "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/nas_v2_delta/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/nas_v2_delta/best/"
      },
-    {"label": "DQN+Reward",
+    {"label": "ReLU+Reward",
      "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/reward/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/reward/best/"
      },
-    {"label": "DQN+SF",
+    {"label": "ReLU+SF",
      "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/successor_as/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/successor_as/best/"
      },
@@ -1123,11 +1121,11 @@ gh_diff_last = [
      "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_lta/eta_study_0.8_best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.8_best/"
      },
-    {"label": "DQN+LTA+Control1g",
+    {"label": "LTA+Control1g",
      "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_lta_aux/aux_control/best_1g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_1g/"
      },
-    {"label": "DQN+LTA+Control5g",
+    {"label": "LTA+Control5g",
      "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_lta_aux/aux_control/best_5g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_5g/"
      },
@@ -1166,31 +1164,31 @@ gh_diff_tune_last = [
      "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn/best/"
      },
-    {"label": "DQN+Control1g",
+    {"label": "ReLU+Control1g",
      "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/aux_control/best_1g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/aux_control/best_1g/"
      },
-    {"label": "DQN+Control5g",
+    {"label": "ReLU+Control5g",
      "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/aux_control/best_5g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq128/aux_control/best_5g/"
      },
-    {"label": "DQN+XY",
+    {"label": "ReLU+XY",
      "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/info/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
      },
-    {"label": "DQN+Decoder",
+    {"label": "ReLU+Decoder",
      "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/input_decoder/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
      },
-    {"label": "DQN+NAS",
+    {"label": "ReLU+NAS",
      "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/nas_v2_delta/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/nas_v2_delta/best/"
      },
-    {"label": "DQN+Reward",
+    {"label": "ReLU+Reward",
      "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/reward/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/reward/best/"
      },
-    {"label": "DQN+SF",
+    {"label": "ReLU+SF",
      "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/successor_as/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/successor_as/best/"
      },
@@ -1210,11 +1208,11 @@ gh_diff_tune_last = [
      "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_lta/eta_study_0.8_best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.8_best/"
      },
-    {"label": "DQN+LTA+Control1g",
+    {"label": "LTA+Control1g",
      "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_lta_aux/aux_control/best_1g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_1g/"
      },
-    {"label": "DQN+LTA+Control5g",
+    {"label": "LTA+Control5g",
      "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_lta_aux/aux_control/best_5g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_5g/"
      },
@@ -1247,13 +1245,13 @@ gh_diff_tune_last = [
 # ------------------------- Picky Eater Environment --------------------
 
 dqn_lta_learn_sweep = [
-    {"label": "DQN+LTA",
+    {"label": "LTA",
      "control": "data/output/test/picky_eater/online_property/dqn_lta/sweep",
      },
     ]
 
 dqn_lta_1_learn_sweep = [
-    {"label": "DQN+LTA+1",
+    {"label": "LTA+1",
      "control": "data/output/test/picky_eater/online_property/dqn_lta_1/sweep",
      },
     ]

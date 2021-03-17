@@ -57,8 +57,8 @@ violin_colors = {
     "ReLU+Reward": c_default[9],
     "ReLU+SF": c_default[10],
 
-    "ReLU+LTA": c_default[0],
-    "ReLU+LTA(no target)": c_default[0],
+    "LTA": c_default[0],
+    "LTA(no target)": c_default[0],
 
     "LTA eta=0.2": c_default[1],
     "LTA eta=0.4": c_default[10],
@@ -95,8 +95,8 @@ curve_styles = {
     "ReLU+Reward": s_default[1],
     "ReLU+SF": s_default[1],
 
-    "ReLU+LTA": s_default[0],
-    "ReLU+LTA(no target)": s_default[0],
+    "LTA": s_default[0],
+    "LTA(no target)": s_default[0],
 
     "LTA eta=0.2": s_default[0],
     "LTA eta=0.4": s_default[0],
@@ -131,8 +131,8 @@ marker_styles = {
     "ReLU+Reward": m_default[1],
     "ReLU+SF": m_default[1],
 
-    "ReLU+LTA": m_default[0],
-    "ReLU+LTA(no target)": m_default[0],
+    "LTA": m_default[0],
+    "LTA(no target)": m_default[0],
 
     "LTA eta=0.2": m_default[0],
     "LTA eta=0.4": m_default[0],

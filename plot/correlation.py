@@ -16,7 +16,7 @@ def load_online_property(group, target_key, reverse=False):
     all_property = {}
     temp = []
     for i in group:
-        if target_key in ["lipschitz", "interf"]:
+        if target_key in []:#["lipschitz", "interf"]:
             path = i["control"]
             values = extract_from_setting(path, 0, target_key, final_only=True)
         elif target_key in ["return"]:
@@ -297,6 +297,7 @@ if __name__ == '__main__':
     targets = ["ReLU",
                "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
                "LTA eta=0.2", "LTA eta=0.4", "LTA eta=0.6", "LTA eta=0.8",
-               "LTA+Control1g", "LTA+Control5g", "LTA+XY", "LTA+Decoder", "LTA+NAS", "LTA+Reward", "LTA+SF"]
+               "LTA+Control1g", "LTA+Control5g", "LTA+XY", "LTA+Decoder", "LTA+NAS", "LTA+Reward", "LTA+SF"
+               ]
     simple_maze_correlation_early(perc)
     simple_maze_correlation_last(perc)

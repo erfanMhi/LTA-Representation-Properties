@@ -21,7 +21,14 @@ print("Change dir to", os.getcwd())
 #     return all_rt
 
 
-def learning_curve(all_paths_dict, title):
+def learning_curve(all_paths_dict, title, targets=None, xlim=None):
+    if targets is not None:
+        temp = []
+        for item in all_paths_dict:
+            if item["label"] in targets:
+                temp.append(item)
+        all_paths_dict = temp
+
     labels = [i["label"] for i in all_paths_dict]
     # control = load_return(all_paths_dict)
     control = load_info(all_paths_dict, 0, "return")
@@ -30,11 +37,43 @@ def learning_curve(all_paths_dict, title):
         returns = arrange_order(control[label])
         draw_curve(returns, plt, label, violin_colors[label])
     # plt.title(title)
-    plt.legend()
-    # plt.xlim(0, 30)
+    # plt.legend()
+    if xlim is not None:
+        plt.xlim(xlim[0], xlim[1])
     plt.xlabel('step ($10^4$)')
     plt.ylabel('return')
     plt.savefig("plot/img/{}.png".format(title), dpi=300, bbox_inches='tight')
+    # plt.show()
+    plt.close()
+    plt.clf()
+
+def learning_curve_mean(all_paths_dict, title, targets=None, xlim=None):
+    if targets is not None:
+        temp = []
+        for item in all_paths_dict:
+            if item["label"] in targets:
+                temp.append(item)
+        all_paths_dict = temp
+
+    labels = [i["label"] for i in all_paths_dict]
+    # control = load_return(all_paths_dict)
+    control = load_info(all_paths_dict, 0, "return")
+    plt.figure()
+    total = 0
+    for label in labels:
+        returns = arrange_order(control[label])
+        draw_curve(returns, plt, label, violin_colors[label], alpha=0.3)
+        total = returns if type(total) == int else total + returns
+    draw_curve(total/len(labels), plt, "Avg", "black")
+
+    # plt.title(title)
+    plt.legend()
+    if xlim is not None:
+        plt.xlim(xlim[0], xlim[1])
+    plt.xlabel('step ($10^4$)')
+    plt.ylabel('return')
+    plt.savefig("plot/img/{}.png".format(title), dpi=300, bbox_inches='tight')
+    # plt.show()
     plt.close()
     plt.clf()
 
@@ -44,18 +83,23 @@ def mountain_car():
 
 def simple_maze():
     print("\nRep learning")
-    # learning_curve(gh_learn, "maze learning")
-    # learning_curve(gh_online, "maze online measure")
-    learning_curve(gh_etaStudy_online, "maze eta study online measure")
+    targets = ["LTA eta=0.2", "DQN+LTA+Control1g", "DQN+LTA+Control5g",
+               "LTA+XY", "LTA+Decoder", "LTA+NAS", "LTA+Reward", "LTA+SF",
+               "ReLU", "Random", "Input"]
 
-    # # print("\nTransfer")
-    # learning_curve(gh_etaStudy_diff_fix, "maze eta different (fix)")
-    # learning_curve(gh_etaStudy_diff_tune, "maze eta different (fine tune)")
-
-    learning_curve(gh_same, "maze same")
-    learning_curve(gh_similar, "maze similar")
-    learning_curve(gh_diff, "maze different (fix)")
-    learning_curve(gh_diff_tune, "maze different (fine tune)")
+    # learning_curve(gh_online, "maze online measure", targets, xlim=[0, 30])
+    #
+    # learning_curve(gh_same_early, "maze same early", targets, xlim=[0, 10])
+    # learning_curve(gh_similar_early, "maze similar early", targets, xlim=[0, 10])
+    # learning_curve(gh_diff_early, "maze different (fix) early", targets, xlim=[0, 10])
+    # learning_curve(gh_diff_tune_early, "maze different (fine tune) early", targets, xlim=[0, 10])
+    #
+    # learning_curve(gh_same_last, "maze same last", targets, xlim=[0, 10])
+    # learning_curve(gh_similar_last, "maze similar last", targets, xlim=[0, 10])
+    # learning_curve(gh_diff_last, "maze different (fix) last", targets, xlim=[0, 10])
+    # learning_curve(gh_diff_tune_last, "maze different (fine tune) last", targets, xlim=[0, 10])
+    #
+    # learning_curve_mean(gh_online, "maze online measure", targets, xlim=[0, 30])
 
 if __name__ == '__main__':
     # mountain_car()

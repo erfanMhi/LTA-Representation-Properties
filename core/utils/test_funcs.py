@@ -560,164 +560,164 @@ def test_sparsity(agent):
 #         f.write("Lifetime sparsity: {:.8f}".format(lifetime_sparsity))
 
 
-def test_dynamic_interference(agent):
-    state_all, next_s_all, _, action_all, reward_all, terminal_all = generate_distance_dataset(agent.cfg)
-    state_all = agent.cfg.state_normalizer(state_all)
-    next_s_all = agent.cfg.state_normalizer(next_s_all)
+# def test_dynamic_interference(agent):
+#     state_all, next_s_all, _, action_all, reward_all, terminal_all = generate_distance_dataset(agent.cfg)
+#     state_all = agent.cfg.state_normalizer(state_all)
+#     next_s_all = agent.cfg.state_normalizer(next_s_all)
+#
+#     action_all = action_all.reshape([-1, 1])
+#     sample_idx = np.random.choice(list(range(len(state_all))), size=200)
+#     state_batch = state_all[sample_idx]
+#     action_batch = action_all[sample_idx]
+#     next_s_batch = next_s_all[sample_idx]
+#     reward_batch = reward_all[sample_idx]
+#     terminal_batch = terminal_all[sample_idx]
+#
+#     all_param = agent.val_net.parameters()
+#     param_num = 0
+#     for p in all_param:
+#         param_num += np.product(p.size())
+#
+#     t0 = time.time()
+#     agent.populate_returns()
+#     non_interf = {
+#         "non-interf": [],
+#         "generalize-total": [],
+#         "generalize-count": [],
+#         "interference-total": [],
+#         "interference-count": []
+#     }
+#     non_interf = eval_noninterference(agent, param_num, state_batch, next_s_batch, action_batch, reward_batch, terminal_batch, non_interf)
+#     while True:
+#         if agent.cfg.log_interval and not agent.total_steps % agent.cfg.log_interval:
+#             if agent.cfg.tensorboard_logs: agent.log_tensorboard()
+#             agent.log_file(elapsed_time=agent.cfg.log_interval / (time.time() - t0))
+#             t0 = time.time()
+#         if agent.cfg.eval_interval and not agent.total_steps % agent.cfg.eval_interval:
+#             agent.eval_episodes()
+#             non_interf = eval_noninterference(agent, param_num, state_batch, next_s_batch, action_batch, reward_batch, terminal_batch, non_interf)
+#             if agent.cfg.visualize:
+#                 agent.visualize()
+#             t0 = time.time()
+#         if agent.cfg.max_steps and agent.total_steps >= agent.cfg.max_steps:
+#             agent.save()
+#             break
+#         agent.step()
+#     with open(os.path.join(agent.cfg.get_parameters_dir(), "../interference_log.pkl"), "wb") as f:
+#         pkl.dump(non_interf, f)
 
-    action_all = action_all.reshape([-1, 1])
-    sample_idx = np.random.choice(list(range(len(state_all))), size=200)
-    state_batch = state_all[sample_idx]
-    action_batch = action_all[sample_idx]
-    next_s_batch = next_s_all[sample_idx]
-    reward_batch = reward_all[sample_idx]
-    terminal_batch = terminal_all[sample_idx]
+# def test_trainedVF_interf(agent):
+#     state_all, next_s_all, _, action_all, reward_all, terminal_all = generate_distance_dataset(agent.cfg)
+#     state_all = agent.cfg.state_normalizer(state_all)
+#     next_s_all = agent.cfg.state_normalizer(next_s_all)
+#     action_all = action_all.reshape([-1, 1])
+#
+#     agent.load(agent.cfg.get_parameters_dir(), agent.cfg.load_early)
+#
+#     all_param = agent.val_net.parameters()
+#     param_num = 0
+#     for p in all_param:
+#         param_num += np.product(p.size())
+#     non_interf = {
+#         "non-interf": [],
+#         "generalize-total": [],
+#         "generalize-count": [],
+#         "interference-total": [],
+#         "interference-count": []
+#     }
+#     itr = 1
+#     batchsize = 100
+#     for i in range(itr):
+#         sample_idx = np.random.choice(list(range(len(state_all))), size=batchsize)
+#         state_batch = state_all[sample_idx]
+#         action_batch = action_all[sample_idx]
+#         next_s_batch = next_s_all[sample_idx]
+#         reward_batch = reward_all[sample_idx]
+#         terminal_batch = terminal_all[sample_idx]
+#         non_interf = eval_noninterference(agent, param_num, state_batch, next_s_batch, action_batch, reward_batch, terminal_batch, non_interf)
+#
+#     # with open(os.path.join(agent.cfg.get_parameters_dir(), "../interference_test.pkl"), "wb") as f:
+#     #     pkl.dump(non_interf, f)
+#     count_g = np.array(non_interf["generalize-count"]).sum()
+#     avg_g = np.array(non_interf["generalize-total"]).sum() / count_g
+#     count_i = np.array(non_interf["interference-count"]).sum()
+#     avg_i = np.array(non_interf["interference-total"]).sum() / count_i
+#     avg_noninterf = np.array(non_interf["non-interf"]).mean()
+#     with open(os.path.join(agent.cfg.get_parameters_dir(), "../interference_test.txt"), "w") as f:
+#         f.write("Percentage generalization: {:.8f}\n".format(count_g / (itr*batchsize*(batchsize-1))))
+#         f.write("Percentage interference: {:.8f}\n".format(count_i / (itr*batchsize*(batchsize-1))))
+#         f.write("Expected generalization: {:.8f}\n".format(avg_g))
+#         f.write("Expected interference: {:.8f}\n".format(avg_i))
+#         f.write("Non-interference score: {:.8f}\n".format(avg_noninterf))
 
-    all_param = agent.val_net.parameters()
-    param_num = 0
-    for p in all_param:
-        param_num += np.product(p.size())
-
-    t0 = time.time()
-    agent.populate_returns()
-    non_interf = {
-        "non-interf": [],
-        "generalize-total": [],
-        "generalize-count": [],
-        "interference-total": [],
-        "interference-count": []
-    }
-    non_interf = eval_noninterference(agent, param_num, state_batch, next_s_batch, action_batch, reward_batch, terminal_batch, non_interf)
-    while True:
-        if agent.cfg.log_interval and not agent.total_steps % agent.cfg.log_interval:
-            if agent.cfg.tensorboard_logs: agent.log_tensorboard()
-            agent.log_file(elapsed_time=agent.cfg.log_interval / (time.time() - t0))
-            t0 = time.time()
-        if agent.cfg.eval_interval and not agent.total_steps % agent.cfg.eval_interval:
-            agent.eval_episodes()
-            non_interf = eval_noninterference(agent, param_num, state_batch, next_s_batch, action_batch, reward_batch, terminal_batch, non_interf)
-            if agent.cfg.visualize:
-                agent.visualize()
-            t0 = time.time()
-        if agent.cfg.max_steps and agent.total_steps >= agent.cfg.max_steps:
-            agent.save()
-            break
-        agent.step()
-    with open(os.path.join(agent.cfg.get_parameters_dir(), "../interference_log.pkl"), "wb") as f:
-        pkl.dump(non_interf, f)
-
-def test_trainedVF_interf(agent):
-    state_all, next_s_all, _, action_all, reward_all, terminal_all = generate_distance_dataset(agent.cfg)
-    state_all = agent.cfg.state_normalizer(state_all)
-    next_s_all = agent.cfg.state_normalizer(next_s_all)
-    action_all = action_all.reshape([-1, 1])
-
-    agent.load(agent.cfg.get_parameters_dir(), agent.cfg.load_early)
-
-    all_param = agent.val_net.parameters()
-    param_num = 0
-    for p in all_param:
-        param_num += np.product(p.size())
-    non_interf = {
-        "non-interf": [],
-        "generalize-total": [],
-        "generalize-count": [],
-        "interference-total": [],
-        "interference-count": []
-    }
-    itr = 1
-    batchsize = 100
-    for i in range(itr):
-        sample_idx = np.random.choice(list(range(len(state_all))), size=batchsize)
-        state_batch = state_all[sample_idx]
-        action_batch = action_all[sample_idx]
-        next_s_batch = next_s_all[sample_idx]
-        reward_batch = reward_all[sample_idx]
-        terminal_batch = terminal_all[sample_idx]
-        non_interf = eval_noninterference(agent, param_num, state_batch, next_s_batch, action_batch, reward_batch, terminal_batch, non_interf)
-
-    # with open(os.path.join(agent.cfg.get_parameters_dir(), "../interference_test.pkl"), "wb") as f:
-    #     pkl.dump(non_interf, f)
-    count_g = np.array(non_interf["generalize-count"]).sum()
-    avg_g = np.array(non_interf["generalize-total"]).sum() / count_g
-    count_i = np.array(non_interf["interference-count"]).sum()
-    avg_i = np.array(non_interf["interference-total"]).sum() / count_i
-    avg_noninterf = np.array(non_interf["non-interf"]).mean()
-    with open(os.path.join(agent.cfg.get_parameters_dir(), "../interference_test.txt"), "w") as f:
-        f.write("Percentage generalization: {:.8f}\n".format(count_g / (itr*batchsize*(batchsize-1))))
-        f.write("Percentage interference: {:.8f}\n".format(count_i / (itr*batchsize*(batchsize-1))))
-        f.write("Expected generalization: {:.8f}\n".format(avg_g))
-        f.write("Expected interference: {:.8f}\n".format(avg_i))
-        f.write("Non-interference score: {:.8f}\n".format(avg_noninterf))
-
-def eval_noninterference(agent, param_num, state, next_s, action, reward, terminal, record):
-    def loss(agent, states, actions, next_states, rewards, terminals):
-        # if not agent.cfg.rep_config['train_rep']:
-        #     with torch.no_grad():
-        #         phi = agent.rep_net(states)
-        # else:
-        #     phi = agent.rep_net(states)
-        with torch.no_grad():
-            phi = agent.rep_net(states)
-
-        q = agent.val_net(phi)[list(range(len(actions))), actions]
-
-        # Constructing the target
-        with torch.no_grad():
-            q_next = agent.targets.val_net(agent.targets.rep_net(next_states))
-            q_next = q_next.max(1)[0]
-            terminals = torch_utils.tensor(terminals, agent.cfg.device)
-            rewards = torch_utils.tensor(rewards, agent.cfg.device)
-            target = agent.cfg.discount * q_next * (1 - terminals).float()
-            target.add_(rewards.float())
-            target = target.view((-1, 1))
-        loss = agent.vf_loss(q, target)  # (target - q).pow(2).mul(0.5).mean()
-        return loss
-
-    data_size = state.shape[0]
-    grad_mat = np.zeros([data_size, param_num])
-    for i in range(data_size):
-        agent.val_net.zero_grad()
-        agent.rep_net.zero_grad()
-        l = loss(agent, state[i:(i + 1)], action[i:(i + 1)], next_s[i:(i + 1)], reward[i:(i + 1)], terminal[i:(i + 1)])
-        l.backward()
-        grad_list = []
-        for para in agent.val_net.parameters():
-            if para.grad is not None:
-                grad_list.append(para.grad.flatten().numpy())
-        grad_mat[i] = np.concatenate(grad_list)
-
-    agent.val_net.zero_grad()
-    agent.rep_net.zero_grad()
-    agent.targets.val_net.zero_grad()
-    agent.targets.rep_net.zero_grad()
-
-    grad_mat = np.nan_to_num(grad_mat)
-    ntk_mat = np.matmul(grad_mat, grad_mat.T)
-    sample_norm = np.linalg.norm(grad_mat, axis=1).reshape((-1, 1))
-    norm = np.matmul(sample_norm, sample_norm.T)
-    ntk_mat = np.divide(ntk_mat, norm)
-    ntk_mat = np.nan_to_num(ntk_mat) # set 0 to where norm=0
-    np.fill_diagonal(ntk_mat, 0) # remove diagonal
-
-    generalize = ntk_mat[np.where(ntk_mat > 0)]
-    interfer = ntk_mat[np.where(ntk_mat < 0)]
-    g_count = len(generalize)
-    i_count = len(interfer)
-
-    ntk_mat = np.clip(ntk_mat * (-1), 0, np.inf)
-    rho = 1 - (np.sum(ntk_mat) - np.trace(ntk_mat)) / (data_size * (data_size - 1))
-    # agent.cfg.logger.tensorboard_writer.add_scalar('dqn/interference', rho, agent.total_steps)
-    record["non-interf"].append(rho)
-    if g_count > 0:
-        g_total = generalize.sum()
-        record["generalize-total"].append(g_total)
-        record["generalize-count"].append(g_count)
-    if i_count > 0:
-        i_total = interfer.sum()
-        record["interference-total"].append(i_total)
-        record["interference-count"].append(i_count)
-    return record
+# def eval_noninterference(agent, param_num, state, next_s, action, reward, terminal, record):
+#     def loss(agent, states, actions, next_states, rewards, terminals):
+#         # if not agent.cfg.rep_config['train_rep']:
+#         #     with torch.no_grad():
+#         #         phi = agent.rep_net(states)
+#         # else:
+#         #     phi = agent.rep_net(states)
+#         with torch.no_grad():
+#             phi = agent.rep_net(states)
+#
+#         q = agent.val_net(phi)[list(range(len(actions))), actions]
+#
+#         # Constructing the target
+#         with torch.no_grad():
+#             q_next = agent.targets.val_net(agent.targets.rep_net(next_states))
+#             q_next = q_next.max(1)[0]
+#             terminals = torch_utils.tensor(terminals, agent.cfg.device)
+#             rewards = torch_utils.tensor(rewards, agent.cfg.device)
+#             target = agent.cfg.discount * q_next * (1 - terminals).float()
+#             target.add_(rewards.float())
+#             target = target.view((-1, 1))
+#         loss = agent.vf_loss(q, target)  # (target - q).pow(2).mul(0.5).mean()
+#         return loss
+#
+#     data_size = state.shape[0]
+#     grad_mat = np.zeros([data_size, param_num])
+#     for i in range(data_size):
+#         agent.val_net.zero_grad()
+#         agent.rep_net.zero_grad()
+#         l = loss(agent, state[i:(i + 1)], action[i:(i + 1)], next_s[i:(i + 1)], reward[i:(i + 1)], terminal[i:(i + 1)])
+#         l.backward()
+#         grad_list = []
+#         for para in agent.val_net.parameters():
+#             if para.grad is not None:
+#                 grad_list.append(para.grad.flatten().numpy())
+#         grad_mat[i] = np.concatenate(grad_list)
+#
+#     agent.val_net.zero_grad()
+#     agent.rep_net.zero_grad()
+#     agent.targets.val_net.zero_grad()
+#     agent.targets.rep_net.zero_grad()
+#
+#     grad_mat = np.nan_to_num(grad_mat)
+#     ntk_mat = np.matmul(grad_mat, grad_mat.T)
+#     sample_norm = np.linalg.norm(grad_mat, axis=1).reshape((-1, 1))
+#     norm = np.matmul(sample_norm, sample_norm.T)
+#     ntk_mat = np.divide(ntk_mat, norm)
+#     ntk_mat = np.nan_to_num(ntk_mat) # set 0 to where norm=0
+#     np.fill_diagonal(ntk_mat, 0) # remove diagonal
+#
+#     generalize = ntk_mat[np.where(ntk_mat > 0)]
+#     interfer = ntk_mat[np.where(ntk_mat < 0)]
+#     g_count = len(generalize)
+#     i_count = len(interfer)
+#
+#     ntk_mat = np.clip(ntk_mat * (-1), 0, np.inf)
+#     rho = 1 - (np.sum(ntk_mat) - np.trace(ntk_mat)) / (data_size * (data_size - 1))
+#     # agent.cfg.logger.tensorboard_writer.add_scalar('dqn/interference', rho, agent.total_steps)
+#     record["non-interf"].append(rho)
+#     if g_count > 0:
+#         g_total = generalize.sum()
+#         record["generalize-total"].append(g_total)
+#         record["generalize-count"].append(g_count)
+#     if i_count > 0:
+#         i_total = interfer.sum()
+#         record["interference-total"].append(i_total)
+#         record["interference-count"].append(i_count)
+#     return record
 
 # def test_noninterference(agent):
 #
@@ -1016,6 +1016,8 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
             for i in range(len(state_all)):
                 agent.cfg.eval_dataset.feed([state_all[i], action_all[i], next_s_all[i], reward_all[i], int(terminal_all[i])])
         agent.cfg.logger.info('Save eval_dataset buffer')
+        agent.update_interference()
+        agent.iteration_interference()
 
     early_model_saved = False
 
@@ -1095,7 +1097,7 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
         
         if agent.cfg.max_steps and agent.total_steps >= agent.cfg.max_steps:
             agent.save()
-            if not early_model_saved:
+            if not early_model_saved and agent.cfg.save_params:
                 agent.save(early=True)
                 early_model_saved = True
                 agent.cfg.logger.info('Save the last learned model as the early-stopping model')

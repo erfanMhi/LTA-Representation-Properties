@@ -4,20 +4,29 @@ import numpy as np
 flatten = lambda t: [item for sublist in t for item in sublist]
 
 
-def arrange_order(dict1):
+def arrange_order(dict1, cut_length=True, scale=1):
     lst = []
     min_l = np.inf
     for i in sorted(dict1):
         v1 = dict1[i]
         lst.append(v1)
-        l = len(v1)
-        print('Length: ', l)
-        print('Run: ', i)
-        min_l = l if l < min_l else min_l
-    print("min length: ", min_l)
-    for i in range(len(lst)):
-        lst[i] = lst[i][:min_l]
-    return np.array(lst)
+# <<<<<<< HEAD
+        # l = len(v1)
+        # print('Length: ', l)
+        # print('Run: ', i)
+        # min_l = l if l < min_l else min_l
+    # print("min length: ", min_l)
+    # for i in range(len(lst)):
+        # lst[i] = lst[i][:min_l]
+    # return np.array(lst)
+# =======
+        if cut_length:
+            l = len(v1)
+            min_l = l if l < min_l else min_l
+    if cut_length:
+        for i in range(len(lst)):
+            lst[i] = lst[i][:min_l]
+    return np.array(lst) / float(scale)
 
 def load_info(paths, param, key):
     all_rt = {}
@@ -37,27 +46,32 @@ def load_return(paths, setting_list):
         all_rt[i["label"]] = returns
     return all_rt
 
-def draw_curve(all_res, ax, label, color=None):
+def draw_curve(all_res, ax, label, color=None, style="-", alpha=1, linewidth=1.5):
     mu = all_res.mean(axis=0)
     std = all_res.std(axis=0)
     # ste = std / np.sqrt(len(std))
     ste = std / np.sqrt(all_res.shape[0])
     if color is None:
-        ax.plot(mu, label=label)
-        ax.fill_between(list(range(len(mu))), mu - ste * 2, mu + ste * 2, alpha=0.1, linewidth=0.)
+        p = ax.plot(mu, label=label, alpha=alpha, linestyle=style, linewidth=linewidth)
+        color = p.get_color()
     else:
-        ax.plot(mu, label=label, color=color)
-        ax.fill_between(list(range(len(mu))), mu-ste*2, mu+ste*2, color=color, alpha=0.1, linewidth=0.)
-    print(mu)
-    print(color)
+        ax.plot(mu, label=label, color=color, alpha=alpha, linestyle=style, linewidth=linewidth)
+    ax.fill_between(list(range(len(mu))), mu - ste * 2, mu + ste * 2, color=color, alpha=0.1, linewidth=0.)
     print(label, "auc =", np.sum(mu))
     return mu
+
+def draw_cut(cuts, all_res, ax, color, ymin):
+    mu = all_res.mean(axis=0)
+    x_mean = cuts.mean()
+    x_max = cuts.max()
+    # ax.vlines(x_mean, ymin, np.interp(x_mean, list(range(len(mu))), mu), ls="--", colors=color, alpha=0.5)
+    ax.vlines(x_max, ymin, np.interp(x_max, list(range(len(mu))), mu), ls=":", colors=color, alpha=0.5, linewidth=1)
 
 def extract_from_single_run(file, key):
     with open(file, "r") as f:
         content = f.readlines()
     returns = []
-    for l in content:
+    for num, l in enumerate(content):
         info = l.split("|")[1].strip()
         i_list = info.split(" ")
         if "total" == i_list[0]:
@@ -69,16 +83,26 @@ def extract_from_single_run(file, key):
                 returns.append(float(i_list[i_list.index("Distance:") + 1].split("/")[0].strip()))
             elif key == "ortho" and "Orthogonality:" in i_list:
                 returns.append(float(i_list[i_list.index("Orthogonality:") + 1].split("/")[0].strip()))
-            elif key == "noninterf" and "Noninterference:" in i_list:
-                interf = float(i_list[i_list.index("Noninterference:") + 1].split("/")[0].strip())
-                if not (np.isnan(interf) or np.isinf(interf) or np.isinf(-interf)):
-                    returns.append(interf)
-                else:
-                    print("{} non-interference has {} value".format(file, interf))
+            # elif key == "noninterf" and "Noninterference:" in i_list:
+            #     interf = float(i_list[i_list.index("Noninterference:") + 1].split("/")[0].strip())
+            #     if not (np.isnan(interf) or np.isinf(interf) or np.isinf(-interf)):
+            #         returns.append(interf)
+            #     else:
+            #         print("{} non-interference has {} value".format(file, interf))
+            elif key == "interf" and "Interference:" in i_list:
+                interf = float(i_list[i_list.index("Interference:") + 1].split("/")[0].strip())
+                returns.append(interf)
             elif key == "decorr" and "Decorrelation:" in i_list:
                 returns.append(float(i_list[i_list.index("Decorrelation:") + 1].split("/")[0].strip()))
+            elif key == "diversity" and "Diversity:" in i_list:
+                returns.append(float(i_list[i_list.index("Diversity:") + 1].split("/")[0].strip()))
+                if np.isnan(returns[-1]):
+                    returns[-1] = 0
             elif key == "sparsity" and "Instance Sparsity:" in info:
                 returns.append(float(i_list[i_list.index("Sparsity:") + 1].split(",")[0].strip()))
+        if "early-stopping" in i_list and key == "model":
+            cut = num - 1 # last line
+            returns = int(content[cut].split("total steps")[1].split(",")[0])
     return returns
 #
 # def extract_lipschitz_single_run(file):

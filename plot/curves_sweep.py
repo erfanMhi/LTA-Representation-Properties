@@ -50,7 +50,7 @@ def compare_learning_curve(all_paths_dict, title, total_param=None,
                     l += str(getattr(cfg, label_key)) + ' '
             
             returns = arrange_order(returns)
-            draw_curve(returns, axs[idx], l, cmap(param, len(list(all_params.keys()))))
+            draw_curve(returns, axs[idx], l, cmap(float(param), len(list(all_params.keys()))))
         
         axs[idx].set_title(label)
         axs[idx].legend()
@@ -71,7 +71,7 @@ def learning_curve(all_paths_dict, title, total_param=None,
 
     labels = [i["label"] for i in all_paths_dict]
     # control = load_return(all_paths_dict, total_param, start_param)
-    control = load_return(all_paths_dict, total_param)
+    control = load_return(all_paths_dict, total_param)#, start_param)
     fig, axs = plt.subplots(nrows=1, ncols=len(labels), figsize=(30, 4))
 
     if len(labels) == 1:
@@ -102,17 +102,13 @@ def mountain_car():
 
 def simple_maze():
     # print("\nRep learning")
-    # learning_curve(gh_learn_sweep, "maze learning sweep")
     learning_curve(gh_online_sweep, "maze online property sweep")
 
     # # print("\nControl")
-    # learning_curve(gh_same_sweep, "maze same sweep")
-    # learning_curve(gh_similar_sweep, "maze similar sweep")
-    # learning_curve(gh_diff_sweep, "maze different (fix) sweep")
-    # learning_curve(gh_diff_tune_sweep, "maze different (fine tune) sweep")
-
-    # learning_curve(gh_etaStudy_diff_fix_sweep, "maze different (fix) eta study")
-    # learning_curve(gh_etaStudy_diff_tune_sweep, "maze different (fine tune) eta study")
+    learning_curve(gh_same_early_sweep, "maze same sweep")
+    learning_curve(gh_similar_early_sweep, "maze similar sweep")
+    learning_curve(gh_diff_early_sweep, "maze different (fix) sweep")
+    learning_curve(gh_diff_tune_early_sweep, "maze different (fine tune) sweep")
 
 def picky_eater():
 
@@ -133,5 +129,5 @@ def picky_eater():
 
 if __name__ == '__main__':
     # mountain_car()
-    # simple_maze()
+    simple_maze()
     picky_eater()

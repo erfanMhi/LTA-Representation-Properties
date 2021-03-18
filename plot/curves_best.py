@@ -25,8 +25,10 @@ def learning_curve(all_paths_dict, title):
     labels = [i["label"] for i in all_paths_dict]
     # control = load_return(all_paths_dict)
     control = load_info(all_paths_dict, 0, "return")
+    print(control.keys())
     plt.figure()
     for label in labels:
+        print(label)
         returns = arrange_order(control[label])
         draw_curve(returns, plt, label, violin_colors[label])
     # plt.title(title)
@@ -57,7 +59,16 @@ def simple_maze():
     learning_curve(gh_diff, "maze different (fix)")
     learning_curve(gh_diff_tune, "maze different (fine tune)")
 
+def picky_eater():
+    # learning_curve(crgb_online_dqn, "maze online dqn")
+
+    # learning_curve(crgb_online_dqn_lta, "maze online dqn with lta")
+    learning_curve(crgb_online_dt_fr, "maze transfer different task fix rep")
+    learning_curve(crgb_online_st_fr, "maze transfer same task fixed rep")
+    learning_curve(crgb_online_dt_ft, "maze transfer different task fine tune")
+
+
 if __name__ == '__main__':
     # mountain_car()
-    simple_maze()
-    # picky_eater()
+    #simple_maze()
+    picky_eater()

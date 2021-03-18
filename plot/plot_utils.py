@@ -11,7 +11,10 @@ def arrange_order(dict1):
         v1 = dict1[i]
         lst.append(v1)
         l = len(v1)
+        print('Length: ', l)
+        print('Run: ', i)
         min_l = l if l < min_l else min_l
+    print("min length: ", min_l)
     for i in range(len(lst)):
         lst[i] = lst[i][:min_l]
     return np.array(lst)
@@ -45,6 +48,8 @@ def draw_curve(all_res, ax, label, color=None):
     else:
         ax.plot(mu, label=label, color=color)
         ax.fill_between(list(range(len(mu))), mu-ste*2, mu+ste*2, color=color, alpha=0.1, linewidth=0.)
+    print(mu)
+    print(color)
     print(label, "auc =", np.sum(mu))
     return mu
 

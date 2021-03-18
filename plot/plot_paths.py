@@ -43,6 +43,17 @@ violin_colors = {
     "DQN+AuxControl1g": "C0",
     "DQN+AuxControl5g": "C9",
     "DQN+Reward": "C10",
+    
+    "DQN+LTA+XY": "C1",
+    "DQN+LTA+XY+color": "goldenrod",
+    "DQN+LTA+XY+count": "C8",
+    "DQN+LTA+Decoder": "C3",
+    "DQN+LTA+NAS": "C5",
+    "DQN+LTA+SF": "C6",
+    "DQN+LTA+AuxControl": "C0",
+    "DQN+LTA+AuxControl1g": "C0",
+    "DQN+LTA+AuxControl5g": "C9",
+    "DQN+LTA+Reward": "C10",
 
     "DQN+LTA": "C2",
     "DQN+LTA(no target)": "springgreen",
@@ -662,3 +673,77 @@ dqn_learn_sweep = [
      "control": "data/output/test/picky_eater/online_property/dqn/sweep",
      },
     ]
+
+crgb_online_dqn = [
+    {"label": "DQN",
+     "control": "data/output/test/picky_eater/online_property/dqn/best/",
+     },
+   {"label": "DQN+Reward",
+     "control": "data/output/test/picky_eater/online_property/dqn_aux/reward/initial/",
+     },
+    {"label": "DQN+AuxControl", "control": "data/output/test/picky_eater/online_property/dqn_aux/aux_control/initial/",
+     },    
+    {"label": "DQN+XY",
+     "control": "data/output/test/picky_eater/online_property/dqn_aux/info/initial_xy/",
+     },
+    {"label": "DQN+Decoder",
+     "control": "data/output/test/picky_eater/online_property/dqn_aux/input_decoder/initial/",
+     },
+    {"label": "DQN+NAS",
+     "control": "data/output/test/picky_eater/online_property/dqn_aux/nas_v2_delta/initial/",
+     },
+    {"label": "DQN+SF",
+     "control": "data/output/test/picky_eater/online_property/dqn_aux/successor_as/initial/",
+     },
+]
+crgb_online_dqn_lta = [
+    {"label": "DQN+LTA",
+     "control": "data/output/test/picky_eater/online_property/dqn_lta/best/",
+     },
+ 
+    {"label": "DQN+LTA+AuxControl",
+     "control": "data/output/test/picky_eater/online_property/dqn_lta_aux/aux_control/initial/",
+     },    
+    {"label": "DQN+LTA+XY",
+     "control": "data/output/test/picky_eater/online_property/dqn_lta_aux/info/initial_xy/",
+     },
+    {"label": "DQN+LTA+Decoder",
+     "control": "data/output/test/picky_eater/online_property/dqn_lta_aux/input_decoder/initial/",
+     },
+    {"label": "DQN+LTA+NAS",
+     "control": "data/output/test/picky_eater/online_property/dqn_lta_aux/nas_v2_delta/initial/",
+     },
+    {"label": "DQN+LTA+SF",
+     "control": "data/output/test/picky_eater/online_property/dqn_lta_aux/successor_as/initial/",
+     },
+    {"label": "DQN+LTA+Reward",
+     "control": "data/output/test/picky_eater/online_property/dqn_lta_aux/reward/initial/",
+    },
+    ]
+
+crgb_online_st_fr = [
+    {"label": "DQN",
+     "control": "data/output/test/picky_eater/control/same_task/fix_rep/dqn/best_early/",
+     },
+    {"label": "DQN+LTA",
+     "control": "data/output/test/picky_eater/control/same_task/fix_rep/dqn_lta/best_early/",
+     },
+]
+
+crgb_online_dt_fr = [
+    {"label": "DQN",
+     "control": "data/output/test/picky_eater/control/different_task/fix_rep/dqn/best_early/",
+     },
+    {"label": "DQN+LTA",
+     "control": "data/output/test/picky_eater/control/different_task/fix_rep/dqn_lta/best_early/",
+     },
+]
+
+crgb_online_dt_ft = [
+    {"label": "DQN",
+     "control": "data/output/test/picky_eater/control/different_task/fine_tune/dqn/best_early/",
+     },
+    {"label": "DQN+LTA",
+     "control": "data/output/test/picky_eater/control/different_task/fine_tune/dqn_lta/best_early/",
+     },
+]

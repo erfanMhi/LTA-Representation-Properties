@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAuxAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test/picky_eater/online_property/dqn_lta_aux/info/initial_xy",
+        "exp_name": "test/picky_eater/online_property/dqn_lta_aux/info/sweep_xy",
 	"env_name": "CollectTwoColorRGB",
         "agent": "DQNAuxAgent",
         "discount": 0.99,
@@ -81,6 +81,6 @@
         "evaluate_regression": false 
     },
     "sweep_parameters": {
-        "learning_rate": [0.00003]
+        "learning_rate": [0.0001, 0.00003, 0.00001, 0.000003]
     }
 }

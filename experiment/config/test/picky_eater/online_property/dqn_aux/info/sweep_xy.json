@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAuxAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test/picky_eater/online_property/dqn_lta_aux/info/initial_xy",
+        "exp_name": "test/picky_eater/online_property/dqn_aux/info/sweep_xy",
 	"env_name": "CollectTwoColorRGB",
         "agent": "DQNAuxAgent",
         "discount": 0.99,
@@ -10,7 +10,7 @@
         "epsilon": 0.1,
 
         "rep_config": {
-            "rep_type": "modular",
+            "rep_type": "online",
             "network_type": "conv",
             "conv_architecture": {
                 "conv_layers": [
@@ -29,20 +29,10 @@
             "val_fn_type": "linear",
             "init_type": "lta"
          },
-	
-	"activation_config": {
-            "name": "LTA",
-            "input": 32,
-            "tile": 20,
-            "eta": 2.0,
-            "bound_high": 20,
-            "bound_low": -20
-        },
-
 
         "aux_config": [{
             "aux_fn_type":  "fc",
-            "aux_in_dim": 640,
+            "aux_in_dim": 32,
             "aux_out_dim": 2,
             "hidden_units": [64, 64],
             "aux_task": "rgb2xy"
@@ -75,12 +65,12 @@
         "evaluate_lipschitz": true,
         "evaluate_distance": true,
         "evaluate_orthogonality": true,
-    	"evaluate_interference": true,
+ 	"evaluate_interference": true,
 	"evaluate_diversity": true,
         "evaluate_sparsity": true,
         "evaluate_regression": false 
     },
     "sweep_parameters": {
-        "learning_rate": [0.00003]
+        "learning_rate": [0.0001, 0.00003, 0.00001, 0.000003]
     }
 }

@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAuxAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test/picky_eater/online_property/dqn_lta_aux/info/initial_xy",
+        "exp_name": "test/picky_eater/online_property/dqn_lta_aux/reward/sweep",
 	"env_name": "CollectTwoColorRGB",
         "agent": "DQNAuxAgent",
         "discount": 0.99,
@@ -40,16 +40,16 @@
         },
 
 
-        "aux_config": [{
-            "aux_fn_type":  "fc",
+         "aux_config": [
+            {
+            "aux_fn_type":  "linear",
             "aux_in_dim": 640,
-            "aux_out_dim": 2,
-            "hidden_units": [64, 64],
-            "aux_task": "rgb2xy"
-	}
+            "aux_out_dim": 1,
+            "aux_task": "reward_predictor"
+            }
         ],
-
-        "replay": true,
+        
+	"replay": true,
         "memory_size": 10000,
         "batch_size": 32,
 
@@ -81,6 +81,6 @@
         "evaluate_regression": false 
     },
     "sweep_parameters": {
-        "learning_rate": [0.00003]
+        "learning_rate": [0.0001, 0.00003, 0.00001, 0.000003]
     }
 }

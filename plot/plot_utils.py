@@ -10,6 +10,16 @@ def arrange_order(dict1, cut_length=True, scale=1):
     for i in sorted(dict1):
         v1 = dict1[i]
         lst.append(v1)
+# <<<<<<< HEAD
+        # l = len(v1)
+        # print('Length: ', l)
+        # print('Run: ', i)
+        # min_l = l if l < min_l else min_l
+    # print("min length: ", min_l)
+    # for i in range(len(lst)):
+        # lst[i] = lst[i][:min_l]
+    # return np.array(lst)
+# =======
         if cut_length:
             l = len(v1)
             min_l = l if l < min_l else min_l

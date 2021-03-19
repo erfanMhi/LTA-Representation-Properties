@@ -68,7 +68,7 @@
 	
 	"distance_paths": [{"current": "example/picky_eater/trained_dqn/distance_current_states_sameEP_green.npy", "action": "example/picky_eater/trained_dqn/distance_actions_sameEP_green.npy", "next": "example/picky_eater/trained_dqn/distance_next_states_sameEP_green.npy", "reward": "example/picky_eater/trained_dqn/distance_rewards_sameEP_green.npy", "terminal": "example/picky_eater/trained_dqn/distance_terminals_sameEP_green.npy", "label": "Green"}, {"current": "example/picky_eater/trained_dqn/distance_current_states_sameEP_red.npy", "action": "example/picky_eater/trained_dqn/distance_actions_sameEP_red.npy", "next": "example/picky_eater/trained_dqn/distance_next_states_sameEP_red.npy", "reward": "example/picky_eater/trained_dqn/distance_rewards_sameEP_red.npy", "terminal": "example/picky_eater/trained_dqn/distance_terminals_sameEP_red.npy", "label": "Red"}, {"current": "example/picky_eater/trained_dqn/distance_current_states_sameEP_random.npy", "action": "example/picky_eater/trained_dqn/distance_actions_sameEP_random.npy", "next": "example/picky_eater/trained_dqn/distance_next_states_sameEP_random.npy", "reward": "example/picky_eater/trained_dqn/distance_rewards_sameEP_random.npy", "terminal": "example/picky_eater/trained_dqn/distance_terminals_sameEP_random.npy", "label": "Random"}],
 
-	"online_property": true,
+	"online_property": false,
         "tensorboard_logs": false,
         "save_params": true,
         "visualize": false,
@@ -81,6 +81,6 @@
         "evaluate_regression": false 
     },
     "sweep_parameters": {
-        "learning_rate": [0.00003]
+        "learning_rate": [0.0001, 0.00003, 0.00001, 0.000003]
     }
 }

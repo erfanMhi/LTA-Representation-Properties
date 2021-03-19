@@ -11,7 +11,6 @@ from experiment.sweeper import Sweeper
 
 os.chdir("..")
 print("Change dir to", os.getcwd())
-
 # def arrange_order(dict1):
 #     lst = []
 #     min_l = np.inf
@@ -31,6 +30,7 @@ def get_best_run_and_params(all_paths_dict, title, total_param=None,
     labels = [i["label"] for i in all_paths_dict]
     control = load_return(all_paths_dict, total_param, start_param)
 
+    best_param_label = 'None'
     best_param = -1
     best_param_val = float('-inf')
     best_label = -1
@@ -51,19 +51,25 @@ def get_best_run_and_params(all_paths_dict, title, total_param=None,
             performance = returns[:, -last_evals_num:].sum(1).mean()
             if performance >= best_param_val:
                 best_param_val = performance
-                best_param = l
+                best_param_label = l
+                best_param = param
                 best_label = label
                 best_run = returns[:, -last_evals_num:].sum(1).argmax()
     print('Best Param: ', best_param)
+    print('Best Param Label: ', best_param_label)
     print('Best Label: ', best_label)
     print('Best Run: ', best_run)
     print('Best Performance: ', best_param_val)
 
 def picky_eater():
 
-    get_best_run_and_params(pe_learn_sweep, "picky eater learning curve",
+    get_best_run_and_params(dqn_lta_learn_sweep, "picky eater learning curve",
             label_keys = [['target_network_update_freq', 'learning_rate']], config_paths = ['experiment/config/test/picky_eater/online_property/dqn_lta/sweep.json'])
+ 
+    get_best_run_and_params(dqn_learn_sweep, "picky eater learning curve",
+            label_keys = [['target_network_update_freq', 'learning_rate']], config_paths = ['experiment/config/test/picky_eater/online_property/dqn/sweep.json'])
     
+   
 
 if __name__ == '__main__':
     # mountain_car()

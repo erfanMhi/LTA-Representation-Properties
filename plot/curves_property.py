@@ -180,7 +180,17 @@ def simple_maze():
     learning_curve_mean(gh_diff_early, "maze diff (fix) return", key="return", targets=targets, xlim=[0, 11], show_avg=False, show_model=False)
     learning_curve_mean(gh_diff_tune_early, "maze diff (tune) return", key="return", targets=targets, xlim=[0, 11], show_avg=False, show_model=False)
 
+def picky_eater():
+    print("\nRep learning")
+    learning_curve_mean(crgb_online, "maze return", key="return")
+    learning_curve_mean(crgb_online, "maze online lipschitz", key="lipschitz")
+    learning_curve_mean(crgb_online, "maze online distance", key="distance")
+    learning_curve_mean(crgb_online, "maze online orthogonal", key="ortho")
+    learning_curve_mean(crgb_online, "maze online noninterf", key="noninterf")
+    learning_curve_mean(crgb_online, "maze online decorr", key="decorr")
+    learning_curve_mean(crgb_online, "maze online sparsity", key="sparsity")
+
 if __name__ == '__main__':
     # mountain_car()
-    simple_maze()
-    # picky_eater()
+    # simple_maze()
+    picky_eater()

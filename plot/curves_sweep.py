@@ -70,6 +70,7 @@ def learning_curve(all_paths_dict, title, total_param=None,
         start_param=0, labels_map=None):
 
     labels = [i["label"] for i in all_paths_dict]
+    # control = load_return(all_paths_dict, total_param, start_param)
     control = load_return(all_paths_dict, total_param)#, start_param)
     fig, axs = plt.subplots(nrows=1, ncols=len(labels), figsize=(30, 4))
 
@@ -111,14 +112,16 @@ def simple_maze():
 
 def picky_eater():
 
+    compare_learning_curve(crgb_online, "maze online property")
     #compare_learning_curve(pe_learn_sweep, "picky eater learning curve",
     #        label_keys = [['target_network_update_freq', 'learning_rate']], config_paths = ['experiment/config/test/picky_eater/online_property/dqn_lta/sweep.json'])
   
-    compare_learning_curve(dqn_learn_sweep, "picky eater learning curve",
-            label_keys = [['target_network_update_freq', 'learning_rate']], config_paths = ['experiment/config/test/picky_eater/online_property/dqn/sweep.json'])
-    # compare_learning_curve(dqn_lta_1_learn_sweep,
-    compare_learning_curve(dqn_lta_learn_sweep, "picky eater learning curve",
-            label_keys = [['target_network_update_freq', 'learning_rate']], config_paths = ['experiment/config/test/picky_eater/online_property/dqn_lta/sweep.json'])
+#    compare_learning_curve(dqn_learn_sweep, "picky eater learning curve",
+    #        label_keys = [['target_network_update_freq', 'learning_rate']], config_paths = ['experiment/config/test/picky_eater/online_property/dqn/sweep.json'])
+    # compare_learning_curve(dqn_lta_1_learn_sweep, "picky eater learning curve",
+            # label_keys = [['target_network_update_freq', 'learning_rate']], config_paths = ['experiment/config/test/picky_eater/online_property/dqn_lta/sweep.json'])
+    #compare_learning_curve(dqn_lta_learn_sweep, "picky eater learning curve",
+    #        label_keys = [['target_network_update_freq', 'learning_rate']], config_paths = ['experiment/config/test/picky_eater/online_property/dqn_lta/sweep.json'])
     # compare_learning_curve(dqn_lta_1_learn_sweep, "picky eater learning curve (DQN+LTA+Without target)",
             # label_keys = [['target_network_update_freq', 'learning_rate']], config_paths = ['experiment/config/test/picky_eater/online_property/dqn_lta/sweep.json'])
     

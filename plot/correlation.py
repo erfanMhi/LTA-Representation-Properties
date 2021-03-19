@@ -25,6 +25,15 @@ def load_online_property(group, target_key, reverse=False):
             values = {}
             for run in returns:
                 values[run] = np.array(returns[run]).sum()
+        elif target_key in ["interf"]:
+            path = i["online_measure"]
+            returns = extract_from_setting(path, 0, target_key, final_only=False)
+            values = {}
+            for run in returns:
+                t = np.array(returns[run])[1:] # remove the first measure, which is always nan
+                pct = np.percentile(t, 90)
+                target_idx = np.where(t >= pct)[0]
+                values[run] = np.mean(t[target_idx]) # average over the top x percentiles only
         else:
             path = i["online_measure"]
             values = extract_from_setting(path, 0, target_key, final_only=True)
@@ -202,7 +211,6 @@ def simple_maze_correlation_early(perc):
     difftune_diversity = calculation([gh_diff_tune_early], "maze_early_diff-tune_diversity", property_key="diversity", perc=perc, targets=targets)
     difftune_spars = calculation([gh_diff_tune_early], "maze_early_diff-tune_sparsity", property_key="sparsity", perc=perc, targets=targets)
 
-    # labels = ["complexity reduction", "dynamics awareness", "orthogonality", "interference", "diversity", "sparsity"]
     labels = ["complexity reduction", "dynamics awareness", "orthogonality", "noninterference", "diversity", "sparsity"]
     same = [same_lip, same_dist, same_ortho, same_interf, same_diversity, same_spars]
     similar = [similar_lip, similar_dist, similar_ortho, similar_interf, similar_diversity, similar_spars]
@@ -218,14 +226,14 @@ def simple_maze_correlation_early(perc):
     rects3 = ax.bar(x-0.45+width*3, diff, width, label='dissimilar(fix)', color=cmap(1, 4))
     rects4 = ax.bar(x-0.45+width*4, difftune, width, label='dissimilar(tune)', color=cmap(3, 4))
     ax.plot([x[0]-0.45, x[-1]+0.45], [0, 0], "--", color="grey")
-    ax.legend()
+    # ax.legend()
     ax.set_ylabel('Correlation')
     ax.set_xticks(x)
     ax.set_yticks([-1, -0.7, -0.5, 0, 0.5, 0.7, 1])
     ax.set_xticklabels(labels, rotation=30)
     plt.grid(True)
     # plt.show()
-    plt.savefig("plot/img/{}.pdf".format("correlation_early_model"), dpi=300, bbox_inches='tight')
+    plt.savefig("plot/img/{}.png".format("maze_correlation_early"), dpi=300, bbox_inches='tight')
     plt.close()
     plt.clf()
 
@@ -279,14 +287,14 @@ def simple_maze_correlation_last(perc):
     rects3 = ax.bar(x-0.45+width*3, diff, width, label='dissimilar(fix)', color=cmap(1, 4))
     rects4 = ax.bar(x-0.45+width*4, difftune, width, label='dissimilar(tune)', color=cmap(3, 4))
     ax.plot([x[0]-0.45, x[-1]+0.45], [0, 0], "--", color="grey")
-    ax.legend()
+    # ax.legend()
     ax.set_ylabel('Correlation')
     ax.set_xticks(x)
     ax.set_yticks([-1, -0.7, -0.5, 0, 0.5, 0.7, 1])
     ax.set_xticklabels(labels, rotation=30)
     plt.grid(True)
     # plt.show()
-    plt.savefig("plot/img/{}.pdf".format("correlation_last_model"), dpi=300, bbox_inches='tight')
+    plt.savefig("plot/img/{}.png".format("maze_correlation_last"), dpi=300, bbox_inches='tight')
     plt.close()
     plt.clf()
 
@@ -296,9 +304,9 @@ if __name__ == '__main__':
     perc=[0, 1]
     targets = ["ReLU",
                "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
-               "LTA eta=0.2", "LTA eta=0.4", "LTA eta=0.6", "LTA eta=0.8",
-               "LTA+Control1g", "LTA+Control5g", "LTA+XY", "LTA+Decoder", "LTA+NAS", "LTA+Reward", "LTA+SF",
-               # "Random", "Input"
+               "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
+               "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+               # "Random", "Input",
                ]
     simple_maze_correlation_early(perc)
     simple_maze_correlation_last(perc)

@@ -38,8 +38,11 @@ def learning_curve(all_paths_dict, title, targets=None, xlim=None):
         print(label)
         returns = arrange_order(control[label])
         draw_curve(returns, plt, label, violin_colors[label])
-    # plt.title(title)
-    # plt.legend()
+
+    plt.title(title)
+    plt.gca().spines['right'].set_visible(False)
+    plt.gca().spines['top'].set_visible(False)
+    plt.legend()
     if xlim is not None:
         plt.xlim(xlim[0], xlim[1])
     plt.xlabel('step ($10^4$)')
@@ -67,14 +70,14 @@ def learning_curve_mean(all_paths_dict, title, targets=None, xlim=None):
         draw_curve(returns, plt, label, violin_colors[label], alpha=0.3)
         total = returns if type(total) == int else total + returns
     draw_curve(total/len(labels), plt, "Avg", "black")
-
-    # plt.title(title)
+    print(title)
+    plt.title(title)
     plt.legend()
     if xlim is not None:
         plt.xlim(xlim[0], xlim[1])
     plt.xlabel('step ($10^4$)')
     plt.ylabel('return')
-    plt.savefig("plot/img/{}.png".format(title), dpi=300, bbox_inches='tight')
+    plt.savefig("plot/img/{}.png".format(title), dpi=300)
     # plt.show()
     plt.close()
     plt.clf()
@@ -107,9 +110,9 @@ def picky_eater():
     # learning_curve(crgb_online_dqn, "maze online dqn")
 
     # learning_curve(crgb_online_dqn_lta, "maze online dqn with lta")
-    learning_curve(crgb_online_dt_fr, "maze transfer different task fix rep")
-    learning_curve(crgb_online_st_fr, "maze transfer same task fixed rep")
-    learning_curve(crgb_online_dt_ft, "maze transfer different task fine tune")
+    learning_curve(crgb_online_dt_fr, "Dissimilar Task")
+    learning_curve(crgb_online_st_fr, "Same Task")
+    learning_curve(crgb_online_dt_ft, "Dissimilar Task (fine tune)")
 
 
 if __name__ == '__main__':

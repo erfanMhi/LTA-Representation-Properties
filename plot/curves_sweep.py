@@ -25,7 +25,7 @@ print("Change dir to", os.getcwd())
 #     return np.array(lst)
 
 def compare_learning_curve(all_paths_dict, title, total_param=None,
-        start_param=0, label_keys = None, config_paths=None):
+        start_param=0, label_keys = None):
 
     labels = [i["label"] for i in all_paths_dict]
     control = load_return(all_paths_dict, total_param)#, start_param)
@@ -41,16 +41,20 @@ def compare_learning_curve(all_paths_dict, title, total_param=None,
         for param, returns in all_params.items():
 
             if label_keys is not None:
-                assert config_paths is not None
+                print(all_paths_dict[idx]['control'])
+                root_idx = len('data/output/') + all_paths_dict[idx]['control'].rindex('data/output/')
+                print(all_paths_dict[idx]['control'][root_idx:])
+                config_path = 'experiment/config/' + all_paths_dict[idx]['control'][root_idx:]
+                config_path = config_path[:-1]  + '.json'
                 project_root = os.path.abspath(os.path.dirname(__file__))
-                print(project_root)
-                cfg = Sweeper(project_root, config_paths[idx]).parse(param)
+                cfg = Sweeper(project_root, config_path).parse(param)
                 l = ''
-                for label_key in label_keys[idx]:
+                for label_key in label_keys:
                     l += str(getattr(cfg, label_key)) + ' '
+                print(l)
             
             returns = arrange_order(returns)
-            draw_curve(returns, axs[idx], l, cmap(float(param), len(list(all_params.keys()))))
+            draw_curve(returns, axs[idx], l, cmap(param, len(list(all_params.keys()))))
         
         axs[idx].set_title(label)
         axs[idx].legend()
@@ -111,8 +115,8 @@ def simple_maze():
     learning_curve(gh_diff_tune_early_sweep, "maze different (fine tune) sweep")
 
 def picky_eater():
-
-    compare_learning_curve(crgb_online, "maze online property")
+    for crgb_sweep in crgb_online_sweep:
+        compare_learning_curve([crgb_sweep], "maze online property", label_keys=['learning_rate', ])
     #compare_learning_curve(pe_learn_sweep, "picky eater learning curve",
     #        label_keys = [['target_network_update_freq', 'learning_rate']], config_paths = ['experiment/config/test/picky_eater/online_property/dqn_lta/sweep.json'])
   
@@ -129,5 +133,5 @@ def picky_eater():
 
 if __name__ == '__main__':
     # mountain_car()
-    simple_maze()
+    # simple_maze()
     picky_eater()

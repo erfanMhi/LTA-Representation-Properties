@@ -8,7 +8,6 @@ sys.path.insert(0, '..')
 from plot.plot_utils import *
 from plot.plot_paths import *
 # from plot.curves_property import learning_curve_mean
-
 os.chdir("..")
 print("Change dir to", os.getcwd())
 
@@ -290,15 +289,84 @@ def simple_maze_correlation_last(perc):
     plt.close()
     plt.clf()
 
+def simple_picky_eater_correlation_last(perc, early=True):
 
+    if not early:
+        crgb_same_path = crgb_same_last
+        crgb_diff_path = crgb_diff_last
+        crgb_diff_tune_path = crgb_diff_tune_last
+    else:
+        crgb_same_path = crgb_same_early
+        crgb_diff_path = crgb_diff_early
+        crgb_diff_tune_path = crgb_diff_tune_early
+ 
+
+    print("\nSame task")
+    same_lip = calculation([crgb_same_path], "picky_eater_last_same_lip", property_key="lipschitz", perc=perc, targets=targets)
+    same_dist = calculation([crgb_same_path], "picky_eater_last_same_distance", property_key="distance", perc=perc, targets=targets)
+    same_ortho = calculation([crgb_same_path], "picky_eater_last_same_ortho", property_key="ortho", perc=perc, targets=targets)
+    # same_interf = calculation([crgb_same_path], "picky_eater_last_same_interf", property_key="interf", perc=perc, targets=targets)
+    same_diversity = calculation([crgb_same_path], "picky_eater_last_same_diversity", property_key="diversity", perc=perc, targets=targets)
+    same_spars = calculation([crgb_same_path], "picky_eater_last_same_sparsity", property_key="sparsity", perc=perc, targets=targets)
+
+    print("\nDifferent task - fix")
+    diff_lip = calculation([crgb_diff_path], "picky_eater_last_diff-fix_lip", property_key="lipschitz", perc=perc, targets=targets)
+    diff_dist = calculation([crgb_diff_path], "picky_eater_last_diff-fix_distance", property_key="distance", perc=perc, targets=targets)
+    diff_ortho = calculation([crgb_diff_path], "picky_eater_last_diff-fix_ortho", property_key="ortho", perc=perc, targets=targets)
+    # diff_interf = calculation([crgb_diff_path], "picky_eater_last_diff-fix_interf", property_key="interf", perc=perc, targets=targets)
+    diff_diversity = calculation([crgb_diff_path], "picky_eater_last_diff-fix_diversity", property_key="diversity", perc=perc, targets=targets)
+    diff_spars = calculation([crgb_diff_path], "picky_eater_last_diff-fix_sparsity", property_key="sparsity", perc=perc, targets=targets)
+
+    print("\nDifferent task - tune")
+    difftune_lip = calculation([crgb_diff_tune_path], "picky_eater_last_diff-tune_lip", property_key="lipschitz", perc=perc, targets=targets)
+    difftune_dist = calculation([crgb_diff_tune_path], "picky_eater_last_diff-tune_distance", property_key="distance", perc=perc, targets=targets)
+    difftune_ortho = calculation([crgb_diff_tune_path], "picky_eater_last_diff-tune_ortho", property_key="ortho", perc=perc, targets=targets)
+    # difftune_interf = calculation([crgb_diff_tune_path], "picky_eater_last_diff-tune_interf", property_key="interf", perc=perc, targets=targets)
+    difftune_diversity = calculation([crgb_diff_tune_path], "picky_eater_last_diff-tune_diversity", property_key="diversity", perc=perc, targets=targets)
+    difftune_spars = calculation([crgb_diff_tune_path], "picky_eater_last_diff-tune_sparsity", property_key="sparsity", perc=perc, targets=targets)
+
+    # labels = ["complexity reduction", "dynamics awareness", "orthogonality", "interference", "diversity", "sparsity"]
+    # labels = ["complexity reduction", "dynamics awareness", "orthogonality", "noninterference", "diversity", "sparsity"]
+    labels = ["complexity reduction", "dynamics awareness", "orthogonality", "diversity", "sparsity"]
+    # same = [same_lip, same_dist, same_ortho, same_interf, same_diversity, same_spars]
+    same = [same_lip, same_dist, same_ortho, same_diversity, same_spars]
+    # similar = [similar_lip, similar_dist, similar_ortho, similar_interf, similar_diversity, similar_spars]
+    diff = [diff_lip, diff_dist, diff_ortho, diff_diversity, diff_spars]
+    # diff = [diff_lip, diff_dist, diff_ortho, diff_interf, diff_diversity, diff_spars]
+    # difftune = [difftune_lip, difftune_dist, difftune_ortho, difftune_interf, difftune_diversity, difftune_spars]
+    difftune = [difftune_lip, difftune_dist, difftune_ortho, difftune_diversity, difftune_spars]
+
+    x = np.arange(len(labels))  # the label locations
+    width = 0.2  # the width of the bars
+
+    fig, ax = plt.subplots()
+    rects1 = ax.bar(x-0.45+width, same, width, label='same', color=cmap(0, 4))
+    # rects2 = ax.bar(x-0.45+width*2, similar, width, label='similar', color=cmap(2, 4))
+    rects3 = ax.bar(x-0.45+width*3, diff, width, label='dissimilar(fix)', color=cmap(1, 4))
+    rects4 = ax.bar(x-0.45+width*4, difftune, width, label='dissimilar(tune)', color=cmap(3, 4))
+    ax.plot([x[0]-0.45, x[-1]+0.45], [0, 0], "--", color="grey")
+    ax.legend()
+    ax.set_ylabel('Correlation')
+    ax.set_xticks(x)
+    ax.set_yticks([-1, -0.7, -0.5, 0, 0.5, 0.7, 1])
+    ax.set_xticklabels(labels, rotation=30)
+    plt.grid(True)
+    # plt.show()
+    if early:
+        plt.savefig("plot/img/{}.pdf".format("correlation_early_model"), dpi=300, bbox_inches='tight')
+    else:
+        plt.savefig("plot/img/{}.pdf".format("correlation_last_model"), dpi=300, bbox_inches='tight')
+    plt.close()
+    plt.clf()
 
 if __name__ == '__main__':
     perc=[0, 1]
     targets = ["ReLU",
-               "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
-               "LTA eta=0.2", "LTA eta=0.4", "LTA eta=0.6", "LTA eta=0.8",
-               "LTA+Control1g", "LTA+Control5g", "LTA+XY", "LTA+Decoder", "LTA+NAS", "LTA+Reward", "LTA+SF",
+               # "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+               "LTA",
+               # "LTA+Control1g", "LTA+Control5g", "LTA+XY", "LTA+Decoder", "LTA+NAS", "LTA+Reward", "LTA+SF",
                # "Random", "Input"
                ]
-    simple_maze_correlation_early(perc)
-    simple_maze_correlation_last(perc)
+
+    simple_picky_eater_correlation_last(perc)
+

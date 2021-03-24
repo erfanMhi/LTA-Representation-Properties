@@ -95,7 +95,7 @@ violin_colors = {
         "ReLU+Reward": c_default[9],
         "ReLU+SF": c_default[10],
 
-        "LTA": c_default[0],
+        "LTA": c_default[1],
         "LTA(no target)": c_default[0],
 
         "LTA eta=0.2": c_default[1],
@@ -1347,76 +1347,707 @@ crgb_online_dqn_lta = [
      "control": "data/output/test/picky_eater/online_property/dqn_lta_aux/reward/initial/",
     },
     ]
+
 crgb_online = [
-    {"label": "DQN+LTA",
+
+    {"label": "LTA",
      "control": "data/output/test/picky_eater/online_property/dqn_lta/best/",
      },
- 
-    {"label": "DQN+LTA+AuxControl",
+    {"label": "LTA+Control",
      "control": "data/output/test/picky_eater/online_property/dqn_lta_aux/aux_control/initial/",
      },    
-    {"label": "DQN+LTA+XY",
+    {"label": "LTA+XY",
      "control": "data/output/test/picky_eater/online_property/dqn_lta_aux/info/initial_xy/",
      },
-    {"label": "DQN+LTA+Decoder",
+    {"label": "LTA+Decoder",
      "control": "data/output/test/picky_eater/online_property/dqn_lta_aux/input_decoder/initial/",
      },
-    {"label": "DQN+LTA+NAS",
+    {"label": "LTA+NAS",
      "control": "data/output/test/picky_eater/online_property/dqn_lta_aux/nas_v2_delta/initial/",
      },
-    {"label": "DQN+LTA+SF",
+    {"label": "LTA+SF",
      "control": "data/output/test/picky_eater/online_property/dqn_lta_aux/successor_as/initial/",
      },
-    {"label": "DQN+LTA+Reward",
+    {"label": "LTA+Reward",
      "control": "data/output/test/picky_eater/online_property/dqn_lta_aux/reward/initial/",
     },
-    {"label": "DQN",
+    {"label": "ReLU",
      "control": "data/output/test/picky_eater/online_property/dqn/best/",
      },
-   {"label": "DQN+Reward",
+   {"label": "ReLU+Reward",
      "control": "data/output/test/picky_eater/online_property/dqn_aux/reward/initial/",
      },
-    {"label": "DQN+AuxControl", "control": "data/output/test/picky_eater/online_property/dqn_aux/aux_control/initial/",
+    {"label": "ReLU+Control", "control": "data/output/test/picky_eater/online_property/dqn_aux/aux_control/initial/",
      },    
-    {"label": "DQN+XY",
+    {"label": "ReLU+XY",
      "control": "data/output/test/picky_eater/online_property/dqn_aux/info/initial_xy/",
      },
-    {"label": "DQN+Decoder",
+     {"label": "ReLU+Decoder",
      "control": "data/output/test/picky_eater/online_property/dqn_aux/input_decoder/initial/",
      },
-    {"label": "DQN+NAS",
+    {"label": "ReLU+NAS",
      "control": "data/output/test/picky_eater/online_property/dqn_aux/nas_v2_delta/initial/",
      },
-    {"label": "DQN+SF",
+    {"label": "ReLU+SF",
      "control": "data/output/test/picky_eater/online_property/dqn_aux/successor_as/initial/",
      },
- 
-
         ]
 
 crgb_online_st_fr = [
-    {"label": "DQN",
+    {"label": "ReLU",
      "control": "data/output/test/picky_eater/control/same_task/fix_rep/dqn/best_early/",
      },
-    {"label": "DQN+LTA",
+    {"label": "LTA",
      "control": "data/output/test/picky_eater/control/same_task/fix_rep/dqn_lta/best_early/",
      },
 ]
 
 crgb_online_dt_fr = [
-    {"label": "DQN",
+    {"label": "ReLU",
      "control": "data/output/test/picky_eater/control/different_task/fix_rep/dqn/best_early/",
      },
-    {"label": "DQN+LTA",
+    {"label": "LTA",
      "control": "data/output/test/picky_eater/control/different_task/fix_rep/dqn_lta/best_early/",
      },
 ]
 
 crgb_online_dt_ft = [
+    {"label": "ReLU",
+     "control": "data/output/test/picky_eater/control/different_task/fine_tune/dqn/best_early/",
+     },
+    {"label": "LTA",
+     "control": "data/output/test/picky_eater/control/different_task/fine_tune/dqn_lta/best_early/",
+     },
+]
+
+crgb = [
     {"label": "DQN",
      "control": "data/output/test/picky_eater/control/different_task/fine_tune/dqn/best_early/",
      },
     {"label": "DQN+LTA",
      "control": "data/output/test/picky_eater/control/different_task/fine_tune/dqn_lta/best_early/",
      },
+    {"label": "DQN",
+     "control": "data/output/test/picky_eater/control/different_task/fix_rep/dqn/best_early/",
+     },
+    {"label": "DQN+LTA",
+     "control": "data/output/test/picky_eater/control/different_task/fix_rep/dqn_lta/best_early/",
+     },    
+    {"label": "DQN",
+     "control": "data/output/test/picky_eater/control/same_task/fix_rep/dqn/best_early/",
+     },
+    {"label": "DQN+LTA",
+     "control": "data/output/test/picky_eater/control/same_task/fix_rep/dqn_lta/best_early/",
+     },
+        ]
+
+
+crgb_same_last = [
+    {"label": "ReLU",
+     "control": "data/output/test/picky_eater/control/same_task/fix_rep/dqn/best_final/",
+     "online_measure": "data/output/test/picky_eater/online_property/dqn/best/"
+     },
+#     {"label": "ReLU+Control",
+     # "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_aux/aux_control/best_1g/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/aux_control/best_1g/"
+     # },
+    # {"label": "ReLU+XY",
+     # "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_aux/info/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
+     # },
+    # {"label": "ReLU+Decoder",
+     # "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_aux/input_decoder/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
+     # },
+    # {"label": "ReLU+NAS",
+     # "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_aux/nas_v2_delta/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/nas_v2_delta/best/"
+     # },
+    # {"label": "ReLU+Reward",
+     # "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_aux/reward/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/reward/best/"
+     # },
+    # {"label": "ReLU+SF",
+     # "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_aux/successor_as/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/successor_as/best/"
+     # },
+    {"label": "LTA",
+     "control": "data/output/test/picky_eater/control/same_task/fix_rep/dqn_lta/best_final/",
+     "online_measure": "data/output/test/picky_eater/online_property/dqn_lta/best/"
+     },
+#     {"label": "LTA+Control",
+     # "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_lta_aux/aux_control/best_5g/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_5g/"
+     # },
+    # {"label": "LTA+XY",
+     # "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_lta_aux/info/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/info/best/"
+     # },
+    # {"label": "LTA+Decoder",
+     # "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_lta_aux/input_decoder/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/input_decoder/best/"
+     # },
+    # {"label": "LTA+NAS",
+     # "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_lta_aux/nas_v2_delta/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/nas_v2_delta/best/"
+     # },
+    # {"label": "LTA+Reward",
+     # "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_lta_aux/reward/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/reward/best/"
+     # },
+    # {"label": "LTA+SF",
+     # "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_lta_aux/successor_as/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/successor_as/best/"
+     # },
+    # {"label": "Random",
+     # "control": "data/output/test/gridhard/control/baseline/same_task/fix_rep/random/best/",
+     # "online_measure": "data/output/test/gridhard/fixrep_property/random/best",
+     # },
+    # {"label": "Input",
+     # "control": "data/output/test/gridhard/control/baseline/same_task/fix_rep/input/best/",
+     # "online_measure": "data/output/test/gridhard/fixrep_property/input/best",
+     # },
 ]
+
+crgb_diff_last = [
+    {"label": "ReLU",
+    "control": "data/output/test/picky_eater/control/different_task/fix_rep/dqn/best_final/",
+     "online_measure": "data/output/test/picky_eater/online_property/dqn/best/"
+     },
+#     {"label": "ReLU+Control1g",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/aux_control/best_1g/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/aux_control/best_1g/"
+     # },
+    # {"label": "ReLU+Control5g",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/aux_control/best_5g/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq128/aux_control/best_5g/"
+     # },
+    # {"label": "ReLU+XY",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/info/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
+     # },
+    # {"label": "ReLU+Decoder",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/input_decoder/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
+     # },
+    # {"label": "ReLU+NAS",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/nas_v2_delta/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/nas_v2_delta/best/"
+     # },
+    # {"label": "ReLU+Reward",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/reward/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/reward/best/"
+     # },
+    # {"label": "ReLU+SF",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/successor_as/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/successor_as/best/"
+#      },
+    {"label": "LTA",
+     "control": "data/output/test/picky_eater/control/different_task/fix_rep/dqn_lta/best_final/",
+     "online_measure": "data/output/test/picky_eater/online_property/dqn_lta/best/"
+     },
+#     {"label": "LTA+Control1g",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_lta_aux/aux_control/best_1g/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_1g/"
+     # },
+    # {"label": "LTA+Control5g",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_lta_aux/aux_control/best_5g/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_5g/"
+     # },
+    # {"label": "LTA+XY",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_lta_aux/info/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/info/best/"
+     # },
+    # {"label": "LTA+Decoder",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_lta_aux/input_decoder/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/input_decoder/best/"
+     # },
+    # {"label": "LTA+NAS",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_lta_aux/nas_v2_delta/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/nas_v2_delta/best/"
+     # },
+    # {"label": "LTA+Reward",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_lta_aux/reward/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/reward/best/"
+     # },
+    # {"label": "LTA+SF",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_lta_aux/successor_as/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/successor_as/best/"
+     # },
+    # {"label": "Random",
+     # "control": "data/output/test/gridhard/control/baseline/different_task/fix_rep/random/best/",
+     # "online_measure": "data/output/test/gridhard/fixrep_property/random/best",
+     # },
+    # {"label": "Input",
+     # "control": "data/output/test/gridhard/control/baseline/different_task/fix_rep/input/best/",
+     # "online_measure": "data/output/test/gridhard/fixrep_property/input/best",
+#      },
+]
+
+crgb_diff_tune_last = [
+    {"label": "ReLU", "property": "data/output/test/",
+     "control": "data/output/test/picky_eater/control/different_task/fine_tune/dqn/best_final",
+     "online_measure": "data/output/test/picky_eater/online_property/dqn/best/"
+     },
+#     {"label": "ReLU+Control",
+     # "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/aux_control/best_5g/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq128/aux_control/best_5g/"
+     # },
+    # {"label": "ReLU+XY",
+     # "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/info/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
+     # },
+    # {"label": "ReLU+Decoder",
+     # "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/input_decoder/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
+     # },
+    # {"label": "ReLU+NAS",
+     # "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/nas_v2_delta/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/nas_v2_delta/best/"
+     # },
+    # {"label": "ReLU+Reward",
+     # "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/reward/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/reward/best/"
+     # },
+    # {"label": "ReLU+SF",
+     # "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/successor_as/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/successor_as/best/"
+#      },
+    {"label": "LTA",
+     "control": "data/output/test/picky_eater/control/different_task/fine_tune/dqn_lta/best_final",
+     "online_measure": "data/output/test/picky_eater/online_property/dqn_lta/best/"
+     },
+#     {"label": "LTA+Control",
+     # "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_lta_aux/aux_control/best_1g/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_1g/"
+     # },
+    # {"label": "LTA+XY",
+     # "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_lta_aux/info/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/info/best/"
+     # },
+    # {"label": "LTA+Decoder",
+     # "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_lta_aux/input_decoder/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/input_decoder/best/"
+     # },
+    # {"label": "LTA+NAS",
+     # "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_lta_aux/nas_v2_delta/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/nas_v2_delta/best/"
+     # },
+    # {"label": "LTA+Reward",
+     # "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_lta_aux/reward/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/reward/best/"
+     # },
+    # {"label": "LTA+SF",
+     # "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_lta_aux/successor_as/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/successor_as/best/"
+     # },
+    # {"label": "Random",
+     # "control": "data/output/test/gridhard/control/baseline/different_task/fine_tune/random/best/",
+     # "online_measure": "data/output/test/gridhard/fixrep_property/random/best",
+#      },
+]
+
+
+crgb_similar_last = [
+    {"label": "ReLU", "property": "data/output/test/",
+     "control": "data/output/test/gridhard/control/similar_task/fix_rep/dqn/best_final/",
+     "online_measure": "data/output/test/gridhard/online_property/dqn/best/"
+     },
+#     {"label": "ReLU+Control1g",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/aux_control/best_1g/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/aux_control/best_1g/"
+     # },
+    # {"label": "ReLU+Control5g",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/aux_control/best_5g/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq128/aux_control/best_5g/"
+     # },
+    # {"label": "ReLU+XY",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/info/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
+     # },
+    # {"label": "ReLU+Decoder",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/input_decoder/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
+     # },
+    # {"label": "ReLU+NAS",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/nas_v2_delta/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/nas_v2_delta/best/"
+     # },
+    # {"label": "ReLU+Reward",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/reward/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/reward/best/"
+     # },
+    # {"label": "ReLU+SF",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/successor_as/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/successor_as/best/"
+     # },
+    {"label": "LTA",
+      "control": "data/output/test/picky_eater/control/similar_task/fix_rep/dqn_lta/best_final/",
+      "online_measure": "data/output/test/picky_eater/online_property/dqn_lta/best/"
+      },
+    # {"label": "LTA+Control1g",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_lta_aux/aux_control/best_1g/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_1g/"
+     # },
+    # {"label": "LTA+Control5g",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_lta_aux/aux_control/best_5g/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_5g/"
+     # },
+    # {"label": "LTA+XY",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_lta_aux/info/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/info/best/"
+     # },
+    # {"label": "LTA+Decoder",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_lta_aux/input_decoder/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/input_decoder/best/"
+     # },
+    # {"label": "LTA+NAS",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_lta_aux/nas_v2_delta/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/nas_v2_delta/best/"
+     # },
+    # {"label": "LTA+Reward",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_lta_aux/reward/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/reward/best/"
+     # },
+    # {"label": "LTA+SF",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_lta_aux/successor_as/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/successor_as/best/"
+     # },
+    # {"label": "Random",
+     # "control": "data/output/test/gridhard/control/baseline/similar_task/fix_rep/random/best/",
+     # "online_measure": "data/output/test/gridhard/fixrep_property/random/best",
+     # },
+    # {"label": "Input",
+     # "control": "data/output/test/gridhard/control/baseline/similar_task/fix_rep/input/best/",
+     # "online_measure": "data/output/test/gridhard/fixrep_property/input/best",
+     # },
+]
+
+crgb_same_early = [
+    {"label": "ReLU",
+     "control": "data/output/test/picky_eater/control/same_task/fix_rep/dqn/best_early/",
+     "online_measure": "data/output/test/picky_eater/online_property/dqn/best/"
+     },
+#     {"label": "ReLU+Control",
+     # "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_aux/aux_control/best_1g/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/aux_control/best_1g/"
+     # },
+    # {"label": "ReLU+XY",
+     # "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_aux/info/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
+     # },
+    # {"label": "ReLU+Decoder",
+     # "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_aux/input_decoder/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
+     # },
+    # {"label": "ReLU+NAS",
+     # "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_aux/nas_v2_delta/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/nas_v2_delta/best/"
+     # },
+    # {"label": "ReLU+Reward",
+     # "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_aux/reward/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/reward/best/"
+     # },
+    # {"label": "ReLU+SF",
+     # "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_aux/successor_as/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/successor_as/best/"
+     # },
+    {"label": "LTA",
+     "control": "data/output/test/picky_eater/control/same_task/fix_rep/dqn_lta/best_early/",
+     "online_measure": "data/output/test/picky_eater/online_property/dqn_lta/best/"
+     },
+#     {"label": "LTA+Control",
+     # "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_lta_aux/aux_control/best_5g/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_5g/"
+     # },
+    # {"label": "LTA+XY",
+     # "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_lta_aux/info/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/info/best/"
+     # },
+    # {"label": "LTA+Decoder",
+     # "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_lta_aux/input_decoder/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/input_decoder/best/"
+     # },
+    # {"label": "LTA+NAS",
+     # "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_lta_aux/nas_v2_delta/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/nas_v2_delta/best/"
+     # },
+    # {"label": "LTA+Reward",
+     # "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_lta_aux/reward/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/reward/best/"
+     # },
+    # {"label": "LTA+SF",
+     # "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_lta_aux/successor_as/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/successor_as/best/"
+     # },
+    # {"label": "Random",
+     # "control": "data/output/test/gridhard/control/baseline/same_task/fix_rep/random/best/",
+     # "online_measure": "data/output/test/gridhard/fixrep_property/random/best",
+     # },
+    # {"label": "Input",
+     # "control": "data/output/test/gridhard/control/baseline/same_task/fix_rep/input/best/",
+     # "online_measure": "data/output/test/gridhard/fixrep_property/input/best",
+     # },
+]
+
+crgb_diff_early = [
+    {"label": "ReLU",
+    "control": "data/output/test/picky_eater/control/different_task/fix_rep/dqn/best_early/",
+     "online_measure": "data/output/test/picky_eater/online_property/dqn/best/"
+     },
+#     {"label": "ReLU+Control1g",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/aux_control/best_1g/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/aux_control/best_1g/"
+     # },
+    # {"label": "ReLU+Control5g",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/aux_control/best_5g/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq128/aux_control/best_5g/"
+     # },
+    # {"label": "ReLU+XY",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/info/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
+     # },
+    # {"label": "ReLU+Decoder",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/input_decoder/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
+     # },
+    # {"label": "ReLU+NAS",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/nas_v2_delta/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/nas_v2_delta/best/"
+     # },
+    # {"label": "ReLU+Reward",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/reward/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/reward/best/"
+     # },
+    # {"label": "ReLU+SF",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/successor_as/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/successor_as/best/"
+#      },
+    {"label": "LTA",
+     "control": "data/output/test/picky_eater/control/different_task/fix_rep/dqn_lta/best_early/",
+     "online_measure": "data/output/test/picky_eater/online_property/dqn_lta/best/"
+     },
+#     {"label": "LTA+Control1g",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_lta_aux/aux_control/best_1g/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_1g/"
+     # },
+    # {"label": "LTA+Control5g",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_lta_aux/aux_control/best_5g/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_5g/"
+     # },
+    # {"label": "LTA+XY",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_lta_aux/info/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/info/best/"
+     # },
+    # {"label": "LTA+Decoder",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_lta_aux/input_decoder/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/input_decoder/best/"
+     # },
+    # {"label": "LTA+NAS",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_lta_aux/nas_v2_delta/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/nas_v2_delta/best/"
+     # },
+    # {"label": "LTA+Reward",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_lta_aux/reward/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/reward/best/"
+     # },
+    # {"label": "LTA+SF",
+     # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_lta_aux/successor_as/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/successor_as/best/"
+     # },
+    # {"label": "Random",
+     # "control": "data/output/test/gridhard/control/baseline/different_task/fix_rep/random/best/",
+     # "online_measure": "data/output/test/gridhard/fixrep_property/random/best",
+     # },
+    # {"label": "Input",
+     # "control": "data/output/test/gridhard/control/baseline/different_task/fix_rep/input/best/",
+     # "online_measure": "data/output/test/gridhard/fixrep_property/input/best",
+#      },
+]
+
+crgb_diff_tune_early = [
+    {"label": "ReLU", "property": "data/output/test/",
+     "control": "data/output/test/picky_eater/control/different_task/fine_tune/dqn/best_early",
+     "online_measure": "data/output/test/picky_eater/online_property/dqn/best/"
+     },
+#     {"label": "ReLU+Control",
+     # "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/aux_control/best_5g/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq128/aux_control/best_5g/"
+     # },
+    # {"label": "ReLU+XY",
+     # "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/info/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
+     # },
+    # {"label": "ReLU+Decoder",
+     # "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/input_decoder/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
+     # },
+    # {"label": "ReLU+NAS",
+     # "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/nas_v2_delta/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/nas_v2_delta/best/"
+     # },
+    # {"label": "ReLU+Reward",
+     # "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/reward/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/reward/best/"
+     # },
+    # {"label": "ReLU+SF",
+     # "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/successor_as/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/successor_as/best/"
+#      },
+    {"label": "LTA",
+     "control": "data/output/test/picky_eater/control/different_task/fine_tune/dqn_lta/best_early",
+     "online_measure": "data/output/test/picky_eater/online_property/dqn_lta/best/"
+     },
+#     {"label": "LTA+Control",
+     # "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_lta_aux/aux_control/best_1g/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_1g/"
+     # },
+    # {"label": "LTA+XY",
+     # "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_lta_aux/info/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/info/best/"
+     # },
+    # {"label": "LTA+Decoder",
+     # "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_lta_aux/input_decoder/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/input_decoder/best/"
+     # },
+    # {"label": "LTA+NAS",
+     # "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_lta_aux/nas_v2_delta/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/nas_v2_delta/best/"
+     # },
+    # {"label": "LTA+Reward",
+     # "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_lta_aux/reward/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/reward/best/"
+     # },
+    # {"label": "LTA+SF",
+     # "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_lta_aux/successor_as/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/successor_as/best/"
+     # },
+    # {"label": "Random",
+     # "control": "data/output/test/gridhard/control/baseline/different_task/fine_tune/random/best/",
+     # "online_measure": "data/output/test/gridhard/fixrep_property/random/best",
+#      },
+]
+
+
+crgb_similar_early = [
+    {"label": "ReLU", "property": "data/output/test/",
+     "control": "data/output/test/gridhard/control/similar_task/fix_rep/dqn/best_early/",
+     "online_measure": "data/output/test/gridhard/online_property/dqn/best/"
+     },
+#     {"label": "ReLU+Control1g",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/aux_control/best_1g/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/aux_control/best_1g/"
+     # },
+    # {"label": "ReLU+Control5g",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/aux_control/best_5g/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq128/aux_control/best_5g/"
+     # },
+    # {"label": "ReLU+XY",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/info/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
+     # },
+    # {"label": "ReLU+Decoder",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/input_decoder/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/info/best/"
+     # },
+    # {"label": "ReLU+NAS",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/nas_v2_delta/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/nas_v2_delta/best/"
+     # },
+    # {"label": "ReLU+Reward",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/reward/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/reward/best/"
+     # },
+    # {"label": "ReLU+SF",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/successor_as/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/successor_as/best/"
+     # },
+    {"label": "LTA",
+      "control": "data/output/test/picky_eater/control/similar_task/fix_rep/dqn_lta/best_early/",
+      "online_measure": "data/output/test/picky_eater/online_property/dqn_lta/best/"
+      },
+    # {"label": "LTA+Control1g",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_lta_aux/aux_control/best_1g/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_1g/"
+     # },
+    # {"label": "LTA+Control5g",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_lta_aux/aux_control/best_5g/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_5g/"
+     # },
+    # {"label": "LTA+XY",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_lta_aux/info/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/info/best/"
+     # },
+    # {"label": "LTA+Decoder",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_lta_aux/input_decoder/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/input_decoder/best/"
+     # },
+    # {"label": "LTA+NAS",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_lta_aux/nas_v2_delta/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/nas_v2_delta/best/"
+     # },
+    # {"label": "LTA+Reward",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_lta_aux/reward/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/reward/best/"
+     # },
+    # {"label": "LTA+SF",
+     # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_lta_aux/successor_as/best/",
+     # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/successor_as/best/"
+     # },
+    # {"label": "Random",
+     # "control": "data/output/test/gridhard/control/baseline/similar_task/fix_rep/random/best/",
+     # "online_measure": "data/output/test/gridhard/fixrep_property/random/best",
+     # },
+    # {"label": "Input",
+     # "control": "data/output/test/gridhard/control/baseline/similar_task/fix_rep/input/best/",
+     # "online_measure": "data/output/test/gridhard/fixrep_property/input/best",
+     # },
+]
+
+
+crgb_online_sweep = [
+
+    # {"label": "LTA",
+     # "control": "data/output/test/picky_eater/online_property/dqn_lta/best/",
+     # },
+    {"label": "LTA+Control",
+     "control": "data/output/test/picky_eater/online_property/dqn_lta_aux/aux_control/sweep/",
+     },    
+    {"label": "LTA+XY",
+     "control": "data/output/test/picky_eater/online_property/dqn_lta_aux/info/sweep_xy/",
+     },
+    {"label": "LTA+Decoder",
+     "control": "data/output/test/picky_eater/online_property/dqn_lta_aux/input_decoder/sweep/",
+     },
+    {"label": "LTA+NAS",
+     "control": "data/output/test/picky_eater/online_property/dqn_lta_aux/nas_v2_delta/sweep/",
+     },
+    {"label": "LTA+SF",
+     "control": "data/output/test/picky_eater/online_property/dqn_lta_aux/successor_as/sweep/",
+     },
+    {"label": "LTA+Reward",
+     "control": "data/output/test/picky_eater/online_property/dqn_lta_aux/reward/sweep/",
+    },
+ #    {"label": "ReLU",
+     # "control": "data/output/test/picky_eater/online_property/dqn/sweep/",
+     # },
+   {"label": "ReLU+Reward",
+     "control": "data/output/test/picky_eater/online_property/dqn_aux/reward/sweep/",
+     },
+    {"label": "ReLU+Control", "control": "data/output/test/picky_eater/online_property/dqn_aux/aux_control/sweep/",
+     },    
+    {"label": "ReLU+XY",
+     "control": "data/output/test/picky_eater/online_property/dqn_aux/info/sweep_xy/",
+     },
+     {"label": "ReLU+Decoder",
+     "control": "data/output/test/picky_eater/online_property/dqn_aux/input_decoder/sweep/",
+     },
+    {"label": "ReLU+NAS",
+     "control": "data/output/test/picky_eater/online_property/dqn_aux/nas_v2_delta/sweep/",
+     },
+    {"label": "ReLU+SF",
+     "control": "data/output/test/picky_eater/online_property/dqn_aux/successor_as/sweep/",
+     },
+        ]
+
+

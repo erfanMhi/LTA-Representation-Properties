@@ -28,11 +28,11 @@ def arrange_order(dict1, cut_length=True, scale=1):
             lst[i] = lst[i][:min_l]
     return np.array(lst) / float(scale)
 
-def load_info(paths, param, key):
+def load_info(paths, param, key, label=None):
     all_rt = {}
     for i in paths:
         path = i["control"]
-        res = extract_from_setting(path, param, key)
+        res = extract_from_setting(path, param, key, label=label)
         all_rt[i["label"]] = res
     return all_rt
 
@@ -67,7 +67,7 @@ def draw_cut(cuts, all_res, ax, color, ymin):
     # ax.vlines(x_mean, ymin, np.interp(x_mean, list(range(len(mu))), mu), ls="--", colors=color, alpha=0.5)
     ax.vlines(x_max, ymin, np.interp(x_max, list(range(len(mu))), mu), ls=":", colors=color, alpha=0.5, linewidth=1)
 
-def extract_from_single_run(file, key):
+def extract_from_single_run(file, key, label=None):
     with open(file, "r") as f:
         content = f.readlines()
     returns = []
@@ -78,11 +78,23 @@ def extract_from_single_run(file, key):
             if key=="return" and "returns" in i_list:
                 returns.append(float(i_list[i_list.index("returns")+1].split("/")[0].strip())) # mean
             elif key == "lipschitz" and "Lipschitz:" in i_list:
-                returns.append(float(i_list[i_list.index("Lipschitz:") + 1].split("/")[1].strip()))  # mean
+                if label is None:
+                    returns.append(float(i_list[i_list.index("Lipschitz:") + 1].split("/")[1].strip()))  # mean
+                else:
+                    if label in i_list:
+                        returns.append(float(i_list[i_list.index("Lipschitz:") + 1].split("/")[1].strip()))  # mean
             elif key == "distance" and "Distance:" in i_list:
-                returns.append(float(i_list[i_list.index("Distance:") + 1].split("/")[0].strip()))
+                if label is None:
+                    returns.append(float(i_list[i_list.index("Distance:") + 1].split("/")[0].strip()))
+                else:
+                    if label in i_list:
+                        returns.append(float(i_list[i_list.index("Distance:" ) + 1].split("/")[0].strip()))
             elif key == "ortho" and "Orthogonality:" in i_list:
-                returns.append(float(i_list[i_list.index("Orthogonality:") + 1].split("/")[0].strip()))
+                if label is None:
+                    returns.append(float(i_list[i_list.index("Orthogonality:") + 1].split("/")[0].strip()))
+                else:
+                    if label in i_list:
+                        returns.append(float(i_list[i_list.index("Orthogonality:") + 1].split("/")[0].strip()))
             # elif key == "noninterf" and "Noninterference:" in i_list:
             #     interf = float(i_list[i_list.index("Noninterference:") + 1].split("/")[0].strip())
             #     if not (np.isnan(interf) or np.isinf(interf) or np.isinf(-interf)):
@@ -95,14 +107,32 @@ def extract_from_single_run(file, key):
             elif key == "decorr" and "Decorrelation:" in i_list:
                 returns.append(float(i_list[i_list.index("Decorrelation:") + 1].split("/")[0].strip()))
             elif key == "diversity" and "Diversity:" in i_list:
-                returns.append(float(i_list[i_list.index("Diversity:") + 1].split("/")[0].strip()))
-                if np.isnan(returns[-1]):
-                    returns[-1] = 0
+                if label is None:
+                    returns.append(float(i_list[i_list.index("Diversity:") + 1].split("/")[0].strip()))
+                    if np.isnan(returns[-1]):
+                        returns[-1] = 0
+                else:
+                    # key_label = "%s Diversity:" % label
+                    if label in i_list:
+                        returns.append(float(i_list[i_list.index("Diversity:") + 1].split("/")[0].strip()))
+                        if np.isnan(returns[-1]):
+                            returns[-1] = 0
             elif key == "sparsity" and "Instance Sparsity:" in info:
-                returns.append(float(i_list[i_list.index("Sparsity:") + 1].split(",")[0].strip()))
+                if label is None:
+                    returns.append(float(i_list[i_list.index("Sparsity:") + 1].split(",")[0].strip()))
+                else:
+                    # key_label = "%s Instance Sparsity:" % label
+                    if label in i_list:
+                        returns.append(float(i_list[i_list.index("Sparsity:") + 1].split(",")[0].strip()))
         if "early-stopping" in i_list and key == "model":
             cut = num - 1 # last line
             returns = int(content[cut].split("total steps")[1].split(",")[0])
+    
+    # Sanity Check
+    if not isinstance(returns, int):
+        if len(returns) in [0, 1] :
+            print('Empty returns {}: '.format(key), returns)
+            print('File Name: ', file)
     return returns
 #
 # def extract_lipschitz_single_run(file):
@@ -118,7 +148,7 @@ def extract_from_single_run(file, key):
 #     return returns
 #
 
-def extract_from_setting(find_in, setting, key="return", final_only=False):
+def extract_from_setting(find_in, setting, key="return", final_only=False, label=None):
     setting_folder = "{}_param_setting".format(setting)
     all_runs = {}
     assert os.path.isdir(find_in), print("\nERROR: {} is not a directory\n".format(find_in))
@@ -126,7 +156,7 @@ def extract_from_setting(find_in, setting, key="return", final_only=False):
         for name in files:
             if name in ["log"] and setting_folder in path:
                 file = os.path.join(path, name)
-                res = extract_from_single_run(file, key)
+                res = extract_from_single_run(file, key, label)
                 if final_only:
                     # print("--", res)
                     res = res[-1]

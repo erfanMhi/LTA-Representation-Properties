@@ -88,8 +88,8 @@ def mountain_car():
 
 def simple_maze():
     print("\nRep learning")
-    targets = ["LTA eta=0.2", "LTA+Control1g", "LTA+Control5g",
-               "LTA+XY", "LTA+Decoder", "LTA+NAS", "LTA+Reward", "LTA+SF",
+    targets = ["FTA eta=0.2", "FTA+Control1g", "FTA+Control5g",
+               "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
                "ReLU", "Random", "Input"]
 
     # learning_curve(gh_online, "maze online measure", targets, xlim=[0, 30])

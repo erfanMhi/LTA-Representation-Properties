@@ -127,7 +127,7 @@ def calculation(all_groups, title, property_key=None, perc=None, relationship=No
     all_control, all_property = perform_transformer(all_control, all_property, relationship=relationship)
     cor = np.corrcoef(all_control, all_property)[0][1]
     # print(len(all_control))
-    print("All reps: correlation = {:.4f}".format(cor))
+    print("All reps: {} correlation = {:.4f}".format(property_key, cor))
 
     plt.figure()
     for i in range(len(indexs)-1):
@@ -218,13 +218,30 @@ def simple_maze_correlation_early(perc):
 
     x = np.arange(len(labels))  # the label locations
     width = 0.2  # the width of the bars
+    label_pos = 0.03
+    fontsize = 9
+    rotation = 90
 
     fig, ax = plt.subplots()
     rects1 = ax.bar(x-0.45+width, same, width, label='same', color=cmap(0, 4))
+    for i in range(len(x)):
+        ax.text(x[i]-0.45+width*0.6, max(0, same[i])+label_pos, "{:.4f}".format(same[i]), color=cmap(0, 4), fontsize=fontsize, rotation=rotation)
+
     rects2 = ax.bar(x-0.45+width*2, similar, width, label='similar', color=cmap(2, 4))
+    for i in range(len(x)):
+        ax.text(x[i]-0.45+width*1.6, max(0, similar[i]) + label_pos, "{:.4f}".format(similar[i]), color=cmap(2, 4), fontsize=fontsize, rotation=rotation)
+
     rects3 = ax.bar(x-0.45+width*3, diff, width, label='dissimilar(fix)', color=cmap(1, 4))
+    for i in range(len(x)):
+        ax.text(x[i]-0.45+width*2.6, max(0, diff[i]) + label_pos, "{:.4f}".format(diff[i]), color=cmap(1, 4), fontsize=fontsize, rotation=rotation)
+
     rects4 = ax.bar(x-0.45+width*4, difftune, width, label='dissimilar(tune)', color=cmap(3, 4))
+    for i in range(len(x)):
+        ax.text(x[i]-0.45+width*3.6, max(0, difftune[i]) + label_pos, "{:.4f}".format(difftune[i]), color=cmap(3, 4), fontsize=fontsize, rotation=rotation)
+
     ax.plot([x[0]-0.45, x[-1]+0.45], [0, 0], "--", color="grey")
+
+
     # ax.legend()
     ax.set_ylabel('Correlation')
     ax.set_xticks(x)
@@ -279,12 +296,27 @@ def simple_maze_correlation_last(perc):
 
     x = np.arange(len(labels))  # the label locations
     width = 0.2  # the width of the bars
+    label_pos = 0.03
+    fontsize = 9
+    rotation = 90
 
     fig, ax = plt.subplots()
     rects1 = ax.bar(x-0.45+width, same, width, label='same', color=cmap(0, 4))
+    for i in range(len(x)):
+        ax.text(x[i]-0.45+width*0.6, max(0, same[i])+label_pos, "{:.4f}".format(same[i]), color=cmap(0, 4), fontsize=fontsize, rotation=rotation)
+
     rects2 = ax.bar(x-0.45+width*2, similar, width, label='similar', color=cmap(2, 4))
+    for i in range(len(x)):
+        ax.text(x[i]-0.45+width*1.6, max(0, similar[i]) + label_pos, "{:.4f}".format(similar[i]), color=cmap(2, 4), fontsize=fontsize, rotation=rotation)
+
     rects3 = ax.bar(x-0.45+width*3, diff, width, label='dissimilar(fix)', color=cmap(1, 4))
+    for i in range(len(x)):
+        ax.text(x[i]-0.45+width*2.6, max(0, diff[i]) + label_pos, "{:.4f}".format(diff[i]), color=cmap(1, 4), fontsize=fontsize, rotation=rotation)
+
     rects4 = ax.bar(x-0.45+width*4, difftune, width, label='dissimilar(tune)', color=cmap(3, 4))
+    for i in range(len(x)):
+        ax.text(x[i]-0.45+width*3.6, max(0, difftune[i]) + label_pos, "{:.4f}".format(difftune[i]), color=cmap(3, 4), fontsize=fontsize, rotation=rotation)
+
     ax.plot([x[0]-0.45, x[-1]+0.45], [0, 0], "--", color="grey")
     # ax.legend()
     ax.set_ylabel('Correlation')
@@ -346,12 +378,27 @@ def simple_picky_eater_correlation_last(perc, early=True):
 
     x = np.arange(len(labels))  # the label locations
     width = 0.2  # the width of the bars
+    label_pos = 0.03
+    fontsize = 9
+    rotation = 90
 
     fig, ax = plt.subplots()
     rects1 = ax.bar(x-0.45+width, same, width, label='same', color=cmap(0, 4))
+    for i in range(len(x)):
+        ax.text(x[i]-0.45+width*0.6, max(0, same[i])+label_pos, "{:.4f}".format(same[i]), color=cmap(0, 4), fontsize=fontsize, rotation=rotation)
+
     # rects2 = ax.bar(x-0.45+width*2, similar, width, label='similar', color=cmap(2, 4))
+    # for i in range(len(x)):
+    #     ax.text(x[i]-0.45+width*1.6, max(0, similar[i]) + label_pos, "{:.4f}".format(similar[i]), color=cmap(2, 4), fontsize=fontsize, rotation=rotation)
+
     rects3 = ax.bar(x-0.45+width*3, diff, width, label='dissimilar(fix)', color=cmap(1, 4))
+    for i in range(len(x)):
+        ax.text(x[i]-0.45+width*2.6, max(0, diff[i]) + label_pos, "{:.4f}".format(diff[i]), color=cmap(1, 4), fontsize=fontsize, rotation=rotation)
+
     rects4 = ax.bar(x-0.45+width*4, difftune, width, label='dissimilar(tune)', color=cmap(3, 4))
+    for i in range(len(x)):
+        ax.text(x[i]-0.45+width*3.6, max(0, difftune[i]) + label_pos, "{:.4f}".format(difftune[i]), color=cmap(3, 4), fontsize=fontsize, rotation=rotation)
+
     ax.plot([x[0]-0.45, x[-1]+0.45], [0, 0], "--", color="grey")
     ax.legend()
     ax.set_ylabel('Correlation')
@@ -373,8 +420,8 @@ if __name__ == '__main__':
                # "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
                "LTA",
                # "LTA+Control1g", "LTA+Control5g", "LTA+XY", "LTA+Decoder", "LTA+NAS", "LTA+Reward", "LTA+SF",
-               # "Random", "Input"]
-
+               # "Random", "Input"
+                    ]
     targets_gw = ["ReLU",
                "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
                "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
@@ -384,3 +431,12 @@ if __name__ == '__main__':
 
     simple_picky_eater_correlation_last(perc)
 
+    perc=[0, 1]
+    targets = ["ReLU",
+               "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+               "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
+               "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+               # "Random", "Input",
+               ]
+    simple_maze_correlation_early(perc)
+    simple_maze_correlation_last(perc)

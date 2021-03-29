@@ -3,6 +3,7 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.font_manager import FontProperties
+from matplotlib.ticker import FormatStrFormatter
 sys.path.insert(0, '..')
 
 from plot.plot_utils import *
@@ -70,38 +71,65 @@ def simple_maze_check_aux(targets, title, early_stopped):
     diff_spars = load_property(gh_diff_early, property_key="sparsity", targets=targets, early_stopped=early_stopped)
     diff_return = load_property(gh_diff_early, property_key="return", targets=targets, early_stopped=early_stopped)
 
+    # labels = ["complexity reduction", "dynamics awareness", "orthogonality", "noninterference", "diversity", "sparsity", "transfer performance"]
+    # diff_aux = {}
+    # for idx, t in enumerate(targets):
+    #     diff_aux[t] = [diff_lip[idx], diff_dist[idx], diff_ortho[idx], diff_interf[idx], diff_diversity[idx], diff_spars[idx], diff_return[idx]]
+    #
+    # x = np.arange(len(labels))  # the label locations
+    # width = 0.1  # the width of the bars
+    # fig, ax = plt.subplots()
+    # for i,t in enumerate(targets):
+    #     # ax.bar(x - 0.45 + width * i, diff_aux[t], width, label=t, color=violin_colors[t])
+    #     positions = x - 0.35 + width * i
+    #     violin_plot(ax, violin_colors[t], diff_aux[t], positions, width)
+    #     # box_plot(ax, violin_colors[t], diff_aux[t], positions, width)
+    #     ax.plot([], c=violin_colors[t], label=t)
+    #
+    # # ax.plot([x[0] - 0.45, x[-1] + 0.45], [0, 0], "--", color="grey")
+    # ax.vlines((x-0.5)[1:], 0, 1, transform=ax.get_xaxis_transform(), ls=":", colors="grey", alpha=1, linewidth=1)
+    #
+    # fontP = FontProperties()
+    # fontP.set_size('xx-small')
+    # ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left', prop=fontP)
+    # ax.set_ylabel('Measure')
+    # ax.set_xticks(x)
+    # ax.set_xticklabels(labels, rotation=30)
+    # # plt.show()
+    # plt.savefig("plot/img/{}.pdf".format(title), dpi=300, bbox_inches='tight')
+    # plt.close()
+    # plt.clf()
+
     labels = ["complexity reduction", "dynamics awareness", "orthogonality", "noninterference", "diversity", "sparsity", "transfer performance"]
-    diff_aux = {}
-    for idx, t in enumerate(targets):
-        diff_aux[t] = [diff_lip[idx], diff_dist[idx], diff_ortho[idx], diff_interf[idx], diff_diversity[idx], diff_spars[idx], diff_return[idx]]
+    diff_prop = [diff_lip, diff_dist, diff_ortho, diff_interf, diff_diversity, diff_spars, diff_return]
 
-    x = np.arange(len(labels))  # the label locations
-    width = 0.1  # the width of the bars
-    # label_pos = 0.03
-    # fontsize = 9
-    # rotation = 90
+    x = np.arange(len(targets))  # the reps
+    width = 0.5  # the width of the bars
 
-    fig, ax = plt.subplots()
+    col = 2
+    row = 4
+    fig, axs = plt.subplots(row, col, figsize=(5, 5))
+    v_colors = [violin_colors[t] for t in targets]
+    for i,l in enumerate(labels):
+        ax = axs[i//col, i%col]
+        for j in range(len(diff_prop[i])):
+            violin_plot(ax, v_colors[j], [diff_prop[i][j]], [x[j]], width)
+        ax.set_title(l, size=10)
+        ax.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
+        ax.set_xticks([])
+        ax.set_yticks([diff_prop[i].min(), diff_prop[i].max()])
     for i,t in enumerate(targets):
-        # ax.bar(x - 0.45 + width * i, diff_aux[t], width, label=t, color=violin_colors[t])
-        positions = x - 0.35 + width * i
-        violin_plot(ax, violin_colors[t], diff_aux[t], positions, width)
-        # box_plot(ax, violin_colors[t], diff_aux[t], positions, width)
-        ax.plot([], c=violin_colors[t], label=t)
+        plt.plot([], c=violin_colors[t], label=t)
+    if len(labels) <= (col * row):
+        for i in range(len(labels), col*row):
+            ax = axs[i//col, i%col]
+            ax.axis('off')
 
-        # for i in range(len(x)):
-        #     ax.text(x[i] - 0.45 + width * 2.6, max(0, diff[i]) + label_pos, "{:.4f}".format(diff[i]), color=cmap(1, 4), fontsize=fontsize, rotation=rotation)
-
-    # ax.plot([x[0] - 0.45, x[-1] + 0.45], [0, 0], "--", color="grey")
-    ax.vlines((x-0.5)[1:], 0, 1, transform=ax.get_xaxis_transform(), ls=":", colors="grey", alpha=1, linewidth=1)
-
+    fig.tight_layout(pad=1.0)
     fontP = FontProperties()
     fontP.set_size('xx-small')
-    ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left', prop=fontP)
-    ax.set_ylabel('Measure')
-    ax.set_xticks(x)
-    ax.set_xticklabels(labels, rotation=30)
-    # plt.show()
+    # plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', prop=fontP)
+    plt.legend(bbox_to_anchor=(0.2, 0.5), loc='center', prop=fontP)
     plt.savefig("plot/img/{}.pdf".format(title), dpi=300, bbox_inches='tight')
     plt.close()
     plt.clf()

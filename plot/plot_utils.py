@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import matplotlib.pyplot as plt
 
 flatten = lambda t: [item for sublist in t for item in sublist]
 
@@ -28,10 +29,10 @@ def arrange_order(dict1, cut_length=True, scale=1):
             lst[i] = lst[i][:min_l]
     return np.array(lst) / float(scale)
 
-def load_info(paths, param, key, label=None):
+def load_info(paths, param, key, label=None, path_key="control"):
     all_rt = {}
     for i in paths:
-        path = i["control"]
+        path = i[path_key]
         res = extract_from_setting(path, param, key, label=label)
         all_rt[i["label"]] = res
     return all_rt
@@ -67,7 +68,7 @@ def draw_cut(cuts, all_res, ax, color, ymin):
     # ax.vlines(x_mean, ymin, np.interp(x_mean, list(range(len(mu))), mu), ls="--", colors=color, alpha=0.5)
     ax.vlines(x_max, ymin, np.interp(x_max, list(range(len(mu))), mu), ls=":", colors=color, alpha=0.5, linewidth=1)
 
-def extract_from_single_run(file, key, label=None):
+def extract_from_single_run(file, key, label=None, before_step=None):
     with open(file, "r") as f:
         content = f.readlines()
     returns = []
@@ -124,10 +125,17 @@ def extract_from_single_run(file, key, label=None):
                     # key_label = "%s Instance Sparsity:" % label
                     if label in i_list:
                         returns.append(float(i_list[i_list.index("Sparsity:") + 1].split(",")[0].strip()))
+
+            # used only when extract property for early-stopping model
+            if before_step is not None:
+                current_step = int(info.split("total steps")[1].split(",")[0])
+                if current_step == before_step:
+                    return returns
+
         if "early-stopping" in i_list and key == "model":
             cut = num - 1 # last line
             returns = int(content[cut].split("total steps")[1].split(",")[0])
-    
+
     # Sanity Check
     if not isinstance(returns, int):
         if len(returns) in [0, 1] :
@@ -148,7 +156,7 @@ def extract_from_single_run(file, key, label=None):
 #     return returns
 #
 
-def extract_from_setting(find_in, setting, key="return", final_only=False, label=None):
+def extract_from_setting(find_in, setting, key="return", final_only=False, label=None, cut_at_step=None):
     setting_folder = "{}_param_setting".format(setting)
     all_runs = {}
     assert os.path.isdir(find_in), print("\nERROR: {} is not a directory\n".format(find_in))
@@ -156,11 +164,13 @@ def extract_from_setting(find_in, setting, key="return", final_only=False, label
         for name in files:
             if name in ["log"] and setting_folder in path:
                 file = os.path.join(path, name)
-                res = extract_from_single_run(file, key, label)
+                run_num = int(file.split("_run")[0].split("/")[-1])
+                before_step = None if cut_at_step is None else cut_at_step[run_num]
+                res = extract_from_single_run(file, key, label, before_step=before_step)
                 if final_only:
                     # print("--", res)
                     res = res[-1]
-                all_runs[int(file.split("_run")[0].split("/")[-1])] = res
+                all_runs[run_num] = res
     return all_runs
 
 # def extract_return_all(path, total=None, start=0):
@@ -210,6 +220,55 @@ def extract_property_setting(path, setting, file_name, keyword):
                 all_runs[int(file.split("_run")[0].split("/")[-1])] = value
     return all_runs
 
+def load_online_property(group, target_key, reverse=False, normalize=False, cut_at_step=None):
+    all_property = {}
+    temp = []
+    for i in group:
+        cas = cut_at_step[i["label"]] if cut_at_step else None
+
+        if target_key in ["return"]:
+            path = i["control"]
+            returns = extract_from_setting(path, 0, target_key, final_only=False)
+            values = {}
+            for run in returns:
+                values[run] = np.array(returns[run]).sum()
+
+        # elif target_key in []:  # ["lipschitz", "interf"]:
+        #     path = i["control"]
+        #     values = extract_from_setting(path, 0, target_key, final_only=True, cut_at_step=cas)
+
+        elif target_key in ["interf"]:
+            path = i["online_measure"]
+            returns = extract_from_setting(path, 0, target_key, final_only=False, cut_at_step=cas)
+            values = {}
+            for run in returns:
+                t = np.array(returns[run])[1:] # remove the first measure, which is always nan
+                pct = np.percentile(t, 90)
+                target_idx = np.where(t >= pct)[0]
+                values[run] = np.mean(t[target_idx]) # average over the top x percentiles only
+
+        else:
+            path = i["online_measure"]
+            values = extract_from_setting(path, 0, target_key, final_only=True, cut_at_step=cas)
+
+        all_property[i["label"]] = values
+
+        for run in values:
+            temp.append(values[run])
+
+    if reverse or normalize:
+        mx = np.max(np.array(temp))
+        mn = np.min(np.array(temp))
+        for i in group:
+            for run in all_property[i["label"]]:
+                ori = all_property[i["label"]][run]
+                if reverse:
+                    all_property[i["label"]][run] = 1.0 - (ori - mn) / (mx - mn)
+                if normalize:
+                    all_property[i["label"]][run] = (ori - mn) / (mx - mn)
+
+    return all_property
+
 def confidence_interval(path, setting, file_name, keyword):
     res_dict = extract_property_setting(path, setting, file_name, keyword)
 
@@ -228,33 +287,48 @@ def confidence_interval(path, setting, file_name, keyword):
     print("{}: {:.3f}, [{:.3f}]".format(path.split("/")[-3:-1], mu, std))
     return mu, interval[0], interval[1], all_res
 
-def violin_plot(ax1, colors, all_d, normalize=False):#(, xlabel, exp, env, file_name, normalize=False):
+def violin_plot(ax1, color, data, xpos, width, normalize=False):
     if normalize:
-        all_d_nomalize = []
+        data_nomalize = []
         min = np.inf
         max = -1*np.inf
-        for d in all_d:
+        for d in data:
             mn = d.min()
             mx = d.max()
             if mn < min:
                 min = mn
             if mx > max:
                 max = mx
-        for d in all_d:
+        for d in data:
             d_nomalize = (d - min) / (max - min)
-            all_d_nomalize.append(d_nomalize)
-        all_d = all_d_nomalize
+            data_nomalize.append(d_nomalize)
+        data = data_nomalize
 
-    violin_parts = ax1.violinplot(all_d, showmeans=False, showextrema=False)
-    means = [np.mean(all_d[i]) for i in range(len(all_d))]#np.mean(np.array(all_d), axis=1)
-    maxs = [np.max(all_d[i]) for i in range(len(all_d))]#np.max(np.array(all_d), axis=1)
-    mins = [np.min(all_d[i]) for i in range(len(all_d))]#np.min(np.array(all_d), axis=1)
+    violin_parts = ax1.violinplot(data, showmeans=False, showextrema=False, positions=xpos, widths=width)
+    means = [np.mean(data[i]) for i in range(len(data))]#np.mean(np.array(data), axis=1)
+    maxs = [np.max(data[i]) for i in range(len(data))]#np.max(np.array(data), axis=1)
+    mins = [np.min(data[i]) for i in range(len(data))]#np.min(np.array(data), axis=1)
 
     for i in range(len(violin_parts['bodies'])):
-        violin_parts['bodies'][i].set_facecolor(colors[i])
-        ax1.scatter([i+1], means[i], marker='_', color=colors[i], s=150, zorder=10)
-        ax1.scatter([i+1], maxs[i], marker='.', color=colors[i], s=50, zorder=10)
-        ax1.scatter([i+1], mins[i], marker='.', color=colors[i], s=50, zorder=10)
-        ax1.vlines([i+1], mins[i], maxs[i], colors[i], linestyle='-', lw=1)
+        violin_parts['bodies'][i].set_facecolor(color)
+        violin_parts['bodies'][i].set_alpha(0.5)
+        # ax1.scatter(xpos[i], means[i], marker='_', color=color, s=20, zorder=10)
+        ax1.scatter(xpos[i], maxs[i], marker='.', color=color, s=10, zorder=10)
+        ax1.scatter(xpos[i], mins[i], marker='.', color=color, s=10, zorder=10)
+        ax1.vlines(xpos[i], mins[i], maxs[i], color, linestyle='-', lw=1)
     ax1.spines['right'].set_visible(False)
     ax1.spines['top'].set_visible(False)
+
+def box_plot(ax1, color, data, xpos, width):
+    def set_box_color(bp, color):
+        plt.setp(bp['boxes'], color=color)
+        for patch in bp['boxes']:
+            patch.set(facecolor=color, alpha=0.3)
+        plt.setp(bp['whiskers'], color=color)
+        plt.setp(bp['caps'], color=color)
+        plt.setp(bp['medians'], color=color)
+        plt.setp(bp["fliers"], markeredgecolor=color, marker=".")
+
+    bp = ax1.boxplot(data, positions=xpos, widths=width, patch_artist=True)
+    set_box_color(bp, color=color)
+

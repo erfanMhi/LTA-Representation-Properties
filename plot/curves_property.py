@@ -39,19 +39,19 @@ print("Change dir to", os.getcwd())
 #     plt.close()
 #     plt.clf()
 
-def learning_curve_mean(all_paths_dict, title, key, targets=[], xlim=None, ylim=None, show_avg=True, show_model=True, data_label=None, save_path='unknown'):
-    if len(targets) > 0:
-        temp = []
-        for item in all_paths_dict:
-            if item["label"] in targets:
-                temp.append(item)
-        all_paths_dict = temp
+def learning_curve_mean(all_paths_dict, title, key, targets=[], xlim=None, ylim=None, show_avg=False, show_model=True, data_label=None, save_path='unknown', legend=False):
+    # if len(targets) > 0:
+    #     temp = []
+    #     for item in all_paths_dict:
+    #         if item["label"] in targets:
+    #             temp.append(item)
+    #     all_paths_dict = temp
 
     labels = [i["label"] for i in all_paths_dict]
     control = load_info(all_paths_dict, 0, key, label=data_label)
 
     model_saving = load_info(all_paths_dict, 0, "model")
-    fig, ax = plt.subplots()
+
     arranged = {}
     total = 0
     alpha = 0.5 if show_avg else 1
@@ -68,6 +68,8 @@ def learning_curve_mean(all_paths_dict, title, key, targets=[], xlim=None, ylim=
             returns = np.concatenate([np.zeros((len(returns), 1))+np.nan, returns], axis=1)
         arranged[label] = returns
 
+    fig, ax = plt.subplots()
+    labels = targets
     for label in labels:
         print(label)
         returns = arranged[label]
@@ -76,10 +78,12 @@ def learning_curve_mean(all_paths_dict, title, key, targets=[], xlim=None, ylim=
     if show_avg:
         draw_curve(total/len(labels), plt, "Avg", "black", linewidth=3)
 
-    plt.title(title)
-    fontP = FontProperties()
-    fontP.set_size('xx-small')
-    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', prop=fontP)
+    # plt.title(title)
+    if legend:
+        # fontP = FontProperties()
+        # fontP.set_size('xx-small')
+        # plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', prop=fontP)
+        plt.legend()
     if ylim is not None:
         ax.set_ylim(ylim[0], ylim[1])
     else:
@@ -95,7 +99,8 @@ def learning_curve_mean(all_paths_dict, title, key, targets=[], xlim=None, ylim=
     # plt.ylabel(key)
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)
-    plt.savefig("plot/img/{}.png".format(save_path), dpi=300, bbox_inches='tight')
+    save_path = save_path if save_path!='unknown' else title
+    plt.savefig("plot/img/{}.pdf".format(save_path), dpi=300, bbox_inches='tight')
     # plt.show()
     plt.close()
     plt.clf()
@@ -103,12 +108,12 @@ def learning_curve_mean(all_paths_dict, title, key, targets=[], xlim=None, ylim=
 def simple_maze():
     # print("\nRep learning")
     targets = ["FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8", "ReLU"]
-    learning_curve_mean(gh_online, "maze eta online lipschitz", key="lipschitz", targets=targets, xlim=[0, 31], show_avg=False)
-    learning_curve_mean(gh_online, "maze eta online distance", key="distance", targets=targets, xlim=[0, 31], show_avg=False)
-    learning_curve_mean(gh_online, "maze eta online orthogonal", key="ortho", targets=targets, xlim=[0, 31], show_avg=False)
-    learning_curve_mean(gh_online, "maze eta online interf", key="interf", targets=targets, xlim=[1, 31], show_avg=False)
-    learning_curve_mean(gh_online, "maze eta online diversity", key="diversity", targets=targets, xlim=[0, 31], show_avg=False)
-    learning_curve_mean(gh_online, "maze eta online sparsity", key="sparsity", targets=targets, xlim=[0, 31], show_avg=False)
+    learning_curve_mean(gh_online, "maze_eta_online_lipschitz", key="lipschitz", targets=targets, xlim=[0, 31], ylim=[0.1, 1], show_avg=False)
+    learning_curve_mean(gh_online, "maze_eta_online_distance", key="distance", targets=targets, xlim=[0, 31], ylim=[0.2, 0.9], show_avg=False)
+    learning_curve_mean(gh_online, "maze_eta_online_orthogonal", key="ortho", targets=targets, xlim=[0, 31], ylim=[0, 0.7], show_avg=False)
+    learning_curve_mean(gh_online, "maze_eta_online_interf", key="interf", targets=targets, xlim=[1, 31], ylim=[0.3, 1], show_avg=False)
+    learning_curve_mean(gh_online, "maze_eta_online_diversity", key="diversity", targets=targets, xlim=[0, 31], ylim=[0, 0.9], show_avg=False)
+    learning_curve_mean(gh_online, "maze_eta_online_sparsity", key="sparsity", targets=targets, xlim=[0, 31], ylim=[0.3, 1], show_avg=False)
     learning_curve_mean(gh_online, "maze eta return", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1.1], show_avg=False)
     learning_curve_mean(gh_same_early, "maze eta same return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
     learning_curve_mean(gh_similar_early, "maze eta similar return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
@@ -129,36 +134,71 @@ def simple_maze():
 
     targets = ["FTA eta=0.2", "FTA+Control1g", "FTA+Control5g",
                "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
-               "ReLU",
-               "Random", "Input"
+               # "ReLU",
+               # "Random", "Input"
                ]
-    learning_curve_mean(gh_online, "maze lta online lipschitz", key="lipschitz", targets=targets, xlim=[0, 31], show_avg=False)
-    learning_curve_mean(gh_online, "maze lta online distance", key="distance", targets=targets, xlim=[0, 31], show_avg=False)
-    learning_curve_mean(gh_online, "maze lta online orthogonal", key="ortho", targets=targets, xlim=[0, 31], show_avg=False)
-    learning_curve_mean(gh_online, "maze lta online interf", key="interf", targets=targets, xlim=[1, 31], show_avg=False)
-    learning_curve_mean(gh_online, "maze lta online diversity", key="diversity", targets=targets, xlim=[0, 31], show_avg=False)
-    learning_curve_mean(gh_online, "maze lta online sparsity", key="sparsity", targets=targets, xlim=[0, 31], show_avg=False)
-    learning_curve_mean(gh_same_early, "maze lta same return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
-    learning_curve_mean(gh_similar_early, "maze lta similar return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
-    learning_curve_mean(gh_diff_early, "maze lta diff (fix) return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
-    learning_curve_mean(gh_diff_tune_early, "maze lta diff (tune) return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
-    learning_curve_mean(gh_same_early, "maze lta same complexity reduction", key="lipschitz", targets=targets, xlim=[0, 11], ylim=[0.1, 1.1], show_avg=False, show_model=False)
-    learning_curve_mean(gh_similar_early, "maze lta similar complexity reduction", key="lipschitz", targets=targets, xlim=[0, 11], ylim=[0.1, 1.1], show_avg=False, show_model=False)
-    learning_curve_mean(gh_diff_early, "maze lta diff (fix) complexity reduction", key="lipschitz", targets=targets, xlim=[0, 11], ylim=[0.1, 1.1], show_avg=False, show_model=False)
-    learning_curve_mean(gh_diff_tune_early, "maze lta diff (tune) complexity reduction", key="lipschitz", targets=targets, xlim=[0, 11], ylim=[0.1, 1.1], show_avg=False, show_model=False)
-    learning_curve_mean(gh_same_early, "maze lta same interf", key="interf", targets=targets, xlim=[1, 11], ylim=[0.35, 1.1], show_avg=False, show_model=False)
-    learning_curve_mean(gh_similar_early, "maze lta similar interf", key="interf", targets=targets, xlim=[1, 11], ylim=[0.35, 1.1], show_avg=False, show_model=False)
-    learning_curve_mean(gh_diff_early, "maze lta diff (fix) interf", key="interf", targets=targets, xlim=[1, 11], ylim=[0.35, 1.1], show_avg=False, show_model=False)
-    learning_curve_mean(gh_diff_tune_early, "maze lta diff (tune) interf", key="interf", targets=targets, xlim=[1, 11], ylim=[0.35, 1.1], show_avg=False, show_model=False)
-    learning_curve_mean(gh_same_early, "maze lta same diversity", key="diversity", targets=targets, xlim=[0, 11], ylim=[0.2, 0.7], show_avg=False, show_model=False)
-    learning_curve_mean(gh_similar_early, "maze lta similar diversity", key="diversity", targets=targets, xlim=[0, 11], ylim=[0.2, 0.7], show_avg=False, show_model=False)
-    learning_curve_mean(gh_diff_early, "maze lta diff (fix) diversity", key="diversity", targets=targets, xlim=[0, 11], ylim=[0.2, 0.7], show_avg=False, show_model=False)
-    learning_curve_mean(gh_diff_tune_early, "maze lta diff (tune) diversity", key="diversity", targets=targets, xlim=[0, 11], ylim=[0.2, 0.7], show_avg=False, show_model=False)
+    learning_curve_mean(gh_online, "maze_fta_online_lipschitz", key="lipschitz", targets=targets, xlim=[0, 31], ylim=[0.1, 1], show_avg=False)
+    learning_curve_mean(gh_online, "maze_fta_online_distance", key="distance", targets=targets, xlim=[0, 31], ylim=[0.2, 0.9], show_avg=False)
+    learning_curve_mean(gh_online, "maze_fta_online_orthogonal", key="ortho", targets=targets, xlim=[0, 31], ylim=[0, 0.7], show_avg=False)
+    learning_curve_mean(gh_online, "maze_fta_online_interf", key="interf", targets=targets, xlim=[1, 31], ylim=[0.3, 1], show_avg=False)
+    learning_curve_mean(gh_online, "maze_fta_online_diversity", key="diversity", targets=targets, xlim=[0, 31], ylim=[0, 0.9], show_avg=False)
+    learning_curve_mean(gh_online, "maze_fta_online_sparsity", key="sparsity", targets=targets, xlim=[0, 31], ylim=[0.3, 1], show_avg=False)
+    learning_curve_mean(gh_same_early, "maze fta same complexity reduction", key="lipschitz", targets=targets, xlim=[0, 11], ylim=[0.1, 1.1], show_avg=False, show_model=False)
+    learning_curve_mean(gh_similar_early, "maze fta similar complexity reduction", key="lipschitz", targets=targets, xlim=[0, 11], ylim=[0.1, 1.1], show_avg=False, show_model=False)
+    learning_curve_mean(gh_diff_early, "maze fta diff (fix) complexity reduction", key="lipschitz", targets=targets, xlim=[0, 11], ylim=[0.1, 1.1], show_avg=False, show_model=False)
+    learning_curve_mean(gh_diff_tune_early, "maze fta diff (tune) complexity reduction", key="lipschitz", targets=targets, xlim=[0, 11], ylim=[0.1, 1.1], show_avg=False, show_model=False)
+    learning_curve_mean(gh_same_early, "maze fta same interf", key="interf", targets=targets, xlim=[1, 11], ylim=[0.35, 1.1], show_avg=False, show_model=False)
+    learning_curve_mean(gh_similar_early, "maze fta similar interf", key="interf", targets=targets, xlim=[1, 11], ylim=[0.35, 1.1], show_avg=False, show_model=False)
+    learning_curve_mean(gh_diff_early, "maze fta diff (fix) interf", key="interf", targets=targets, xlim=[1, 11], ylim=[0.35, 1.1], show_avg=False, show_model=False)
+    learning_curve_mean(gh_diff_tune_early, "maze fta diff (tune) interf", key="interf", targets=targets, xlim=[1, 11], ylim=[0.35, 1.1], show_avg=False, show_model=False)
+    learning_curve_mean(gh_same_early, "maze fta same diversity", key="diversity", targets=targets, xlim=[0, 11], ylim=[0.2, 0.7], show_avg=False, show_model=False)
+    learning_curve_mean(gh_similar_early, "maze fta similar diversity", key="diversity", targets=targets, xlim=[0, 11], ylim=[0.2, 0.7], show_avg=False, show_model=False)
+    learning_curve_mean(gh_diff_early, "maze fta diff (fix) diversity", key="diversity", targets=targets, xlim=[0, 11], ylim=[0.2, 0.7], show_avg=False, show_model=False)
+    learning_curve_mean(gh_diff_tune_early, "maze fta diff (tune) diversity", key="diversity", targets=targets, xlim=[0, 11], ylim=[0.2, 0.7], show_avg=False, show_model=False)
+    learning_curve_mean(gh_online, "maze fta return", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1.1], show_avg=False, show_model=True)
+    learning_curve_mean(gh_same_early, "maze fta same return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
+    learning_curve_mean(gh_similar_early, "maze fta similar return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
+    learning_curve_mean(gh_diff_early, "maze fta diff (fix) return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
+    learning_curve_mean(gh_diff_tune_early, "maze fta diff (tune) return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
+
+    targets = ["ReLU", "ReLU+Control1g", "ReLU+Control5g",
+               "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+               # "Random", "Input"
+               ]
+    learning_curve_mean(gh_online, "maze_relu_online_lipschitz", key="lipschitz", targets=targets, xlim=[0, 31], ylim=[0.1, 1], show_avg=False)
+    learning_curve_mean(gh_online, "maze_relu_online_distance", key="distance", targets=targets, xlim=[0, 31], ylim=[0.2, 0.9], show_avg=False)
+    learning_curve_mean(gh_online, "maze_relu_online_orthogonal", key="ortho", targets=targets, xlim=[0, 31], ylim=[0, 0.7], show_avg=False)
+    learning_curve_mean(gh_online, "maze_relu_online_interf", key="interf", targets=targets, xlim=[1, 31], ylim=[0.3, 1], show_avg=False)
+    learning_curve_mean(gh_online, "maze_relu_online_diversity", key="diversity", targets=targets, xlim=[0, 31], ylim=[0, 0.9], show_avg=False)
+    learning_curve_mean(gh_online, "maze_relu_online_sparsity", key="sparsity", targets=targets, xlim=[0, 31], ylim=[0.3, 1], show_avg=False)
+
+    learning_curve_mean(gh_online, "maze relu return", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1.1], show_avg=False, show_model=True)
+    learning_curve_mean(gh_same_early, "maze relu same return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
+    learning_curve_mean(gh_similar_early, "maze relu similar return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
+    learning_curve_mean(gh_diff_early, "maze relu diff (fix) return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
+    learning_curve_mean(gh_diff_tune_early, "maze relu diff (tune) return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
+
+    targets = ["ReLU", "ReLU+Control5g", "ReLU+Reward",
+               "FTA eta=0.2", "FTA+Control5g", "FTA+Reward",
+               ]
+    learning_curve_mean(gh_online, "maze_chosen_online_lipschitz", key="lipschitz", targets=targets, xlim=[0, 31], show_avg=False, show_model=True)
+    learning_curve_mean(gh_online, "maze_chosen_online_distance", key="distance", targets=targets, xlim=[0, 31], show_avg=False, show_model=True)
+    learning_curve_mean(gh_online, "maze_chosen_online_orthogonal", key="ortho", targets=targets, xlim=[0, 31], show_avg=False, show_model=True)
+    learning_curve_mean(gh_online, "maze_chosen_online_interf", key="interf", targets=targets, xlim=[1, 31], show_avg=False, show_model=True)
+    learning_curve_mean(gh_online, "maze_chosen_online_diversity", key="diversity", targets=targets, xlim=[0, 31], show_avg=False, show_model=True)
+    learning_curve_mean(gh_online, "maze_chosen_online_sparsity", key="sparsity", targets=targets, xlim=[0, 31], show_avg=False, show_model=True, legend=True)
+
+    learning_curve_mean(gh_online, "maze chosen return", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1.1], show_avg=False, show_model=True)
+    learning_curve_mean(gh_same_early, "maze chosen same return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
+    learning_curve_mean(gh_similar_early, "maze chosen similar return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
+    learning_curve_mean(gh_diff_early, "maze chosen diff (fix) return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
+    learning_curve_mean(gh_diff_tune_early, "maze chosen diff (tune) return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
 
     targets = ["ReLU",
                "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
                "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
-               "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF"
+               "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+               # "Random", "Input"
                ]
     learning_curve_mean(gh_online, "maze online lipschitz", key="lipschitz", targets=targets, xlim=[0, 31])
     learning_curve_mean(gh_online, "maze online distance", key="distance", targets=targets, xlim=[0, 31])
@@ -170,7 +210,12 @@ def simple_maze():
     learning_curve_mean(gh_same_early, "maze same complexity reduction", key="lipschitz", targets=targets, xlim=[0, 11], show_model=False)
     learning_curve_mean(gh_similar_early, "maze similar complexity reduction", key="lipschitz", targets=targets, xlim=[0, 11], show_model=False)
     learning_curve_mean(gh_diff_early, "maze diff (fix) complexity reduction", key="lipschitz", targets=targets, xlim=[0, 11], show_model=False)
-    learning_curve_mean(gh_diff_tune_early, "maze diff (tune) complexity reduction", key="lipschitz", targets=targets, xlim=[0, 11], show_model=False) 
+    learning_curve_mean(gh_diff_tune_early, "maze diff (tune) complexity reduction", key="lipschitz", targets=targets, xlim=[0, 11], show_model=False)
+
+    learning_curve_mean(gh_same_early, "maze all same return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
+    learning_curve_mean(gh_similar_early, "maze all similar return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
+    learning_curve_mean(gh_diff_early, "maze all diff (fix) return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
+    learning_curve_mean(gh_diff_tune_early, "maze all diff (tune) return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
 
 def picky_eater():
     print("\nRep learning")
@@ -233,5 +278,5 @@ def picky_eater():
 
 if __name__ == '__main__':
     # mountain_car()
-    # simple_maze()
+    simple_maze()
     picky_eater()

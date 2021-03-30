@@ -11,46 +11,6 @@ from plot.plot_paths import *
 os.chdir("..")
 print("Change dir to", os.getcwd())
 
-def load_online_property(group, target_key, reverse=False):
-    all_property = {}
-    temp = []
-    for i in group:
-        if target_key in []:#["lipschitz", "interf"]:
-            path = i["control"]
-            values = extract_from_setting(path, 0, target_key, final_only=True)
-        elif target_key in ["return"]:
-            path = i["control"]
-            returns = extract_from_setting(path, 0, target_key, final_only=False)
-            values = {}
-            for run in returns:
-                values[run] = np.array(returns[run]).sum()
-        elif target_key in ["interf"]:
-            path = i["online_measure"]
-            returns = extract_from_setting(path, 0, target_key, final_only=False)
-            values = {}
-            for run in returns:
-                t = np.array(returns[run])[1:] # remove the first measure, which is always nan
-                pct = np.percentile(t, 90)
-                target_idx = np.where(t >= pct)[0]
-                values[run] = np.mean(t[target_idx]) # average over the top x percentiles only
-        else:
-            path = i["online_measure"]
-            values = extract_from_setting(path, 0, target_key, final_only=True)
-
-        all_property[i["label"]] = values
-
-        for run in values:
-            temp.append(values[run])
-
-    if reverse:
-        mx = np.max(np.array(temp))
-        mn = np.min(np.array(temp))
-        for i in group:
-            for run in all_property[i["label"]]:
-                ori = all_property[i["label"]][run]
-                all_property[i["label"]][run] = 1.0 - (ori - mn) / (mx - mn)
-    return all_property
-
 def arrange_order(dict1, dict2):
     l1, l2 = [], []
     if set(dict1.keys()) != set(dict2.keys()):
@@ -82,7 +42,7 @@ def arrange_order(dict1, dict2):
     return l1, l2
 
 
-def calculation(all_groups, title, property_key=None, perc=None, relationship=None, targets=[]):
+def calculation(all_groups, title, property_key=None, perc=None, relationship=None, targets=[], early_stopped=False):
     if len(targets) > 0:
         temp = []
         for g in all_groups:
@@ -96,7 +56,8 @@ def calculation(all_groups, title, property_key=None, perc=None, relationship=No
     all_groups, all_group_dict = merge_groups(all_groups)
     # print(all_groups, "\n\n", all_group_dict, "\n")
     reverse = True if property_key in ["lipschitz", "interf"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
-    properties = load_online_property(all_group_dict, property_key, reverse=reverse)
+    model_saving = load_info(all_group_dict, 0, "model", path_key="online_measure") if early_stopped else None
+    properties = load_online_property(all_group_dict, property_key, reverse=reverse, cut_at_step=model_saving)
     control = load_online_property(all_group_dict, "return")
     labels = [i["label"] for i in all_group_dict]
 
@@ -129,16 +90,16 @@ def calculation(all_groups, title, property_key=None, perc=None, relationship=No
     # print(len(all_control))
     print("All reps: {} correlation = {:.4f}".format(property_key, cor))
 
-    plt.figure()
-    for i in range(len(indexs)-1):
-        plt.scatter(all_control[indexs[i]: indexs[i+1]], all_property[indexs[i]: indexs[i+1]], c=all_color[i], s=5, marker=all_marker[i])
-    plt.xlabel("AUC")
-    plt.ylabel("Property measure")
-    # plt.savefig("plot/img/scatter_{}_trans={}.pdf".format(title, relationship), dpi=300, bbox_inches='tight')
-    plt.savefig("plot/img/{}.png".format(title), dpi=300, bbox_inches='tight')
-    plt.close()
-    plt.clf()
-    # print("save {} in plot/img/".format(title))
+    # plt.figure()
+    # for i in range(len(indexs)-1):
+    #     plt.scatter(all_control[indexs[i]: indexs[i+1]], all_property[indexs[i]: indexs[i+1]], c=all_color[i], s=5, marker=all_marker[i])
+    # plt.xlabel("AUC")
+    # plt.ylabel("Property measure")
+    # # plt.savefig("plot/img/scatter_{}_trans={}.pdf".format(title, relationship), dpi=300, bbox_inches='tight')
+    # plt.savefig("plot/img/{}.png".format(title), dpi=300, bbox_inches='tight')
+    # plt.close()
+    # plt.clf()
+    # # print("save {} in plot/img/".format(title))
     return cor
 
 def merge_groups(all_groups):
@@ -179,36 +140,36 @@ def perform_transformer(controls, properties, relationship):
 
 def simple_maze_correlation_early(perc):
     print("\nSame task")
-    same_lip = calculation([gh_same_early], "maze_early_same_lip", property_key="lipschitz", perc=perc, targets=targets)
-    same_dist = calculation([gh_same_early], "maze_early_same_distance", property_key="distance", perc=perc, targets=targets)
-    same_ortho = calculation([gh_same_early], "maze_early_same_ortho", property_key="ortho", perc=perc, targets=targets)
-    same_interf = calculation([gh_same_early], "maze_early_same_interf", property_key="interf", perc=perc, targets=targets)
-    same_diversity = calculation([gh_same_early], "maze_early_same_diversity", property_key="diversity", perc=perc, targets=targets)
-    same_spars = calculation([gh_same_early], "maze_early_same_sparsity", property_key="sparsity", perc=perc, targets=targets)
+    same_lip = calculation([gh_same_early], "maze_early_same_lip", property_key="lipschitz", perc=perc, targets=targets, early_stopped=True)
+    same_dist = calculation([gh_same_early], "maze_early_same_distance", property_key="distance", perc=perc, targets=targets, early_stopped=True)
+    same_ortho = calculation([gh_same_early], "maze_early_same_ortho", property_key="ortho", perc=perc, targets=targets, early_stopped=True)
+    same_interf = calculation([gh_same_early], "maze_early_same_interf", property_key="interf", perc=perc, targets=targets, early_stopped=True)
+    same_diversity = calculation([gh_same_early], "maze_early_same_diversity", property_key="diversity", perc=perc, targets=targets, early_stopped=True)
+    same_spars = calculation([gh_same_early], "maze_early_same_sparsity", property_key="sparsity", perc=perc, targets=targets, early_stopped=True)
 
     print("\nSimilar task")
-    similar_lip = calculation([gh_similar_early], "maze_early_similar_lip", property_key="lipschitz", perc=perc, targets=targets)
-    similar_dist = calculation([gh_similar_early], "maze_early_similar_distance", property_key="distance", perc=perc, targets=targets)
-    similar_ortho = calculation([gh_similar_early], "maze_early_similar_ortho", property_key="ortho", perc=perc, targets=targets)
-    similar_interf = calculation([gh_similar_early], "maze_early_similar_interf", property_key="interf", perc=perc, targets=targets)
-    similar_diversity = calculation([gh_similar_early], "maze_early_similar_diversity", property_key="diversity", perc=perc, targets=targets)
-    similar_spars = calculation([gh_similar_early], "maze_early_similar_sparsity", property_key="sparsity", perc=perc, targets=targets)
+    similar_lip = calculation([gh_similar_early], "maze_early_similar_lip", property_key="lipschitz", perc=perc, targets=targets, early_stopped=True)
+    similar_dist = calculation([gh_similar_early], "maze_early_similar_distance", property_key="distance", perc=perc, targets=targets, early_stopped=True)
+    similar_ortho = calculation([gh_similar_early], "maze_early_similar_ortho", property_key="ortho", perc=perc, targets=targets, early_stopped=True)
+    similar_interf = calculation([gh_similar_early], "maze_early_similar_interf", property_key="interf", perc=perc, targets=targets, early_stopped=True)
+    similar_diversity = calculation([gh_similar_early], "maze_early_similar_diversity", property_key="diversity", perc=perc, targets=targets, early_stopped=True)
+    similar_spars = calculation([gh_similar_early], "maze_early_similar_sparsity", property_key="sparsity", perc=perc, targets=targets, early_stopped=True)
 
     print("\nDifferent task - fix")
-    diff_lip = calculation([gh_diff_early], "maze_early_diff-fix_lip", property_key="lipschitz", perc=perc, targets=targets)
-    diff_dist = calculation([gh_diff_early], "maze_early_diff-fix_distance", property_key="distance", perc=perc, targets=targets)
-    diff_ortho = calculation([gh_diff_early], "maze_early_diff-fix_ortho", property_key="ortho", perc=perc, targets=targets)
-    diff_interf = calculation([gh_diff_early], "maze_early_diff-fix_interf", property_key="interf", perc=perc, targets=targets)
-    diff_diversity = calculation([gh_diff_early], "maze_early_diff-fix_diversity", property_key="diversity", perc=perc, targets=targets)
-    diff_spars = calculation([gh_diff_early], "maze_early_diff-fix_sparsity", property_key="sparsity", perc=perc, targets=targets)
+    diff_lip = calculation([gh_diff_early], "maze_early_diff-fix_lip", property_key="lipschitz", perc=perc, targets=targets, early_stopped=True)
+    diff_dist = calculation([gh_diff_early], "maze_early_diff-fix_distance", property_key="distance", perc=perc, targets=targets, early_stopped=True)
+    diff_ortho = calculation([gh_diff_early], "maze_early_diff-fix_ortho", property_key="ortho", perc=perc, targets=targets, early_stopped=True)
+    diff_interf = calculation([gh_diff_early], "maze_early_diff-fix_interf", property_key="interf", perc=perc, targets=targets, early_stopped=True)
+    diff_diversity = calculation([gh_diff_early], "maze_early_diff-fix_diversity", property_key="diversity", perc=perc, targets=targets, early_stopped=True)
+    diff_spars = calculation([gh_diff_early], "maze_early_diff-fix_sparsity", property_key="sparsity", perc=perc, targets=targets, early_stopped=True)
 
     print("\nDifferent task - tune")
-    difftune_lip = calculation([gh_diff_tune_early], "maze_early_diff-tune_lip", property_key="lipschitz", perc=perc, targets=targets)
-    difftune_dist = calculation([gh_diff_tune_early], "maze_early_diff-tune_distance", property_key="distance", perc=perc, targets=targets)
-    difftune_ortho = calculation([gh_diff_tune_early], "maze_early_diff-tune_ortho", property_key="ortho", perc=perc, targets=targets)
-    difftune_interf = calculation([gh_diff_tune_early], "maze_early_diff-tune_interf", property_key="interf", perc=perc, targets=targets)
-    difftune_diversity = calculation([gh_diff_tune_early], "maze_early_diff-tune_diversity", property_key="diversity", perc=perc, targets=targets)
-    difftune_spars = calculation([gh_diff_tune_early], "maze_early_diff-tune_sparsity", property_key="sparsity", perc=perc, targets=targets)
+    difftune_lip = calculation([gh_diff_tune_early], "maze_early_diff-tune_lip", property_key="lipschitz", perc=perc, targets=targets, early_stopped=True)
+    difftune_dist = calculation([gh_diff_tune_early], "maze_early_diff-tune_distance", property_key="distance", perc=perc, targets=targets, early_stopped=True)
+    difftune_ortho = calculation([gh_diff_tune_early], "maze_early_diff-tune_ortho", property_key="ortho", perc=perc, targets=targets, early_stopped=True)
+    difftune_interf = calculation([gh_diff_tune_early], "maze_early_diff-tune_interf", property_key="interf", perc=perc, targets=targets, early_stopped=True)
+    difftune_diversity = calculation([gh_diff_tune_early], "maze_early_diff-tune_diversity", property_key="diversity", perc=perc, targets=targets, early_stopped=True)
+    difftune_spars = calculation([gh_diff_tune_early], "maze_early_diff-tune_sparsity", property_key="sparsity", perc=perc, targets=targets, early_stopped=True)
 
     labels = ["complexity reduction", "dynamics awareness", "orthogonality", "noninterference", "diversity", "sparsity"]
     same = [same_lip, same_dist, same_ortho, same_interf, same_diversity, same_spars]
@@ -244,12 +205,13 @@ def simple_maze_correlation_early(perc):
 
     # ax.legend()
     ax.set_ylabel('Correlation')
+    ax.set_ylim(-0.5, 1)
     ax.set_xticks(x)
-    ax.set_yticks([-1, -0.7, -0.5, 0, 0.5, 0.7, 1])
+    # ax.set_yticks([-1, -0.7, -0.5, 0, 0.5, 0.7, 1])
     ax.set_xticklabels(labels, rotation=30)
-    plt.grid(True)
+    # plt.grid(True)
     # plt.show()
-    plt.savefig("plot/img/{}.png".format("maze_correlation_early"), dpi=300, bbox_inches='tight')
+    plt.savefig("plot/img/{}.pdf".format("maze_correlation_early"), dpi=300, bbox_inches='tight')
     plt.close()
     plt.clf()
 
@@ -318,14 +280,15 @@ def simple_maze_correlation_last(perc):
         ax.text(x[i]-0.45+width*3.6, max(0, difftune[i]) + label_pos, "{:.4f}".format(difftune[i]), color=cmap(3, 4), fontsize=fontsize, rotation=rotation)
 
     ax.plot([x[0]-0.45, x[-1]+0.45], [0, 0], "--", color="grey")
-    # ax.legend()
+    ax.legend(loc=4)
     ax.set_ylabel('Correlation')
+    ax.set_ylim(-0.5, 1)
     ax.set_xticks(x)
-    ax.set_yticks([-1, -0.7, -0.5, 0, 0.5, 0.7, 1])
+    # ax.set_yticks([-1, -0.7, -0.5, 0, 0.5, 0.7, 1])
     ax.set_xticklabels(labels, rotation=30)
-    plt.grid(True)
+    # plt.grid(True)
     # plt.show()
-    plt.savefig("plot/img/{}.png".format("maze_correlation_last"), dpi=300, bbox_inches='tight')
+    plt.savefig("plot/img/{}.pdf".format("maze_correlation_last"), dpi=300, bbox_inches='tight')
     plt.close()
     plt.clf()
 
@@ -402,10 +365,11 @@ def simple_picky_eater_correlation_last(perc, early=True):
     ax.plot([x[0]-0.45, x[-1]+0.45], [0, 0], "--", color="grey")
     ax.legend()
     ax.set_ylabel('Correlation')
+    ax.set_ylim(-0.5, 1)
     ax.set_xticks(x)
-    ax.set_yticks([-1, -0.7, -0.5, 0, 0.5, 0.7, 1])
+    # ax.set_yticks([-1, -0.7, -0.5, 0, 0.5, 0.7, 1])
     ax.set_xticklabels(labels, rotation=30)
-    plt.grid(True)
+    # plt.grid(True)
     # plt.show()
     if early:
         plt.savefig("plot/img/{}.pdf".format("correlation_early_model"), dpi=300, bbox_inches='tight')

@@ -76,7 +76,7 @@ def learning_curve(all_paths_dict, title, total_param=None,
     labels = [i["label"] for i in all_paths_dict]
     # control = load_return(all_paths_dict, total_param, start_param)
     control = load_return(all_paths_dict, total_param)#, start_param)
-    fig, axs = plt.subplots(nrows=1, ncols=len(labels), figsize=(30, 4))
+    fig, axs = plt.subplots(nrows=1, ncols=len(labels), figsize=(6*len(labels), 4))
 
     if len(labels) == 1:
         axs = [axs]
@@ -135,5 +135,5 @@ def picky_eater():
 
 if __name__ == '__main__':
     # mountain_car()
-    # simple_maze()
+    simple_maze()
     picky_eater()

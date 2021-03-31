@@ -227,7 +227,7 @@ class DQNAgent(base.Agent):
                       '%s Interference: %.8f/'
             self.cfg.logger.info(log_str % (self.total_steps, len(self.episode_rewards), label, itf))
 
-    def visualize(self):
+    def visualize_vf(self):
         """
         def get_visualization_segment: states, goal_states, map_coords
           states: list of states (XY, grayscale, or RGB)
@@ -262,14 +262,30 @@ class DQNAgent(base.Agent):
             ax.set_title('Value Function')
 
             viz_dir = self.cfg.get_visualization_dir()
-            # viz_file = 'visualization_{}.png'.format(self.num_episodes)
-            viz_file = 'visualization_{}.png'.format(self.total_steps)
+            viz_file = 'visualization_{}.png'.format(self.num_episodes)
+            # viz_file = 'visualization_{}.png'.format(self.total_steps)
             #viz_file = 'visualization.png'
             plt.savefig(os.path.join(viz_dir, viz_file))
             plt.close()
 
         except NotImplementedError:
             return
+
+    def visualize(self):
+        # a plot with rows = num of goal-states and cols = 1
+        fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 6))
+
+        frame = self.state.astype(np.uint8)
+        figure, ax = plt.subplots()
+        ax.imshow(frame)
+        plt.axis('off')
+
+        viz_dir = self.cfg.get_visualization_dir()
+        # viz_file = 'visualization_{}.png'.format(self.num_episodes)
+        viz_file = 'visualization_{}.png'.format(self.total_steps)
+        # viz_file = 'visualization.png'
+        plt.savefig(os.path.join(viz_dir, viz_file))
+        plt.close()
 
     def save(self, early=False):
         parameters_dir = self.cfg.get_parameters_dir()

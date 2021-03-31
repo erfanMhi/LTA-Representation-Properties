@@ -117,6 +117,8 @@ def simple_maze():
 def picky_eater():
     for crgb_sweep in crgb_online_sweep:
         compare_learning_curve([crgb_sweep], "maze online property", label_keys=['learning_rate', ])
+    
+    # learning_curve(crgb_online_best, "maze online property")
     #compare_learning_curve(pe_learn_sweep, "picky eater learning curve",
     #        label_keys = [['target_network_update_freq', 'learning_rate']], config_paths = ['experiment/config/test/picky_eater/online_property/dqn_lta/sweep.json'])
   

@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAuxAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test/picky_eater/online_property/dqn_lta_aux/aux_control/sweep1",
+        "exp_name": "test/picky_eater/online_property/dqn_lta_aux/aux_control/sweep_4",
         "env_name": "CollectTwoColorRGB",
         "agent": "DQNAuxSuccessorAgent",
         "discount": 0.99,
@@ -23,7 +23,7 @@
                 ]
             },
             "in_dim": [15, 15, 3],
-            "out_dim": 32,
+            "out_dim": 128,
             "load_params": false,
             "train_rep": true
         },
@@ -35,7 +35,7 @@
 	
 	"activation_config": {
             "name": "LTA",
-            "input": 32,
+            "input": 128,
             "tile": 20,
             "eta": 2.0,
             "bound_high": 20,
@@ -46,7 +46,7 @@
         "aux_config": [
             {
             "aux_fn_type":  "fc",
-            "aux_in_dim": 640,
+            "aux_in_dim": 2560,
             "aux_out_dim": 4,
             "hidden_units": [128, 128],
             "aux_task": "aux_control_collect",
@@ -86,7 +86,7 @@
         "evaluate_regression": false 
     },
    "sweep_parameters": {
-        "learning_rate": [0.0003, 0.0001, 0.00003, 0.00001],
-        "decay_epsilon": [false, true]
+        "learning_rate": [0.0003, 0.0001],
+        "decay_epsilon": [true]
     }
 }

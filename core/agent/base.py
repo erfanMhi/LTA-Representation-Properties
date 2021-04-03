@@ -14,8 +14,9 @@ class Agent:
         self.timeout = cfg.timeout
         self.stats_counter = 0
         self.batch_indices = torch.arange(self.cfg.batch_size).long().to(cfg.device)
-        self.eval_env = cfg.env_fn()
         self.ep_returns_queue = np.zeros(cfg.stats_queue_size)
+        self.env = cfg.env_fn()
+        self.eval_env = cfg.env_fn()
 
     def update_stats(self, reward, done):
         self.episode_reward += reward
@@ -30,6 +31,7 @@ class Agent:
                 self.add_episode_return(self.ep_steps)
             else:
                 raise NotImplementedError
+            print("Learn", self.episode_reward, self.ep_steps)
             self.episode_reward = 0
             self.ep_steps = 0
             self.reset = True
@@ -41,7 +43,7 @@ class Agent:
 
     def populate_returns(self):
         for ep in range(self.cfg.stats_queue_size):
-            ep_return, steps = self.eval_episode()
+            ep_return, steps = self.populate_episode()
             if self.cfg.evaluation_criteria == "return":
                 self.add_episode_return(ep_return)
             elif self.cfg.evaluation_criteria == "steps":
@@ -49,24 +51,63 @@ class Agent:
             else:
                 raise NotImplementedError
 
-    def eval_episode(self):
-        state = self.eval_env.reset()
+    def populate_episode(self):
+        state = self.env.reset()
         total_rewards = 0
         ep_steps = 0
         while True:
-            action = self.eval_step(state)
-            state, reward, done, _ = self.eval_env.step([action])
+            action = self.policy(state, self.cfg.eps_schedule.read_only())
+            state, reward, done, _ = self.env.step([action])
             total_rewards += reward
             ep_steps += 1
             if done or ep_steps == self.cfg.timeout:
                 break
         return total_rewards, ep_steps
 
-    def eval_episodes(self):
+    def eval_episodes(self, elapsed_time=None):
+        eval_res = []
+        for ep in range(self.cfg.eval_episodes):
+            ep_return, steps = self.eval_episode()
+            if self.cfg.evaluation_criteria == "return":
+                eval_res.append(ep_return)
+            elif self.cfg.evaluation_criteria == "steps":
+                eval_res.append(steps)
+            else:
+                raise NotImplementedError
+        eval_res = np.array(eval_res)
+        mean, median, min, max = np.mean(eval_res), np.median(eval_res), np.min(eval_res), np.max(eval_res)
+
+        total_episodes = len(self.episode_rewards)
+        log_str = 'EVAL: total steps %d, total episodes %3d, ' \
+                  'returns %.2f/%.2f/%.2f/%.2f/%d (mean/median/min/max/num), %.2f steps/s'
+        self.cfg.logger.info(log_str % (self.total_steps, total_episodes, mean, median,
+                                        min, max, len(eval_res),
+                                        elapsed_time))
+        self.episode_reward = 0
+        self.ep_steps = 0
+        self.reset = True
         return
 
-    def eval_step(self, state):
+    def eval_episode(self):
+        state = self.env.reset()
+        total_rewards = 0
+        ep_steps = 0
+        while True:
+            action = self.eval_step(state)
+            state, reward, done, _ = self.env.step([action])
+            total_rewards += reward
+            ep_steps += 1
+            if done or ep_steps == self.cfg.timeout:
+                break
+        print("EVAL", total_rewards, ep_steps)
+        return total_rewards, ep_steps
+
+    def policy(self, state, eps):
         raise NotImplementedError
+
+    def eval_step(self, state):
+        action = self.policy(state, 0)
+        return action
 
     # def save(self, filename):
     #     raise NotImplementedError

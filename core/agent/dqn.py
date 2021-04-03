@@ -42,7 +42,6 @@ class DQNAgent(base.Agent):
         self.optimizer = optimizer
         self.targets = targets
 
-        self.env = cfg.env_fn()
         self.vf_loss = cfg.vf_loss_fn()
         self.vf_constr = cfg.vf_constr_fn()
         self.replay = cfg.replay_fn()
@@ -62,15 +61,16 @@ class DQNAgent(base.Agent):
             self.state = self.env.reset()
             self.reset = False
 
-        with torch.no_grad():
-            phi = self.rep_net(self.cfg.state_normalizer(self.state))
-            q_values = self.val_net(phi)
-
-        q_values = torch_utils.to_np(q_values).flatten()
-        if np.random.rand() < self.cfg.eps_schedule():
-            action = np.random.randint(0, len(q_values))
-        else:
-            action = np.random.choice(np.flatnonzero(q_values == q_values.max()))
+        # with torch.no_grad():
+        #     phi = self.rep_net(self.cfg.state_normalizer(self.state))
+        #     q_values = self.val_net(phi)
+        #
+        # q_values = torch_utils.to_np(q_values).flatten()
+        # if np.random.rand() < self.cfg.eps_schedule():
+        #     action = np.random.randint(0, len(q_values))
+        # else:
+        #     action = np.random.choice(np.flatnonzero(q_values == q_values.max()))
+        action = self.policy(self.state, self.cfg.eps_schedule())
 
         next_state, reward, done, _ = self.env.step([action])
         self.replay.feed([self.state, action, reward, next_state, int(done)])
@@ -80,6 +80,17 @@ class DQNAgent(base.Agent):
 
         self.update()
 
+    def policy(self, state, eps):
+        with torch.no_grad():
+            phi = self.rep_net(self.cfg.state_normalizer(state))
+            q_values = self.val_net(phi)
+        q_values = torch_utils.to_np(q_values).flatten()
+
+        if np.random.rand() < eps:
+            action = np.random.randint(0, len(q_values))
+        else:
+            action = np.random.choice(np.flatnonzero(q_values == q_values.max()))
+        return action
 
     def update(self):
         states, actions, rewards, next_states, terminals = self.replay.sample()
@@ -125,14 +136,6 @@ class DQNAgent(base.Agent):
             self.targets.rep_net.load_state_dict(self.rep_net.state_dict())
             self.targets.val_net.load_state_dict(self.val_net.state_dict())
 
-    def eval_step(self, state):
-        if np.random.rand() < self.cfg.eps_schedule.read_only():
-            return np.random.randint(0, self.cfg.action_dim)
-        else:
-            q_values = self.val_net(self.rep_net(self.cfg.state_normalizer(state)))
-            q_values = torch_utils.to_np(q_values).flatten()
-            return np.random.choice(np.flatnonzero(q_values == q_values.max()))
-
     def log_tensorboard(self):
         rewards = self.ep_returns_queue
         mean, median, min, max = np.mean(rewards), np.median(rewards), np.min(rewards), np.max(rewards)
@@ -146,7 +149,7 @@ class DQNAgent(base.Agent):
         total_episodes = len(self.episode_rewards)
         mean, median, min, max = np.mean(rewards), np.median(rewards), np.min(rewards), np.max(rewards)
 
-        log_str = 'total steps %d, total episodes %3d, ' \
+        log_str = 'TRAIN LOG: steps %d, episodes %3d, ' \
                   'returns %.2f/%.2f/%.2f/%.2f/%d (mean/median/min/max/num), %.2f steps/s'
 
         self.cfg.logger.info(log_str % (self.total_steps, total_episodes, mean, median,
@@ -524,14 +527,18 @@ class DQNModelLearning(DQNAgent):
         log_str = 'Evaluation: %.4f/%.4f/%.4f (nextstate/reward/termination)\n'
         self.cfg.logger.info(log_str % (loss_s, loss_r, loss_t))
 
-    def eval_step(self, state):
-        if np.random.rand() < self.cfg.eps_schedule.read_only():
-            return np.random.randint(0, self.cfg.action_dim)
-        else:
-            phi = self.rep_net(self.cfg.state_normalizer(state))
-            q_values, _, _, _ = self.val_net(np.expand_dims(phi, axis=0))
-            q_values = torch_utils.to_np(q_values).flatten()
-            return np.random.choice(np.flatnonzero(q_values == q_values.max()))
+    # def eval_step(self, state):
+    #     # if np.random.rand() < self.cfg.eps_schedule.read_only():
+    #     #     return np.random.randint(0, self.cfg.action_dim)
+    #     # else:
+    #     #     phi = self.rep_net(self.cfg.state_normalizer(state))
+    #     #     q_values, _, _, _ = self.val_net(np.expand_dims(phi, axis=0))
+    #     #     q_values = torch_utils.to_np(q_values).flatten()
+    #     #     return np.random.choice(np.flatnonzero(q_values == q_values.max()))
+    #     phi = self.rep_net(self.cfg.state_normalizer(state))
+    #     q_values, _, _, _ = self.val_net(np.expand_dims(phi, axis=0))
+    #     q_values = torch_utils.to_np(q_values).flatten()
+    #     return np.random.choice(np.flatnonzero(q_values == q_values.max()))
 
     def visualize(self):
         segment = self.env.get_visualization_segment()

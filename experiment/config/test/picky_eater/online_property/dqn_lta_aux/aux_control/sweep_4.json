@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAuxAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test/picky_eater/online_property/dqn_aux/aux_control/sweep_1",
+        "exp_name": "test/picky_eater/online_property/dqn_lta_aux/aux_control/sweep_4",
         "env_name": "CollectTwoColorRGB",
         "agent": "DQNAuxSuccessorAgent",
         "discount": 0.99,
@@ -9,13 +9,12 @@
 
         "epsilon": 0.1,
 
-        "epsilon_start": 1.0,
+	"epsilon_start": 1.0,
         "epsilon_end": 0.1,
         "epsilon_schedule_steps": 100000,
-        
-	"rep_config": {
-            "rep_type": "online",
-            "network_type": "conv",
+ 
+        "rep_config": {
+            "rep_type": "modular", "network_type": "conv",
             "conv_architecture": {
                 "conv_layers": [
                    {"in": 3,  "out": 32, "kernel": 4, "stride": 1, "pad": 1},
@@ -24,7 +23,7 @@
                 ]
             },
             "in_dim": [15, 15, 3],
-            "out_dim": 32,
+            "out_dim": 128,
             "load_params": false,
             "train_rep": true
         },
@@ -33,11 +32,21 @@
             "val_fn_type": "linear",
             "init_type": "lta"
          },
+	
+	"activation_config": {
+            "name": "LTA",
+            "input": 128,
+            "tile": 20,
+            "eta": 2.0,
+            "bound_high": 20,
+            "bound_low": -20
+        },
+
 
         "aux_config": [
             {
             "aux_fn_type":  "fc",
-            "aux_in_dim": 32,
+            "aux_in_dim": 2560,
             "aux_out_dim": 4,
             "hidden_units": [128, 128],
             "aux_task": "aux_control_collect",
@@ -71,13 +80,13 @@
         "evaluate_lipschitz": true,
         "evaluate_distance": true,
         "evaluate_orthogonality": true,
-	"evaluate_interference": true,
+    	"evaluate_interference": true,
 	"evaluate_diversity": true,
-	"evaluate_sparsity": true,
+        "evaluate_sparsity": true,
         "evaluate_regression": false 
     },
    "sweep_parameters": {
-        "learning_rate": [0.0003, 0.0001, 0.00003, 0.00001],
-         "decay_epsilon": [false, true]
-   }
+        "learning_rate": [0.0003, 0.0001],
+        "decay_epsilon": [true]
+    }
 }

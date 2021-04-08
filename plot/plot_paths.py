@@ -2012,4 +2012,29 @@ crgb_online_sweep = [
      },
         ]
 
+dqn_sweep_temp = [
+    # {"label": "ReLU",
+    #  "control": "data/output/test/picky_eater/representation/random_beh/dqn/old_setting/",
+    #  },
+    {"label": "ReLU",
+     "control": "data/output/test/picky_eater/representation/random_beh_v1/dqn/sweep/",
+     },
+    {"label": "ReLU+Control",
+     "control": "data/output/test/picky_eater/representation/random_beh_v1/dqn_aux/aux_control/sweep/",
+     },
+    # {"label": "LTA",
+    #  "control": "data/output/test/picky_eater/representation/random_beh/dqn_lta/old_setting/",
+    #  },
+    # {"label": "LTA+Control",
+    #  "control": "data/output/test/picky_eater/representation/random_beh/dqn_lta_aux/aux_control/old_setting/",
+    #  },
+    {"label": "LTA+Control",
+     "control": "data/output/test/picky_eater/representation/random_beh_v1/dqn_lta_aux/aux_control/sweep/",
+     },
+    ]
 
+dqn_best_temp = [
+    {"label": "ReLU",
+     "control": "data/output/test/picky_eater/representation/random_beh/dqn/best/",
+     },
+]

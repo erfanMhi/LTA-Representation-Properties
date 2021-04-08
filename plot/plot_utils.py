@@ -72,69 +72,110 @@ def extract_from_single_run(file, key, label=None, before_step=None):
     with open(file, "r") as f:
         content = f.readlines()
     returns = []
+
+    check = True
+    # check = False
+    # for num, l in enumerate(content):
+    #     info = l.split("|")[1].strip()
+    #     if "epsilon: 0.1" in info:
+    #         check=True
+
     for num, l in enumerate(content):
-        info = l.split("|")[1].strip()
-        i_list = info.split(" ")
-        if "total" == i_list[0]:
-            if key=="return" and "returns" in i_list:
-                returns.append(float(i_list[i_list.index("returns")+1].split("/")[0].strip())) # mean
-            elif key == "lipschitz" and "Lipschitz:" in i_list:
-                if label is None:
-                    returns.append(float(i_list[i_list.index("Lipschitz:") + 1].split("/")[1].strip()))  # mean
-                else:
-                    if label in i_list:
+        if "|" in l:
+            info = l.split("|")[1].strip()
+            i_list = info.split(" ")
+            if "total" == i_list[0] or "TRAIN" == i_list[0]:
+                if key=="return" and "returns" in i_list:
+                    returns.append(float(i_list[i_list.index("returns")+1].split("/")[0].strip())) # mean
+                elif key == "lipschitz" and "Lipschitz:" in i_list:
+                    if label is None:
                         returns.append(float(i_list[i_list.index("Lipschitz:") + 1].split("/")[1].strip()))  # mean
-            elif key == "distance" and "Distance:" in i_list:
-                if label is None:
-                    returns.append(float(i_list[i_list.index("Distance:") + 1].split("/")[0].strip()))
-                else:
-                    if label in i_list:
-                        returns.append(float(i_list[i_list.index("Distance:" ) + 1].split("/")[0].strip()))
-            elif key == "ortho" and "Orthogonality:" in i_list:
-                if label is None:
-                    returns.append(float(i_list[i_list.index("Orthogonality:") + 1].split("/")[0].strip()))
-                else:
-                    if label in i_list:
+                    else:
+                        if label in i_list:
+                            returns.append(float(i_list[i_list.index("Lipschitz:") + 1].split("/")[1].strip()))  # mean
+                elif key == "distance" and "Distance:" in i_list:
+                    if label is None:
+                        returns.append(float(i_list[i_list.index("Distance:") + 1].split("/")[0].strip()))
+                    else:
+                        if label in i_list:
+                            returns.append(float(i_list[i_list.index("Distance:" ) + 1].split("/")[0].strip()))
+                elif key == "ortho" and "Orthogonality:" in i_list:
+                    if label is None:
                         returns.append(float(i_list[i_list.index("Orthogonality:") + 1].split("/")[0].strip()))
-            # elif key == "noninterf" and "Noninterference:" in i_list:
-            #     interf = float(i_list[i_list.index("Noninterference:") + 1].split("/")[0].strip())
-            #     if not (np.isnan(interf) or np.isinf(interf) or np.isinf(-interf)):
-            #         returns.append(interf)
-            #     else:
-            #         print("{} non-interference has {} value".format(file, interf))
-            elif key == "interf" and "Interference:" in i_list:
-                interf = float(i_list[i_list.index("Interference:") + 1].split("/")[0].strip())
-                returns.append(interf)
-            elif key == "decorr" and "Decorrelation:" in i_list:
-                returns.append(float(i_list[i_list.index("Decorrelation:") + 1].split("/")[0].strip()))
-            elif key == "diversity" and "Diversity:" in i_list:
-                if label is None:
-                    returns.append(float(i_list[i_list.index("Diversity:") + 1].split("/")[0].strip()))
-                    if np.isnan(returns[-1]):
-                        returns[-1] = 0
-                else:
-                    # key_label = "%s Diversity:" % label
-                    if label in i_list:
+                    else:
+                        if label in i_list:
+                            returns.append(float(i_list[i_list.index("Orthogonality:") + 1].split("/")[0].strip()))
+                # elif key == "noninterf" and "Noninterference:" in i_list:
+                #     interf = float(i_list[i_list.index("Noninterference:") + 1].split("/")[0].strip())
+                #     if not (np.isnan(interf) or np.isinf(interf) or np.isinf(-interf)):
+                #         returns.append(interf)
+                #     else:
+                #         print("{} non-interference has {} value".format(file, interf))
+                elif key == "interf" and "Interference:" in i_list:
+                    interf = float(i_list[i_list.index("Interference:") + 1].split("/")[0].strip())
+                    returns.append(interf)
+                elif key == "decorr" and "Decorrelation:" in i_list:
+                    returns.append(float(i_list[i_list.index("Decorrelation:") + 1].split("/")[0].strip()))
+                elif key == "diversity" and "Diversity:" in i_list:
+                    if label is None:
                         returns.append(float(i_list[i_list.index("Diversity:") + 1].split("/")[0].strip()))
                         if np.isnan(returns[-1]):
                             returns[-1] = 0
-            elif key == "sparsity" and "Instance Sparsity:" in info:
-                if label is None:
-                    returns.append(float(i_list[i_list.index("Sparsity:") + 1].split(",")[0].strip()))
-                else:
-                    # key_label = "%s Instance Sparsity:" % label
-                    if label in i_list:
+                    else:
+                        # key_label = "%s Diversity:" % label
+                        if label in i_list:
+                            returns.append(float(i_list[i_list.index("Diversity:") + 1].split("/")[0].strip()))
+                            if np.isnan(returns[-1]):
+                                returns[-1] = 0
+                elif key == "sparsity" and "Instance Sparsity:" in info:
+                    if label is None:
                         returns.append(float(i_list[i_list.index("Sparsity:") + 1].split(",")[0].strip()))
+                    else:
+                        # key_label = "%s Instance Sparsity:" % label
+                        if label in i_list:
+                            returns.append(float(i_list[i_list.index("Sparsity:") + 1].split(",")[0].strip()))
 
-            # used only when extract property for early-stopping model
-            if before_step is not None:
-                current_step = int(info.split("total steps")[1].split(",")[0])
-                if current_step == before_step:
-                    return returns
+                # used only when extract property for early-stopping model
+                if before_step is not None:
+                    current_step = int(info.split("total steps")[1].split(",")[0])
+                    if current_step == before_step:
+                        return returns
 
-        if "early-stopping" in i_list and key == "model":
-            cut = num - 1 # last line
-            returns = int(content[cut].split("total steps")[1].split(",")[0])
+            if "early-stopping" in i_list and key == "model":
+                cut = num - 1 # last line
+                converge_at = int(content[cut].split("total steps")[1].split(",")[0])
+
+                l = cut
+                found = False
+                while l > 0 and not found:
+                    info_temp = content[l].split("|")[1].strip()
+                    i_list_temp = info_temp.split(" ")
+                    if "total" == i_list_temp[0]:
+                        if "returns" in i_list_temp:
+                            converge_return = float(i_list_temp[i_list_temp.index("returns") + 1].split("/")[0].strip())
+                            found = True
+                    l -= 1
+
+                stop = False
+                above_step = [converge_at]
+                above_return = [converge_return]
+                while l > 0 and not stop:
+                    info_temp = content[l].split("|")[1].strip()
+                    i_list_temp = info_temp.split(" ")
+                    if "total" == i_list_temp[0]:
+                        if "returns" in i_list_temp:
+                            r_temp = float(i_list_temp[i_list_temp.index("returns") + 1].split("/")[0].strip())
+                            if r_temp >= 0.95 * converge_return:
+                                above_step.append(int(content[l].split("total steps")[1].split(",")[0]))
+                                above_return.append(r_temp)
+                            else:
+                                # print(r_temp)
+                                stop = True
+                    l -= 1
+
+                cut = above_return[-1]
+                returns = above_step[-1]
+                # print("100% return ({}) at {}, 95% return ({}) at {}".format(converge_return, converge_at, cut, returns))
 
     # Sanity Check
     if not isinstance(returns, int):

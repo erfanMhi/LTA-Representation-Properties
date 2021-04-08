@@ -36,6 +36,14 @@ if __name__ == '__main__':
             print("Run {} doesn't exist. {}".format(run_num, path))
             exit(1)
 
+    if "load_params" in cfg.val_fn_config.keys() and cfg.val_fn_config["load_params"]:
+        run_num = int(args.id / cfg.cumulative)
+        cfg.val_fn_config["path"] = cfg.val_fn_config["path"].format(run_num)
+        path = os.path.join(cfg.data_root, cfg.val_fn_config["path"])
+        if not os.path.isfile(path):
+            print("Run {} doesn't exist. {}".format(run_num, path))
+            exit(1)
+
     cfg.rep_activation_fn = activations.ActvFactory.get_activation_fn(cfg)
     cfg.rep_fn = representation.RepFactory.get_rep_fn(cfg)
     cfg.env_fn = environment.EnvFactory.create_env_fn(cfg)

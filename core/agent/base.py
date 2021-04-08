@@ -1,6 +1,9 @@
 import numpy as np
 import torch
-
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+from matplotlib import cm
+import os
 
 class Agent:
     def __init__(self, cfg):
@@ -18,11 +21,19 @@ class Agent:
         self.env = cfg.env_fn()
         self.eval_env = cfg.env_fn()
 
+        self.step_reward = np.zeros(self.timeout)
+
     def update_stats(self, reward, done):
+        self.step_reward[self.ep_steps] = reward
+
         self.episode_reward += reward
         self.total_steps += 1
         self.ep_steps += 1
         if done or self.ep_steps == self.timeout:
+            if self.ep_steps < self.timeout:
+                self.step_reward[self.ep_steps:] = -3
+                self.step_reward[self.ep_steps] = -2
+
             self.episode_rewards.append(self.episode_reward)
             self.num_episodes += 1
             if self.cfg.evaluation_criteria == "return":
@@ -31,10 +42,24 @@ class Agent:
                 self.add_episode_return(self.ep_steps)
             else:
                 raise NotImplementedError
-            print("Learn", self.episode_reward, self.ep_steps)
             self.episode_reward = 0
             self.ep_steps = 0
             self.reset = True
+
+            if self.num_episodes % 10 == 0:
+                # cmap = cm.get_cmap('viridis', 5)
+                cmap = (mpl.colors.ListedColormap(["white", 'red', 'cyan', 'grey', 'yellow', ]))
+                plt.figure()
+                temp = self.step_reward.reshape((25, 20))
+                plt.imshow(temp, cmap=cmap, vmax=1.5, vmin=-3.5)
+                plt.colorbar()
+                viz_dir = self.cfg.get_visualization_dir()
+                viz_file = 'reward_ep{}.png'.format(self.num_episodes)
+                plt.savefig(os.path.join(viz_dir, viz_file))
+                plt.close()
+                plt.clf()
+                print("Save reward plot in {}".format(viz_file))
+            self.step_reward = np.zeros(self.timeout)
 
     def add_episode_return(self, ep_return):
         self.ep_returns_queue[self.stats_counter] = ep_return
@@ -99,7 +124,6 @@ class Agent:
             ep_steps += 1
             if done or ep_steps == self.cfg.timeout:
                 break
-        print("EVAL", total_rewards, ep_steps)
         return total_rewards, ep_steps
 
     def policy(self, state, eps):

@@ -338,7 +338,114 @@ class CollectTwoColorXY:
         return _map
 
 
-class CollectTwoColorRGB(CollectTwoColorXY):
+class CollectTwoColorXYEarlyTermin:
+    def __init__(self, seed=np.random.randint(int(1e5))):
+        random_seed(seed)
+
+        self.object_coords = [(7, 2), (2, 7), (8, 6), (6, 8),
+                              (8, 0), (0, 8), (14, 0), (0, 14),
+                              (6, 14), (14, 6), (7, 11), (11, 7)]
+
+        # one indiciate the object is available to be picked up
+        self.object_status = np.ones(12)
+        self.action_dim = 4
+
+        self.obstacles_map = self.get_obstacles_map()
+        self.actions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+
+        self.agent_loc = (0, 0)
+        self.object_status = np.ones(len(self.object_coords))
+
+        self.min_x, self.max_x, self.min_y, self.max_y = 0, 14, 0, 14
+
+        self.greens, self.reds = None, None
+        self.rewarding_color = 'green'
+        self.rewarding_blocks = None
+        self.correct_collect = 0
+
+    def generate_state(self, agent_loc, object_status, reds, greens):
+        greens = np.array(greens).flatten()
+        reds = np.array(reds).flatten()
+        return np.concatenate([np.array(agent_loc), object_status * 14, greens, reds])
+
+    def reset(self):
+        obj_ids = np.arange(len(self.object_coords))
+        # obj_ids = np.random.permutation(obj_ids)
+
+        green_ids, red_ids = obj_ids[:6], obj_ids[6:]
+
+        self.greens = [self.object_coords[k] for k in green_ids]
+        self.reds = [self.object_coords[k] for k in red_ids]
+        if self.rewarding_color == 'red':
+            self.rewarding_blocks = self.reds
+        elif self.rewarding_color == 'green':
+            self.rewarding_blocks = self.greens
+        else:
+            raise NotImplementedError
+
+        self.correct_collect = 0
+
+        while True:
+            rand_state = np.random.randint(low=0, high=15, size=2)
+            rx, ry = rand_state
+            if not int(self.obstacles_map[rx][ry]) and \
+                    not (rx, ry) in self.object_coords:
+                self.agent_loc = rx, ry
+                self.object_status = np.ones(len(self.object_coords))
+                return self.generate_state(self.agent_loc, self.object_status, self.greens, self.reds)
+
+    def step(self, a):
+        dx, dy = self.actions[a[0]]
+        x, y = self.agent_loc
+
+        nx = x + dx
+        ny = y + dy
+
+        # Ensuring the next position is within bounds
+        nx, ny = min(max(nx, self.min_x), self.max_x), min(max(ny, self.min_y), self.max_y)
+        if not self.obstacles_map[nx][ny]:
+            x, y = nx, ny
+
+        reward = 0.0
+        if (x, y) in self.object_coords:
+            object_idx = self.object_coords.index((x, y))
+            if self.object_status[object_idx]:
+                # the object is available for picking
+                self.object_status[object_idx] = 0.0
+
+                if (x, y) in self.rewarding_blocks:
+                    reward += 1.0
+                    self.correct_collect += 1
+                else:
+                    reward += -1.0
+
+        self.agent_loc = x, y
+
+        reward -= 0.001
+
+        # done = np.asarray(True) if x == self.goal_x and y == self.goal_y else np.asarray(False)
+        # print(self.correct_collect)
+        done = np.asarray(True) if self.correct_collect==6 else np.asarray(False)
+        state = self.generate_state(self.agent_loc, self.object_status, self.greens, self.reds)
+        return state, np.asarray(reward), done, ""
+
+    def get_visualization_segment(self):
+        raise NotImplementedError
+
+    def get_obstacles_map(self):
+        _map = np.zeros([15, 15])
+        _map[7, 0:2] = 1.0
+        _map[7, 4:11] = 1.0
+        _map[7, 13:] = 1.0
+
+        _map[0:2, 7] = 1.0
+        _map[4:11, 7] = 1.0
+        _map[13:, 7] = 1.0
+
+        return _map
+
+
+class CollectTwoColorRGB(CollectTwoColorXYEarlyTermin):
     def __init__(self, seed=np.random.randint(int(1e5))):
         super().__init__(seed)
 
@@ -351,7 +458,7 @@ class CollectTwoColorRGB(CollectTwoColorXY):
                     self.main_template[x][y] = np.array([0, 0, 0])
                 else:
                     self.main_template[x][y] = np.array([128, 128, 128])
-        self.main_template[self.goal_x][self.goal_y] = np.array([255, 255, 255])
+        # self.main_template[self.goal_x][self.goal_y] = np.array([255, 255, 255])
 
         self.episode_template = None
 
@@ -382,11 +489,14 @@ class CollectTwoColorRGB(CollectTwoColorXY):
         else:
             raise NotImplementedError
 
+        self.correct_collect = 0
+
         self.episode_template = self.get_episode_template(self.greens, self.reds)
         while True:
             rand_state = np.random.randint(low=0, high=15, size=2)
             rx, ry = rand_state
-            if not int(self.obstacles_map[rx][ry]) and not (rx == self.goal_x and ry == self.goal_y) and \
+            # if not int(self.obstacles_map[rx][ry]) and not (rx == self.goal_x and ry == self.goal_y) and \
+            if not int(self.obstacles_map[rx][ry]) and \
                     not (rx, ry) in self.object_coords:
                 self.agent_loc = rx, ry
                 self.object_status = np.ones(len(self.object_coords))

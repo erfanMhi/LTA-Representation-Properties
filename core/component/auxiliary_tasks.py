@@ -512,7 +512,12 @@ class AuxFactory:
                 else:
                     raise NotImplementedError
             elif aux_config['aux_task'] in ['aux_control', 'aux_control_collect']:
-                if aux_config['aux_fn_type'] == 'fc':
+                if aux_config['aux_fn_type'] == 'linear':
+                    aux_predictor = network_architectures.LinearNetwork(cfg.device, np.prod(cfg.rep_fn().output_dim),
+                                                                    aux_config['aux_out_dim'])
+                    aux_target_predictor = network_architectures.LinearNetwork(cfg.device, np.prod(cfg.rep_fn().output_dim),
+                                                                    aux_config['aux_out_dim'])
+                elif aux_config['aux_fn_type'] == 'fc':
                     aux_predictor = network_architectures.FCNetwork(cfg.device, np.prod(cfg.rep_fn().output_dim),
                                                                 aux_config['hidden_units'], aux_config['aux_out_dim'])
                     aux_target_predictor = network_architectures.FCNetwork(cfg.device, np.prod(cfg.rep_fn().output_dim),

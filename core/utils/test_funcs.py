@@ -6,6 +6,7 @@ import string
 
 import pickle as pkl
 import numpy as np
+import sklearn.metrics as sklm
 import core.network.optimizer as optimizer
 import core.component.linear_probing_tasks as linear_probing_tasks
 
@@ -999,7 +1000,25 @@ def online_lipschitz(agent, state_all, label=None):
                   '%s Diversity: %.5f/'
         agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, normalized_div))
 
-def run_steps_onlineProperty(agent): # We should add sparsity and regression 
+
+def online_mutual_info(agent, states, label):
+    with torch.no_grad():
+        states = agent.cfg.state_normalizer(states)
+        rep = agent.rep_net(states).detach().numpy()
+
+    mutual_info = sklm.mutual_info_score(states, rep)
+
+    if label is None:
+        log_str = 'total steps %d, total episodes %3d, ' \
+                  'Mutual Info: %.8f'
+        agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), mutual_info))
+    else:
+        log_str = 'total steps %d, total episodes %3d, ' \
+                  '%s Mutual Info: %.8f, %s Mutual Info: %.8f'
+        agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, mutual_info, label, mutual_info))
+
+
+def run_steps_onlineProperty(agent): # We should add sparsity and regression
     """
     In this function we are going to log and measure learned properties of DQN & its variants during learning
     """
@@ -1035,7 +1054,7 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
             t0 = time.time()
 
         if agent.cfg.eval_interval and not agent.total_steps % agent.cfg.eval_interval:
-            agent.eval_episodes()
+            # agent.eval_episodes(elapsed_time=agent.cfg.log_interval / (time.time() - t0))
             if agent.cfg.visualize:
                 agent.visualize()
             if agent.cfg.save_params:
@@ -1055,6 +1074,8 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
                 #     online_decorrelation(agent, state_all, label)
                 if agent.cfg.evaluate_sparsity:
                     online_sparsity(agent, state_all, label)
+                # if agent.cfg.evaluate_mutual_info:
+                #     online_mutual_info(agent, state_all, label)
 
 #                 if agent.cfg.evaluate_regression:
                     

@@ -118,7 +118,7 @@ def picky_eater():
     for crgb_sweep in crgb_online_sweep_2:
         compare_learning_curve([crgb_sweep], "maze online property", label_keys=['learning_rate', ])
         # learning_curve([crgb_sweep], "maze online property")
-    
+
     # learning_curve(crgb_online_best, "maze online property")
     #compare_learning_curve(pe_learn_sweep, "picky eater learning curve",
     #        label_keys = [['target_network_update_freq', 'learning_rate']], config_paths = ['experiment/config/test/picky_eater/online_property/dqn_lta/sweep.json'])
@@ -131,9 +131,12 @@ def picky_eater():
     #        label_keys = [['target_network_update_freq', 'learning_rate']], config_paths = ['experiment/config/test/picky_eater/online_property/dqn_lta/sweep.json'])
     # compare_learning_curve(dqn_lta_1_learn_sweep, "picky eater learning curve (DQN+LTA+Without target)",
             # label_keys = [['target_network_update_freq', 'learning_rate']], config_paths = ['experiment/config/test/picky_eater/online_property/dqn_lta/sweep.json'])
-    
-   
+
+def pe_temp():
+    learning_curve(dqn_sweep_temp, "pe rep")
+
 
 if __name__ == '__main__':
     # mountain_car()
     picky_eater()
+    # pe_temp()

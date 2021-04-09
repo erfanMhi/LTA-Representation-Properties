@@ -156,12 +156,15 @@ class TrainedDQNAgent(base.Agent):
         return
 
     def eval_step(self, state):
-        if np.random.rand() < self.cfg.eps_schedule.read_only():
-            return np.random.randint(0, self.cfg.action_dim)
-        else:
-            q_values = self.val_net(self.rep_net(self.cfg.state_normalizer(state)))
-            q_values = torch_utils.to_np(q_values).flatten()
-            return np.random.choice(np.flatnonzero(q_values == q_values.max()))
+        # if np.random.rand() < self.cfg.eps_schedule.read_only():
+        #     return np.random.randint(0, self.cfg.action_dim)
+        # else:
+        #     q_values = self.val_net(self.rep_net(self.cfg.state_normalizer(state)))
+        #     q_values = torch_utils.to_np(q_values).flatten()
+        #     return np.random.choice(np.flatnonzero(q_values == q_values.max()))
+        q_values = self.val_net(self.rep_net(self.cfg.state_normalizer(state)))
+        q_values = torch_utils.to_np(q_values).flatten()
+        return np.random.choice(np.flatnonzero(q_values == q_values.max()))
 
     def log_tensorboard(self):
         pass

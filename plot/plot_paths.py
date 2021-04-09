@@ -19,9 +19,7 @@ def cmap(idx, total):
         return c_default[idx]
     else:
         getc = matplotlib.cm.get_cmap('cool')
-        return getc(float(idx - len(c_default))/(total- len(c_default)))
-
-
+        return getc(float(idx - len(c_default))/(total- len(c_default))) 
 target_keywords = {
     # "decorrelation.txt": "Decorrelation:",
     "distance.txt": "Distance",
@@ -2315,7 +2313,28 @@ crgb_online_sweep = [
      },
         ]
 
+dqn_sweep_temp = [
+    # {"label": "ReLU",
+    #  "control": "data/output/test/picky_eater/representation/random_beh/dqn/old_setting/",
+    #  },
+    {"label": "ReLU",
+     "control": "data/output/test/picky_eater/representation/random_beh_v1/dqn/sweep/",
+     },
+    {"label": "ReLU+Control",
+     "control": "data/output/test/picky_eater/representation/random_beh_v1/dqn_aux/aux_control/sweep/",
+     },
+    # {"label": "LTA",
+    #  "control": "data/output/test/picky_eater/representation/random_beh/dqn_lta/old_setting/",
+    #  },
+    # {"label": "LTA+Control",
+    #  "control": "data/output/test/picky_eater/representation/random_beh/dqn_lta_aux/aux_control/old_setting/",
+    #  },
+    {"label": "LTA+Control",
+     "control": "data/output/test/picky_eater/representation/random_beh_v1/dqn_lta_aux/aux_control/sweep/",
+     },
+    ]
 
+<<<<<<< HEAD
 crgb_online_best = [
     {"label": "FTA",
      "control": "data/output/test/picky_eater/online_property/dqn_lta/best/",
@@ -2389,3 +2408,8 @@ crgb_online_sweep_2 = [
 
 
 
+dqn_best_temp = [
+    {"label": "ReLU",
+     "control": "data/output/test/picky_eater/representation/random_beh/dqn/best/",
+     },
+]

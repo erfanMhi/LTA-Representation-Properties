@@ -115,8 +115,9 @@ def simple_maze():
     learning_curve(gh_diff_tune_early_sweep, "maze different (fine tune) sweep")
 
 def picky_eater():
-    for crgb_sweep in crgb_online_sweep:
+    for crgb_sweep in crgb_online_sweep_2:
         compare_learning_curve([crgb_sweep], "maze online property", label_keys=['learning_rate', ])
+        # learning_curve([crgb_sweep], "maze online property")
     
     # learning_curve(crgb_online_best, "maze online property")
     #compare_learning_curve(pe_learn_sweep, "picky eater learning curve",
@@ -135,5 +136,4 @@ def picky_eater():
 
 if __name__ == '__main__':
     # mountain_car()
-    simple_maze()
     picky_eater()

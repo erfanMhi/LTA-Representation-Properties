@@ -10,7 +10,8 @@ def run_steps(agent):
                 agent.log_file(elapsed_time=agent.cfg.log_interval / (time.time() - t0))
             t0 = time.time()
         if agent.cfg.eval_interval and not agent.total_steps % agent.cfg.eval_interval:
-            # agent.eval_episodes(elapsed_time=agent.cfg.log_interval / (time.time() - t0))
+            agent.eval_episodes(elapsed_time=agent.cfg.log_interval / (time.time() - t0))
+            # agent.eval_episodes()
             if agent.cfg.visualize and agent.total_steps > 1:
                 agent.visualize()
             if agent.cfg.save_params:

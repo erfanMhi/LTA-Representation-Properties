@@ -339,15 +339,20 @@ class CollectTwoColorXY:
 
 
 class CollectTwoColorXYEarlyTermin:
-    def __init__(self, seed=np.random.randint(int(1e5))):
+    def __init__(self, seed=np.random.randint(int(1e5)), fruit_num=6):
         random_seed(seed)
 
         self.object_coords = [(7, 2), (2, 7), (8, 6), (6, 8),
                               (8, 0), (0, 8), (14, 0), (0, 14),
                               (6, 14), (14, 6), (7, 11), (11, 7)]
 
+        self.fruit_num = fruit_num
+        
+        # Reducing number of the fruits to fruit_num
+        self.object_coords = self.object_coords[:self.fruit_num] + self.object_coords[-self.fruit_num:]
+        
         # one indiciate the object is available to be picked up
-        self.object_status = np.ones(12)
+        self.object_status = np.ones(self.fruit_num*2)
         self.action_dim = 4
 
         self.obstacles_map = self.get_obstacles_map()
@@ -372,7 +377,7 @@ class CollectTwoColorXYEarlyTermin:
         obj_ids = np.arange(len(self.object_coords))
         # obj_ids = np.random.permutation(obj_ids)
 
-        green_ids, red_ids = obj_ids[:6], obj_ids[6:]
+        green_ids, red_ids = obj_ids[:self.fruit_num], obj_ids[self.fruit_num:]
 
         self.greens = [self.object_coords[k] for k in green_ids]
         self.reds = [self.object_coords[k] for k in red_ids]
@@ -425,7 +430,7 @@ class CollectTwoColorXYEarlyTermin:
 
         # done = np.asarray(True) if x == self.goal_x and y == self.goal_y else np.asarray(False)
         # print(self.correct_collect)
-        done = np.asarray(True) if self.correct_collect==6 else np.asarray(False)
+        done = np.asarray(True) if self.correct_collect==self.fruit_num else np.asarray(False)
         state = self.generate_state(self.agent_loc, self.object_status, self.greens, self.reds)
         return state, np.asarray(reward), done, ""
 
@@ -446,8 +451,8 @@ class CollectTwoColorXYEarlyTermin:
 
 
 class CollectTwoColorRGB(CollectTwoColorXYEarlyTermin):
-    def __init__(self, seed=np.random.randint(int(1e5))):
-        super().__init__(seed)
+    def __init__(self, seed=np.random.randint(int(1e5)), fruit_num=6):
+        super().__init__(seed, fruit_num)
 
         d = len(self.obstacles_map)
         self.state_dim = (d, d, 3)
@@ -477,7 +482,7 @@ class CollectTwoColorRGB(CollectTwoColorXYEarlyTermin):
         obj_ids = np.arange(len(self.object_coords))
         obj_ids = np.random.permutation(obj_ids)
 
-        green_ids, red_ids = obj_ids[:6], obj_ids[6:]
+        green_ids, red_ids = obj_ids[:self.fruit_num], obj_ids[self.fruit_num:]
 
         self.reds = [self.object_coords[k] for k in red_ids]
         self.greens = [self.object_coords[k] for k in green_ids]

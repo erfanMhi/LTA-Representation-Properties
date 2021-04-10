@@ -43,6 +43,7 @@ class Config:
         # self.eval_set_size = 1000
         # self.retain_tasks = 1
         self.replay_with_len = False
+        self.fruit_num = 6
 
     def get_log_dir(self):
         d = os.path.join(self.data_root, self.exp_name, "{}_run".format(self.run),

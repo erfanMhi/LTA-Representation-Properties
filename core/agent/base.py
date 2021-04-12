@@ -46,7 +46,8 @@ class Agent:
             self.ep_steps = 0
             self.reset = True
 
-            if self.num_episodes % 10 == 0:
+            if (self.num_episodes <= 20  or self.total_steps >= self.cfg.max_steps*(1-0.01)) and \
+                self.num_episodes % 10 == 0:
                 # cmap = cm.get_cmap('viridis', 5)
                 cmap = (mpl.colors.ListedColormap(["white", 'red', 'cyan', 'grey', 'yellow', ]))
                 plt.figure()

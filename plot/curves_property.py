@@ -152,23 +152,23 @@ def simple_maze():
     # learning_curve_mean(gh_diff_tune_early, "maze relu diff (tune) return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
 
     targets = ["ReLU",
-               "ReLU+Control1g",#"ReLU+Control5g", "ReLU+Reward",
+               "ReLU+Control5g", "ReLU+Reward",
                "FTA eta=0.2",
-                "FTA+Control1g", #"FTA+Reward",
+               "FTA+Control5g", "FTA+Reward",
                ]
-    # violin_colors["ReLU+Control5g"] = c_default[5]
-    violin_colors["ReLU+Control1g"] = c_default[5]
-    violin_colors["FTA+Control1g"] = violin_colors["FTA+Control5g"]
-    learning_curve_mean(gh_online, "maze_chosen_online_lipschitz", key="lipschitz", targets=targets, xlim=[0, 31], show_avg=False, show_model=True, legend=True, independent_runs=False)
-    learning_curve_mean(gh_online, "maze_chosen_online_distance", key="distance", targets=targets, xlim=[0, 31], show_avg=False, show_model=True)
-    learning_curve_mean(gh_online, "maze_chosen_online_orthogonal", key="ortho", targets=targets, xlim=[0, 31], show_avg=False, show_model=True)
-    learning_curve_mean(gh_online, "maze_chosen_online_interf", key="interf", targets=targets, xlim=[1, 31], show_avg=False, show_model=True)
-    learning_curve_mean(gh_online, "maze_chosen_online_diversity", key="diversity", targets=targets, xlim=[0, 31], show_avg=False, show_model=True)
-    learning_curve_mean(gh_online, "maze_chosen_online_sparsity", key="sparsity", targets=targets, xlim=[0, 31], show_avg=False, show_model=True)
-
-    learning_curve_mean(gh_online, "maze chosen return", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1.1], show_avg=False, show_model=True)
-    learning_curve_mean(gh_same_early, "maze chosen same return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
-    learning_curve_mean(gh_similar_early, "maze chosen similar return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
+    violin_colors["ReLU+Control5g"] = c_default[5]
+    # violin_colors["ReLU+Control1g"] = c_default[5]
+    # violin_colors["FTA+Control1g"] = violin_colors["FTA+Control5g"]
+    # learning_curve_mean(gh_online, "maze_chosen_online_lipschitz", key="lipschitz", targets=targets, xlim=[0, 31], show_avg=False, show_model=True, legend=True, independent_runs=False)
+    # learning_curve_mean(gh_online, "maze_chosen_online_distance", key="distance", targets=targets, xlim=[0, 31], show_avg=False, show_model=True)
+    # learning_curve_mean(gh_online, "maze_chosen_online_orthogonal", key="ortho", targets=targets, xlim=[0, 31], show_avg=False, show_model=True)
+    # learning_curve_mean(gh_online, "maze_chosen_online_interf", key="interf", targets=targets, xlim=[1, 31], show_avg=False, show_model=True)
+    # learning_curve_mean(gh_online, "maze_chosen_online_diversity", key="diversity", targets=targets, xlim=[0, 31], show_avg=False, show_model=True)
+    # learning_curve_mean(gh_online, "maze_chosen_online_sparsity", key="sparsity", targets=targets, xlim=[0, 31], show_avg=False, show_model=True)
+    #
+    # learning_curve_mean(gh_online, "maze chosen return", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1.1], show_avg=False, show_model=True)
+    # learning_curve_mean(gh_same_early, "maze chosen same return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
+    # learning_curve_mean(gh_similar_early, "maze chosen similar return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
     learning_curve_mean(gh_diff_early, "maze chosen diff (fix) return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
     learning_curve_mean(gh_diff_tune_early, "maze chosen diff (tune) return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
 
@@ -255,10 +255,18 @@ def picky_eater():
     learning_curve_mean(crgb_online, "maze online sparsity", key="sparsity")
 
 def pe_test():
-    learning_curve_mean(dqn_best_temp, "pe return", key="return", show_model=False, independent_runs=True, targets=["ReLU"], legend=False)
+    targets = [
+        # "ReLU", "ReLU+Control", "ReLU+Reward",
+        # "FTA",
+        "FTA+Control",
+        # "FTA+Reward"
+    ]
+    # learning_curve_mean(pe_best_temp, "pe return", key="return", show_model=False, independent_runs=True, targets=["ReLU"], legend=False)
+    # learning_curve_mean(pe_trans_best_temp, "pe trans diff", key="return", show_model=False, independent_runs=False, targets=targets, legend=True)
+    learning_curve_mean(pe_trans_best_temp, "pe trans diff (FTA control)", key="return", show_model=False, independent_runs=True, targets=targets, legend=True)
 
 if __name__ == '__main__':
     # mountain_car()
-    simple_maze()
-    picky_eater()
-    # pe_test()
+    # simple_maze()
+    # picky_eater()
+    pe_test()

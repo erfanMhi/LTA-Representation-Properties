@@ -47,7 +47,7 @@ def learning_curve_mean(all_paths_dict, title, key, targets=[], xlim=None, ylim=
                 draw_curve(r.reshape((1, -1)), ax, None, c_default[i], curve_styles[label], alpha=alpha, linewidth=linewidth)
             plt.plot([], color=violin_colors[label], linestyle=curve_styles[label], label=label)
         else:
-        total = returns if type(total) == int else total + returns
+            total = returns if type(total) == int else total + returns
     if show_avg:
         draw_curve(total/len(labels), plt, "Avg", "black", linewidth=3)
 

@@ -46,20 +46,20 @@ class Agent:
             self.ep_steps = 0
             self.reset = True
 
-            if (self.num_episodes <= 20  or self.total_steps >= self.cfg.max_steps*(1-0.01)) and \
-                self.num_episodes % 10 == 0:
-                # cmap = cm.get_cmap('viridis', 5)
-                cmap = (mpl.colors.ListedColormap(["white", 'red', 'cyan', 'grey', 'yellow', ]))
-                plt.figure()
-                temp = self.step_reward.reshape((25, 20))
-                plt.imshow(temp, cmap=cmap, vmax=1.5, vmin=-3.5)
-                plt.colorbar()
-                viz_dir = self.cfg.get_visualization_dir()
-                viz_file = 'reward_ep{}.png'.format(self.num_episodes)
-                plt.savefig(os.path.join(viz_dir, viz_file))
-                plt.close()
-                plt.clf()
-                print("Save reward plot in {}".format(viz_file))
+            # if (self.num_episodes <= 20  or self.total_steps >= self.cfg.max_steps*(1-0.01)) and \
+            #     self.num_episodes % 10 == 0:
+            #     # cmap = cm.get_cmap('viridis', 5)
+            #     cmap = (mpl.colors.ListedColormap(["white", 'red', 'cyan', 'grey', 'yellow', ]))
+            #     plt.figure()
+            #     temp = self.step_reward.reshape((25, 20))
+            #     plt.imshow(temp, cmap=cmap, vmax=1.5, vmin=-3.5)
+            #     plt.colorbar()
+            #     viz_dir = self.cfg.get_visualization_dir()
+            #     viz_file = 'reward_ep{}.png'.format(self.num_episodes)
+            #     plt.savefig(os.path.join(viz_dir, viz_file))
+            #     plt.close()
+            #     plt.clf()
+            #     print("Save reward plot in {}".format(viz_file))
             self.step_reward = np.zeros(self.timeout)
 
     def add_episode_return(self, ep_return):

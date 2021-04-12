@@ -1,5 +1,5 @@
 import os
-import sys
+import sys 
 import numpy as np
 sys.path.insert(0, '..')
 
@@ -38,15 +38,15 @@ def learning_curve_mean(all_paths_dict, title, key, targets=[], xlim=None, ylim=
     fig, ax = plt.subplots()
     labels = targets
     for label in labels:
-        print(label)
+        print('----------------------draw_curve---------------------')
         returns = arranged[label]
+        draw_curve(returns, ax, label, violin_colors[label], curve_styles[label], alpha=alpha, linewidth=linewidth)
         if independent_runs:
             for i, r in enumerate(returns):
                 # draw_curve(r.reshape((1, -1)), ax, None, violin_colors[label], curve_styles[label], alpha=alpha, linewidth=linewidth)
                 draw_curve(r.reshape((1, -1)), ax, None, c_default[i], curve_styles[label], alpha=alpha, linewidth=linewidth)
             plt.plot([], color=violin_colors[label], linestyle=curve_styles[label], label=label)
         else:
-            draw_curve(returns, ax, label, violin_colors[label], curve_styles[label], alpha=alpha, linewidth=linewidth)
         total = returns if type(total) == int else total + returns
     if show_avg:
         draw_curve(total/len(labels), plt, "Avg", "black", linewidth=3)
@@ -73,7 +73,11 @@ def learning_curve_mean(all_paths_dict, title, key, targets=[], xlim=None, ylim=
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)
     save_path = save_path if save_path!='unknown' else title
-    plt.savefig("plot/img/{}.png".format(save_path), dpi=300, bbox_inches='tight')
+    if data_label is None:
+        plt.savefig("plot/img/{}.pdf".format(save_path), dpi=300, bbox_inches='tight')
+    else:    
+        plt.savefig("plot/img/{}_{}.pdf".format(data_label, save_path), dpi=300, bbox_inches='tight')
+    # plt.savefig("plot/img/{}.png".format(save_path), dpi=300, bbox_inches='tight')
     # plt.show()
     plt.close()
     plt.clf()
@@ -195,41 +199,79 @@ def simple_maze():
     # learning_curve_mean(gh_diff_early, "maze all diff (fix) return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
     # learning_curve_mean(gh_diff_tune_early, "maze all diff (tune) return", key="return", targets=targets, xlim=[0, 11], ylim=[0, 1.1], show_avg=False, show_model=False)
 
-def picky_eater():
+def picky_eater(data_label='Random'):
     print("\nRep learning")
-    targets_lta= [
-        'LTA', 
-        # 'LTA+XY',
-        # 'LTA+Control'
-        'LTA+Decoder', 
-        'LTA+Decoder', 
-        'LTA+NAS', 
-        'LTA+SF'
-            ]
+#     targets_lta= [
+        # 'FTA eta=2', 
+        # 'FTA+XY',
+        # 'FTA+Control'
+        # 'FTA+Reward', 
+        # 'FTA+Decoder', 
+        # 'FTA+NAS', 
+        # 'FTA+SF'
+            # ]
     
-    targets_relu= [
+    # targets_relu= [
+        # 'ReLU', 
+        # 'ReLU+XY',
+        # 'ReLU+Control'
+        # 'ReLU+Decoder', 
+        # 'ReLU+Reward', 
+        # 'ReLU+NAS', 
+        # 'ReLU+SF'
+            # ]
+
+    # learning_curve_mean(crgb_online, "maze return", key="return", xlim=[0, 101], ylim=[0, 1.1], show_model=False, targets=targets_lta, save_path='lta_return')
+    # learning_curve_mean(crgb_online, "Complexity Reduction", key="lipschitz", data_label='Random', xlim=[0, 101], ylim=[0, 1.1], show_model=False, targets=targets_lta, save_path='lta_comp_reduc')
+    # learning_curve_mean(crgb_online, "Dynamic Awareness", key="distance", data_label='Random', xlim=[0, 101], ylim=[0, 1.1], show_model=False, targets=targets_lta, save_path='lta_distance')
+    # learning_curve_mean(crgb_online, "Orthogonal", key="ortho", data_label='Random', xlim=[0, 101],ylim=[0, 1.1], show_model=False, targets=targets_lta, save_path='lta_ortho') 
+    # learning_curve_mean(crgb_online, "maze online interf", key="interf", xlim=[0, 101], show_model=False, targets=targets_lta, save_path='lta_interf') learning_curve_mean(crgb_online, "Diversity", key="diversity", data_label='Random', xlim=[0, 101],ylim=[0, 1.1], show_model=False, targets=targets_lta, save_path='lta_diversity')
+    # learning_curve_mean(crgb_online, "Sparsity", key="sparsity", data_label='Random', xlim=[0, 101], ylim=[0, 1.1], show_model=False, targets=targets_lta, save_path='lta_sparsity')
+ 
+    # learning_curve_mean(crgb_online, "maze return", key="return", xlim=[0, 101], ylim=[0, 1.1], show_model=False, targets=targets_relu, save_path='relu_return')
+    # learning_curve_mean(crgb_online, "Complexity Reduction", key="lipschitz", data_label='Random', xlim=[0, 101], ylim=[0, 1.1], show_model=False, targets=targets_relu, save_path='relu_comp_reduc')
+    # learning_curve_mean(crgb_online, "Dynamic Awareness", key="distance", data_label='Random', xlim=[0, 101], ylim=[0, 1.1], show_model=False, targets=targets_relu, save_path='relu_distance')
+    # learning_curve_mean(crgb_online, "Orthogonal", key="ortho", data_label='Random', xlim=[0, 101], ylim=[0, 1.1], show_model=False, targets=targets_relu, save_path='relu_ortho')
+    # learning_curve_mean(crgb_online, "maze online interf", key="interf", xlim=[0, 101], show_model=False, targets=targets_lta, save_path='lta_interf')
+    # learning_curve_mean(crgb_online, "Diversity", key="diversity", data_label='Random', xlim=[0, 101], ylim=[0, 1.1], show_model=False, targets=targets_relu, save_path='relu_diversity')
+    # learning_curve_mean(crgb_online, "Sparsity", key="sparsity", data_label='Random', xlim=[0, 101], ylim=[0, 1.1], show_model=False, targets=targets_relu, save_path='relu_sparsity')
+ 
+    targets_relu = [
         'ReLU', 
         'ReLU+XY',
-        'ReLU+Control'
+        'ReLU+Control',
         'ReLU+Decoder', 
-        'ReLU+Decoder', 
+        'ReLU+Reward', 
         'ReLU+NAS', 
-        'ReLU+SF'
+        'ReLU+SF',
+         'FTA eta=2', 
+        'FTA+XY',
+        'FTA+Control',
+        'FTA+Reward', 
+        'FTA+Decoder', 
+        'FTA+NAS', 
+        'FTA+SF'
             ]
 
-    learning_curve_mean(crgb_online, "maze return", key="return", xlim=[0, 101], ylim=[0, 1.1], show_model=False, targets=targets_lta, save_path='lta_return')
-    learning_curve_mean(crgb_online, "Complexity Reduction", key="lipschitz", data_label='Random', xlim=[0, 101], ylim=[0, 1.1], show_model=False, targets=targets_lta, save_path='lta_comp_reduc')
-    learning_curve_mean(crgb_online, "Dynamic Awareness", key="distance", data_label='Random', xlim=[0, 101], ylim=[0, 1.1], show_model=False, targets=targets_lta, save_path='lta_distance')
-    learning_curve_mean(crgb_online, "Orthogonal", key="ortho", data_label='Random', xlim=[0, 101],ylim=[0, 1.1], show_model=False, targets=targets_lta, save_path='lta_ortho') # learning_curve_mean(crgb_online, "maze online interf", key="interf", xlim=[0, 101], show_model=False, targets=targets_lta, save_path='lta_interf') learning_curve_mean(crgb_online, "Diversity", key="diversity", data_label='Random', xlim=[0, 101],ylim=[0, 1.1], show_model=False, targets=targets_lta, save_path='lta_diversity')
-    learning_curve_mean(crgb_online, "Sparsity", key="sparsity", data_label='Random', xlim=[0, 101], ylim=[0, 1.1], show_model=False, targets=targets_lta, save_path='lta_sparsity')
- 
-    learning_curve_mean(crgb_online, "maze return", key="return", xlim=[0, 101], ylim=[0, 1.1], show_model=False, targets=targets_relu, save_path='relu_return')
-    learning_curve_mean(crgb_online, "Complexity Reduction", key="lipschitz", data_label='Random', xlim=[0, 101], ylim=[0, 1.1], show_model=False, targets=targets_relu, save_path='relu_comp_reduc')
-    learning_curve_mean(crgb_online, "Dynamic Awareness", key="distance", data_label='Random', xlim=[0, 101], ylim=[0, 1.1], show_model=False, targets=targets_relu, save_path='relu_distance')
-    learning_curve_mean(crgb_online, "Orthogonal", key="ortho", data_label='Random', xlim=[0, 101], ylim=[0, 1.1], show_model=False, targets=targets_relu, save_path='relu_ortho')
-    # learning_curve_mean(crgb_online, "maze online interf", key="interf", xlim=[0, 101], show_model=False, targets=targets_lta, save_path='lta_interf')
-    learning_curve_mean(crgb_online, "Diversity", key="diversity", data_label='Random', xlim=[0, 101], ylim=[0, 1.1], show_model=False, targets=targets_relu, save_path='relu_diversity')
-    learning_curve_mean(crgb_online, "Sparsity", key="sparsity", data_label='Random', xlim=[0, 101], ylim=[0, 1.1], show_model=False, targets=targets_relu, save_path='relu_sparsity')
+    # learning_curve_mean(crgb_diff_tune_early, "maze return", key="return", xlim=[0, 101], ylim=[0, 6], show_model=False, targets=targets_relu, save_path='crgb_return', legend=True)
+      
+   
+  #   targets_relu = [
+        # 'ReLU', 
+        # 'ReLU+Control',
+        # 'ReLU+Decoder', 
+        # 'FTA eta=2', 
+        # 'FTA+Control',
+        # 'FTA+Decoder', 
+  #           ]
+
+    learning_curve_mean(crgb_same_early, "maze return", key="return", xlim=[0, 101], ylim=[0, 6], show_model=False, targets=targets_relu, save_path='crgb_return', legend=True)
+    # learning_curve_mean(crgb_online, "Complexity Reduction", key="lipschitz", data_label=data_label, xlim=[0, 101], ylim=[0, 1.1], show_model=True, targets=targets_relu, save_path='crgb_comp_reduc')
+    # learning_curve_mean(crgb_online, "Dynamic Awareness", key="distance", data_label=data_label, xlim=[0, 101], ylim=[0, 1.1], show_model=True, targets=targets_relu, save_path='crgb_distance')
+    # learning_curve_mean(crgb_online, "Orthogonal", key="ortho", data_label=data_label, xlim=[0, 101], ylim=[0, 1.1], show_model=True, targets=targets_relu, save_path='crgb_ortho')
+    # learning_curve_mean(crgb_online, "Non-Interference", key="interf", xlim=[1, 101], ylim=[0, 1.1], show_model=True, targets=targets_relu, save_path='crgb_interf')
+    # learning_curve_mean(crgb_online, "Diversity", key="diversity", data_label=data_label, xlim=[0, 101], ylim=[0, 1.1], show_model=True, targets=targets_relu, save_path='crgb_diversity', legend=True)
+    # learning_curve_mean(crgb_online, "Sparsity", key="sparsity", data_label=data_label, xlim=[0, 101], ylim=[0, 1.1], show_model=True, targets=targets_relu, save_path='crgb_sparsity')
        
     # learning_curve_mean(gh_diff_tune_early, "maze diff (tune) complexity reduction", key="lipschitz", targets=targets, xlim=[0, 11], show_model=False)
 
@@ -244,15 +286,15 @@ def picky_eater():
     # learning_curve_mean(gh_diff_early, "maze diff (fix) return", key="return", targets=targets, xlim=[0, 11], show_avg=False, show_model=False)
     # learning_curve_mean(gh_diff_tune_early, "maze diff (tune) return", key="return", targets=targets, xlim=[0, 11], show_avg=False, show_model=False)
 
-def picky_eater():
-    print("\nRep learning")
-    learning_curve_mean(crgb_online, "maze return", key="return")
-    learning_curve_mean(crgb_online, "maze online lipschitz", key="lipschitz")
-    learning_curve_mean(crgb_online, "maze online distance", key="distance")
-    learning_curve_mean(crgb_online, "maze online orthogonal", key="ortho")
-    learning_curve_mean(crgb_online, "maze online noninterf", key="noninterf")
-    learning_curve_mean(crgb_online, "maze online decorr", key="decorr")
-    learning_curve_mean(crgb_online, "maze online sparsity", key="sparsity")
+#def picky_eater():
+    # print("\nRep learning")
+    # learning_curve_mean(crgb_online, "maze return", key="return")
+    # learning_curve_mean(crgb_online, "maze online lipschitz", key="lipschitz")
+    # learning_curve_mean(crgb_online, "maze online distance", key="distance")
+    # learning_curve_mean(crgb_online, "maze online orthogonal", key="ortho")
+    # learning_curve_mean(crgb_online, "maze online noninterf", key="noninterf")
+    # learning_curve_mean(crgb_online, "maze online decorr", key="decorr")
+    # learning_curve_mean(crgb_online, "maze online sparsity", key="sparsity")
 
 def pe_test():
     targets = [
@@ -269,4 +311,9 @@ if __name__ == '__main__':
     # mountain_car()
     # simple_maze()
     # picky_eater()
+    picky_eater('Random')
+    picky_eater('Red')
+    picky_eater('Green')
+    simple_maze()
+    picky_eater()
     pe_test()

@@ -19,8 +19,8 @@ def compute_lipschitz(cfg, rep_net, val_net, env):
         N = num_states * (num_states - 1) // 2
         diff_v = np.zeros(N)
         diff_phi = np.zeros(N)
-
         idx = 0
+        
         for i in range(len(states)):
             for j in range(i + 1, len(states)):
                 phi_i, phi_j = phi_s[i], phi_s[j]
@@ -28,8 +28,11 @@ def compute_lipschitz(cfg, rep_net, val_net, env):
                 diff_v[idx] = torch.abs(vi - vj).max().item()
                 diff_phi[idx] = np.linalg.norm((phi_i - phi_j).numpy())
                 idx += 1
+
         ratio_dv_dphi = np.divide(diff_v, diff_phi, out=np.zeros_like(diff_phi), where=diff_phi != 0)
+        
         return val_net.compute_lipschitz_upper(), ratio_dv_dphi, np.corrcoef(diff_v, diff_phi)[0][1]
+    
     except NotImplementedError:
         return val_net.compute_lipschitz_upper(), 0.0, 0.0
 
@@ -73,9 +76,6 @@ def compute_decorrelation(cfg, rep_net, env):
         total_off_diag_upper = 32 * 31 / 2 # N(N-1)/2
         average_correlation = total_correlation / total_off_diag_upper
     return 1 - average_correlation
-
-
-
 
 
     # try:

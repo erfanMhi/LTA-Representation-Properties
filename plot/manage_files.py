@@ -1,44 +1,92 @@
 import os
 import shutil
 
-def walk_through(root, target_param, new_folder):
-    from distutils.dir_util import copy_tree
-    # root = "../data/output/test/picky_eater/representation/dqn/sweep/"
+# <<<<<<< HEAD
+# def walk_through(root, target_param, new_folder):
+#     from distutils.dir_util import copy_tree
+#     # root = "../data/output/test/picky_eater/representation/dqn/sweep/"
+#
+#     assert os.path.isdir(root)
+#     for path, subdirs, files in os.walk(root):
+#
+#         # for f in files:
+#         #     if f in ["interference.txt"]:
+#         #         file1 = os.path.join(path, f)
+#         #         file2 = os.path.join(path, "noninterference.txt")
+#         #         # print(file1, file2)
+#         #         os.rename(file1, file2)
+#
+#         for name in subdirs:
+#             if "{}_param_setting".format(target_param) in name:
+#             # if "_param_setting".format(target_param) in name:
+#             #     set = int(name.split("_param_setting")[0])
+#             #     set += 4
+#                 file1 = os.path.join(path, name)
+#                 print(file1)
+#                 file2 = root+"/../{}/".format(new_folder)+file1.split("/")[-2] + "/{}_param_setting".format(0)
+#                 # file2 = root+"/../{}/".format(new_folder)+file1.split("/")[-2] + "/{}_param_setting".format(set)
+#                 print(file2, "\n")
+#                 # shutil.rmtree(file1)
+#
+#                 # shutil.copy(file1+"/linear_probing_count.txt", file2+"/linear_probing_count.txt")
+#                 # shutil.copy(file1+"/parameters/linear_probing_count", file2+"/parameters/linear_probing_count")
+#
+#                 # if not os.path.isdir(file2):
+#                 #     os.makedirs(file2)
+#                 # copy_tree(file1, file2)
+#
+#             # if name == "0_run":
+#             #     file1 = os.path.join(path, name)
+#             #     if "best" in file1:
+#             #         print(file1)
+#             #         print(os.system("cat {}/0_param_setting/log | grep learning_rate".format(file1)))
+# =======
+from distutils.dir_util import copy_tree
+from plot_paths import *
 
-    assert os.path.isdir(root)
-    for path, subdirs, files in os.walk(root):
+def walk_through():
+    for sweep in crgb_same_early_sweep:
+        # root = "../data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/aux_control/sweep_5g/"
+        root = "../" + sweep['control']
+        assert os.path.isdir(root)
+        print('------------------------------------------------------------------------')
+        print(root)
+        for path, subdirs, files in os.walk(root):
 
-        # for f in files:
-        #     if f in ["interference.txt"]:
-        #         file1 = os.path.join(path, f)
-        #         file2 = os.path.join(path, "noninterference.txt")
-        #         # print(file1, file2)
-        #         os.rename(file1, file2)
+            # for f in files:
+            #     if f in ["interference.txt"]:
+            #         file1 = os.path.join(path, f)
+            #         file2 = os.path.join(path, "noninterference.txt")
+            #         # print(file1, file2)
+            #         os.rename(file1, file2)
 
-        for name in subdirs:
-            if "{}_param_setting".format(target_param) in name:
-            # if "_param_setting".format(target_param) in name:
-            #     set = int(name.split("_param_setting")[0])
-            #     set += 4
-                file1 = os.path.join(path, name)
-                print(file1)
-                file2 = root+"/../{}/".format(new_folder)+file1.split("/")[-2] + "/{}_param_setting".format(0)
-                # file2 = root+"/../{}/".format(new_folder)+file1.split("/")[-2] + "/{}_param_setting".format(set)
-                print(file2, "\n")
-                # shutil.rmtree(file1)
+            for name in subdirs:
+                if "{}_param_setting".format(sweep['best']) in name:
+                    # set = int(name.split("_param_setting")[0])
+                    # set += 5
+                    file1 = os.path.join(path, name)
+                    print(file1)
+                    if 'sweep_xy' in file1:
+                        file2 = root+"../best_xy/"+file1.split("/")[-2] + "/{}_param_setting".format(0)
+                    else:
+                        file2 = root+"../best/"+file1.split("/")[-2] + "/{}_param_setting".format(0)
 
-                # shutil.copy(file1+"/linear_probing_count.txt", file2+"/linear_probing_count.txt")
-                # shutil.copy(file1+"/parameters/linear_probing_count", file2+"/parameters/linear_probing_count")
+                    # file2 = root+"/../sweep/"+file1.split("/")[-2] + "/{}_param_setting".format(set)
+                    print(file2, "\n")
+                    # shutil.rmtree(file1)
 
-                # if not os.path.isdir(file2):
-                #     os.makedirs(file2)
-                # copy_tree(file1, file2)
+                    # shutil.copy(file1+"/linear_probing_count.txt", file2+"/linear_probing_count.txt")
+                    # shutil.copy(file1+"/parameters/linear_probing_count", file2+"/parameters/linear_probing_count")
 
-            # if name == "0_run":
-            #     file1 = os.path.join(path, name)
-            #     if "best" in file1:
-            #         print(file1)
-            #         print(os.system("cat {}/0_param_setting/log | grep learning_rate".format(file1)))
+                    if not os.path.isdir(file2):
+                        os.makedirs(file2)
+                    copy_tree(file1, file2)
+
+                # if name == "0_run":
+                #     file1 = os.path.join(path, name)
+                #     if "best" in file1:
+                #         print(file1)
+                #         print(os.system("cat {}/0_param_setting/log | grep learning_rate".format(file1)))
 
 def check_log():
     files = [

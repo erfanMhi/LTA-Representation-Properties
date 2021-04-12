@@ -22,8 +22,14 @@ class DQNAgent(base.Agent):
             path = os.path.join(cfg.data_root, cfg.rep_config['path'])
             print("loading from", path)
             rep_net.load_state_dict(torch.load(path))
-
+        
         val_net = cfg.val_fn()
+        if 'load_params' in cfg.val_fn_config:
+            if cfg.val_fn_config['load_params']:
+                path = os.path.join(cfg.data_root, cfg.val_fn_config['path'])
+                print("loading value function from", path)
+                val_net.load_state_dict(torch.load(path))
+
         params = list(rep_net.parameters()) + list(val_net.parameters())
         optimizer = cfg.optimizer_fn(params)
 
@@ -75,7 +81,7 @@ class DQNAgent(base.Agent):
         next_state, reward, done, _ = self.env.step([action])
         self.replay.feed([self.state, action, reward, next_state, int(done)])
         self.state = next_state
-
+        # print('action: ', action)
         self.update_stats(reward, done)
 
         self.update()

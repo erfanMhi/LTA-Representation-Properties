@@ -12,10 +12,10 @@ def arrange_order(dict1, cut_length=True, scale=1):
         v1 = dict1[i]
         lst.append(v1)
 # <<<<<<< HEAD
-        # l = len(v1)
-        # print('Length: ', l)
-        # print('Run: ', i)
-        # min_l = l if l < min_l else min_l
+        l = len(v1)
+        print('Length: ', l)
+        print('Run: ', i)
+        min_l = l if l < min_l else min_l
     # print("min length: ", min_l)
     # for i in range(len(lst)):
         # lst[i] = lst[i][:min_l]
@@ -200,6 +200,7 @@ def extract_from_single_run(file, key, label=None, before_step=None):
 def extract_from_setting(find_in, setting, key="return", final_only=False, label=None, cut_at_step=None):
     setting_folder = "{}_param_setting".format(setting)
     all_runs = {}
+    print(find_in)
     assert os.path.isdir(find_in), print("\nERROR: {} is not a directory\n".format(find_in))
     for path, subdirs, files in os.walk(find_in):
         for name in files:
@@ -261,7 +262,7 @@ def extract_property_setting(path, setting, file_name, keyword):
                 all_runs[int(file.split("_run")[0].split("/")[-1])] = value
     return all_runs
 
-def load_online_property(group, target_key, reverse=False, normalize=False, cut_at_step=None):
+def load_online_property(group, target_key, reverse=False, normalize=False, cut_at_step=None, p_label=None):
     all_property = {}
     temp = []
     for i in group:
@@ -290,7 +291,7 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
 
         else:
             path = i["online_measure"]
-            values = extract_from_setting(path, 0, target_key, final_only=True, cut_at_step=cas)
+            values = extract_from_setting(path, 0, target_key, final_only=True, cut_at_step=cas, label=p_label)
 
         all_property[i["label"]] = values
 

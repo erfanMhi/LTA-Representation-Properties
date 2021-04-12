@@ -96,8 +96,9 @@ def learning_curve(all_paths_dict, title, total_param=None,
     # plt.xlim(0, 30)
     plt.xlabel('step ($10^4$)')
     plt.ylabel('return')
-    # plt.savefig("plot/img/{}.png".format(title), dpi=300, bbox_inches='tight')
-    plt.show()
+    plt.savefig("plot/img/{}.png".format(title), dpi=300, bbox_inches='tight')
+    print("Save in plot/img/{}.png".format(title))
+    # plt.show()
     plt.close()
     # plt.clf()
 
@@ -133,10 +134,12 @@ def picky_eater():
             # label_keys = [['target_network_update_freq', 'learning_rate']], config_paths = ['experiment/config/test/picky_eater/online_property/dqn_lta/sweep.json'])
 
 def pe_temp():
-    learning_curve(dqn_sweep_temp, "pe rep")
+    # learning_curve(pe_sweep_temp, "pe rep")
+    learning_curve(pe_trans_sweep_temp, "pe diff fix")
 
 
 if __name__ == '__main__':
     # mountain_car()
+    # simple_maze()
     picky_eater()
-    # pe_temp()
+    pe_temp()

@@ -1,6 +1,46 @@
 import os
 import shutil
 
+# <<<<<<< HEAD
+# def walk_through(root, target_param, new_folder):
+#     from distutils.dir_util import copy_tree
+#     # root = "../data/output/test/picky_eater/representation/dqn/sweep/"
+#
+#     assert os.path.isdir(root)
+#     for path, subdirs, files in os.walk(root):
+#
+#         # for f in files:
+#         #     if f in ["interference.txt"]:
+#         #         file1 = os.path.join(path, f)
+#         #         file2 = os.path.join(path, "noninterference.txt")
+#         #         # print(file1, file2)
+#         #         os.rename(file1, file2)
+#
+#         for name in subdirs:
+#             if "{}_param_setting".format(target_param) in name:
+#             # if "_param_setting".format(target_param) in name:
+#             #     set = int(name.split("_param_setting")[0])
+#             #     set += 4
+#                 file1 = os.path.join(path, name)
+#                 print(file1)
+#                 file2 = root+"/../{}/".format(new_folder)+file1.split("/")[-2] + "/{}_param_setting".format(0)
+#                 # file2 = root+"/../{}/".format(new_folder)+file1.split("/")[-2] + "/{}_param_setting".format(set)
+#                 print(file2, "\n")
+#                 # shutil.rmtree(file1)
+#
+#                 # shutil.copy(file1+"/linear_probing_count.txt", file2+"/linear_probing_count.txt")
+#                 # shutil.copy(file1+"/parameters/linear_probing_count", file2+"/parameters/linear_probing_count")
+#
+#                 # if not os.path.isdir(file2):
+#                 #     os.makedirs(file2)
+#                 # copy_tree(file1, file2)
+#
+#             # if name == "0_run":
+#             #     file1 = os.path.join(path, name)
+#             #     if "best" in file1:
+#             #         print(file1)
+#             #         print(os.system("cat {}/0_param_setting/log | grep learning_rate".format(file1)))
+# =======
 from distutils.dir_util import copy_tree
 from plot_paths import *
 
@@ -226,6 +266,13 @@ def check_json():
         os.system("cat {} | grep eta".format(f))
         print()
 
-walk_through()
+# walk_through("../data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta_aux/reward/sweep2/", 1, "sweep")
+walk_through("../data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn/sweep/", 2, "best")
+walk_through("../data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_aux/aux_control/sweep/", 5, "best")
+walk_through("../data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_aux/reward/sweep/", 1, "best")
+walk_through("../data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta/sweep/", 6, "best")
+walk_through("../data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta_aux/aux_control/sweep/", 6, "best")
+walk_through("../data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta_aux/reward/sweep/", 0, "best")
+
 # check_log()
 # check_json()

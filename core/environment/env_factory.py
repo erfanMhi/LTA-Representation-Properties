@@ -42,8 +42,8 @@ class EnvFactory:
         elif cfg.env_name == 'CollectTwoColor':
             return lambda: CollectTwoColor(cfg.rewarding_color, cfg.seed, fruit_num=cfg.fruit_num)
         elif cfg.env_name == 'CollectTwoColorLip':
-            lip_sampled_states_path = os.path.join(cfg.data_root, cfg.lipschitz_sampled_states_path, fruit_num=cfg.fruit_num)
-            return lambda: CollectTwoColorLip(lip_sampled_states_path, cfg.rewarding_color, cfg.seed)
+            lip_sampled_states_path = os.path.join(cfg.data_root, cfg.lipschitz_sampled_states_path)
+            return lambda: CollectTwoColorLip(lip_sampled_states_path, cfg.rewarding_color, cfg.seed, fruit_num=cfg.fruit_num)
         elif cfg.env_name == 'CollectRandomRGB':
             return lambda: CollectRandomRGB(cfg.seed)
         elif cfg.env_name == 'GridTwoRoomRGB':

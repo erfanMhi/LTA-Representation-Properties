@@ -32,7 +32,7 @@ class EnvFactory:
         elif cfg.env_name == 'CollectRGB':
             return lambda: CollectRGB(cfg.seed)
         elif cfg.env_name == "CollectTwoColorRGB":
-            return lambda: CollectTwoColorRGB(cfg.seed, cfg.fruit_num)
+            return lambda: CollectTwoColorRGB(cfg.seed, fruit_num=cfg.fruit_num)
         elif cfg.env_name == "CollectTwoColorRGBFix":
             return lambda: CollectTwoColorRGBFix(cfg.seed)
         elif cfg.env_name == "CollectTwoColorRGBSimple":
@@ -40,9 +40,9 @@ class EnvFactory:
         elif cfg.env_name == 'CollectColor':
             return lambda: CollectColor(cfg.rewarding_color, cfg.seed)
         elif cfg.env_name == 'CollectTwoColor':
-            return lambda: CollectTwoColor(cfg.rewarding_color, cfg.seed)
+            return lambda: CollectTwoColor(cfg.rewarding_color, cfg.seed, fruit_num=cfg.fruit_num)
         elif cfg.env_name == 'CollectTwoColorLip':
-            lip_sampled_states_path = os.path.join(cfg.data_root, cfg.lipschitz_sampled_states_path)
+            lip_sampled_states_path = os.path.join(cfg.data_root, cfg.lipschitz_sampled_states_path, fruit_num=cfg.fruit_num)
             return lambda: CollectTwoColorLip(lip_sampled_states_path, cfg.rewarding_color, cfg.seed)
         elif cfg.env_name == 'CollectRandomRGB':
             return lambda: CollectRandomRGB(cfg.seed)

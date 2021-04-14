@@ -573,14 +573,14 @@ class CollectTwoColorRGB(CollectTwoColorXYEarlyTermin):
 
 
 class CollectTwoColor(CollectTwoColorRGB):
-    def __init__(self, rewarding_color, seed=np.random.randint(int(1e5))):
-        super().__init__(seed)
+    def __init__(self, rewarding_color, seed=np.random.randint(int(1e5)), fruit_num=6):
+        super().__init__(seed, fruit_num=fruit_num)
         self.rewarding_color = rewarding_color
 
 
 class CollectTwoColorLip(CollectTwoColor):
-    def __init__(self, lip_sampled_states_path, rewarding_color, seed=np.random.randint(int(1e5))):
-        super().__init__(rewarding_color, seed)
+    def __init__(self, lip_sampled_states_path, rewarding_color, seed=np.random.randint(int(1e5)), fruit_num=6):
+        super().__init__(rewarding_color, seed, fruit_num=fruit_num)
 
         self.lip_sampled_states = np.load(lip_sampled_states_path)
 

@@ -2313,6 +2313,27 @@ crgb_online_sweep = [
      },
         ]
 
+dqn_sweep_temp = [
+    # {"label": "ReLU",
+    #  "control": "data/output/test/picky_eater/representation/random_beh/dqn/old_setting/",
+    #  },
+    {"label": "ReLU",
+     "control": "data/output/test/picky_eater/representation/random_beh_v1/dqn/sweep/",
+     },
+    {"label": "ReLU+Control",
+     "control": "data/output/test/picky_eater/representation/random_beh_v1/dqn_aux/aux_control/sweep/",
+     },
+    # {"label": "LTA",
+    #  "control": "data/output/test/picky_eater/representation/random_beh/dqn_lta/old_setting/",
+    #  },
+    # {"label": "LTA+Control",
+    #  "control": "data/output/test/picky_eater/representation/random_beh/dqn_lta_aux/aux_control/old_setting/",
+    #  },
+    {"label": "LTA+Control",
+     "control": "data/output/test/picky_eater/representation/random_beh_v1/dqn_lta_aux/aux_control/sweep/",
+     },
+    ]
+
 crgb_online_best = [
     {"label": "FTA",
      "control": "data/output/test/picky_eater/online_property/dqn_lta/best/",
@@ -2382,6 +2403,31 @@ crgb_online_sweep_2 = [
      },    
     {"label": "ReLU+Control", "control": "data/output/test/picky_eater/online_property/dqn_aux/aux_control/sweep_4/",
      }, 
+    ]
+
+crgb_online_sweep_1_f = [    
+    {"label": "FTA",
+     "control": "data/output/test/picky_eater/online_property/dqn_lta/sweep_1f/",
+     },        
+    {"label": "FTA",
+     "control": "data/output/test/picky_eater/online_property/dqn_lta/sweep_4f/",
+     },
+    {"label": "ReLU",
+     "control": "data/output/test/picky_eater/online_property/dqn/sweep_1f/",
+     },    
+    {"label": "ReLU",
+     "control": "data/output/test/picky_eater/online_property/dqn/sweep_4f/",
+     },
+    {"label": "FTA+Control",
+     "control": "data/output/test/picky_eater/online_property/dqn_lta_aux/aux_control/sweep_1f/",
+     },
+    {"label": "FTA+Control",
+     "control": "data/output/test/picky_eater/online_property/dqn_lta_aux/aux_control/sweep_4f/",
+     },
+    {"label": "ReLU+Control", "control": "data/output/test/picky_eater/online_property/dqn_aux/aux_control/sweep_1f/",
+     },    
+    {"label": "ReLU+Control", "control": "data/output/test/picky_eater/online_property/dqn_aux/aux_control/sweep_4f/",
+     },
     ]
 
 

@@ -84,7 +84,10 @@ def extract_from_single_run(file, key, label=None, before_step=None):
         if "|" in l:
             info = l.split("|")[1].strip()
             i_list = info.split(" ")
-            if "total" == i_list[0] or "TRAIN" == i_list[0]:
+            # print('i_list: ', i_list[0])
+            if "EVAL:" == i_list[0] or "total" == i_list[0] or "TRAIN" == i_list[0]:
+
+                # print('i_list: ', i_list[0])
                 if key=="return" and "returns" in i_list:
                     returns.append(float(i_list[i_list.index("returns")+1].split("/")[0].strip())) # mean
                 elif key == "lipschitz" and "Lipschitz:" in i_list:

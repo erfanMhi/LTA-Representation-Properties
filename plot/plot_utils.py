@@ -156,25 +156,26 @@ def extract_from_single_run(file, key, label=None, before_step=None):
                             found = True
                     l -= 1
 
-                stop = False
-                above_step = [converge_at]
-                above_return = [converge_return]
-                while l > 0 and not stop:
-                    info_temp = content[l].split("|")[1].strip()
-                    i_list_temp = info_temp.split(" ")
-                    if "total" == i_list_temp[0]:
-                        if "returns" in i_list_temp:
-                            r_temp = float(i_list_temp[i_list_temp.index("returns") + 1].split("/")[0].strip())
-                            if r_temp >= 0.95 * converge_return:
-                                above_step.append(int(content[l].split("total steps")[1].split(",")[0]))
-                                above_return.append(r_temp)
-                            else:
-                                # print(r_temp)
-                                stop = True
-                    l -= 1
+                returns = [converge_at]
+                # stop = False
+                # above_step = [converge_at]
+                # above_return = [converge_return]
+                # while l > 0 and not stop:
+                #     info_temp = content[l].split("|")[1].strip()
+                #     i_list_temp = info_temp.split(" ")
+                #     if "total" == i_list_temp[0]:
+                #         if "returns" in i_list_temp:
+                #             r_temp = float(i_list_temp[i_list_temp.index("returns") + 1].split("/")[0].strip())
+                #             if r_temp >= 0.95 * converge_return:
+                #                 above_step.append(int(content[l].split("total steps")[1].split(",")[0]))
+                #                 above_return.append(r_temp)
+                #             else:
+                #                 # print(r_temp)
+                #                 stop = True
+                #     l -= 1
 
-                cut = above_return[-1]
-                returns = above_step[-1]
+                # cut = above_return[-1]
+                # returns = above_step[-1]
                 # print("100% return ({}) at {}, 95% return ({}) at {}".format(converge_return, converge_at, cut, returns))
 
     # Sanity Check

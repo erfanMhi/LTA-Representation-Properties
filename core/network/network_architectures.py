@@ -8,7 +8,7 @@ from core.utils import torch_utils
 
 
 class LinearNetwork(nn.Module):
-    def __init__(self, device, input_units, output_units, init_type='xavier'):
+    def __init__(self, device, input_units, output_units, init_type='lta'):
         super().__init__()
 
         if init_type == 'xavier':

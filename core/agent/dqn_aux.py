@@ -240,6 +240,91 @@ class DQNAuxAgentGeneral(DQNAuxAgent):
             for i, ant in enumerate(self.targets.aux_nets):
                 ant.load_state_dict(self.aux_nets[i].state_dict())
 
+
+class DQNSwitchHeadAgent(DQNAuxAgent):
+    def __init__(self, cfg):
+        super().__init__(cfg)
+        self.head = None
+        self.policy_head = self.val_net
+
+    def step(self):
+        if self.reset is True:
+            self.state = self.env.reset()
+            self.reset = False
+            self.head = self.env.info("use_head")
+            if self.head==0:
+                self.policy_head = self.val_net
+            else:
+                self.policy_head = self.aux_nets[self.head-1]
+
+        action = self.policy(self.state, self.cfg.eps_schedule())
+
+        next_state, reward, done, _ = self.env.step([action])
+        if self.head > 0:
+            reward = reward * (-1)
+        self.replay.feed([self.state, action, reward, next_state, int(done)])
+        self.state = next_state
+        # print('action: ', action)
+        self.update_stats(reward, done)
+        self.update()
+
+    def policy(self, state, eps):
+        with torch.no_grad():
+            phi = self.rep_net(self.cfg.state_normalizer(state))
+            q_values = self.policy_head.forward(phi)
+        q_values = torch_utils.to_np(q_values).flatten()
+
+        if np.random.rand() < eps:
+            action = np.random.randint(0, len(q_values))
+        else:
+            action = np.random.choice(np.flatnonzero(q_values == q_values.max()))
+        return action
+
+    def update(self):
+        states, actions, rewards, next_states, terminals = self.replay.sample()
+
+        states = self.cfg.state_normalizer(states)
+        next_states = self.cfg.state_normalizer(next_states)
+        actions = torch_utils.tensor(actions, self.cfg.device).long()
+
+        phi = self.rep_net(states)
+
+        # Computing Loss for Value Function
+        q = self.val_net(phi)[self.batch_indices, actions]
+        nphi = self.targets.rep_net(next_states)
+        q_next, action_next = self.targets.val_net(nphi).detach().max(1)
+        terminals = torch_utils.tensor(terminals, self.cfg.device)
+        rewards = torch_utils.tensor(rewards, self.cfg.device)
+        target = self.cfg.discount * q_next * (1 - terminals).float()
+        target.add_(rewards.float())
+        loss = self.vf_loss(q, target)  # (q_next - q).pow(2).mul(0.5).mean()
+
+        # Computing Loss for Aux Tasks
+        aux_loss = torch.zeros_like(loss)
+        for i, aux_net in enumerate(self.aux_nets):
+            transition = (states, actions, rewards, next_states, terminals)
+            aux_loss += aux_net.compute_loss(transition, phi, nphi, action_next)
+
+        if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/loss/val_loss', loss.item(), self.total_steps)
+
+        loss += aux_loss
+
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
+
+        if self.cfg.use_target_network and self.total_steps % self.cfg.target_network_update_freq == 0:
+            self.targets.rep_net.load_state_dict(self.rep_net.state_dict())
+            self.targets.val_net.load_state_dict(self.val_net.state_dict())
+            for i, ant in enumerate(self.targets.aux_nets):
+                ant.load_state_dict(self.aux_nets[i].state_dict())
+
+        if self.cfg.visualize_aux_distance and (self.total_steps-1) % self.cfg.eval_interval == 0:
+            self.visualize_distance()
+
+
+
 class DQNAuxSuccessorAgent(DQNAuxAgent):
     def __init__(self, cfg):
         super().__init__(cfg)

@@ -4,7 +4,7 @@ import os
 from core.environment.gridworlds_goal import GridHardXYGoal, GridHardRGBGoal
 from core.environment.gridworlds_noise import *
 from core.environment.collectworlds import CollectRGB, CollectColor, CollectTwoColorRGB, CollectTwoColor, CollectTwoColorLip, \
-    CollectTwoColorRGBFix, CollectTwoColorRGBSimple
+    CollectTwoColorRGBFix, CollectTwoColorRGBSimple, CollectRandColorRGB
 from core.environment.mountaincar import *
 from core.environment.collectworlds_random import CollectRandomRGB
 
@@ -33,6 +33,8 @@ class EnvFactory:
             return lambda: CollectRGB(cfg.seed)
         elif cfg.env_name == "CollectTwoColorRGB":
             return lambda: CollectTwoColorRGB(cfg.seed, fruit_num=cfg.fruit_num)
+        elif cfg.env_name == "CollectRandColorRGB":
+            return lambda: CollectRandColorRGB(cfg.seed, fruit_num=cfg.fruit_num)
         elif cfg.env_name == "CollectTwoColorRGBFix":
             return lambda: CollectTwoColorRGBFix(cfg.seed)
         elif cfg.env_name == "CollectTwoColorRGBSimple":

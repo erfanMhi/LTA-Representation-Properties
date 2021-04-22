@@ -29,6 +29,9 @@ class CollectXY:
         self.rewarding_color = 'red'
         self.rewarding_blocks = None
 
+    def info(self, key):
+        return
+
     def generate_state(self, agent_loc, object_status, reds, greens, blues):
         reds = np.array(reds).flatten()
         greens = np.array(greens).flatten()
@@ -261,6 +264,9 @@ class CollectTwoColorXY:
         self.rewarding_color = 'green'
         self.rewarding_blocks = None
 
+    def info(self, key):
+        return
+
     def generate_state(self, agent_loc, object_status, reds, greens):
         greens = np.array(greens).flatten()
         reds = np.array(reds).flatten()
@@ -368,6 +374,9 @@ class CollectTwoColorXYEarlyTermin:
         self.rewarding_blocks = None
         self.correct_collect = 0
 
+    def info(self, key):
+        return
+
     def generate_state(self, agent_loc, object_status, reds, greens):
         greens = np.array(greens).flatten()
         reds = np.array(reds).flatten()
@@ -421,16 +430,18 @@ class CollectTwoColorXYEarlyTermin:
                 if (x, y) in self.rewarding_blocks:
                     reward += 1.0
                     self.correct_collect += 1
+                    # print(self.correct_collect, self.rewarding_color, reward)
                 else:
                     reward += -1.0
+                    # print(self.correct_collect, self.rewarding_color, reward)
 
         self.agent_loc = x, y
 
         reward -= 0.001
 
-        # done = np.asarray(True) if x == self.goal_x and y == self.goal_y else np.asarray(False)
-        # print(self.correct_collect)
         done = np.asarray(True) if self.correct_collect==self.fruit_num else np.asarray(False)
+        # if done:
+        #     print("done", self.correct_collect, reward, self.rewarding_color)
         state = self.generate_state(self.agent_loc, self.object_status, self.greens, self.reds)
         return state, np.asarray(reward), done, ""
 
@@ -572,6 +583,46 @@ class CollectTwoColorRGB(CollectTwoColorXYEarlyTermin):
             raise NotImplementedError
         # raise NotImplementedError
 
+class CollectRandColorRGB(CollectTwoColorRGB):
+    def __init__(self, seed=np.random.randint(int(1e5)), fruit_num=6):
+        super().__init__(seed, fruit_num=fruit_num)
+        self.all_rewarding = ['green', 'red']
+
+    def reset(self):
+        obj_ids = np.arange(len(self.object_coords))
+        obj_ids = np.random.permutation(obj_ids)
+        green_ids, red_ids = obj_ids[:self.fruit_num], obj_ids[self.fruit_num:]
+
+        self.reds = [self.object_coords[k] for k in red_ids]
+        self.greens = [self.object_coords[k] for k in green_ids]
+
+        self.rewarding_color = self.all_rewarding[np.random.randint(len(self.all_rewarding))]
+        if self.rewarding_color == 'red':
+            self.rewarding_blocks = self.reds
+        elif self.rewarding_color == 'green':
+            self.rewarding_blocks = self.greens
+        else:
+            raise NotImplementedError
+
+        self.correct_collect = 0
+        # print("reset", self.rewarding_color, self.correct_collect)
+
+        self.episode_template = self.get_episode_template(self.greens, self.reds)
+        while True:
+            rand_state = np.random.randint(low=0, high=15, size=2)
+            rx, ry = rand_state
+            # if not int(self.obstacles_map[rx][ry]) and not (rx == self.goal_x and ry == self.goal_y) and \
+            if not int(self.obstacles_map[rx][ry]) and \
+                    not (rx, ry) in self.object_coords:
+                self.agent_loc = rx, ry
+                self.object_status = np.ones(len(self.object_coords))
+                return self.generate_state(self.agent_loc, self.object_status, self.greens, self.reds)
+
+    def info(self, key):
+        if key == "use_head":
+            return self.all_rewarding.index(self.rewarding_color)
+        return
+
 
 class CollectTwoColor(CollectTwoColorRGB):
     def __init__(self, rewarding_color, seed=np.random.randint(int(1e5)), fruit_num=6):
@@ -674,7 +725,7 @@ if __name__ == '__main__':
 
 
     # env = CollectColor('green')
-    env = CollectTwoColorRGB()
+    env = CollectRandColorRGB(1, 3)
     state = env.reset()
     draw(state)
     done = False
@@ -684,6 +735,6 @@ if __name__ == '__main__':
         except ValueError:
             action = 0
         state, reward, done, _ = env.step([action])
-        print(reward, ' ', done)
+        print(reward, ' ', done, env.rewarding_blocks, env.correct_collect)
         draw(state)
 

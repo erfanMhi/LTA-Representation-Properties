@@ -17,6 +17,9 @@ class GridHardXY:
     def generate_state(self, coords):
         return np.array(coords)
 
+    def info(self, key):
+        return
+
     def reset(self):
         while True:
             rand_state = np.random.randint(low=0, high=15, size=2)

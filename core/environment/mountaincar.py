@@ -31,3 +31,6 @@ class MountainCar:
             return state
         else:
             return np.array(self.env.state)
+
+    def info(self, key):
+        return

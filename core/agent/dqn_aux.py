@@ -255,14 +255,17 @@ class DQNSwitchHeadAgent(DQNAuxAgent):
             if self.head==0:
                 self.policy_head = self.val_net
             else:
-                self.policy_head = self.aux_nets[self.head-1]
+                # self.policy_head = self.aux_nets[self.head-1]
+                self.policy_head = self.aux_nets[self.head-1].aux_predictor
 
         action = self.policy(self.state, self.cfg.eps_schedule())
 
         next_state, reward, done, _ = self.env.step([action])
         if self.head > 0:
-            reward = reward * (-1)
-        self.replay.feed([self.state, action, reward, next_state, int(done)])
+            reward_main = reward * (-1)
+        else:
+            reward_main = reward
+        self.replay.feed([self.state, action, reward_main, next_state, int(done)])
         self.state = next_state
         # print('action: ', action)
         self.update_stats(reward, done)
@@ -271,7 +274,7 @@ class DQNSwitchHeadAgent(DQNAuxAgent):
     def policy(self, state, eps):
         with torch.no_grad():
             phi = self.rep_net(self.cfg.state_normalizer(state))
-            q_values = self.policy_head.forward(phi)
+            q_values = self.policy_head(phi)
         q_values = torch_utils.to_np(q_values).flatten()
 
         if np.random.rand() < eps:

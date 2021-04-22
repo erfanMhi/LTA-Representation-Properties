@@ -430,16 +430,18 @@ class CollectTwoColorXYEarlyTermin:
                 if (x, y) in self.rewarding_blocks:
                     reward += 1.0
                     self.correct_collect += 1
+                    # print(self.correct_collect, self.rewarding_color, reward)
                 else:
                     reward += -1.0
+                    # print(self.correct_collect, self.rewarding_color, reward)
 
         self.agent_loc = x, y
 
         reward -= 0.001
 
-        # done = np.asarray(True) if x == self.goal_x and y == self.goal_y else np.asarray(False)
-        # print(self.correct_collect)
         done = np.asarray(True) if self.correct_collect==self.fruit_num else np.asarray(False)
+        # if done:
+        #     print("done", self.correct_collect, reward, self.rewarding_color)
         state = self.generate_state(self.agent_loc, self.object_status, self.greens, self.reds)
         return state, np.asarray(reward), done, ""
 
@@ -602,6 +604,7 @@ class CollectRandColorRGB(CollectTwoColorRGB):
             raise NotImplementedError
 
         self.correct_collect = 0
+        # print("reset", self.rewarding_color, self.correct_collect)
 
         self.episode_template = self.get_episode_template(self.greens, self.reds)
         while True:
@@ -721,7 +724,7 @@ if __name__ == '__main__':
 
 
     # env = CollectColor('green')
-    env = CollectTwoColorRGB()
+    env = CollectRandColorRGB(1, 3)
     state = env.reset()
     draw(state)
     done = False
@@ -731,6 +734,6 @@ if __name__ == '__main__':
         except ValueError:
             action = 0
         state, reward, done, _ = env.step([action])
-        print(reward, ' ', done)
+        print(reward, ' ', done, env.rewarding_blocks, env.correct_collect)
         draw(state)
 

@@ -347,9 +347,9 @@ class AuxControlCollect(AuxTask):
 
         self.flip = np.vectorize(flip)
 
-    def forward(self, phi):
-        q = self.aux_predictor(phi)
-        return q
+    # def forward(self, phi):
+    #     q = self.aux_predictor(phi)
+    #     return q
 
     def compute_loss(self, transition, phi, nphi, next_action):
         states, actions, rewards, next_states, terminals = transition

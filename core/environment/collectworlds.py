@@ -463,6 +463,7 @@ class CollectTwoColorRGB(CollectTwoColorXYEarlyTermin):
                     self.main_template[x][y] = np.array([0, 0, 0])
                 else:
                     self.main_template[x][y] = np.array([128, 128, 128])
+
         # self.main_template[self.goal_x][self.goal_y] = np.array([255, 255, 255])
 
         self.episode_template = None

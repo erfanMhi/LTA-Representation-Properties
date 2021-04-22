@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAuxAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test/picky_eater_randc/representation/dqn_aux/aux_control/sweep_3f_2",
+        "exp_name": "test/picky_eater_randc/representation/dqn_aux/aux_control/sweep_3f_nonlinear",
         "env_name": "CollectRandColorRGB",
         "agent": "DQNSwitchHeadAgent",
         "discount": 0.99,
@@ -19,8 +19,7 @@
                 "conv_layers": [
                    {"in": 3,  "out": 32, "kernel": 4, "stride": 1, "pad": 1},
                    {"in": 32,  "out": 16, "kernel": 4, "stride": 2, "pad": 2}
-                ],
-                "fc_layers": {"hidden_units":[128, 128]}
+                ]
             },
             "in_dim": [15, 15, 3],
             "out_dim": 32,
@@ -29,16 +28,18 @@
         },
 
         "val_fn_config": {
-            "val_fn_type": "linear",
-            "init_type": "lta"
+            "val_fn_type": "fc",
+            "hidden_units": [128, 128]
          },
 
         "aux_config": [
             {
-            "aux_fn_type":  "linear",
+            "aux_fn_type":  "fc",
+            "aux_in_dim": 32,
             "aux_out_dim": 4,
+            "hidden_units": [128, 128],
             "aux_task": "aux_control_collect",
-            "discount": 0.99,
+            "discount": 0.9,
             "flip_reward":  true
             }
         ],
@@ -76,8 +77,28 @@
     },
    "sweep_parameters": {
         "learning_rate": [0.0003, 0.0001, 0.00003, 0.00001],
-        "memory_size": [100000],
+        "memory_size": [200000],
         "epsilon_end": [0.1],
-        "target_network_update_freq": [1024]
+        "target_network_update_freq": [1024],
+        "aux_config": [
+            [{
+            "aux_fn_type":  "fc",
+            "aux_in_dim": 32,
+            "aux_out_dim": 4,
+            "hidden_units": [128, 128],
+            "aux_task": "aux_control_collect",
+            "discount": 0.9,
+            "flip_reward":  true
+            }],
+            [{
+            "aux_fn_type":  "fc",
+            "aux_in_dim": 32,
+            "aux_out_dim": 4,
+            "hidden_units": [128, 128],
+            "aux_task": "aux_control_collect",
+            "discount": 0.99,
+            "flip_reward":  true
+            }]
+        ]
    }
 }

@@ -1,8 +1,8 @@
 {
-    "config_class": "DQNAuxAgentConfig",
+    "config_class": "DQNAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test/picky_eater_randc/representation/dqn_aux/aux_control/sweep_3f_2",
-        "env_name": "CollectRandColorRGB",
+        "exp_name": "test/picky_eater_randc/representation/dqn_aux/aux_control/test_3f",
+        "env_name": "CollectRandColorRGBTest",
         "agent": "DQNSwitchHeadAgent",
         "discount": 0.99,
         "state_norm_coef": 255.0,
@@ -32,16 +32,6 @@
             "val_fn_type": "linear",
             "init_type": "lta"
          },
-
-        "aux_config": [
-            {
-            "aux_fn_type":  "linear",
-            "aux_out_dim": 4,
-            "aux_task": "aux_control_collect",
-            "discount": 0.99,
-            "flip_reward":  true
-            }
-        ],
 
         "replay": true,
         "memory_size": 100000,

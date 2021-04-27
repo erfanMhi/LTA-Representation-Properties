@@ -75,16 +75,25 @@
 	    "fruit_num": 3
     },
    "sweep_parameters": {
-        "learning_rate": [0.001, 0.0003, 0.0001, 0.00003, 0.00001],
+        "learning_rate": [0.0003, 0.0001, 0.00003, 0.00001],
+        "memory_size": [100000, 200000],
         "epsilon_end": [0.1],
-        "memory_size": [200000],
         "target_network_update_freq": [1024],
+        "batch_size": [32],
         "activation_config": [
             {
             "name": "LTA",
             "input": 32,
             "tile": 40,
             "eta": 1.0,
+            "bound_high": 20,
+            "bound_low": -20
+            },
+            {
+            "name": "LTA",
+            "input": 32,
+            "tile": 20,
+            "eta": 2.0,
             "bound_high": 20,
             "bound_low": -20
             }

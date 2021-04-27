@@ -246,6 +246,11 @@ class DQNSwitchHeadAgent(DQNAuxAgent):
         super().__init__(cfg)
         self.head = None
         self.policy_head = self.val_net
+        def flip(x):
+            if x >= 0.999: return -1.001
+            elif x <= -1.001: return 0.999
+            else: return x
+        self.flip = np.vectorize(flip)
 
     def step(self):
         if self.reset is True:
@@ -261,11 +266,18 @@ class DQNSwitchHeadAgent(DQNAuxAgent):
         action = self.policy(self.state, self.cfg.eps_schedule())
 
         next_state, reward, done, _ = self.env.step([action])
-        if self.head > 0:
-            reward_main = reward * (-1)
-        else:
+        left_green, left_red = self.env.info("left_fruit")
+        if self.head == 0:
             reward_main = reward
-        self.replay.feed([self.state, action, reward_main, next_state, int(done)])
+        else:
+            reward_main = self.flip(reward)
+        self.replay.feed([self.state, action, reward_main, next_state, int(left_green), int(left_red)])
+        # if self.head > 0:
+        #     reward_main = reward * (-1)
+        # else:
+        #     reward_main = reward
+        # self.replay.feed([self.state, action, reward_main, next_state, int(done)])
+
         self.state = next_state
         # print('action: ', action)
         self.update_stats(reward, done)
@@ -284,7 +296,12 @@ class DQNSwitchHeadAgent(DQNAuxAgent):
         return action
 
     def update(self):
-        states, actions, rewards, next_states, terminals = self.replay.sample()
+        # states, actions, rewards, next_states, terminals = self.replay.sample()
+        states, actions, rewards_1, next_states, left_green, left_red = self.replay.sample()
+        terminals_1 = left_green == 0
+        terminals_1 = terminals_1.astype(int)
+        terminals_2 = left_red == 0
+        terminals_2 = terminals_2.astype(int)
 
         states = self.cfg.state_normalizer(states)
         next_states = self.cfg.state_normalizer(next_states)
@@ -296,8 +313,8 @@ class DQNSwitchHeadAgent(DQNAuxAgent):
         q = self.val_net(phi)[self.batch_indices, actions]
         nphi = self.targets.rep_net(next_states)
         q_next, action_next = self.targets.val_net(nphi).detach().max(1)
-        terminals = torch_utils.tensor(terminals, self.cfg.device)
-        rewards = torch_utils.tensor(rewards, self.cfg.device)
+        terminals = torch_utils.tensor(terminals_1, self.cfg.device)
+        rewards = torch_utils.tensor(rewards_1, self.cfg.device)
         target = self.cfg.discount * q_next * (1 - terminals).float()
         target.add_(rewards.float())
         loss = self.vf_loss(q, target)  # (q_next - q).pow(2).mul(0.5).mean()
@@ -305,7 +322,7 @@ class DQNSwitchHeadAgent(DQNAuxAgent):
         # Computing Loss for Aux Tasks
         aux_loss = torch.zeros_like(loss)
         for i, aux_net in enumerate(self.aux_nets):
-            transition = (states, actions, rewards, next_states, terminals)
+            transition = (states, actions, rewards, next_states, terminals_2)
             aux_loss += aux_net.compute_loss(transition, phi, nphi, action_next)
 
         if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:

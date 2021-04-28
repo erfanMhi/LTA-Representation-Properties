@@ -50,7 +50,7 @@
         "optimizer_type": "Adam",
         "use_target_network": true,
         "target_network_update_freq": 1024,
-        
+
         "max_steps": 1500000,
         "log_interval": 10000,
         "eval_interval": 10000,
@@ -75,9 +75,25 @@
     	"fruit_num": 3
     },
    "sweep_parameters": {
-        "learning_rate": [0.0003, 0.0001, 0.00003, 0.00001],
+        "learning_rate": [0.0001],
         "memory_size": [100000],
         "epsilon_end": [0.1],
-        "target_network_update_freq": [1024]
+        "target_network_update_freq": [1024],
+        "aux_config": [
+            [{
+            "aux_fn_type":  "linear",
+            "aux_out_dim": 4,
+            "aux_task": "aux_control_collect",
+            "discount": 0.99,
+            "flip_reward":  true
+            }],
+            [{
+            "aux_fn_type":  "linear",
+            "aux_out_dim": 4,
+            "aux_task": "aux_control_collect",
+            "discount": 0.9,
+            "flip_reward":  true
+            }]
+        ]
    }
 }

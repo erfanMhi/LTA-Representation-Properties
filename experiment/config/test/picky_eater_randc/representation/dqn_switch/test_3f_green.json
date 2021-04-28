@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test/picky_eater_randc/representation/dqn_aux/aux_control/test_3f",
+        "exp_name": "test/picky_eater_randc/representation/dqn_switch/test_3f_green",
         "env_name": "CollectRandColorRGBTest",
         "agent": "DQNSwitchHeadAgent",
         "discount": 0.99,
@@ -63,10 +63,10 @@
         "evaluate_sparsity": true,
         "evaluate_regression": false,
     	"fruit_num": 3,
-        "test_rewarding_color": "red"
+        "test_rewarding_color": "green"
     },
    "sweep_parameters": {
-        "learning_rate": [0.0001],
+        "learning_rate": [0.0003, 0.0001, 0.00003, 0.00001],
         "memory_size": [100000],
         "epsilon_end": [0.1],
         "target_network_update_freq": [1024]

@@ -36,7 +36,7 @@ class EnvFactory:
         elif cfg.env_name == "CollectRandColorRGB":
             return lambda: CollectRandColorRGB(cfg.seed, fruit_num=cfg.fruit_num)
         elif cfg.env_name == "CollectRandColorRGBTest":
-            return lambda: CollectRandColorRGBTest(cfg.seed, fruit_num=cfg.fruit_num)
+            return lambda: CollectRandColorRGBTest(cfg.seed, fruit_num=cfg.fruit_num, color=cfg.test_rewarding_color)
         elif cfg.env_name == "CollectTwoColorRGBFix":
             return lambda: CollectTwoColorRGBFix(cfg.seed)
         elif cfg.env_name == "CollectTwoColorRGBSimple":

@@ -69,7 +69,7 @@ def draw_cut(cuts, all_res, ax, color, ymin):
     x_mean = cuts.mean()
     x_max = cuts.max()
     # ax.vlines(x_mean, ymin, np.interp(x_mean, list(range(len(mu))), mu), ls="--", colors=color, alpha=0.5)
-    ax.vlines(x_max, ymin, np.interp(x_max, list(range(len(mu))), mu), ls=":", colors=color, alpha=0.5, linewidth=1)
+    ax.vlines(x_max, ymin, np.interp(x_max, list(range(len(mu))), mu), ls=":", colors=color, alpha=0.8, linewidth=3)
 
 def extract_from_single_run(file, key, label=None, before_step=None):
     with open(file, "r") as f:

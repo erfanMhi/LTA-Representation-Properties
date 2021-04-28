@@ -84,11 +84,13 @@ class DQNSwitchHeadAgent(base.Agent):
         action = self.policy(self.state, self.cfg.eps_schedule())
 
         next_state, reward, done, _ = self.env.step([action])
+        left_green, left_red = self.env.info("left_fruit")
         if self.head == 0:
             reward_main = reward
         else:
             reward_main = self.flip(reward)
-        self.replay.feed([self.state, action, reward_main, next_state, int(done)])
+        # self.replay.feed([self.state, action, reward_main, next_state, int(done)])
+        self.replay.feed([self.state, action, reward_main, next_state, int(left_green), int(left_red)])
         self.state = next_state
         # print('action: ', action)
         self.update_stats(reward, done)
@@ -116,48 +118,122 @@ class DQNSwitchHeadAgent(base.Agent):
         return action
 
     def update(self):
-        states, actions, rewards_1, next_states, terminals = self.replay.sample()
+        # states, actions, rewards_1, next_states, terminals = self.replay.sample()
+        states, actions, rewards_1, next_states, left_green, left_red = self.replay.sample()
+        terminals_1 = left_green == 0
+        terminals_1 = terminals_1.astype(int)
+        terminals_2 = left_red == 0
+        terminals_2 = terminals_2.astype(int)
         rewards_2 = self.flip(rewards_1)
         states = self.cfg.state_normalizer(states)
         next_states = self.cfg.state_normalizer(next_states)
-
         actions = torch_utils.tensor(actions, self.cfg.device).long()
+        # if len(np.where(terminals_1==1)[0])!=0 or len(np.where(terminals_2==1)[0])!=0:
+        #     print("head", self.head)
+        #     print(rewards_1)
+        #     print(left_green)
+        #     print(terminals_1)
+        #     print()
+        #     print(rewards_2)
+        #     print(left_red)
+        #     print(terminals_2)
+        #     print()
+        #     print()
 
         phi = self.rep_net(states)
-
-        q1 = self.val_net_1(phi)[self.batch_indices, actions]
-        q2 = self.val_net_2(phi)[self.batch_indices, actions]
-
-        # Constructing the target
         with torch.no_grad():
-            q_next_1 = self.targets.val_net_1(self.targets.rep_net(next_states))
-            q_next_1 = q_next_1.max(1)[0]
-            q_next_2 = self.targets.val_net_2(self.targets.rep_net(next_states))
-            q_next_2 = q_next_2.max(1)[0]
-            terminals = torch_utils.tensor(terminals, self.cfg.device)
-            rewards_1 = torch_utils.tensor(rewards_1, self.cfg.device)
-            rewards_2 = torch_utils.tensor(rewards_2, self.cfg.device)
-            target_1 = self.cfg.discount * q_next_1 * (1 - terminals).float()
-            target_2 = self.cfg.discount * q_next_2 * (1 - terminals).float()
-            target_1.add_(rewards_1.float())
-            target_2.add_(rewards_2.float())
+            phi_target = self.targets.rep_net(next_states)
+            # terminals = torch_utils.tensor(terminals, self.cfg.device)
 
-        loss = self.vf_loss_1(q1, target_1)  # (q_next - q).pow(2).mul(0.5).mean()
-        loss += self.vf_loss_2(q2, target_2)  # (q_next - q).pow(2).mul(0.5).mean()
-        # constr = self.vf_constr(q1, target_1, phi)
-        # loss += constr
+        # first head (true reward)
+        q1 = self.val_net_1(phi)[self.batch_indices, actions]
+        # Constructing the target for value function 1
+        with torch.no_grad():
+            q_next_1 = self.targets.val_net_1(phi_target)
+            q_next_1 = q_next_1.max(1)[0]
+            rewards_1 = torch_utils.tensor(rewards_1, self.cfg.device)
+            terminals_1 = torch_utils.tensor(terminals_1, self.cfg.device)
+            # target_1 = self.cfg.discount * q_next_1 * (1 - terminals).float()
+            target_1 = self.cfg.discount * q_next_1 * (1 - terminals_1).float()
+            target_1.add_(rewards_1.float())
+        loss1 = self.vf_loss_1(q1, target_1)  # (q_next - q).pow(2).mul(0.5).mean()
+
+        # self.optimizer.zero_grad()
+        # loss1.backward()
+        # self.optimizer.step()
+
+        # second head (flip reward)
+        q2 = self.val_net_2(phi)[self.batch_indices, actions]
+        # Constructing the target for value function 2
+        with torch.no_grad():
+            q_next_2 = self.targets.val_net_2(phi_target)
+            q_next_2 = q_next_2.max(1)[0]
+            rewards_2 = torch_utils.tensor(rewards_2, self.cfg.device)
+            terminals_2 = torch_utils.tensor(terminals_2, self.cfg.device)
+            # target_2 = self.cfg.discount * q_next_2 * (1 - terminals).float()
+            target_2 = self.cfg.discount * q_next_2 * (1 - terminals_2).float()
+            target_2.add_(rewards_2.float())
+        loss2 = self.vf_loss_2(q2, target_2)  # (q_next - q).pow(2).mul(0.5).mean()
 
         self.optimizer.zero_grad()
-        loss.backward()
+        # loss2.backward()
+        (loss1+loss2).backward()
         self.optimizer.step()
 
         if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
-            self.cfg.logger.tensorboard_writer.add_scalar('dqn/loss/val_loss', loss.item(), self.total_steps)
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn/loss/val_loss_1', loss1.item(), self.total_steps)
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn/loss/val_loss_2', loss2.item(), self.total_steps)
 
         if self.cfg.use_target_network and self.total_steps % self.cfg.target_network_update_freq == 0:
             self.targets.rep_net.load_state_dict(self.rep_net.state_dict())
             self.targets.val_net_1.load_state_dict(self.val_net_1.state_dict())
             self.targets.val_net_2.load_state_dict(self.val_net_2.state_dict())
+
+    # # For debug
+    # def update(self):
+    #     states, actions, rewards_1, next_states, terminals = self.replay.sample()
+    #     rewards_2 = self.flip(rewards_1)
+    #     states = self.cfg.state_normalizer(states)
+    #     next_states = self.cfg.state_normalizer(next_states)
+    #
+    #     actions = torch_utils.tensor(actions, self.cfg.device).long()
+    #
+    #     phi = self.rep_net(states)
+    #
+    #     # q1 = self.val_net_1(phi)[self.batch_indices, actions]
+    #     q2 = self.val_net_2(phi)[self.batch_indices, actions]
+    #
+    #     # Constructing the target
+    #     with torch.no_grad():
+    #         # q_next_1 = self.targets.val_net_1(self.targets.rep_net(next_states))
+    #         # q_next_1 = q_next_1.max(1)[0]
+    #         q_next_2 = self.targets.val_net_2(self.targets.rep_net(next_states))
+    #         q_next_2 = q_next_2.max(1)[0]
+    #         terminals = torch_utils.tensor(terminals, self.cfg.device)
+    #         # rewards_1 = torch_utils.tensor(rewards_1, self.cfg.device)
+    #         rewards_2 = torch_utils.tensor(rewards_2, self.cfg.device)
+    #         # target_1 = self.cfg.discount * q_next_1 * (1 - terminals).float()
+    #         target_2 = self.cfg.discount * q_next_2 * (1 - terminals).float()
+    #         # target_1.add_(rewards_1.float())
+    #         target_2.add_(rewards_2.float())
+    #
+    #     # loss = self.vf_loss_1(q1, target_1)  # (q_next - q).pow(2).mul(0.5).mean()
+    #     # loss += self.vf_loss_2(q2, target_2)  # (q_next - q).pow(2).mul(0.5).mean()
+    #     loss = self.vf_loss_2(q2, target_2)  # (q_next - q).pow(2).mul(0.5).mean()
+    #     # constr = self.vf_constr(q1, target_1, phi)
+    #     # loss += constr
+    #
+    #     self.optimizer.zero_grad()
+    #     loss.backward()
+    #     self.optimizer.step()
+    #
+    #     if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
+    #         self.cfg.logger.tensorboard_writer.add_scalar('dqn/loss/val_loss', loss.item(), self.total_steps)
+    #
+    #     if self.cfg.use_target_network and self.total_steps % self.cfg.target_network_update_freq == 0:
+    #         self.targets.rep_net.load_state_dict(self.rep_net.state_dict())
+    #         self.targets.val_net_1.load_state_dict(self.val_net_1.state_dict())
+    #         self.targets.val_net_2.load_state_dict(self.val_net_2.state_dict())
 
     def log_tensorboard(self):
         rewards = self.ep_returns_queue

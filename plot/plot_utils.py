@@ -10,11 +10,14 @@ def arrange_order(dict1, cut_length=True, scale=1):
     min_l = np.inf
     for i in sorted(dict1):
         v1 = dict1[i]
-        lst.append(v1)
+        if len(v1) == 151:
+            lst.append(v1)
+        else:        
+            print('Length: ', len(v1))
+            print('Run: ', i)
+            continue
 # <<<<<<< HEAD
         l = len(v1)
-        print('Length: ', l)
-        print('Run: ', i)
         min_l = l if l < min_l else min_l
     # print("min length: ", min_l)
     # for i in range(len(lst)):
@@ -229,6 +232,7 @@ def extract_from_setting(find_in, setting, key="return", final_only=False, label
 #         setting_list.sort()
 #     else:
 #         setting_list = list(range(start, total))
+
 def extract_return_all(path, setting_list):
     if setting_list is None:
         all_param = os.listdir(path + "/0_run")

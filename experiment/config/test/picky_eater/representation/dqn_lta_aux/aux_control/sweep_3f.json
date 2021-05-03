@@ -36,8 +36,8 @@
         "activation_config": {
             "name": "LTA",
             "input": 32,
-            "tile": 20,
-            "eta": 2.0,
+            "tile": 40,
+            "eta": 1.0,
             "bound_high": 20,
             "bound_low": -20
         },
@@ -58,11 +58,12 @@
 
         "optimizer_type": "Adam",
         "use_target_network": true,
+        "target_network_update_freq": 1024,
 
         "max_steps": 1500000,
         "log_interval": 10000,
         "eval_interval": 10000,
-        "eval_episodes": 5,
+        "eval_episodes": 100,
         "save_interval": 0,
         "timeout": 500,
         "stats_queue_size": 100,

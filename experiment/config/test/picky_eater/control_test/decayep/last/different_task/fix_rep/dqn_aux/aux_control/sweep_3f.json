@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_aux/aux_control/sweep_3f",
+        "exp_name": "test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_aux/aux_control/sweep_3f_2",
         "env_name": "CollectTwoColorLip",
         "agent": "DQNAgent",
         "discount": 0.99,
@@ -26,7 +26,7 @@
             "out_dim": 32,
             "load_params": true,
             "train_rep": false,
-            "path": "test/picky_eater/representation/dqn_aux/aux_control/sweep_3f/{}_run/1_param_setting/parameters/rep_net"
+            "path": "test/picky_eater/representation/dqn_aux/aux_control/sweep_3f/{}_run/2_param_setting/parameters/rep_net"
         },
 
         "val_fn_config": {
@@ -60,8 +60,9 @@
         "lipschitz_sampled_states_path": "example/picky_eater/trained_dqn/lip_sampled_states.npy"
     },
     "sweep_parameters": {
-        "learning_rate": [0.03, 0.01, 0.003, 0.001],
-        "memory_size": [100000],
-        "target_network_update_freq": [1024]
+        "learning_rate": [0.001, 0.0003, 0.0001, 0.00003, 0.00001, 0.000003, 0.000001, 0.0000003],
+        "memory_size": [200000],
+        "target_network_update_freq": [1024],
+        "epsilon_schedule_steps": [200000]
     }
 }

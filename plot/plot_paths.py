@@ -2409,7 +2409,234 @@ crgb_online_sweep_1_f = [
      },
     ]
 
+crgb_online_sweep_1f_ltatest = [
+    {"label": "FTA",
+     "control": "data/output/test/picky_eater/representation/dqn_lta_aux/aux_control/sweep_1f/"
+     }
+    ]
 
+crgb_online_sweep_34_f_test = [
+    {"label": "FTA",
+     "control": "data/output/test/picky_eater/representation/dqn_lta_aux/aux_control/sweep_1f/",
+     "best": "1"
+     },
+    {"label": "FTA",
+     "control": "data/output/test/picky_eater/representation/dqn_lta/sweep_3f/",
+     "best": "1"
+     },
+    {"label": "FTA",
+     "control": "data/output/test/picky_eater/representation/dqn_lta/sweep_4f/",
+    "best": "1"
+     },
+   {"label": "ReLU",
+     "control": "data/output/test/picky_eater/representation/dqn/sweep_3f/",
+     "best": "1"
+     },    
+    {"label": "ReLU",
+     "control": "data/output/test/picky_eater/representation/dqn/sweep_4f/",
+     "best": "1"
+     },
+    {"label": "FTA+Control",
+     "control": "data/output/test/picky_eater/representation/dqn_lta_aux/aux_control/sweep_3f/",
+     "best": "1"
+     },
+    {"label": "FTA+Control",
+     "control": "data/output/test/picky_eater/representation/dqn_lta_aux/aux_control/sweep_4f/",
+     "best": "2"
+     },
+    {"label": "ReLU+Control", "control": "data/output/test/picky_eater/representation/dqn_aux/aux_control/sweep_3f/",
+     "best": "1"
+     },    
+    {"label": "ReLU+Control", "control": "data/output/test/picky_eater/representation/dqn_aux/aux_control/sweep_4f/",
+     "best": "2"
+     },
+    ]
+
+crgb_online_sweep_14_f_control_test = [
+    {"label": "FTA",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta/sweep_1f_1",
+     "best": "3"
+     },
+    {"label": "FTA",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta/sweep_4f_1",
+     "best": "3"
+     },
+   {"label": "ReLU",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn/sweep_1f_1",
+     "best": "0"
+     },    
+#     {"label": "ReLU",
+     # "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn/sweep_4f_1",
+     # "online_measure": "data/output/test/picky_eater/representation/dqn/sweep_4f/",
+     # "best": "2"
+     # },
+    {"label": "FTA+Control",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta_aux/aux_control/sweep_1f_1",
+     "best": "3"
+     },
+    {"label": "FTA+Control",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta_aux/aux_control/sweep_4f_1",
+     "best": "3"
+     },
+    {"label": "ReLU+Control",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_aux/aux_control/sweep_1f_1",
+     "best": "3"
+     },    
+#     {"label": "ReLU+Control", 
+     # "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_aux/aux_control/sweep_4f_1",
+     # "best": "3"
+     # },
+    ]
+
+crgb_online_best_14_f_control_test = [
+    {"label": "FTA",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta/best_1f_1",
+     "best": "3"
+     },
+#     {"label": "FTA",
+     # "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta/best_4f_1",
+     # "best": "3"
+#      },
+   {"label": "ReLU",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn/best_1f_1",
+     "best": "1"
+     },    
+#     {"label": "ReLU",
+     # "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn/best_4f_1",
+     # "online_measure": "data/output/test/picky_eater/representation/dqn/best_4f/",
+     # "best": "2"
+     # },
+    {"label": "FTA+Control",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta_aux/aux_control/best_1f_1",
+     "best": "3"
+     },
+#     {"label": "FTA+Control",
+     # "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta_aux/aux_control/best_4f_1",
+     # "best": "3"
+#      },
+    {"label": "ReLU+Control",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_aux/aux_control/best_1f_1",
+     "best": "3"
+     },    
+#     {"label": "ReLU+Control", 
+     # "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_aux/aux_control/best_4f_1",
+     # "best": "3"
+     # },
+    ]
+
+
+crgb_online_sweep_34_f_control_test = [
+    {"label": "FTA",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta/sweep_3f",
+     "best": "3"
+     },
+    {"label": "FTA",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta/sweep_4f",
+     "best": "3"
+     },
+   {"label": "ReLU",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn/sweep_3f",
+     "best": "2"
+     },    
+    {"label": "ReLU",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn/sweep_4f",
+     "online_measure": "data/output/test/picky_eater/representation/dqn/sweep_4f/",
+     "best": "2"
+     },
+    {"label": "FTA+Control",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta_aux/aux_control/sweep_3f",
+     "best": "3"
+     },
+    {"label": "FTA+Control",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta_aux/aux_control/sweep_4f",
+     "best": "3"
+     },
+    {"label": "ReLU+Control",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_aux/aux_control/sweep_3f",
+     "best": "3"
+     },    
+    {"label": "ReLU+Control", 
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_aux/aux_control/sweep_4f",
+     "best": "3"
+     },
+    ]
+
+
+crgb_online_best_34_f_control_test = [
+    {"label": "FTA",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta/best_3f",
+     "best": "3"
+     },
+    {"label": "FTA",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta/best_4f",
+     "best": "3"
+     },
+   {"label": "ReLU",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn/best_3f",
+     "best": "2"
+     },    
+    {"label": "ReLU",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn/best_4f",
+     "online_measure": "data/output/test/picky_eater/representation/dqn/best_4f/",
+     "best": "2"
+     },
+    {"label": "FTA+Control",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta_aux/aux_control/best_3f",
+     "best": "3"
+     },
+    {"label": "FTA+Control",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta_aux/aux_control/best_4f",
+     "best": "3"
+     },
+    {"label": "ReLU+Control",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_aux/aux_control/best_3f",
+     "best": "3"
+     },    
+    {"label": "ReLU+Control", 
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_aux/aux_control/best_4f",
+     "best": "3"
+     },
+    ]
+
+crgb_online_best_3_f_control_test = [
+    {"label": "FTA",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta/best_3f",
+     "best": "3"
+     },
+  {"label": "ReLU",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn/best_3f",
+     "best": "2"
+     },    
+   {"label": "FTA+Control",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta_aux/aux_control/best_3f",
+     "best": "3"
+     },
+   {"label": "ReLU+Control",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_aux/aux_control/best_3f",
+     "best": "3"
+     },    
+   ]
+
+crgb_online_best_4_f_control_test = [
+
+    {"label": "FTA",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta/best_4f",
+     "best": "3"
+     },
+   {"label": "ReLU",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn/best_4f",
+     "online_measure": "data/output/test/picky_eater/representation/dqn/best_4f/",
+     "best": "2"
+     },
+   {"label": "FTA+Control",
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta_aux/aux_control/best_4f",
+     "best": "3"
+     },
+   {"label": "ReLU+Control", 
+     "control": "data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_aux/aux_control/best_4f",
+     "best": "3"
+     },
+    ]
 
 pe_sweep_temp = [
     # {"label": "ReLU",

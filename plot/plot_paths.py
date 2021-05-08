@@ -2411,7 +2411,10 @@ crgb_online_sweep_1_f = [
 
 crgb_online_sweep_1f_ltatest = [
     {"label": "FTA",
-     "control": "data/output/test/picky_eater/representation/dqn_lta_aux/aux_control/sweep_1f/"
+     "control": "data/output/test/picky_eater/representation/dqn_aux/aux_control/sweep_1f/"
+     },
+    {"label": "FTA",
+     "control": "data/output/test/picky_eater/representation/dqn_lta_aux/aux_control/sweep_1f_1/"
      }
     ]
 
@@ -2637,6 +2640,52 @@ crgb_online_best_4_f_control_test = [
      "best": "3"
      },
     ]
+
+crgb_online_sweep_1f_control = [
+    {"label": "ReLU+Control",
+     "control": "data/output/test/picky_eater/control/different_task/fix_rep/dqn_aux/aux_control/sweep_1f",
+     "best": "3"
+     },
+   {"label": "ReLU+Control",
+     "control": "data/output/test/picky_eater/control/different_task/fix_rep/dqn_aux/aux_control/sweep_1f_99d",
+     # "online_measure": "data/output/test/picky_eater/representation/dqn/best_4f/",
+     "best": "2"
+     },
+   {"label": "FTA+Control",
+     "control": "data/output/test/picky_eater/control/different_task/fix_rep/dqn_lta_aux/aux_control/sweep_1f",
+     "best": "3"
+     },
+   {"label": "FTA+Control", 
+     "control": "data/output/test/picky_eater/control/different_task/fix_rep/dqn_lta_aux/aux_control/sweep_1f_99d",
+     "best": "3"
+     },
+    ]
+
+
+crgb_online_best_4_f_randc = [
+    {"label": "ReLU+Control",
+    "control": "data/output/test/picky_eater_randc/representation/dqn_aux/aux_control/best_3f",
+     },    
+    {"label": "FTA+Control",
+    "control": "data/output/test/picky_eater_randc/representation/dqn_lta_aux/aux_control/best_3f",
+     },
+   ]
+
+crgb_online_best_1_f_99d_and_1d = [
+    {"label": "ReLU+Control",
+    "control": "data/output/test/picky_eater/representation/dqn_aux/aux_control/best_1f",
+     },
+    {"label": "ReLU+Control",
+    "control": "data/output/test/picky_eater/representation/dqn_aux/aux_control/best_1f_99d",
+     },
+    {"label": "FTA+Control",
+    "control": "data/output/test/picky_eater/representation/dqn_lta_aux/aux_control/best_1f",
+     },
+    {"label": "FTA+Control",
+    "control": "data/output/test/picky_eater/representation/dqn_lta_aux/aux_control/best_1f_99d",
+     },
+   ]
+
 
 pe_sweep_temp = [
     # {"label": "ReLU",

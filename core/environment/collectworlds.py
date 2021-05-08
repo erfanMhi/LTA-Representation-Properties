@@ -274,7 +274,7 @@ class CollectTwoColorXY:
 
     def reset(self):
         obj_ids = np.arange(len(self.object_coords))
-        # obj_ids = np.random.permutation(obj_ids)
+        obj_ids = np.random.permutation(obj_ids)
 
         green_ids, red_ids = obj_ids[:6], obj_ids[6:]
 
@@ -385,7 +385,7 @@ class CollectTwoColorXYEarlyTermin:
 
     def reset(self):
         obj_ids = np.arange(len(self.object_coords))
-        # obj_ids = np.random.permutation(obj_ids)
+        obj_ids = np.random.permutation(obj_ids)
 
         green_ids, red_ids = obj_ids[:self.fruit_num], obj_ids[self.fruit_num:]
 

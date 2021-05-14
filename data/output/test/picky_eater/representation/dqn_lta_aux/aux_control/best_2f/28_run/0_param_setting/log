@@ -1,271 +1,471 @@
-2021-05-07 22:51:06,309 | exp_name: test/picky_eater/representation/dqn_lta_aux/aux_control/sweep_2f
-2021-05-07 22:51:06,312 | data_root: /project/6010404/erfan/LTA-Representation-Properties/data/output
-2021-05-07 22:51:06,312 | device: cpu
-2021-05-07 22:51:06,312 | run: 28
-2021-05-07 22:51:06,312 | param_setting: 2
-2021-05-07 22:51:06,312 | env_name: CollectTwoColorRGB
-2021-05-07 22:51:06,312 | state_dim: (15, 15, 3)
-2021-05-07 22:51:06,312 | action_dim: 4
-2021-05-07 22:51:06,312 | max_steps: 1000000
-2021-05-07 22:51:06,312 | log_interval: 10000
-2021-05-07 22:51:06,313 | save_interval: 0
-2021-05-07 22:51:06,313 | eval_interval: 10000
-2021-05-07 22:51:06,313 | num_eval_episodes: 5
-2021-05-07 22:51:06,313 | timeout: 500
-2021-05-07 22:51:06,313 | stats_queue_size: 100
-2021-05-07 22:51:06,313 | tensorboard_logs: True
-2021-05-07 22:51:06,313 | tensorboard_interval: 100
-2021-05-07 22:51:06,313 | converge_window: 10
-2021-05-07 22:51:06,313 | converge_threshold: 0.0001
-2021-05-07 22:51:06,313 | linear_hidden_units: []
-2021-05-07 22:51:06,313 | coord_dim: 2
-2021-05-07 22:51:06,313 | state_norm_coef: 255.0
-2021-05-07 22:51:06,314 | reward_norm_coef: 1.0
-2021-05-07 22:51:06,314 | replay_with_len: False
-2021-05-07 22:51:06,314 | fruit_num: 2
-2021-05-07 22:51:06,314 | agent: DQNAuxSuccessorAgent
-2021-05-07 22:51:06,314 | learning_rate: 0.0001
-2021-05-07 22:51:06,314 | decay_epsilon: True
-2021-05-07 22:51:06,314 | epsilon: 0.1
-2021-05-07 22:51:06,314 | epsilon_start: 1.0
-2021-05-07 22:51:06,314 | epsilon_end: 0.1
-2021-05-07 22:51:06,314 | epsilon_schedule_steps: 100000
-2021-05-07 22:51:06,314 | random_action_prob: None
-2021-05-07 22:51:06,314 | discount: 0.99
-2021-05-07 22:51:06,315 | network_type: flat
-2021-05-07 22:51:06,315 | batch_size: 32
-2021-05-07 22:51:06,315 | use_target_network: True
-2021-05-07 22:51:06,315 | memory_size: 100000
-2021-05-07 22:51:06,315 | optimizer_type: Adam
-2021-05-07 22:51:06,315 | val_net: None
-2021-05-07 22:51:06,315 | target_network_update_freq: 1024
-2021-05-07 22:51:06,315 | evaluation_criteria: return
-2021-05-07 22:51:06,315 | vf_loss: mse
-2021-05-07 22:51:06,315 | vf_constraint: None
-2021-05-07 22:51:06,315 | constr_weight: 0
-2021-05-07 22:51:06,315 | rep_type: default
-2021-05-07 22:51:06,315 | evaluate_lipschitz: True
-2021-05-07 22:51:06,316 | evaluate_distance: True
-2021-05-07 22:51:06,316 | evaluate_orthogonality: True
-2021-05-07 22:51:06,316 | evaluate_interference: True
-2021-05-07 22:51:06,316 | evaluate_diversity: True
-2021-05-07 22:51:06,316 | evaluate_sparsity: True
-2021-05-07 22:51:06,316 | evaluate_regression: False
-2021-05-07 22:51:06,316 | save_params: True
-2021-05-07 22:51:06,316 | save_early: {'mean': 1.98, 'min': 1.0}
-2021-05-07 22:51:06,316 | visualize: False
-2021-05-07 22:51:06,316 | activation_config: {'name': 'LTA', 'input': 32, 'tile': 20, 'eta': 1.0, 'bound_high': 10, 'bound_low': -10}
-2021-05-07 22:51:06,316 | online_property: False
-2021-05-07 22:51:06,316 | visualize_aux_distance: False
-2021-05-07 22:51:06,317 | rep_config: {'rep_type': 'modular', 'network_type': 'conv', 'conv_architecture': {'conv_layers': [{'in': 3, 'out': 32, 'kernel': 4, 'stride': 1, 'pad': 1}, {'in': 32, 'out': 32, 'kernel': 4, 'stride': 1, 'pad': 1}, {'in': 32, 'out': 64, 'kernel': 4, 'stride': 2, 'pad': 2}], 'fc_layers': {'hidden_units': [128, 128]}}, 'in_dim': [15, 15, 3], 'out_dim': 32, 'load_params': False, 'train_rep': True}
-2021-05-07 22:51:06,317 | val_fn_config: {'val_fn_type': 'linear', 'init_type': 'lta'}
-2021-05-07 22:51:06,317 | aux_config: [{'aux_fn_type': 'linear', 'aux_out_dim': 4, 'aux_task': 'aux_control_collect', 'discount': 0.99, 'flip_reward': True}]
-2021-05-07 22:51:06,317 | replay: True
-2021-05-07 22:51:06,317 | eval_episodes: 5
-2021-05-07 22:51:06,317 | distance_paths: [{'current': 'example/picky_eater/trained_dqn/distance_current_states_sameEP_green.npy', 'action': 'example/picky_eater/trained_dqn/distance_actions_sameEP_green.npy', 'next': 'example/picky_eater/trained_dqn/distance_next_states_sameEP_green.npy', 'reward': 'example/picky_eater/trained_dqn/distance_rewards_sameEP_green.npy', 'terminal': 'example/picky_eater/trained_dqn/distance_terminals_sameEP_green.npy', 'label': 'Green'}, {'current': 'example/picky_eater/trained_dqn/distance_current_states_sameEP_red.npy', 'action': 'example/picky_eater/trained_dqn/distance_actions_sameEP_red.npy', 'next': 'example/picky_eater/trained_dqn/distance_next_states_sameEP_red.npy', 'reward': 'example/picky_eater/trained_dqn/distance_rewards_sameEP_red.npy', 'terminal': 'example/picky_eater/trained_dqn/distance_terminals_sameEP_red.npy', 'label': 'Red'}, {'current': 'example/picky_eater/trained_dqn/distance_current_states_sameEP_random.npy', 'action': 'example/picky_eater/trained_dqn/distance_actions_sameEP_random.npy', 'next': 'example/picky_eater/trained_dqn/distance_next_states_sameEP_random.npy', 'reward': 'example/picky_eater/trained_dqn/distance_rewards_sameEP_random.npy', 'terminal': 'example/picky_eater/trained_dqn/distance_terminals_sameEP_random.npy', 'label': 'Random'}]
-2021-05-07 22:51:06,317 | evaluate_mutual_info: True
-2021-05-07 22:51:06,317 | cumulative: 8
-2021-05-07 22:51:06,317 | id: 226
-2021-05-07 22:51:06,317 | seed: 28
-2021-05-07 22:52:35,186 | TRAIN LOG: steps 0, episodes   0, returns -0.51/-0.50/-2.50/1.96/100 (mean/median/min/max/num), 112.67 steps/s
-2021-05-07 22:52:36,577 | total steps 0, total episodes   0, Lipschitz: 0.045/0.00246/0.00233/0.00008/0.00705 (upper/mean/median/min/max)
-2021-05-07 23:01:18,255 | TRAIN LOG: steps 10000, episodes  22, returns -0.48/-0.50/-2.50/1.96/100 (mean/median/min/max/num), 19.17 steps/s
-2021-05-07 23:01:19,732 | total steps 10000, total episodes  22, Lipschitz: 0.413/0.02833/0.02056/0.00159/0.12365 (upper/mean/median/min/max)
-2021-05-07 23:10:20,478 | TRAIN LOG: steps 20000, episodes  45, returns -0.41/-0.50/-2.50/1.92/100 (mean/median/min/max/num), 18.55 steps/s
-2021-05-07 23:10:21,942 | total steps 20000, total episodes  45, Lipschitz: 0.792/0.03450/0.02923/0.00109/0.13787 (upper/mean/median/min/max)
-2021-05-07 23:19:04,274 | TRAIN LOG: steps 30000, episodes  76, returns -0.02/-0.32/-2.50/1.97/100 (mean/median/min/max/num), 19.14 steps/s
-2021-05-07 23:19:05,679 | total steps 30000, total episodes  76, Lipschitz: 1.080/0.05895/0.04976/0.00181/0.22399 (upper/mean/median/min/max)
-2021-05-07 23:27:29,219 | TRAIN LOG: steps 40000, episodes 117, returns 0.78/0.72/-2.50/1.97/100 (mean/median/min/max/num), 19.86 steps/s
-2021-05-07 23:27:30,683 | total steps 40000, total episodes 117, Lipschitz: 1.236/0.07097/0.06611/0.00109/0.19637 (upper/mean/median/min/max)
-2021-05-07 23:36:01,452 | TRAIN LOG: steps 50000, episodes 153, returns 1.17/1.67/-0.50/1.97/100 (mean/median/min/max/num), 19.58 steps/s
-2021-05-07 23:36:02,819 | total steps 50000, total episodes 153, Lipschitz: 1.445/0.08378/0.08226/0.00335/0.18126 (upper/mean/median/min/max)
-2021-05-07 23:44:49,029 | TRAIN LOG: steps 60000, episodes 198, returns 1.26/1.75/-1.50/1.97/100 (mean/median/min/max/num), 19.00 steps/s
-2021-05-07 23:44:50,537 | total steps 60000, total episodes 198, Lipschitz: 1.663/0.04398/0.03813/0.00167/0.18636 (upper/mean/median/min/max)
-2021-05-07 23:53:53,058 | TRAIN LOG: steps 70000, episodes 242, returns 1.33/1.81/-1.50/1.98/100 (mean/median/min/max/num), 18.46 steps/s
-2021-05-07 23:53:54,796 | total steps 70000, total episodes 242, Lipschitz: 1.789/0.04593/0.04077/0.00151/0.22692 (upper/mean/median/min/max)
-2021-05-08 00:02:52,347 | TRAIN LOG: steps 80000, episodes 283, returns 1.27/1.78/-1.50/1.98/100 (mean/median/min/max/num), 18.60 steps/s
-2021-05-08 00:02:53,922 | total steps 80000, total episodes 283, Lipschitz: 1.853/0.05176/0.04259/0.00121/0.21961 (upper/mean/median/min/max)
-2021-05-08 00:12:04,350 | TRAIN LOG: steps 90000, episodes 325, returns 1.29/1.79/-1.50/1.98/100 (mean/median/min/max/num), 18.17 steps/s
-2021-05-08 00:12:05,967 | total steps 90000, total episodes 325, Lipschitz: 1.888/0.03701/0.02775/0.00022/0.21253 (upper/mean/median/min/max)
-2021-05-08 00:21:22,229 | TRAIN LOG: steps 100000, episodes 362, returns 1.20/1.75/-1.50/1.98/100 (mean/median/min/max/num), 17.98 steps/s
-2021-05-08 00:21:23,877 | total steps 100000, total episodes 362, Lipschitz: 1.910/0.05224/0.04391/0.00255/0.22305 (upper/mean/median/min/max)
-2021-05-08 00:30:45,518 | TRAIN LOG: steps 110000, episodes 403, returns 1.22/1.74/-1.50/1.98/100 (mean/median/min/max/num), 17.81 steps/s
-2021-05-08 00:30:47,273 | total steps 110000, total episodes 403, Lipschitz: 1.938/0.03167/0.02084/0.00105/0.23479 (upper/mean/median/min/max)
-2021-05-08 00:40:03,798 | TRAIN LOG: steps 120000, episodes 434, returns 1.26/1.76/-1.50/1.98/100 (mean/median/min/max/num), 17.97 steps/s
-2021-05-08 00:40:05,434 | total steps 120000, total episodes 434, Lipschitz: 1.931/0.02863/0.01537/0.00085/0.21559 (upper/mean/median/min/max)
-2021-05-08 00:49:15,170 | TRAIN LOG: steps 130000, episodes 459, returns 1.11/1.65/-1.50/1.98/100 (mean/median/min/max/num), 18.19 steps/s
-2021-05-08 00:49:16,829 | total steps 130000, total episodes 459, Lipschitz: 1.939/0.02551/0.01179/0.00042/0.23879 (upper/mean/median/min/max)
-2021-05-08 00:58:27,987 | TRAIN LOG: steps 140000, episodes 490, returns 0.89/0.79/-1.50/1.98/100 (mean/median/min/max/num), 18.14 steps/s
-2021-05-08 00:58:29,660 | total steps 140000, total episodes 490, Lipschitz: 1.929/0.03109/0.02406/0.00080/0.19366 (upper/mean/median/min/max)
-2021-05-08 01:07:38,997 | TRAIN LOG: steps 150000, episodes 522, returns 0.63/0.61/-1.50/1.98/100 (mean/median/min/max/num), 18.20 steps/s
-2021-05-08 01:07:40,660 | total steps 150000, total episodes 522, Lipschitz: 1.925/0.02955/0.02257/0.00111/0.22220 (upper/mean/median/min/max)
-2021-05-08 01:16:50,212 | TRAIN LOG: steps 160000, episodes 547, returns 0.51/0.55/-1.50/1.98/100 (mean/median/min/max/num), 18.20 steps/s
-2021-05-08 01:16:51,834 | total steps 160000, total episodes 547, Lipschitz: 1.907/0.02523/0.01754/0.00033/0.21133 (upper/mean/median/min/max)
-2021-05-08 01:26:15,774 | TRAIN LOG: steps 170000, episodes 572, returns 0.38/0.50/-1.50/1.98/100 (mean/median/min/max/num), 17.73 steps/s
-2021-05-08 01:26:17,389 | total steps 170000, total episodes 572, Lipschitz: 1.908/0.02516/0.01719/0.00037/0.27238 (upper/mean/median/min/max)
-2021-05-08 01:35:41,514 | TRAIN LOG: steps 180000, episodes 598, returns 0.36/0.50/-1.50/1.98/100 (mean/median/min/max/num), 17.73 steps/s
-2021-05-08 01:35:43,287 | total steps 180000, total episodes 598, Lipschitz: 1.913/0.01411/0.01102/0.00055/0.10405 (upper/mean/median/min/max)
-2021-05-08 01:45:04,621 | TRAIN LOG: steps 190000, episodes 624, returns 0.10/0.50/-1.50/1.97/100 (mean/median/min/max/num), 17.81 steps/s
-2021-05-08 01:45:06,416 | total steps 190000, total episodes 624, Lipschitz: 1.909/0.02039/0.01221/0.00069/0.22792 (upper/mean/median/min/max)
-2021-05-08 01:54:20,716 | TRAIN LOG: steps 200000, episodes 647, returns 0.10/0.50/-1.50/1.97/100 (mean/median/min/max/num), 18.04 steps/s
-2021-05-08 01:54:22,352 | total steps 200000, total episodes 647, Lipschitz: 1.882/0.02457/0.01606/0.00050/0.26950 (upper/mean/median/min/max)
-2021-05-08 02:03:37,821 | TRAIN LOG: steps 210000, episodes 669, returns 0.04/0.17/-1.50/1.97/100 (mean/median/min/max/num), 18.00 steps/s
-2021-05-08 02:03:41,384 | total steps 210000, total episodes 669, Lipschitz: 1.868/0.02366/0.01428/0.00036/0.31353 (upper/mean/median/min/max)
-2021-05-08 02:12:56,227 | TRAIN LOG: steps 220000, episodes 691, returns -0.10/-0.50/-2.50/1.96/100 (mean/median/min/max/num), 18.02 steps/s
-2021-05-08 02:12:59,140 | total steps 220000, total episodes 691, Lipschitz: 1.830/0.03540/0.02676/0.00059/0.23448 (upper/mean/median/min/max)
-2021-05-08 02:22:11,380 | TRAIN LOG: steps 230000, episodes 714, returns -0.03/-0.43/-2.50/1.96/100 (mean/median/min/max/num), 18.11 steps/s
-2021-05-08 02:22:14,478 | total steps 230000, total episodes 714, Lipschitz: 1.814/0.02220/0.01041/0.00040/0.27443 (upper/mean/median/min/max)
-2021-05-08 02:31:27,000 | TRAIN LOG: steps 240000, episodes 738, returns -0.13/-0.48/-2.50/1.96/100 (mean/median/min/max/num), 18.10 steps/s
-2021-05-08 02:31:30,348 | total steps 240000, total episodes 738, Lipschitz: 1.800/0.01619/0.01133/0.00056/0.22813 (upper/mean/median/min/max)
-2021-05-08 02:40:41,660 | TRAIN LOG: steps 250000, episodes 765, returns -0.11/-0.36/-2.50/1.96/100 (mean/median/min/max/num), 18.14 steps/s
-2021-05-08 02:40:45,570 | total steps 250000, total episodes 765, Lipschitz: 1.795/0.01889/0.01053/0.00039/0.26407 (upper/mean/median/min/max)
-2021-05-08 02:49:52,447 | TRAIN LOG: steps 260000, episodes 789, returns -0.07/-0.28/-1.50/1.96/100 (mean/median/min/max/num), 18.29 steps/s
-2021-05-08 02:49:55,275 | total steps 260000, total episodes 789, Lipschitz: 1.808/0.01520/0.01144/0.00040/0.20021 (upper/mean/median/min/max)
-2021-05-08 02:59:03,043 | TRAIN LOG: steps 270000, episodes 815, returns -0.13/-0.32/-2.50/1.94/100 (mean/median/min/max/num), 18.26 steps/s
-2021-05-08 02:59:05,769 | total steps 270000, total episodes 815, Lipschitz: 1.796/0.01020/0.00937/0.00038/0.04975 (upper/mean/median/min/max)
-2021-05-08 03:08:14,163 | TRAIN LOG: steps 280000, episodes 842, returns -0.05/-0.25/-2.50/1.91/100 (mean/median/min/max/num), 18.24 steps/s
-2021-05-08 03:08:17,036 | total steps 280000, total episodes 842, Lipschitz: 1.784/0.03054/0.02189/0.00044/0.27649 (upper/mean/median/min/max)
-2021-05-08 03:17:26,240 | TRAIN LOG: steps 290000, episodes 866, returns -0.12/-0.31/-2.50/1.91/100 (mean/median/min/max/num), 18.21 steps/s
-2021-05-08 03:17:29,548 | total steps 290000, total episodes 866, Lipschitz: 1.777/0.01420/0.00811/0.00028/0.21839 (upper/mean/median/min/max)
-2021-05-08 03:26:37,576 | TRAIN LOG: steps 300000, episodes 894, returns 0.05/-0.20/-2.50/1.91/100 (mean/median/min/max/num), 18.25 steps/s
-2021-05-08 03:26:41,395 | total steps 300000, total episodes 894, Lipschitz: 1.765/0.01307/0.00728/0.00016/0.20065 (upper/mean/median/min/max)
-2021-05-08 03:35:46,353 | TRAIN LOG: steps 310000, episodes 922, returns 0.23/0.50/-1.50/1.92/100 (mean/median/min/max/num), 18.35 steps/s
-2021-05-08 03:35:49,019 | total steps 310000, total episodes 922, Lipschitz: 1.768/0.02047/0.00925/0.00032/0.26915 (upper/mean/median/min/max)
-2021-05-08 03:44:48,550 | TRAIN LOG: steps 320000, episodes 948, returns 0.27/0.50/-1.50/1.97/100 (mean/median/min/max/num), 18.53 steps/s
-2021-05-08 03:44:51,473 | total steps 320000, total episodes 948, Lipschitz: 1.766/0.03858/0.02981/0.00091/0.25103 (upper/mean/median/min/max)
-2021-05-08 03:53:57,512 | TRAIN LOG: steps 330000, episodes 976, returns 0.32/0.50/-1.50/1.97/100 (mean/median/min/max/num), 18.31 steps/s
-2021-05-08 03:54:00,603 | total steps 330000, total episodes 976, Lipschitz: 1.766/0.01991/0.01006/0.00022/0.26527 (upper/mean/median/min/max)
-2021-05-08 04:03:07,640 | TRAIN LOG: steps 340000, episodes 1009, returns 0.44/0.50/-1.50/1.97/100 (mean/median/min/max/num), 18.28 steps/s
-2021-05-08 04:03:10,749 | total steps 340000, total episodes 1009, Lipschitz: 1.782/0.02730/0.01912/0.00043/0.24481 (upper/mean/median/min/max)
-2021-05-08 04:12:17,553 | TRAIN LOG: steps 350000, episodes 1043, returns 0.64/0.68/-1.50/1.96/100 (mean/median/min/max/num), 18.29 steps/s
-2021-05-08 04:12:20,640 | total steps 350000, total episodes 1043, Lipschitz: 1.779/0.03615/0.02450/0.00137/0.30112 (upper/mean/median/min/max)
-2021-05-08 04:21:27,780 | TRAIN LOG: steps 360000, episodes 1086, returns 1.00/0.87/-1.50/1.99/100 (mean/median/min/max/num), 18.28 steps/s
-2021-05-08 04:21:30,914 | total steps 360000, total episodes 1086, Lipschitz: 1.761/0.03936/0.02826/0.00139/0.29433 (upper/mean/median/min/max)
-2021-05-08 04:30:51,188 | TRAIN LOG: steps 370000, episodes 1151, returns 1.42/1.81/-1.50/1.99/100 (mean/median/min/max/num), 17.85 steps/s
-2021-05-08 04:30:54,071 | total steps 370000, total episodes 1151, Lipschitz: 1.754/0.01976/0.00984/0.00013/0.23443 (upper/mean/median/min/max)
-2021-05-08 04:40:14,720 | TRAIN LOG: steps 380000, episodes 1220, returns 1.63/1.88/-0.50/1.98/100 (mean/median/min/max/num), 17.84 steps/s
-2021-05-08 04:40:17,483 | total steps 380000, total episodes 1220, Lipschitz: 1.724/0.02895/0.02173/0.00097/0.27028 (upper/mean/median/min/max)
-2021-05-08 04:49:35,261 | TRAIN LOG: steps 390000, episodes 1281, returns 1.51/1.88/-1.50/1.98/100 (mean/median/min/max/num), 17.93 steps/s
-2021-05-08 04:49:38,057 | total steps 390000, total episodes 1281, Lipschitz: 1.722/0.01872/0.00963/0.00050/0.22150 (upper/mean/median/min/max)
-2021-05-08 04:58:53,420 | TRAIN LOG: steps 400000, episodes 1353, returns 1.44/1.88/-0.50/1.98/100 (mean/median/min/max/num), 18.01 steps/s
-2021-05-08 04:58:56,386 | total steps 400000, total episodes 1353, Lipschitz: 1.721/0.02198/0.01356/0.00024/0.24166 (upper/mean/median/min/max)
-2021-05-08 05:08:04,877 | TRAIN LOG: steps 410000, episodes 1454, returns 1.64/1.94/-1.50/1.99/100 (mean/median/min/max/num), 18.23 steps/s
-2021-05-08 05:08:08,415 | total steps 410000, total episodes 1454, Lipschitz: 1.722/0.03508/0.03493/0.00095/0.08941 (upper/mean/median/min/max)
-2021-05-08 05:17:09,330 | TRAIN LOG: steps 420000, episodes 1576, returns 1.82/1.96/0.50/1.99/100 (mean/median/min/max/num), 18.49 steps/s
-2021-05-08 05:17:12,977 | total steps 420000, total episodes 1576, Lipschitz: 1.738/0.02930/0.02283/0.00070/0.22533 (upper/mean/median/min/max)
-2021-05-08 05:26:23,855 | TRAIN LOG: steps 430000, episodes 1701, returns 1.74/1.96/-1.50/1.99/100 (mean/median/min/max/num), 18.15 steps/s
-2021-05-08 05:26:27,259 | total steps 430000, total episodes 1701, Lipschitz: 1.737/0.03894/0.03328/0.00111/0.26689 (upper/mean/median/min/max)
-2021-05-08 05:35:42,137 | TRAIN LOG: steps 440000, episodes 1784, returns 1.45/1.95/-1.50/1.99/100 (mean/median/min/max/num), 18.02 steps/s
-2021-05-08 05:35:45,954 | total steps 440000, total episodes 1784, Lipschitz: 1.742/0.02827/0.01693/0.00067/0.27691 (upper/mean/median/min/max)
-2021-05-08 05:44:57,150 | TRAIN LOG: steps 450000, episodes 1898, returns 1.70/1.95/-0.50/1.99/100 (mean/median/min/max/num), 18.14 steps/s
-2021-05-08 05:45:00,320 | total steps 450000, total episodes 1898, Lipschitz: 1.747/0.02380/0.01667/0.00085/0.25991 (upper/mean/median/min/max)
-2021-05-08 05:54:15,322 | TRAIN LOG: steps 460000, episodes 2021, returns 1.73/1.94/-0.25/1.99/100 (mean/median/min/max/num), 18.02 steps/s
-2021-05-08 05:54:18,191 | total steps 460000, total episodes 2021, Lipschitz: 1.751/0.02186/0.01504/0.00051/0.25727 (upper/mean/median/min/max)
-2021-05-08 06:03:34,797 | TRAIN LOG: steps 470000, episodes 2133, returns 1.71/1.95/-1.50/1.99/100 (mean/median/min/max/num), 17.97 steps/s
-2021-05-08 06:03:37,842 | total steps 470000, total episodes 2133, Lipschitz: 1.745/0.01938/0.01106/0.00037/0.23444 (upper/mean/median/min/max)
-2021-05-08 06:12:46,829 | TRAIN LOG: steps 480000, episodes 2301, returns 1.83/1.96/-2.50/1.99/100 (mean/median/min/max/num), 18.22 steps/s
-2021-05-08 06:12:49,420 | total steps 480000, total episodes 2301, Lipschitz: 1.720/0.01922/0.01135/0.00047/0.23595 (upper/mean/median/min/max)
-2021-05-08 06:21:54,247 | TRAIN LOG: steps 490000, episodes 2458, returns 1.84/1.96/0.50/1.99/100 (mean/median/min/max/num), 18.35 steps/s
-2021-05-08 06:21:57,285 | total steps 490000, total episodes 2458, Lipschitz: 1.702/0.02468/0.02093/0.00094/0.22691 (upper/mean/median/min/max)
-2021-05-08 06:31:01,347 | TRAIN LOG: steps 500000, episodes 2654, returns 1.87/1.97/-0.50/1.99/100 (mean/median/min/max/num), 18.38 steps/s
-2021-05-08 06:31:04,038 | total steps 500000, total episodes 2654, Lipschitz: 1.708/0.02734/0.01933/0.00067/0.24360 (upper/mean/median/min/max)
-2021-05-08 06:39:05,676 | TRAIN LOG: steps 510000, episodes 2854, returns 1.85/1.96/0.89/1.99/100 (mean/median/min/max/num), 20.76 steps/s
-2021-05-08 06:39:08,793 | total steps 510000, total episodes 2854, Lipschitz: 1.713/0.02147/0.01325/0.00106/0.23048 (upper/mean/median/min/max)
-2021-05-08 06:47:13,289 | TRAIN LOG: steps 520000, episodes 3047, returns 1.86/1.97/-0.09/1.99/100 (mean/median/min/max/num), 20.64 steps/s
-2021-05-08 06:47:15,973 | total steps 520000, total episodes 3047, Lipschitz: 1.722/0.02909/0.01875/0.00119/0.27593 (upper/mean/median/min/max)
-2021-05-08 06:55:13,803 | TRAIN LOG: steps 530000, episodes 3269, returns 1.94/1.97/0.50/1.99/100 (mean/median/min/max/num), 20.93 steps/s
-2021-05-08 06:55:16,455 | total steps 530000, total episodes 3269, Lipschitz: 1.718/0.01603/0.01037/0.00017/0.24238 (upper/mean/median/min/max)
-2021-05-08 07:03:13,103 | TRAIN LOG: steps 540000, episodes 3436, returns 1.83/1.96/0.50/1.99/100 (mean/median/min/max/num), 20.98 steps/s
-2021-05-08 07:03:14,466 | total steps 540000, total episodes 3436, Lipschitz: 1.736/0.02480/0.01445/0.00069/0.23498 (upper/mean/median/min/max)
-2021-05-08 07:10:59,557 | TRAIN LOG: steps 550000, episodes 3584, returns 1.83/1.96/0.50/1.99/100 (mean/median/min/max/num), 21.50 steps/s
-2021-05-08 07:11:00,965 | total steps 550000, total episodes 3584, Lipschitz: 1.754/0.02635/0.01796/0.00073/0.22860 (upper/mean/median/min/max)
-2021-05-08 07:18:56,278 | TRAIN LOG: steps 560000, episodes 3779, returns 1.88/1.97/0.50/1.99/100 (mean/median/min/max/num), 21.04 steps/s
-2021-05-08 07:18:57,527 | total steps 560000, total episodes 3779, Lipschitz: 1.762/0.02949/0.01674/0.00099/0.26629 (upper/mean/median/min/max)
-2021-05-08 07:26:54,808 | TRAIN LOG: steps 570000, episodes 3999, returns 1.85/1.98/-0.50/1.99/100 (mean/median/min/max/num), 20.98 steps/s
-2021-05-08 07:26:56,249 | total steps 570000, total episodes 3999, Lipschitz: 1.764/0.02423/0.01494/0.00041/0.27064 (upper/mean/median/min/max)
-2021-05-08 07:34:47,383 | TRAIN LOG: steps 580000, episodes 4240, returns 1.90/1.97/0.76/1.99/100 (mean/median/min/max/num), 21.23 steps/s
-2021-05-08 07:34:48,847 | total steps 580000, total episodes 4240, Lipschitz: 1.768/0.03490/0.02475/0.00129/0.26424 (upper/mean/median/min/max)
-2021-05-08 07:42:29,071 | TRAIN LOG: steps 590000, episodes 4430, returns 1.87/1.97/-0.50/1.99/100 (mean/median/min/max/num), 21.73 steps/s
-2021-05-08 07:42:32,516 | total steps 590000, total episodes 4430, Lipschitz: 1.763/0.02746/0.01627/0.00061/0.24812 (upper/mean/median/min/max)
-2021-05-08 07:50:42,821 | TRAIN LOG: steps 600000, episodes 4637, returns 1.84/1.97/-0.50/1.99/100 (mean/median/min/max/num), 20.40 steps/s
-2021-05-08 07:50:45,871 | total steps 600000, total episodes 4637, Lipschitz: 1.780/0.02426/0.01402/0.00059/0.34361 (upper/mean/median/min/max)
-2021-05-08 07:59:07,565 | TRAIN LOG: steps 610000, episodes 4777, returns 1.86/1.97/0.67/1.99/100 (mean/median/min/max/num), 19.93 steps/s
-2021-05-08 07:59:10,579 | total steps 610000, total episodes 4777, Lipschitz: 1.792/0.02157/0.01284/0.00053/0.30652 (upper/mean/median/min/max)
-2021-05-08 08:07:31,657 | TRAIN LOG: steps 620000, episodes 5009, returns 1.89/1.97/0.60/1.99/100 (mean/median/min/max/num), 19.96 steps/s
-2021-05-08 08:07:35,147 | total steps 620000, total episodes 5009, Lipschitz: 1.811/0.02438/0.01547/0.00048/0.28940 (upper/mean/median/min/max)
-2021-05-08 08:15:57,539 | TRAIN LOG: steps 630000, episodes 5231, returns 1.82/1.97/-0.50/1.99/100 (mean/median/min/max/num), 19.90 steps/s
-2021-05-08 08:16:00,752 | total steps 630000, total episodes 5231, Lipschitz: 1.825/0.01948/0.00963/0.00046/0.27154 (upper/mean/median/min/max)
-2021-05-08 08:24:01,944 | TRAIN LOG: steps 640000, episodes 5515, returns 1.88/1.97/0.82/1.99/100 (mean/median/min/max/num), 20.78 steps/s
-2021-05-08 08:24:05,175 | total steps 640000, total episodes 5515, Lipschitz: 1.839/0.02628/0.01679/0.00039/0.23244 (upper/mean/median/min/max)
-2021-05-08 08:31:56,858 | TRAIN LOG: steps 650000, episodes 5799, returns 1.92/1.98/0.70/1.99/100 (mean/median/min/max/num), 21.20 steps/s
-2021-05-08 08:31:59,967 | total steps 650000, total episodes 5799, Lipschitz: 1.838/0.02604/0.01736/0.00062/0.23407 (upper/mean/median/min/max)
-2021-05-08 08:40:00,738 | TRAIN LOG: steps 660000, episodes 6008, returns 1.86/1.97/0.50/1.99/100 (mean/median/min/max/num), 20.80 steps/s
-2021-05-08 08:40:04,006 | total steps 660000, total episodes 6008, Lipschitz: 1.846/0.03484/0.02922/0.00104/0.22804 (upper/mean/median/min/max)
-2021-05-08 08:48:05,210 | TRAIN LOG: steps 670000, episodes 6270, returns 1.88/1.97/0.50/1.99/100 (mean/median/min/max/num), 20.78 steps/s
-2021-05-08 08:48:06,682 | total steps 670000, total episodes 6270, Lipschitz: 1.860/0.01854/0.01224/0.00041/0.21451 (upper/mean/median/min/max)
-2021-05-08 08:56:09,130 | TRAIN LOG: steps 680000, episodes 6565, returns 1.93/1.98/0.89/1.99/100 (mean/median/min/max/num), 20.77 steps/s
-2021-05-08 08:56:11,952 | total steps 680000, total episodes 6565, Lipschitz: 1.854/0.03263/0.02131/0.00078/0.30404 (upper/mean/median/min/max)
-2021-05-08 09:04:33,604 | TRAIN LOG: steps 690000, episodes 6883, returns 1.93/1.97/0.95/1.99/100 (mean/median/min/max/num), 19.93 steps/s
-2021-05-08 09:04:36,438 | total steps 690000, total episodes 6883, Lipschitz: 1.857/0.02768/0.01818/0.00045/0.30738 (upper/mean/median/min/max)
-2021-05-08 09:12:53,945 | TRAIN LOG: steps 700000, episodes 7176, returns 1.92/1.97/0.75/1.99/100 (mean/median/min/max/num), 20.10 steps/s
-2021-05-08 09:12:56,777 | total steps 700000, total episodes 7176, Lipschitz: 1.877/0.02342/0.01948/0.00064/0.23262 (upper/mean/median/min/max)
-2021-05-08 09:21:22,796 | TRAIN LOG: steps 710000, episodes 7400, returns 1.83/1.97/-1.50/1.99/100 (mean/median/min/max/num), 19.76 steps/s
-2021-05-08 09:21:26,246 | total steps 710000, total episodes 7400, Lipschitz: 1.877/0.02429/0.01955/0.00115/0.25488 (upper/mean/median/min/max)
-2021-05-08 09:29:51,278 | TRAIN LOG: steps 720000, episodes 7678, returns 1.93/1.98/0.58/1.99/100 (mean/median/min/max/num), 19.82 steps/s
-2021-05-08 09:29:52,551 | total steps 720000, total episodes 7678, Lipschitz: 1.896/0.02810/0.01941/0.00050/0.27364 (upper/mean/median/min/max)
-2021-05-08 09:38:04,405 | TRAIN LOG: steps 730000, episodes 7989, returns 1.95/1.97/0.70/1.99/100 (mean/median/min/max/num), 20.33 steps/s
-2021-05-08 09:38:07,242 | total steps 730000, total episodes 7989, Lipschitz: 1.911/0.02265/0.01429/0.00015/0.29085 (upper/mean/median/min/max)
-2021-05-08 09:46:20,426 | TRAIN LOG: steps 740000, episodes 8318, returns 1.95/1.98/0.92/1.99/100 (mean/median/min/max/num), 20.28 steps/s
-2021-05-08 09:46:24,017 | total steps 740000, total episodes 8318, Lipschitz: 1.925/0.02229/0.01482/0.00074/0.26561 (upper/mean/median/min/max)
-2021-05-08 09:54:39,172 | TRAIN LOG: steps 750000, episodes 8657, returns 1.95/1.97/0.94/1.99/100 (mean/median/min/max/num), 20.20 steps/s
-2021-05-08 09:54:41,920 | total steps 750000, total episodes 8657, Lipschitz: 1.931/0.01795/0.01030/0.00032/0.22899 (upper/mean/median/min/max)
-2021-05-08 10:03:03,850 | TRAIN LOG: steps 760000, episodes 8982, returns 1.95/1.98/0.73/1.99/100 (mean/median/min/max/num), 19.92 steps/s
-2021-05-08 10:03:06,834 | total steps 760000, total episodes 8982, Lipschitz: 1.938/0.01615/0.01273/0.00038/0.26245 (upper/mean/median/min/max)
-2021-05-08 10:11:28,238 | TRAIN LOG: steps 770000, episodes 9277, returns 1.92/1.98/0.78/1.99/100 (mean/median/min/max/num), 19.95 steps/s
-2021-05-08 10:11:29,655 | total steps 770000, total episodes 9277, Lipschitz: 1.955/0.02518/0.01687/0.00045/0.25749 (upper/mean/median/min/max)
-2021-05-08 10:19:41,316 | TRAIN LOG: steps 780000, episodes 9612, returns 1.93/1.98/0.84/1.99/100 (mean/median/min/max/num), 20.34 steps/s
-2021-05-08 10:19:44,032 | total steps 780000, total episodes 9612, Lipschitz: 1.971/0.02205/0.01306/0.00037/0.39511 (upper/mean/median/min/max)
-2021-05-08 10:27:57,964 | TRAIN LOG: steps 790000, episodes 9972, returns 1.96/1.98/0.90/1.99/100 (mean/median/min/max/num), 20.25 steps/s
-2021-05-08 10:28:00,581 | total steps 790000, total episodes 9972, Lipschitz: 1.973/0.02189/0.01535/0.00033/0.29631 (upper/mean/median/min/max)
-2021-05-08 10:36:23,528 | TRAIN LOG: steps 800000, episodes 10272, returns 1.94/1.98/0.61/1.99/100 (mean/median/min/max/num), 19.88 steps/s
-2021-05-08 10:36:26,248 | total steps 800000, total episodes 10272, Lipschitz: 1.968/0.03105/0.02042/0.00099/0.36350 (upper/mean/median/min/max)
-2021-05-08 10:44:48,975 | TRAIN LOG: steps 810000, episodes 10607, returns 1.94/1.98/0.94/1.99/100 (mean/median/min/max/num), 19.89 steps/s
-2021-05-08 10:44:50,299 | total steps 810000, total episodes 10607, Lipschitz: 1.962/0.02675/0.01963/0.00057/0.28658 (upper/mean/median/min/max)
-2021-05-08 10:53:09,965 | TRAIN LOG: steps 820000, episodes 10959, returns 1.94/1.98/0.94/1.99/100 (mean/median/min/max/num), 20.01 steps/s
-2021-05-08 10:53:11,426 | total steps 820000, total episodes 10959, Lipschitz: 1.939/0.01877/0.01487/0.00050/0.21794 (upper/mean/median/min/max)
-2021-05-08 11:01:18,309 | TRAIN LOG: steps 830000, episodes 11332, returns 1.91/1.98/0.50/1.99/100 (mean/median/min/max/num), 20.54 steps/s
-2021-05-08 11:01:20,895 | total steps 830000, total episodes 11332, Lipschitz: 1.945/0.02307/0.01441/0.00058/0.33805 (upper/mean/median/min/max)
-2021-05-08 11:09:22,552 | TRAIN LOG: steps 840000, episodes 11670, returns 1.93/1.98/0.80/1.99/100 (mean/median/min/max/num), 20.76 steps/s
-2021-05-08 11:09:26,073 | total steps 840000, total episodes 11670, Lipschitz: 1.942/0.02163/0.01332/0.00065/0.25154 (upper/mean/median/min/max)
-2021-05-08 11:17:48,464 | TRAIN LOG: steps 850000, episodes 12024, returns 1.96/1.98/0.94/1.99/100 (mean/median/min/max/num), 19.91 steps/s
-2021-05-08 11:17:51,192 | total steps 850000, total episodes 12024, Lipschitz: 1.959/0.01505/0.01093/0.00033/0.20802 (upper/mean/median/min/max)
-2021-05-08 11:26:07,430 | TRAIN LOG: steps 860000, episodes 12343, returns 1.89/1.98/-0.50/1.99/100 (mean/median/min/max/num), 20.19 steps/s
-2021-05-08 11:26:11,056 | total steps 860000, total episodes 12343, Lipschitz: 1.977/0.02438/0.01602/0.00058/0.24611 (upper/mean/median/min/max)
-2021-05-08 11:34:29,880 | TRAIN LOG: steps 870000, episodes 12604, returns 1.95/1.98/0.66/1.99/100 (mean/median/min/max/num), 20.05 steps/s
-2021-05-08 11:34:32,764 | total steps 870000, total episodes 12604, Lipschitz: 1.982/0.02910/0.01893/0.00099/0.28686 (upper/mean/median/min/max)
-2021-05-08 11:42:52,153 | TRAIN LOG: steps 880000, episodes 12925, returns 1.93/1.97/0.89/1.99/100 (mean/median/min/max/num), 20.02 steps/s
-2021-05-08 11:42:54,950 | total steps 880000, total episodes 12925, Lipschitz: 2.002/0.02780/0.01773/0.00075/0.25880 (upper/mean/median/min/max)
-2021-05-08 11:51:15,084 | TRAIN LOG: steps 890000, episodes 13250, returns 1.89/1.98/-0.45/1.99/100 (mean/median/min/max/num), 19.99 steps/s
-2021-05-08 11:51:17,835 | total steps 890000, total episodes 13250, Lipschitz: 1.994/0.02784/0.01768/0.00078/0.24151 (upper/mean/median/min/max)
-2021-05-08 11:59:30,673 | TRAIN LOG: steps 900000, episodes 13582, returns 1.95/1.98/0.95/1.99/100 (mean/median/min/max/num), 20.29 steps/s
-2021-05-08 11:59:33,511 | total steps 900000, total episodes 13582, Lipschitz: 1.985/0.02150/0.01204/0.00042/0.27357 (upper/mean/median/min/max)
-2021-05-08 12:07:53,331 | TRAIN LOG: steps 910000, episodes 13911, returns 1.92/1.98/-0.50/1.99/100 (mean/median/min/max/num), 20.01 steps/s
-2021-05-08 12:07:56,112 | total steps 910000, total episodes 13911, Lipschitz: 1.987/0.02334/0.01397/0.00045/0.39312 (upper/mean/median/min/max)
-2021-05-08 12:16:13,927 | TRAIN LOG: steps 920000, episodes 14175, returns 1.96/1.98/0.83/1.99/100 (mean/median/min/max/num), 20.09 steps/s
-2021-05-08 12:16:16,721 | total steps 920000, total episodes 14175, Lipschitz: 2.001/0.02062/0.01331/0.00039/0.23748 (upper/mean/median/min/max)
-2021-05-08 12:24:36,582 | TRAIN LOG: steps 930000, episodes 14492, returns 1.93/1.98/0.94/1.99/100 (mean/median/min/max/num), 20.01 steps/s
-2021-05-08 12:24:40,379 | total steps 930000, total episodes 14492, Lipschitz: 2.016/0.03235/0.02061/0.00127/0.42340 (upper/mean/median/min/max)
-2021-05-08 12:32:47,999 | TRAIN LOG: steps 940000, episodes 14789, returns 1.94/1.98/0.63/1.99/100 (mean/median/min/max/num), 20.51 steps/s
-2021-05-08 12:32:50,873 | total steps 940000, total episodes 14789, Lipschitz: 2.018/0.02819/0.01538/0.00035/0.37397 (upper/mean/median/min/max)
-2021-05-08 12:41:10,045 | TRAIN LOG: steps 950000, episodes 15065, returns 1.90/1.97/-1.50/1.99/100 (mean/median/min/max/num), 20.03 steps/s
-2021-05-08 12:41:12,577 | total steps 950000, total episodes 15065, Lipschitz: 2.024/0.02302/0.01329/0.00050/0.36392 (upper/mean/median/min/max)
-2021-05-08 12:49:25,488 | TRAIN LOG: steps 960000, episodes 15403, returns 1.94/1.98/0.91/1.99/100 (mean/median/min/max/num), 20.29 steps/s
-2021-05-08 12:49:28,213 | total steps 960000, total episodes 15403, Lipschitz: 2.028/0.02805/0.01523/0.00092/0.37376 (upper/mean/median/min/max)
-2021-05-08 12:57:39,082 | TRAIN LOG: steps 970000, episodes 15707, returns 1.94/1.98/0.50/1.99/100 (mean/median/min/max/num), 20.37 steps/s
-2021-05-08 12:57:40,544 | total steps 970000, total episodes 15707, Lipschitz: 2.027/0.02743/0.01447/0.00053/0.33731 (upper/mean/median/min/max)
-2021-05-08 13:05:52,958 | TRAIN LOG: steps 980000, episodes 16037, returns 1.92/1.98/-0.45/1.99/100 (mean/median/min/max/num), 20.31 steps/s
-2021-05-08 13:05:54,321 | total steps 980000, total episodes 16037, Lipschitz: 2.028/0.02770/0.01910/0.00076/0.26252 (upper/mean/median/min/max)
-2021-05-08 13:14:03,534 | TRAIN LOG: steps 990000, episodes 16314, returns 1.86/1.98/-1.50/1.99/100 (mean/median/min/max/num), 20.44 steps/s
-2021-05-08 13:14:06,322 | total steps 990000, total episodes 16314, Lipschitz: 2.029/0.02378/0.01495/0.00042/0.35517 (upper/mean/median/min/max)
-2021-05-08 13:21:26,580 | TRAIN LOG: steps 1000000, episodes 16676, returns 1.95/1.98/0.96/1.99/100 (mean/median/min/max/num), 22.71 steps/s
-2021-05-08 13:21:29,298 | total steps 1000000, total episodes 16676, Lipschitz: 2.020/0.03165/0.02074/0.00072/0.33446 (upper/mean/median/min/max)
+2021-05-10 12:34:18,634 | exp_name: test/picky_eater/representation/dqn_lta_aux/aux_control/sweep_2f
+2021-05-10 12:34:18,636 | data_root: /project/6010404/erfan/LTA-Representation-Properties/data/output
+2021-05-10 12:34:18,636 | device: cpu
+2021-05-10 12:34:18,636 | run: 28
+2021-05-10 12:34:18,636 | param_setting: 1
+2021-05-10 12:34:18,636 | env_name: CollectTwoColorRGB
+2021-05-10 12:34:18,636 | state_dim: (15, 15, 3)
+2021-05-10 12:34:18,637 | action_dim: 4
+2021-05-10 12:34:18,637 | max_steps: 2000000
+2021-05-10 12:34:18,637 | log_interval: 10000
+2021-05-10 12:34:18,637 | save_interval: 0
+2021-05-10 12:34:18,637 | eval_interval: 10000
+2021-05-10 12:34:18,637 | num_eval_episodes: 5
+2021-05-10 12:34:18,637 | timeout: 500
+2021-05-10 12:34:18,637 | stats_queue_size: 100
+2021-05-10 12:34:18,637 | tensorboard_logs: True
+2021-05-10 12:34:18,637 | tensorboard_interval: 100
+2021-05-10 12:34:18,638 | converge_window: 10
+2021-05-10 12:34:18,638 | converge_threshold: 0.0001
+2021-05-10 12:34:18,638 | linear_hidden_units: []
+2021-05-10 12:34:18,638 | coord_dim: 2
+2021-05-10 12:34:18,638 | state_norm_coef: 255.0
+2021-05-10 12:34:18,638 | reward_norm_coef: 1.0
+2021-05-10 12:34:18,638 | replay_with_len: False
+2021-05-10 12:34:18,638 | fruit_num: 2
+2021-05-10 12:34:18,638 | agent: DQNAuxSuccessorAgent
+2021-05-10 12:34:18,638 | learning_rate: 0.0001
+2021-05-10 12:34:18,639 | decay_epsilon: True
+2021-05-10 12:34:18,639 | epsilon: 0.1
+2021-05-10 12:34:18,639 | epsilon_start: 1.0
+2021-05-10 12:34:18,639 | epsilon_end: 0.1
+2021-05-10 12:34:18,639 | epsilon_schedule_steps: 100000
+2021-05-10 12:34:18,639 | random_action_prob: None
+2021-05-10 12:34:18,639 | discount: 0.99
+2021-05-10 12:34:18,639 | network_type: flat
+2021-05-10 12:34:18,639 | batch_size: 32
+2021-05-10 12:34:18,640 | use_target_network: True
+2021-05-10 12:34:18,640 | memory_size: 100000
+2021-05-10 12:34:18,640 | optimizer_type: Adam
+2021-05-10 12:34:18,640 | val_net: None
+2021-05-10 12:34:18,640 | target_network_update_freq: 1024
+2021-05-10 12:34:18,640 | evaluation_criteria: return
+2021-05-10 12:34:18,640 | vf_loss: mse
+2021-05-10 12:34:18,640 | vf_constraint: None
+2021-05-10 12:34:18,640 | constr_weight: 0
+2021-05-10 12:34:18,640 | rep_type: default
+2021-05-10 12:34:18,641 | evaluate_lipschitz: True
+2021-05-10 12:34:18,641 | evaluate_distance: True
+2021-05-10 12:34:18,641 | evaluate_orthogonality: True
+2021-05-10 12:34:18,641 | evaluate_interference: True
+2021-05-10 12:34:18,641 | evaluate_diversity: True
+2021-05-10 12:34:18,641 | evaluate_sparsity: True
+2021-05-10 12:34:18,641 | evaluate_regression: False
+2021-05-10 12:34:18,641 | save_params: True
+2021-05-10 12:34:18,641 | save_early: {'mean': 1.98, 'min': 1.0}
+2021-05-10 12:34:18,641 | visualize: False
+2021-05-10 12:34:18,642 | activation_config: {'name': 'LTA', 'input': 32, 'tile': 20, 'eta': 1.0, 'bound_high': 10, 'bound_low': -10}
+2021-05-10 12:34:18,642 | online_property: False
+2021-05-10 12:34:18,642 | visualize_aux_distance: False
+2021-05-10 12:34:18,642 | rep_config: {'rep_type': 'modular', 'network_type': 'conv', 'conv_architecture': {'conv_layers': [{'in': 3, 'out': 32, 'kernel': 4, 'stride': 1, 'pad': 1}, {'in': 32, 'out': 32, 'kernel': 4, 'stride': 1, 'pad': 1}, {'in': 32, 'out': 64, 'kernel': 4, 'stride': 2, 'pad': 2}], 'fc_layers': {'hidden_units': [128, 128]}}, 'in_dim': [15, 15, 3], 'out_dim': 32, 'load_params': False, 'train_rep': True}
+2021-05-10 12:34:18,642 | val_fn_config: {'val_fn_type': 'linear', 'init_type': 'lta'}
+2021-05-10 12:34:18,642 | aux_config: [{'aux_fn_type': 'linear', 'aux_out_dim': 4, 'aux_task': 'aux_control_collect', 'discount': 0.99, 'flip_reward': True}]
+2021-05-10 12:34:18,642 | replay: True
+2021-05-10 12:34:18,642 | eval_episodes: 5
+2021-05-10 12:34:18,642 | distance_paths: [{'current': 'example/picky_eater/trained_dqn/distance_current_states_sameEP_green.npy', 'action': 'example/picky_eater/trained_dqn/distance_actions_sameEP_green.npy', 'next': 'example/picky_eater/trained_dqn/distance_next_states_sameEP_green.npy', 'reward': 'example/picky_eater/trained_dqn/distance_rewards_sameEP_green.npy', 'terminal': 'example/picky_eater/trained_dqn/distance_terminals_sameEP_green.npy', 'label': 'Green'}, {'current': 'example/picky_eater/trained_dqn/distance_current_states_sameEP_red.npy', 'action': 'example/picky_eater/trained_dqn/distance_actions_sameEP_red.npy', 'next': 'example/picky_eater/trained_dqn/distance_next_states_sameEP_red.npy', 'reward': 'example/picky_eater/trained_dqn/distance_rewards_sameEP_red.npy', 'terminal': 'example/picky_eater/trained_dqn/distance_terminals_sameEP_red.npy', 'label': 'Red'}, {'current': 'example/picky_eater/trained_dqn/distance_current_states_sameEP_random.npy', 'action': 'example/picky_eater/trained_dqn/distance_actions_sameEP_random.npy', 'next': 'example/picky_eater/trained_dqn/distance_next_states_sameEP_random.npy', 'reward': 'example/picky_eater/trained_dqn/distance_rewards_sameEP_random.npy', 'terminal': 'example/picky_eater/trained_dqn/distance_terminals_sameEP_random.npy', 'label': 'Random'}]
+2021-05-10 12:34:18,643 | evaluate_mutual_info: True
+2021-05-10 12:34:18,643 | cumulative: 3
+2021-05-10 12:34:18,643 | id: 85
+2021-05-10 12:34:18,643 | seed: 28
+2021-05-10 12:35:48,247 | TRAIN LOG: steps 0, episodes   0, returns -0.51/-0.50/-2.50/1.96/100 (mean/median/min/max/num), 111.73 steps/s
+2021-05-10 12:35:49,903 | total steps 0, total episodes   0, Lipschitz: 0.045/0.00246/0.00233/0.00008/0.00705 (upper/mean/median/min/max)
+2021-05-10 12:45:21,240 | TRAIN LOG: steps 10000, episodes  21, returns -0.48/-0.50/-2.50/1.96/100 (mean/median/min/max/num), 17.50 steps/s
+2021-05-10 12:45:24,240 | total steps 10000, total episodes  21, Lipschitz: 0.514/0.04407/0.03076/0.00122/0.18004 (upper/mean/median/min/max)
+2021-05-10 12:55:32,238 | TRAIN LOG: steps 20000, episodes  46, returns -0.33/-0.50/-2.50/1.93/100 (mean/median/min/max/num), 16.45 steps/s
+2021-05-10 12:55:35,240 | total steps 20000, total episodes  46, Lipschitz: 0.849/0.09864/0.10322/0.00224/0.21939 (upper/mean/median/min/max)
+2021-05-10 13:05:40,593 | TRAIN LOG: steps 30000, episodes  73, returns -0.04/-0.50/-2.50/1.93/100 (mean/median/min/max/num), 16.52 steps/s
+2021-05-10 13:05:43,728 | total steps 30000, total episodes  73, Lipschitz: 1.080/0.08144/0.07319/0.00318/0.20160 (upper/mean/median/min/max)
+2021-05-10 13:16:01,553 | TRAIN LOG: steps 40000, episodes 102, returns 0.40/0.50/-2.50/1.96/100 (mean/median/min/max/num), 16.19 steps/s
+2021-05-10 13:16:04,585 | total steps 40000, total episodes 102, Lipschitz: 1.281/0.05882/0.05250/0.00148/0.19537 (upper/mean/median/min/max)
+2021-05-10 13:26:46,928 | TRAIN LOG: steps 50000, episodes 149, returns 1.01/0.85/-1.50/1.98/100 (mean/median/min/max/num), 15.57 steps/s
+2021-05-10 13:26:50,727 | total steps 50000, total episodes 149, Lipschitz: 1.424/0.07272/0.07012/0.00226/0.20729 (upper/mean/median/min/max)
+2021-05-10 13:38:14,093 | TRAIN LOG: steps 60000, episodes 182, returns 1.15/1.65/-1.50/1.98/100 (mean/median/min/max/num), 14.63 steps/s
+2021-05-10 13:38:17,128 | total steps 60000, total episodes 182, Lipschitz: 1.561/0.06054/0.06367/0.00125/0.17615 (upper/mean/median/min/max)
+2021-05-10 13:50:41,502 | TRAIN LOG: steps 70000, episodes 223, returns 1.22/1.72/-0.50/1.98/100 (mean/median/min/max/num), 13.43 steps/s
+2021-05-10 13:50:44,589 | total steps 70000, total episodes 223, Lipschitz: 1.638/0.07504/0.07812/0.00242/0.20648 (upper/mean/median/min/max)
+2021-05-10 14:03:49,937 | TRAIN LOG: steps 80000, episodes 261, returns 0.99/0.89/-1.50/1.98/100 (mean/median/min/max/num), 12.73 steps/s
+2021-05-10 14:03:53,153 | total steps 80000, total episodes 261, Lipschitz: 1.690/0.04465/0.03997/0.00177/0.19211 (upper/mean/median/min/max)
+2021-05-10 14:17:31,150 | TRAIN LOG: steps 90000, episodes 297, returns 1.00/0.91/-1.50/1.98/100 (mean/median/min/max/num), 12.22 steps/s
+2021-05-10 14:17:34,197 | total steps 90000, total episodes 297, Lipschitz: 1.725/0.05058/0.04275/0.00122/0.22049 (upper/mean/median/min/max)
+2021-05-10 14:31:26,042 | TRAIN LOG: steps 100000, episodes 326, returns 0.80/0.81/-1.50/1.98/100 (mean/median/min/max/num), 12.02 steps/s
+2021-05-10 14:31:29,310 | total steps 100000, total episodes 326, Lipschitz: 1.732/0.06725/0.06533/0.00119/0.24238 (upper/mean/median/min/max)
+2021-05-10 14:45:27,650 | TRAIN LOG: steps 110000, episodes 358, returns 0.76/0.73/-1.50/1.98/100 (mean/median/min/max/num), 11.93 steps/s
+2021-05-10 14:45:31,638 | total steps 110000, total episodes 358, Lipschitz: 1.739/0.03193/0.02559/0.00124/0.20727 (upper/mean/median/min/max)
+2021-05-10 14:59:34,939 | TRAIN LOG: steps 120000, episodes 390, returns 0.67/0.71/-1.50/1.98/100 (mean/median/min/max/num), 11.86 steps/s
+2021-05-10 14:59:38,064 | total steps 120000, total episodes 390, Lipschitz: 1.746/0.03609/0.03197/0.00122/0.20793 (upper/mean/median/min/max)
+2021-05-10 15:14:14,334 | TRAIN LOG: steps 130000, episodes 421, returns 0.75/0.72/-1.50/1.98/100 (mean/median/min/max/num), 11.41 steps/s
+2021-05-10 15:14:18,196 | total steps 130000, total episodes 421, Lipschitz: 1.739/0.03541/0.03091/0.00082/0.24474 (upper/mean/median/min/max)
+2021-05-10 15:28:10,766 | TRAIN LOG: steps 140000, episodes 451, returns 0.64/0.71/-1.50/1.96/100 (mean/median/min/max/num), 12.01 steps/s
+2021-05-10 15:28:13,881 | total steps 140000, total episodes 451, Lipschitz: 1.746/0.04049/0.03676/0.00094/0.20661 (upper/mean/median/min/max)
+2021-05-10 15:42:12,605 | TRAIN LOG: steps 150000, episodes 477, returns 0.53/0.62/-1.50/1.94/100 (mean/median/min/max/num), 11.92 steps/s
+2021-05-10 15:42:15,806 | total steps 150000, total episodes 477, Lipschitz: 1.733/0.02853/0.02122/0.00113/0.26426 (upper/mean/median/min/max)
+2021-05-10 15:56:11,476 | TRAIN LOG: steps 160000, episodes 501, returns 0.41/0.50/-1.50/1.96/100 (mean/median/min/max/num), 11.97 steps/s
+2021-05-10 15:56:14,579 | total steps 160000, total episodes 501, Lipschitz: 1.727/0.02243/0.01550/0.00042/0.24024 (upper/mean/median/min/max)
+2021-05-10 16:10:11,907 | TRAIN LOG: steps 170000, episodes 526, returns 0.19/0.50/-1.50/1.96/100 (mean/median/min/max/num), 11.94 steps/s
+2021-05-10 16:10:13,887 | total steps 170000, total episodes 526, Lipschitz: 1.734/0.02540/0.01266/0.00029/0.29131 (upper/mean/median/min/max)
+2021-05-10 16:24:16,718 | TRAIN LOG: steps 180000, episodes 547, returns 0.17/0.50/-1.50/1.96/100 (mean/median/min/max/num), 11.86 steps/s
+2021-05-10 16:24:18,698 | total steps 180000, total episodes 547, Lipschitz: 1.725/0.02206/0.01294/0.00043/0.24004 (upper/mean/median/min/max)
+2021-05-10 16:38:19,798 | TRAIN LOG: steps 190000, episodes 574, returns 0.21/0.50/-1.50/1.98/100 (mean/median/min/max/num), 11.89 steps/s
+2021-05-10 16:38:23,110 | total steps 190000, total episodes 574, Lipschitz: 1.717/0.02152/0.01141/0.00044/0.28930 (upper/mean/median/min/max)
+2021-05-10 16:52:19,747 | TRAIN LOG: steps 200000, episodes 597, returns 0.16/0.50/-1.50/1.98/100 (mean/median/min/max/num), 11.95 steps/s
+2021-05-10 16:52:23,669 | total steps 200000, total episodes 597, Lipschitz: 1.702/0.01882/0.00969/0.00059/0.24406 (upper/mean/median/min/max)
+2021-05-10 17:06:29,333 | TRAIN LOG: steps 210000, episodes 620, returns 0.19/0.50/-1.50/1.98/100 (mean/median/min/max/num), 11.83 steps/s
+2021-05-10 17:06:32,563 | total steps 210000, total episodes 620, Lipschitz: 1.682/0.03214/0.02310/0.00081/0.24816 (upper/mean/median/min/max)
+2021-05-10 17:20:28,289 | TRAIN LOG: steps 220000, episodes 643, returns 0.12/-0.30/-1.50/1.98/100 (mean/median/min/max/num), 11.97 steps/s
+2021-05-10 17:20:31,563 | total steps 220000, total episodes 643, Lipschitz: 1.682/0.02292/0.01234/0.00055/0.26393 (upper/mean/median/min/max)
+2021-05-10 17:34:28,477 | TRAIN LOG: steps 230000, episodes 668, returns 0.04/-0.43/-1.50/1.97/100 (mean/median/min/max/num), 11.95 steps/s
+2021-05-10 17:34:32,005 | total steps 230000, total episodes 668, Lipschitz: 1.688/0.02150/0.01275/0.00036/0.26716 (upper/mean/median/min/max)
+2021-05-10 17:48:17,425 | TRAIN LOG: steps 240000, episodes 691, returns 0.14/0.50/-1.50/1.97/100 (mean/median/min/max/num), 12.12 steps/s
+2021-05-10 17:48:20,408 | total steps 240000, total episodes 691, Lipschitz: 1.678/0.01657/0.00697/0.00040/0.23232 (upper/mean/median/min/max)
+2021-05-10 18:01:59,701 | TRAIN LOG: steps 250000, episodes 716, returns 0.26/0.50/-1.50/1.97/100 (mean/median/min/max/num), 12.21 steps/s
+2021-05-10 18:02:02,797 | total steps 250000, total episodes 716, Lipschitz: 1.669/0.03920/0.03178/0.00082/0.21477 (upper/mean/median/min/max)
+2021-05-10 18:15:36,553 | TRAIN LOG: steps 260000, episodes 741, returns 0.38/0.50/-1.50/1.96/100 (mean/median/min/max/num), 12.29 steps/s
+2021-05-10 18:15:39,866 | total steps 260000, total episodes 741, Lipschitz: 1.667/0.03933/0.03096/0.00113/0.22842 (upper/mean/median/min/max)
+2021-05-10 18:29:11,880 | TRAIN LOG: steps 270000, episodes 771, returns 0.52/0.50/-1.50/1.97/100 (mean/median/min/max/num), 12.32 steps/s
+2021-05-10 18:29:15,238 | total steps 270000, total episodes 771, Lipschitz: 1.665/0.01788/0.00831/0.00027/0.29934 (upper/mean/median/min/max)
+2021-05-10 18:42:43,830 | TRAIN LOG: steps 280000, episodes 802, returns 0.68/0.53/-1.50/1.97/100 (mean/median/min/max/num), 12.37 steps/s
+2021-05-10 18:42:46,977 | total steps 280000, total episodes 802, Lipschitz: 1.668/0.01615/0.01196/0.00029/0.20810 (upper/mean/median/min/max)
+2021-05-10 18:56:14,521 | TRAIN LOG: steps 290000, episodes 834, returns 0.88/0.64/-1.50/1.97/100 (mean/median/min/max/num), 12.38 steps/s
+2021-05-10 18:56:17,555 | total steps 290000, total episodes 834, Lipschitz: 1.656/0.01611/0.01203/0.00051/0.17351 (upper/mean/median/min/max)
+2021-05-10 19:09:46,095 | TRAIN LOG: steps 300000, episodes 861, returns 0.81/0.59/-1.50/1.96/100 (mean/median/min/max/num), 12.37 steps/s
+2021-05-10 19:09:49,448 | total steps 300000, total episodes 861, Lipschitz: 1.663/0.01698/0.00788/0.00036/0.28959 (upper/mean/median/min/max)
+2021-05-10 19:23:28,710 | TRAIN LOG: steps 310000, episodes 889, returns 0.71/0.50/-1.50/1.97/100 (mean/median/min/max/num), 12.21 steps/s
+2021-05-10 19:23:30,619 | total steps 310000, total episodes 889, Lipschitz: 1.665/0.03697/0.02960/0.00076/0.27381 (upper/mean/median/min/max)
+2021-05-10 19:37:08,946 | TRAIN LOG: steps 320000, episodes 919, returns 0.54/0.50/-1.50/1.98/100 (mean/median/min/max/num), 12.22 steps/s
+2021-05-10 19:37:13,355 | total steps 320000, total episodes 919, Lipschitz: 1.641/0.03174/0.02033/0.00052/0.28916 (upper/mean/median/min/max)
+2021-05-10 19:50:51,294 | TRAIN LOG: steps 330000, episodes 958, returns 0.64/0.66/-1.50/1.98/100 (mean/median/min/max/num), 12.23 steps/s
+2021-05-10 19:50:55,137 | total steps 330000, total episodes 958, Lipschitz: 1.641/0.01485/0.00941/0.00029/0.25790 (upper/mean/median/min/max)
+2021-05-10 20:04:30,949 | TRAIN LOG: steps 340000, episodes 1006, returns 1.06/1.77/-1.50/1.98/100 (mean/median/min/max/num), 12.26 steps/s
+2021-05-10 20:04:34,081 | total steps 340000, total episodes 1006, Lipschitz: 1.652/0.01452/0.01019/0.00030/0.16756 (upper/mean/median/min/max)
+2021-05-10 20:18:11,963 | TRAIN LOG: steps 350000, episodes 1058, returns 1.24/1.89/-1.50/1.99/100 (mean/median/min/max/num), 12.23 steps/s
+2021-05-10 20:18:15,374 | total steps 350000, total episodes 1058, Lipschitz: 1.666/0.01688/0.01072/0.00049/0.27463 (upper/mean/median/min/max)
+2021-05-10 20:31:55,188 | TRAIN LOG: steps 360000, episodes 1130, returns 1.41/1.94/-1.50/1.99/100 (mean/median/min/max/num), 12.20 steps/s
+2021-05-10 20:31:58,226 | total steps 360000, total episodes 1130, Lipschitz: 1.668/0.03823/0.02995/0.00186/0.34580 (upper/mean/median/min/max)
+2021-05-10 20:45:41,336 | TRAIN LOG: steps 370000, episodes 1194, returns 1.52/1.92/-1.50/1.99/100 (mean/median/min/max/num), 12.15 steps/s
+2021-05-10 20:45:44,564 | total steps 370000, total episodes 1194, Lipschitz: 1.680/0.02112/0.01255/0.00029/0.22181 (upper/mean/median/min/max)
+2021-05-10 20:59:23,429 | TRAIN LOG: steps 380000, episodes 1290, returns 1.77/1.95/0.50/1.99/100 (mean/median/min/max/num), 12.21 steps/s
+2021-05-10 20:59:26,574 | total steps 380000, total episodes 1290, Lipschitz: 1.688/0.02618/0.01783/0.00069/0.24413 (upper/mean/median/min/max)
+2021-05-10 21:13:01,672 | TRAIN LOG: steps 390000, episodes 1368, returns 1.69/1.96/-1.50/1.99/100 (mean/median/min/max/num), 12.27 steps/s
+2021-05-10 21:13:05,082 | total steps 390000, total episodes 1368, Lipschitz: 1.702/0.02705/0.01867/0.00044/0.24967 (upper/mean/median/min/max)
+2021-05-10 21:26:40,858 | TRAIN LOG: steps 400000, episodes 1435, returns 1.58/1.94/-1.50/1.99/100 (mean/median/min/max/num), 12.26 steps/s
+2021-05-10 21:26:44,063 | total steps 400000, total episodes 1435, Lipschitz: 1.716/0.04329/0.03846/0.00182/0.29291 (upper/mean/median/min/max)
+2021-05-10 21:40:21,825 | TRAIN LOG: steps 410000, episodes 1570, returns 1.84/1.96/0.50/1.99/100 (mean/median/min/max/num), 12.23 steps/s
+2021-05-10 21:40:25,304 | total steps 410000, total episodes 1570, Lipschitz: 1.709/0.03092/0.02484/0.00063/0.28806 (upper/mean/median/min/max)
+2021-05-10 21:53:57,527 | TRAIN LOG: steps 420000, episodes 1712, returns 1.84/1.97/-0.50/1.99/100 (mean/median/min/max/num), 12.31 steps/s
+2021-05-10 21:54:01,561 | total steps 420000, total episodes 1712, Lipschitz: 1.710/0.02190/0.01379/0.00042/0.27370 (upper/mean/median/min/max)
+2021-05-10 22:07:35,565 | TRAIN LOG: steps 430000, episodes 1843, returns 1.77/1.95/-0.50/1.99/100 (mean/median/min/max/num), 12.29 steps/s
+2021-05-10 22:07:38,573 | total steps 430000, total episodes 1843, Lipschitz: 1.713/0.02100/0.01336/0.00042/0.25320 (upper/mean/median/min/max)
+2021-05-10 22:21:11,817 | TRAIN LOG: steps 440000, episodes 1989, returns 1.81/1.96/0.62/1.99/100 (mean/median/min/max/num), 12.30 steps/s
+2021-05-10 22:21:13,758 | total steps 440000, total episodes 1989, Lipschitz: 1.729/0.02009/0.01237/0.00069/0.27840 (upper/mean/median/min/max)
+2021-05-10 22:34:44,841 | TRAIN LOG: steps 450000, episodes 2113, returns 1.70/1.96/-1.50/1.99/100 (mean/median/min/max/num), 12.33 steps/s
+2021-05-10 22:34:48,478 | total steps 450000, total episodes 2113, Lipschitz: 1.748/0.02077/0.01630/0.00069/0.28444 (upper/mean/median/min/max)
+2021-05-10 22:48:17,548 | TRAIN LOG: steps 460000, episodes 2277, returns 1.88/1.97/0.62/1.99/100 (mean/median/min/max/num), 12.36 steps/s
+2021-05-10 22:48:20,544 | total steps 460000, total episodes 2277, Lipschitz: 1.756/0.02408/0.01451/0.00050/0.29230 (upper/mean/median/min/max)
+2021-05-10 23:01:36,645 | TRAIN LOG: steps 470000, episodes 2499, returns 1.88/1.97/0.79/1.99/100 (mean/median/min/max/num), 12.56 steps/s
+2021-05-10 23:01:39,715 | total steps 470000, total episodes 2499, Lipschitz: 1.750/0.02591/0.01637/0.00047/0.28589 (upper/mean/median/min/max)
+2021-05-10 23:14:53,731 | TRAIN LOG: steps 480000, episodes 2742, returns 1.88/1.97/0.55/1.99/100 (mean/median/min/max/num), 12.59 steps/s
+2021-05-10 23:14:57,116 | total steps 480000, total episodes 2742, Lipschitz: 1.766/0.02393/0.01482/0.00058/0.27204 (upper/mean/median/min/max)
+2021-05-10 23:28:08,542 | TRAIN LOG: steps 490000, episodes 3000, returns 1.90/1.97/0.74/1.99/100 (mean/median/min/max/num), 12.64 steps/s
+2021-05-10 23:28:11,565 | total steps 490000, total episodes 3000, Lipschitz: 1.779/0.02367/0.01560/0.00045/0.26380 (upper/mean/median/min/max)
+2021-05-10 23:41:22,220 | TRAIN LOG: steps 500000, episodes 3284, returns 1.91/1.97/0.50/1.99/100 (mean/median/min/max/num), 12.65 steps/s
+2021-05-10 23:41:25,820 | total steps 500000, total episodes 3284, Lipschitz: 1.796/0.02715/0.01985/0.00074/0.26337 (upper/mean/median/min/max)
+2021-05-10 23:54:39,762 | TRAIN LOG: steps 510000, episodes 3542, returns 1.89/1.97/-0.50/1.99/100 (mean/median/min/max/num), 12.60 steps/s
+2021-05-10 23:54:42,897 | total steps 510000, total episodes 3542, Lipschitz: 1.809/0.02398/0.01560/0.00070/0.29459 (upper/mean/median/min/max)
+2021-05-11 00:08:00,047 | TRAIN LOG: steps 520000, episodes 3883, returns 1.92/1.98/0.66/1.99/100 (mean/median/min/max/num), 12.54 steps/s
+2021-05-11 00:08:03,223 | total steps 520000, total episodes 3883, Lipschitz: 1.832/0.02573/0.01932/0.00026/0.28038 (upper/mean/median/min/max)
+2021-05-11 00:21:19,744 | TRAIN LOG: steps 530000, episodes 4196, returns 1.91/1.98/-0.50/1.99/100 (mean/median/min/max/num), 12.55 steps/s
+2021-05-11 00:21:23,489 | total steps 530000, total episodes 4196, Lipschitz: 1.849/0.03444/0.02398/0.00109/0.29357 (upper/mean/median/min/max)
+2021-05-11 00:34:41,664 | TRAIN LOG: steps 540000, episodes 4521, returns 1.91/1.97/0.73/1.99/100 (mean/median/min/max/num), 12.53 steps/s
+2021-05-11 00:34:44,755 | total steps 540000, total episodes 4521, Lipschitz: 1.863/0.02585/0.01800/0.00103/0.27420 (upper/mean/median/min/max)
+2021-05-11 00:48:01,234 | TRAIN LOG: steps 550000, episodes 4857, returns 1.93/1.97/0.93/1.99/100 (mean/median/min/max/num), 12.56 steps/s
+2021-05-11 00:48:04,220 | total steps 550000, total episodes 4857, Lipschitz: 1.869/0.02809/0.02053/0.00046/0.26156 (upper/mean/median/min/max)
+2021-05-11 01:01:14,882 | TRAIN LOG: steps 560000, episodes 5233, returns 1.96/1.98/0.94/1.99/100 (mean/median/min/max/num), 12.65 steps/s
+2021-05-11 01:01:16,821 | total steps 560000, total episodes 5233, Lipschitz: 1.863/0.02747/0.01989/0.00071/0.24878 (upper/mean/median/min/max)
+2021-05-11 01:14:26,924 | TRAIN LOG: steps 570000, episodes 5564, returns 1.93/1.98/0.94/1.99/100 (mean/median/min/max/num), 12.66 steps/s
+2021-05-11 01:14:31,051 | total steps 570000, total episodes 5564, Lipschitz: 1.878/0.02703/0.01854/0.00030/0.25510 (upper/mean/median/min/max)
+2021-05-11 01:27:40,535 | TRAIN LOG: steps 580000, episodes 5907, returns 1.95/1.98/-0.37/1.99/100 (mean/median/min/max/num), 12.67 steps/s
+2021-05-11 01:27:43,587 | total steps 580000, total episodes 5907, Lipschitz: 1.885/0.02767/0.02244/0.00076/0.19797 (upper/mean/median/min/max)
+2021-05-11 01:40:54,112 | TRAIN LOG: steps 590000, episodes 6232, returns 1.92/1.98/0.58/1.99/100 (mean/median/min/max/num), 12.65 steps/s
+2021-05-11 01:40:57,799 | total steps 590000, total episodes 6232, Lipschitz: 1.894/0.02596/0.01616/0.00045/0.28763 (upper/mean/median/min/max)
+2021-05-11 01:54:07,560 | TRAIN LOG: steps 600000, episodes 6556, returns 1.92/1.97/0.93/1.99/100 (mean/median/min/max/num), 12.66 steps/s
+2021-05-11 01:54:10,949 | total steps 600000, total episodes 6556, Lipschitz: 1.892/0.02314/0.01494/0.00035/0.26433 (upper/mean/median/min/max)
+2021-05-11 02:07:18,548 | TRAIN LOG: steps 610000, episodes 6869, returns 1.89/1.97/0.92/1.99/100 (mean/median/min/max/num), 12.70 steps/s
+2021-05-11 02:07:21,930 | total steps 610000, total episodes 6869, Lipschitz: 1.885/0.02667/0.01863/0.00057/0.28577 (upper/mean/median/min/max)
+2021-05-11 02:20:29,590 | TRAIN LOG: steps 620000, episodes 7128, returns 1.91/1.98/0.50/1.99/100 (mean/median/min/max/num), 12.70 steps/s
+2021-05-11 02:20:32,654 | total steps 620000, total episodes 7128, Lipschitz: 1.885/0.02451/0.01657/0.00065/0.28513 (upper/mean/median/min/max)
+2021-05-11 02:33:33,300 | TRAIN LOG: steps 630000, episodes 7411, returns 1.96/1.97/0.84/1.99/100 (mean/median/min/max/num), 12.81 steps/s
+2021-05-11 02:33:39,041 | total steps 630000, total episodes 7411, Lipschitz: 1.899/0.02281/0.01424/0.00044/0.24656 (upper/mean/median/min/max)
+2021-05-11 02:46:34,183 | TRAIN LOG: steps 640000, episodes 7693, returns 1.93/1.98/-0.50/1.99/100 (mean/median/min/max/num), 12.90 steps/s
+2021-05-11 02:46:39,181 | total steps 640000, total episodes 7693, Lipschitz: 1.909/0.02732/0.01629/0.00044/0.32235 (upper/mean/median/min/max)
+2021-05-11 02:59:32,143 | TRAIN LOG: steps 650000, episodes 7957, returns 1.91/1.98/0.50/1.99/100 (mean/median/min/max/num), 12.94 steps/s
+2021-05-11 02:59:36,735 | total steps 650000, total episodes 7957, Lipschitz: 1.906/0.01757/0.01293/0.00066/0.23020 (upper/mean/median/min/max)
+2021-05-11 03:12:29,889 | TRAIN LOG: steps 660000, episodes 8261, returns 1.89/1.97/0.67/1.99/100 (mean/median/min/max/num), 12.93 steps/s
+2021-05-11 03:12:35,056 | total steps 660000, total episodes 8261, Lipschitz: 1.931/0.02322/0.01518/0.00038/0.26345 (upper/mean/median/min/max)
+2021-05-11 03:25:27,684 | TRAIN LOG: steps 670000, episodes 8581, returns 1.92/1.98/-0.50/1.99/100 (mean/median/min/max/num), 12.94 steps/s
+2021-05-11 03:25:32,411 | total steps 670000, total episodes 8581, Lipschitz: 1.943/0.02035/0.01214/0.00061/0.24213 (upper/mean/median/min/max)
+2021-05-11 03:37:55,587 | TRAIN LOG: steps 680000, episodes 8857, returns 1.91/1.98/0.50/1.99/100 (mean/median/min/max/num), 13.46 steps/s
+2021-05-11 03:38:00,069 | total steps 680000, total episodes 8857, Lipschitz: 1.953/0.02552/0.01607/0.00067/0.29657 (upper/mean/median/min/max)
+2021-05-11 03:50:45,680 | TRAIN LOG: steps 690000, episodes 9095, returns 1.86/1.97/-1.50/1.99/100 (mean/median/min/max/num), 13.06 steps/s
+2021-05-11 03:50:50,911 | total steps 690000, total episodes 9095, Lipschitz: 1.950/0.04105/0.01967/0.00038/0.29693 (upper/mean/median/min/max)
+2021-05-11 04:03:37,151 | TRAIN LOG: steps 700000, episodes 9388, returns 1.92/1.98/0.93/1.99/100 (mean/median/min/max/num), 13.05 steps/s
+2021-05-11 04:03:42,129 | total steps 700000, total episodes 9388, Lipschitz: 1.958/0.02670/0.01685/0.00083/0.35372 (upper/mean/median/min/max)
+2021-05-11 04:16:30,832 | TRAIN LOG: steps 710000, episodes 9717, returns 1.86/1.98/0.51/1.99/100 (mean/median/min/max/num), 13.01 steps/s
+2021-05-11 04:16:35,153 | total steps 710000, total episodes 9717, Lipschitz: 1.974/0.02628/0.01673/0.00038/0.30544 (upper/mean/median/min/max)
+2021-05-11 04:29:20,943 | TRAIN LOG: steps 720000, episodes 10084, returns 1.95/1.98/0.93/1.99/100 (mean/median/min/max/num), 13.06 steps/s
+2021-05-11 04:29:24,856 | total steps 720000, total episodes 10084, Lipschitz: 1.983/0.03437/0.02312/0.00098/0.30702 (upper/mean/median/min/max)
+2021-05-11 04:42:13,312 | TRAIN LOG: steps 730000, episodes 10404, returns 1.92/1.98/-0.50/1.99/100 (mean/median/min/max/num), 13.01 steps/s
+2021-05-11 04:42:16,422 | total steps 730000, total episodes 10404, Lipschitz: 1.997/0.02438/0.01652/0.00039/0.28778 (upper/mean/median/min/max)
+2021-05-11 04:55:09,138 | TRAIN LOG: steps 740000, episodes 10731, returns 1.90/1.98/-1.50/1.99/100 (mean/median/min/max/num), 12.94 steps/s
+2021-05-11 04:55:14,139 | total steps 740000, total episodes 10731, Lipschitz: 1.983/0.03120/0.02089/0.00103/0.29756 (upper/mean/median/min/max)
+2021-05-11 05:07:59,755 | TRAIN LOG: steps 750000, episodes 11098, returns 1.95/1.98/0.93/1.99/100 (mean/median/min/max/num), 13.06 steps/s
+2021-05-11 05:08:04,818 | total steps 750000, total episodes 11098, Lipschitz: 1.989/0.03159/0.02140/0.00070/0.32624 (upper/mean/median/min/max)
+2021-05-11 05:20:53,221 | TRAIN LOG: steps 760000, episodes 11439, returns 1.97/1.97/1.87/1.99/100 (mean/median/min/max/num), 13.01 steps/s
+2021-05-11 05:20:57,984 | total steps 760000, total episodes 11439, Lipschitz: 1.989/0.02444/0.01658/0.00049/0.25093 (upper/mean/median/min/max)
+2021-05-11 05:33:45,794 | TRAIN LOG: steps 770000, episodes 11785, returns 1.95/1.98/0.90/1.99/100 (mean/median/min/max/num), 13.02 steps/s
+2021-05-11 05:33:50,714 | total steps 770000, total episodes 11785, Lipschitz: 1.989/0.02834/0.01781/0.00063/0.31944 (upper/mean/median/min/max)
+2021-05-11 05:46:35,992 | TRAIN LOG: steps 780000, episodes 12157, returns 1.93/1.98/0.94/1.99/100 (mean/median/min/max/num), 13.07 steps/s
+2021-05-11 05:46:40,719 | total steps 780000, total episodes 12157, Lipschitz: 2.006/0.02860/0.01938/0.00034/0.30507 (upper/mean/median/min/max)
+2021-05-11 05:59:30,274 | TRAIN LOG: steps 790000, episodes 12562, returns 1.96/1.98/0.92/1.99/100 (mean/median/min/max/num), 12.99 steps/s
+2021-05-11 05:59:33,974 | total steps 790000, total episodes 12562, Lipschitz: 2.003/0.02439/0.01772/0.00072/0.28017 (upper/mean/median/min/max)
+2021-05-11 06:12:23,520 | TRAIN LOG: steps 800000, episodes 12879, returns 1.89/1.98/-0.33/1.99/100 (mean/median/min/max/num), 12.99 steps/s
+2021-05-11 06:12:28,903 | total steps 800000, total episodes 12879, Lipschitz: 2.003/0.02150/0.01665/0.00049/0.19078 (upper/mean/median/min/max)
+2021-05-11 06:25:18,519 | TRAIN LOG: steps 810000, episodes 13263, returns 1.97/1.98/0.97/1.99/100 (mean/median/min/max/num), 12.99 steps/s
+2021-05-11 06:25:23,104 | total steps 810000, total episodes 13263, Lipschitz: 1.991/0.02482/0.01551/0.00052/0.30229 (upper/mean/median/min/max)
+2021-05-11 06:38:08,727 | TRAIN LOG: steps 820000, episodes 13651, returns 1.95/1.98/0.96/1.99/100 (mean/median/min/max/num), 13.06 steps/s
+2021-05-11 06:38:13,686 | total steps 820000, total episodes 13651, Lipschitz: 1.985/0.02399/0.02022/0.00136/0.23203 (upper/mean/median/min/max)
+2021-05-11 06:50:59,615 | TRAIN LOG: steps 830000, episodes 14020, returns 1.91/1.98/0.50/1.99/100 (mean/median/min/max/num), 13.06 steps/s
+2021-05-11 06:51:02,775 | total steps 830000, total episodes 14020, Lipschitz: 1.998/0.03155/0.02147/0.00053/0.26872 (upper/mean/median/min/max)
+2021-05-11 07:03:49,101 | TRAIN LOG: steps 840000, episodes 14398, returns 1.98/1.98/1.94/1.99/100 (mean/median/min/max/num), 13.05 steps/s
+2021-05-11 07:03:56,278 | total steps 840000, total episodes 14398, Lipschitz: 2.000/0.02563/0.01664/0.00038/0.25586 (upper/mean/median/min/max)
+2021-05-11 07:16:41,605 | TRAIN LOG: steps 850000, episodes 14781, returns 1.90/1.98/0.87/1.99/100 (mean/median/min/max/num), 13.07 steps/s
+2021-05-11 07:16:51,112 | total steps 850000, total episodes 14781, Lipschitz: 1.987/0.02508/0.01604/0.00024/0.26357 (upper/mean/median/min/max)
+2021-05-11 07:29:34,153 | TRAIN LOG: steps 860000, episodes 15174, returns 1.98/1.98/1.87/1.99/100 (mean/median/min/max/num), 13.11 steps/s
+2021-05-11 07:29:37,345 | total steps 860000, total episodes 15174, Lipschitz: 1.989/0.02481/0.01547/0.00051/0.28861 (upper/mean/median/min/max)
+2021-05-11 07:42:18,701 | TRAIN LOG: steps 870000, episodes 15573, returns 1.95/1.98/0.94/1.99/100 (mean/median/min/max/num), 13.13 steps/s
+2021-05-11 07:42:24,288 | total steps 870000, total episodes 15573, Lipschitz: 1.987/0.02395/0.01492/0.00055/0.27515 (upper/mean/median/min/max)
+2021-05-11 07:54:55,565 | TRAIN LOG: steps 880000, episodes 15925, returns 1.88/1.98/-0.50/1.99/100 (mean/median/min/max/num), 13.31 steps/s
+2021-05-11 07:55:04,833 | total steps 880000, total episodes 15925, Lipschitz: 1.982/0.02536/0.01524/0.00102/0.26232 (upper/mean/median/min/max)
+2021-05-11 08:07:35,558 | TRAIN LOG: steps 890000, episodes 16281, returns 1.95/1.98/0.92/1.99/100 (mean/median/min/max/num), 13.32 steps/s
+2021-05-11 08:07:46,007 | total steps 890000, total episodes 16281, Lipschitz: 1.994/0.02249/0.01504/0.00033/0.28066 (upper/mean/median/min/max)
+2021-05-11 08:20:12,191 | TRAIN LOG: steps 900000, episodes 16679, returns 1.95/1.98/0.91/1.99/100 (mean/median/min/max/num), 13.40 steps/s
+2021-05-11 08:20:19,448 | total steps 900000, total episodes 16679, Lipschitz: 1.996/0.02494/0.01629/0.00074/0.23683 (upper/mean/median/min/max)
+2021-05-11 08:32:41,343 | TRAIN LOG: steps 910000, episodes 17024, returns 1.90/1.98/0.74/1.99/100 (mean/median/min/max/num), 13.48 steps/s
+2021-05-11 08:32:49,347 | total steps 910000, total episodes 17024, Lipschitz: 1.995/0.02344/0.01476/0.00062/0.25526 (upper/mean/median/min/max)
+2021-05-11 08:45:09,508 | TRAIN LOG: steps 920000, episodes 17307, returns 1.93/1.98/0.59/1.99/100 (mean/median/min/max/num), 13.51 steps/s
+2021-05-11 08:45:16,790 | total steps 920000, total episodes 17307, Lipschitz: 2.007/0.02159/0.01464/0.00069/0.31714 (upper/mean/median/min/max)
+2021-05-11 08:57:38,417 | TRAIN LOG: steps 930000, episodes 17642, returns 1.94/1.98/0.85/1.99/100 (mean/median/min/max/num), 13.48 steps/s
+2021-05-11 08:57:45,657 | total steps 930000, total episodes 17642, Lipschitz: 2.003/0.02971/0.01908/0.00060/0.34137 (upper/mean/median/min/max)
+2021-05-11 09:11:55,091 | TRAIN LOG: steps 940000, episodes 17965, returns 1.91/1.97/-0.50/1.99/100 (mean/median/min/max/num), 11.77 steps/s
+2021-05-11 09:12:02,179 | total steps 940000, total episodes 17965, Lipschitz: 2.013/0.02172/0.01351/0.00076/0.25576 (upper/mean/median/min/max)
+2021-05-11 09:24:27,911 | TRAIN LOG: steps 950000, episodes 18250, returns 1.96/1.98/0.96/1.99/100 (mean/median/min/max/num), 13.41 steps/s
+2021-05-11 09:24:35,567 | total steps 950000, total episodes 18250, Lipschitz: 2.030/0.02913/0.01914/0.00081/0.28024 (upper/mean/median/min/max)
+2021-05-11 09:37:05,931 | TRAIN LOG: steps 960000, episodes 18566, returns 1.95/1.98/0.92/1.99/100 (mean/median/min/max/num), 13.33 steps/s
+2021-05-11 09:37:12,969 | total steps 960000, total episodes 18566, Lipschitz: 2.042/0.02244/0.01534/0.00061/0.23994 (upper/mean/median/min/max)
+2021-05-11 09:49:34,144 | TRAIN LOG: steps 970000, episodes 18910, returns 1.92/1.98/-1.50/1.99/100 (mean/median/min/max/num), 13.49 steps/s
+2021-05-11 09:49:37,177 | total steps 970000, total episodes 18910, Lipschitz: 2.027/0.02528/0.01781/0.00060/0.28880 (upper/mean/median/min/max)
+2021-05-11 10:00:29,730 | TRAIN LOG: steps 980000, episodes 19240, returns 1.89/1.97/0.82/1.99/100 (mean/median/min/max/num), 15.32 steps/s
+2021-05-11 10:00:37,691 | total steps 980000, total episodes 19240, Lipschitz: 2.040/0.02991/0.02028/0.00071/0.27998 (upper/mean/median/min/max)
+2021-05-11 10:11:32,336 | TRAIN LOG: steps 990000, episodes 19547, returns 1.93/1.98/0.50/1.99/100 (mean/median/min/max/num), 15.28 steps/s
+2021-05-11 10:11:39,155 | total steps 990000, total episodes 19547, Lipschitz: 2.055/0.02627/0.01459/0.00089/0.31482 (upper/mean/median/min/max)
+2021-05-11 10:22:59,854 | TRAIN LOG: steps 1000000, episodes 19847, returns 1.95/1.98/0.97/1.99/100 (mean/median/min/max/num), 14.69 steps/s
+2021-05-11 10:23:06,328 | total steps 1000000, total episodes 19847, Lipschitz: 2.075/0.01608/0.01115/0.00071/0.23465 (upper/mean/median/min/max)
+2021-05-11 10:35:36,890 | TRAIN LOG: steps 1010000, episodes 20194, returns 1.96/1.98/0.94/1.99/100 (mean/median/min/max/num), 13.32 steps/s
+2021-05-11 10:35:44,693 | total steps 1010000, total episodes 20194, Lipschitz: 2.086/0.02990/0.01988/0.00064/0.34431 (upper/mean/median/min/max)
+2021-05-11 10:48:12,121 | TRAIN LOG: steps 1020000, episodes 20564, returns 1.94/1.98/0.89/1.99/100 (mean/median/min/max/num), 13.38 steps/s
+2021-05-11 10:48:18,802 | total steps 1020000, total episodes 20564, Lipschitz: 2.086/0.02526/0.01688/0.00037/0.28935 (upper/mean/median/min/max)
+2021-05-11 11:00:40,362 | TRAIN LOG: steps 1030000, episodes 20935, returns 1.98/1.98/1.77/1.99/100 (mean/median/min/max/num), 13.49 steps/s
+2021-05-11 11:00:46,724 | total steps 1030000, total episodes 20935, Lipschitz: 2.090/0.03178/0.02155/0.00138/0.29389 (upper/mean/median/min/max)
+2021-05-11 11:13:08,525 | TRAIN LOG: steps 1040000, episodes 21248, returns 1.92/1.98/0.50/1.99/100 (mean/median/min/max/num), 13.48 steps/s
+2021-05-11 11:13:16,717 | total steps 1040000, total episodes 21248, Lipschitz: 2.107/0.02103/0.01319/0.00068/0.29629 (upper/mean/median/min/max)
+2021-05-11 11:25:36,339 | TRAIN LOG: steps 1050000, episodes 21585, returns 1.93/1.98/0.95/1.99/100 (mean/median/min/max/num), 13.52 steps/s
+2021-05-11 11:25:42,875 | total steps 1050000, total episodes 21585, Lipschitz: 2.109/0.02242/0.01801/0.00057/0.21232 (upper/mean/median/min/max)
+2021-05-11 11:38:03,301 | TRAIN LOG: steps 1060000, episodes 21870, returns 1.96/1.98/0.94/1.99/100 (mean/median/min/max/num), 13.51 steps/s
+2021-05-11 11:38:10,541 | total steps 1060000, total episodes 21870, Lipschitz: 2.113/0.02432/0.01296/0.00044/0.28721 (upper/mean/median/min/max)
+2021-05-11 11:50:39,242 | TRAIN LOG: steps 1070000, episodes 22131, returns 1.90/1.98/-1.50/1.99/100 (mean/median/min/max/num), 13.36 steps/s
+2021-05-11 11:50:45,551 | total steps 1070000, total episodes 22131, Lipschitz: 2.117/0.01915/0.01122/0.00025/0.25159 (upper/mean/median/min/max)
+2021-05-11 12:03:12,106 | TRAIN LOG: steps 1080000, episodes 22431, returns 1.93/1.98/0.83/1.99/100 (mean/median/min/max/num), 13.39 steps/s
+2021-05-11 12:03:18,800 | total steps 1080000, total episodes 22431, Lipschitz: 2.128/0.02076/0.01229/0.00054/0.28193 (upper/mean/median/min/max)
+2021-05-11 12:15:48,116 | TRAIN LOG: steps 1090000, episodes 22769, returns 1.93/1.98/0.93/1.99/100 (mean/median/min/max/num), 13.35 steps/s
+2021-05-11 12:15:54,454 | total steps 1090000, total episodes 22769, Lipschitz: 2.138/0.03073/0.01981/0.00036/0.29090 (upper/mean/median/min/max)
+2021-05-11 12:28:19,491 | TRAIN LOG: steps 1100000, episodes 23079, returns 1.94/1.98/0.92/1.99/100 (mean/median/min/max/num), 13.42 steps/s
+2021-05-11 12:28:25,907 | total steps 1100000, total episodes 23079, Lipschitz: 2.168/0.02203/0.01422/0.00053/0.26203 (upper/mean/median/min/max)
+2021-05-11 12:40:48,706 | TRAIN LOG: steps 1110000, episodes 23424, returns 1.92/1.98/0.90/1.99/100 (mean/median/min/max/num), 13.46 steps/s
+2021-05-11 12:40:51,632 | total steps 1110000, total episodes 23424, Lipschitz: 2.188/0.02478/0.01615/0.00063/0.31355 (upper/mean/median/min/max)
+2021-05-11 12:53:15,536 | TRAIN LOG: steps 1120000, episodes 23713, returns 1.93/1.98/0.92/1.99/100 (mean/median/min/max/num), 13.44 steps/s
+2021-05-11 12:53:23,407 | total steps 1120000, total episodes 23713, Lipschitz: 2.176/0.02150/0.01566/0.00079/0.21024 (upper/mean/median/min/max)
+2021-05-11 13:05:41,495 | TRAIN LOG: steps 1130000, episodes 24060, returns 1.92/1.97/0.96/1.99/100 (mean/median/min/max/num), 13.55 steps/s
+2021-05-11 13:05:47,872 | total steps 1130000, total episodes 24060, Lipschitz: 2.179/0.01997/0.01526/0.00090/0.26192 (upper/mean/median/min/max)
+2021-05-11 13:17:01,109 | TRAIN LOG: steps 1140000, episodes 24424, returns 1.93/1.98/0.70/1.99/100 (mean/median/min/max/num), 14.85 steps/s
+2021-05-11 13:17:08,537 | total steps 1140000, total episodes 24424, Lipschitz: 2.174/0.02242/0.01425/0.00034/0.27460 (upper/mean/median/min/max)
+2021-05-11 13:28:10,893 | TRAIN LOG: steps 1150000, episodes 24748, returns 1.86/1.97/-1.50/1.99/100 (mean/median/min/max/num), 15.10 steps/s
+2021-05-11 13:28:13,974 | total steps 1150000, total episodes 24748, Lipschitz: 2.173/0.02272/0.01490/0.00066/0.32614 (upper/mean/median/min/max)
+2021-05-11 13:39:17,045 | TRAIN LOG: steps 1160000, episodes 25131, returns 1.94/1.98/0.92/1.99/100 (mean/median/min/max/num), 15.08 steps/s
+2021-05-11 13:39:23,805 | total steps 1160000, total episodes 25131, Lipschitz: 2.175/0.02374/0.01279/0.00076/0.35241 (upper/mean/median/min/max)
+2021-05-11 13:51:12,880 | TRAIN LOG: steps 1170000, episodes 25466, returns 1.95/1.98/0.97/1.99/100 (mean/median/min/max/num), 14.10 steps/s
+2021-05-11 13:51:21,235 | total steps 1170000, total episodes 25466, Lipschitz: 2.179/0.02216/0.01327/0.00022/0.27265 (upper/mean/median/min/max)
+2021-05-11 14:03:45,301 | TRAIN LOG: steps 1180000, episodes 25825, returns 1.95/1.98/0.89/1.99/100 (mean/median/min/max/num), 13.44 steps/s
+2021-05-11 14:03:52,064 | total steps 1180000, total episodes 25825, Lipschitz: 2.175/0.02485/0.01372/0.00057/0.27307 (upper/mean/median/min/max)
+2021-05-11 14:16:17,473 | TRAIN LOG: steps 1190000, episodes 26154, returns 1.88/1.98/-1.50/1.99/100 (mean/median/min/max/num), 13.42 steps/s
+2021-05-11 14:16:19,170 | total steps 1190000, total episodes 26154, Lipschitz: 2.178/0.01955/0.01296/0.00049/0.20628 (upper/mean/median/min/max)
+2021-05-11 14:28:44,214 | TRAIN LOG: steps 1200000, episodes 26515, returns 1.94/1.98/0.92/1.99/100 (mean/median/min/max/num), 13.42 steps/s
+2021-05-11 14:28:52,091 | total steps 1200000, total episodes 26515, Lipschitz: 2.172/0.02116/0.01445/0.00093/0.25406 (upper/mean/median/min/max)
+2021-05-11 14:41:21,980 | TRAIN LOG: steps 1210000, episodes 26874, returns 1.95/1.98/0.92/1.99/100 (mean/median/min/max/num), 13.34 steps/s
+2021-05-11 14:41:29,651 | total steps 1210000, total episodes 26874, Lipschitz: 2.175/0.01943/0.01287/0.00058/0.18960 (upper/mean/median/min/max)
+2021-05-11 14:53:58,387 | TRAIN LOG: steps 1220000, episodes 27243, returns 1.92/1.98/-0.50/1.99/100 (mean/median/min/max/num), 13.36 steps/s
+2021-05-11 14:54:06,489 | total steps 1220000, total episodes 27243, Lipschitz: 2.179/0.02812/0.01784/0.00046/0.26501 (upper/mean/median/min/max)
+2021-05-11 15:06:35,139 | TRAIN LOG: steps 1230000, episodes 27573, returns 1.95/1.98/0.94/1.99/100 (mean/median/min/max/num), 13.36 steps/s
+2021-05-11 15:06:41,735 | total steps 1230000, total episodes 27573, Lipschitz: 2.186/0.03163/0.02004/0.00060/0.33176 (upper/mean/median/min/max)
+2021-05-11 15:21:13,014 | TRAIN LOG: steps 1240000, episodes 27954, returns 1.94/1.98/0.50/1.99/100 (mean/median/min/max/num), 11.48 steps/s
+2021-05-11 15:21:19,584 | total steps 1240000, total episodes 27954, Lipschitz: 2.195/0.01951/0.01365/0.00028/0.19568 (upper/mean/median/min/max)
+2021-05-11 15:33:46,278 | TRAIN LOG: steps 1250000, episodes 28325, returns 1.92/1.98/-0.50/1.99/100 (mean/median/min/max/num), 13.39 steps/s
+2021-05-11 15:33:53,029 | total steps 1250000, total episodes 28325, Lipschitz: 2.189/0.02254/0.01569/0.00084/0.26202 (upper/mean/median/min/max)
+2021-05-11 15:46:21,467 | TRAIN LOG: steps 1260000, episodes 28682, returns 1.96/1.98/0.98/1.99/100 (mean/median/min/max/num), 13.36 steps/s
+2021-05-11 15:46:30,696 | total steps 1260000, total episodes 28682, Lipschitz: 2.199/0.02417/0.01637/0.00073/0.34897 (upper/mean/median/min/max)
+2021-05-11 15:58:58,513 | TRAIN LOG: steps 1270000, episodes 29050, returns 1.96/1.98/0.95/1.99/100 (mean/median/min/max/num), 13.37 steps/s
+2021-05-11 15:59:09,089 | total steps 1270000, total episodes 29050, Lipschitz: 2.208/0.02430/0.01885/0.00052/0.27809 (upper/mean/median/min/max)
+2021-05-11 16:11:41,467 | TRAIN LOG: steps 1280000, episodes 29458, returns 1.95/1.98/0.94/1.99/100 (mean/median/min/max/num), 13.29 steps/s
+2021-05-11 16:11:44,526 | total steps 1280000, total episodes 29458, Lipschitz: 2.212/0.02507/0.01643/0.00049/0.27702 (upper/mean/median/min/max)
+2021-05-11 16:24:17,553 | TRAIN LOG: steps 1290000, episodes 29784, returns 1.87/1.98/-1.50/1.99/100 (mean/median/min/max/num), 13.28 steps/s
+2021-05-11 16:24:26,820 | total steps 1290000, total episodes 29784, Lipschitz: 2.212/0.01666/0.01302/0.00038/0.21571 (upper/mean/median/min/max)
+2021-05-11 16:37:00,078 | TRAIN LOG: steps 1300000, episodes 30125, returns 1.91/1.98/0.50/1.99/100 (mean/median/min/max/num), 13.28 steps/s
+2021-05-11 16:37:09,290 | total steps 1300000, total episodes 30125, Lipschitz: 2.217/0.02949/0.01867/0.00111/0.29343 (upper/mean/median/min/max)
+2021-05-11 16:49:37,390 | TRAIN LOG: steps 1310000, episodes 30497, returns 1.96/1.98/0.97/1.99/100 (mean/median/min/max/num), 13.37 steps/s
+2021-05-11 16:49:45,669 | total steps 1310000, total episodes 30497, Lipschitz: 2.218/0.02130/0.01327/0.00069/0.26867 (upper/mean/median/min/max)
+2021-05-11 17:02:13,464 | TRAIN LOG: steps 1320000, episodes 30880, returns 1.97/1.98/0.95/1.99/100 (mean/median/min/max/num), 13.37 steps/s
+2021-05-11 17:02:18,596 | total steps 1320000, total episodes 30880, Lipschitz: 2.223/0.02033/0.01269/0.00050/0.27438 (upper/mean/median/min/max)
+2021-05-11 17:14:47,089 | TRAIN LOG: steps 1330000, episodes 31231, returns 1.96/1.98/0.95/1.99/100 (mean/median/min/max/num), 13.36 steps/s
+2021-05-11 17:14:50,071 | total steps 1330000, total episodes 31231, Lipschitz: 2.228/0.02806/0.02320/0.00091/0.22266 (upper/mean/median/min/max)
+2021-05-11 17:27:20,730 | TRAIN LOG: steps 1340000, episodes 31580, returns 1.94/1.98/0.70/1.99/100 (mean/median/min/max/num), 13.32 steps/s
+2021-05-11 17:27:29,834 | total steps 1340000, total episodes 31580, Lipschitz: 2.238/0.01870/0.01194/0.00044/0.24526 (upper/mean/median/min/max)
+2021-05-11 17:39:57,670 | TRAIN LOG: steps 1350000, episodes 31981, returns 1.94/1.98/0.91/1.99/100 (mean/median/min/max/num), 13.37 steps/s
+2021-05-11 17:40:05,107 | total steps 1350000, total episodes 31981, Lipschitz: 2.253/0.02261/0.01363/0.00074/0.26394 (upper/mean/median/min/max)
+2021-05-11 17:52:30,566 | TRAIN LOG: steps 1360000, episodes 32355, returns 1.94/1.98/0.76/1.99/100 (mean/median/min/max/num), 13.41 steps/s
+2021-05-11 17:52:38,653 | total steps 1360000, total episodes 32355, Lipschitz: 2.256/0.03018/0.01912/0.00057/0.38413 (upper/mean/median/min/max)
+2021-05-11 18:05:08,788 | TRAIN LOG: steps 1370000, episodes 32725, returns 1.95/1.98/0.75/1.99/100 (mean/median/min/max/num), 13.33 steps/s
+2021-05-11 18:05:15,086 | total steps 1370000, total episodes 32725, Lipschitz: 2.252/0.03131/0.02058/0.00050/0.30325 (upper/mean/median/min/max)
+2021-05-11 18:17:43,052 | TRAIN LOG: steps 1380000, episodes 33104, returns 1.93/1.98/-0.50/1.99/100 (mean/median/min/max/num), 13.37 steps/s
+2021-05-11 18:17:52,840 | total steps 1380000, total episodes 33104, Lipschitz: 2.242/0.02461/0.01425/0.00062/0.27277 (upper/mean/median/min/max)
+2021-05-11 18:30:16,527 | TRAIN LOG: steps 1390000, episodes 33422, returns 1.95/1.98/0.97/1.99/100 (mean/median/min/max/num), 13.45 steps/s
+2021-05-11 18:30:24,067 | total steps 1390000, total episodes 33422, Lipschitz: 2.241/0.02172/0.01439/0.00032/0.23679 (upper/mean/median/min/max)
+2021-05-11 18:42:49,335 | TRAIN LOG: steps 1400000, episodes 33800, returns 1.92/1.98/0.91/1.99/100 (mean/median/min/max/num), 13.42 steps/s
+2021-05-11 18:42:56,395 | total steps 1400000, total episodes 33800, Lipschitz: 2.241/0.02225/0.01489/0.00081/0.25604 (upper/mean/median/min/max)
+2021-05-11 18:55:18,913 | TRAIN LOG: steps 1410000, episodes 34177, returns 1.91/1.98/-0.50/1.99/100 (mean/median/min/max/num), 13.47 steps/s
+2021-05-11 18:55:27,697 | total steps 1410000, total episodes 34177, Lipschitz: 2.250/0.02399/0.01732/0.00043/0.28093 (upper/mean/median/min/max)
+2021-05-11 19:07:48,720 | TRAIN LOG: steps 1420000, episodes 34533, returns 1.91/1.98/0.77/1.99/100 (mean/median/min/max/num), 13.50 steps/s
+2021-05-11 19:07:56,564 | total steps 1420000, total episodes 34533, Lipschitz: 2.249/0.03229/0.02170/0.00086/0.30810 (upper/mean/median/min/max)
+2021-05-11 19:20:20,638 | TRAIN LOG: steps 1430000, episodes 34929, returns 1.95/1.98/0.94/1.99/100 (mean/median/min/max/num), 13.44 steps/s
+2021-05-11 19:20:28,180 | total steps 1430000, total episodes 34929, Lipschitz: 2.251/0.01928/0.01077/0.00061/0.31151 (upper/mean/median/min/max)
+2021-05-11 19:32:47,906 | TRAIN LOG: steps 1440000, episodes 35332, returns 1.93/1.98/0.86/1.99/100 (mean/median/min/max/num), 13.52 steps/s
+2021-05-11 19:32:55,422 | total steps 1440000, total episodes 35332, Lipschitz: 2.256/0.02969/0.01943/0.00099/0.32580 (upper/mean/median/min/max)
+2021-05-11 19:45:16,357 | TRAIN LOG: steps 1450000, episodes 35687, returns 1.94/1.98/0.50/1.99/100 (mean/median/min/max/num), 13.50 steps/s
+2021-05-11 19:45:24,628 | total steps 1450000, total episodes 35687, Lipschitz: 2.259/0.02941/0.01902/0.00073/0.32717 (upper/mean/median/min/max)
+2021-05-11 19:57:38,482 | TRAIN LOG: steps 1460000, episodes 36095, returns 1.96/1.98/0.90/1.99/100 (mean/median/min/max/num), 13.63 steps/s
+2021-05-11 19:57:47,141 | total steps 1460000, total episodes 36095, Lipschitz: 2.252/0.02202/0.01405/0.00085/0.26520 (upper/mean/median/min/max)
+2021-05-11 20:10:09,672 | TRAIN LOG: steps 1470000, episodes 36533, returns 1.96/1.98/0.96/1.99/100 (mean/median/min/max/num), 13.47 steps/s
+2021-05-11 20:10:13,574 | total steps 1470000, total episodes 36533, Lipschitz: 2.252/0.02980/0.01983/0.00078/0.28459 (upper/mean/median/min/max)
+2021-05-11 20:22:46,074 | TRAIN LOG: steps 1480000, episodes 36929, returns 1.97/1.98/0.97/1.99/100 (mean/median/min/max/num), 13.29 steps/s
+2021-05-11 20:22:53,270 | total steps 1480000, total episodes 36929, Lipschitz: 2.248/0.02130/0.01368/0.00041/0.28330 (upper/mean/median/min/max)
+2021-05-11 20:35:17,848 | TRAIN LOG: steps 1490000, episodes 37331, returns 1.94/1.98/0.90/1.99/100 (mean/median/min/max/num), 13.43 steps/s
+2021-05-11 20:35:26,014 | total steps 1490000, total episodes 37331, Lipschitz: 2.248/0.02143/0.01412/0.00036/0.28217 (upper/mean/median/min/max)
+2021-05-11 20:48:03,104 | TRAIN LOG: steps 1500000, episodes 37672, returns 1.94/1.98/0.96/1.99/100 (mean/median/min/max/num), 13.21 steps/s
+2021-05-11 20:48:11,920 | total steps 1500000, total episodes 37672, Lipschitz: 2.253/0.02880/0.02225/0.00115/0.27287 (upper/mean/median/min/max)
+2021-05-11 21:00:47,149 | TRAIN LOG: steps 1510000, episodes 38082, returns 1.93/1.98/0.87/1.99/100 (mean/median/min/max/num), 13.24 steps/s
+2021-05-11 21:00:57,204 | total steps 1510000, total episodes 38082, Lipschitz: 2.259/0.02754/0.01698/0.00030/0.35474 (upper/mean/median/min/max)
+2021-05-11 21:13:14,364 | TRAIN LOG: steps 1520000, episodes 38438, returns 1.91/1.97/0.86/1.99/100 (mean/median/min/max/num), 13.57 steps/s
+2021-05-11 21:13:21,084 | total steps 1520000, total episodes 38438, Lipschitz: 2.263/0.01881/0.01193/0.00051/0.25232 (upper/mean/median/min/max)
+2021-05-11 21:25:36,777 | TRAIN LOG: steps 1530000, episodes 38763, returns 1.95/1.98/0.97/1.99/100 (mean/median/min/max/num), 13.59 steps/s
+2021-05-11 21:25:44,133 | total steps 1530000, total episodes 38763, Lipschitz: 2.252/0.02116/0.01387/0.00050/0.27278 (upper/mean/median/min/max)
+2021-05-11 21:38:00,976 | TRAIN LOG: steps 1540000, episodes 39161, returns 1.95/1.98/0.89/1.99/100 (mean/median/min/max/num), 13.57 steps/s
+2021-05-11 21:38:07,289 | total steps 1540000, total episodes 39161, Lipschitz: 2.250/0.02156/0.01290/0.00039/0.23897 (upper/mean/median/min/max)
+2021-05-11 21:50:28,475 | TRAIN LOG: steps 1550000, episodes 39536, returns 1.96/1.98/0.97/1.99/100 (mean/median/min/max/num), 13.49 steps/s
+2021-05-11 21:50:36,712 | total steps 1550000, total episodes 39536, Lipschitz: 2.263/0.01909/0.01418/0.00054/0.29289 (upper/mean/median/min/max)
+2021-05-11 22:03:03,425 | TRAIN LOG: steps 1560000, episodes 39891, returns 1.96/1.98/0.84/1.99/100 (mean/median/min/max/num), 13.39 steps/s
+2021-05-11 22:03:05,197 | total steps 1560000, total episodes 39891, Lipschitz: 2.268/0.02287/0.01597/0.00057/0.23784 (upper/mean/median/min/max)
+2021-05-11 22:15:35,537 | TRAIN LOG: steps 1570000, episodes 40199, returns 1.93/1.98/0.93/1.99/100 (mean/median/min/max/num), 13.33 steps/s
+2021-05-11 22:15:42,561 | total steps 1570000, total episodes 40199, Lipschitz: 2.268/0.02566/0.01814/0.00039/0.30978 (upper/mean/median/min/max)
+2021-05-11 22:28:12,452 | TRAIN LOG: steps 1580000, episodes 40503, returns 1.94/1.98/0.89/1.99/100 (mean/median/min/max/num), 13.34 steps/s
+2021-05-11 22:28:20,377 | total steps 1580000, total episodes 40503, Lipschitz: 2.273/0.01877/0.01166/0.00016/0.26603 (upper/mean/median/min/max)
+2021-05-11 22:40:54,705 | TRAIN LOG: steps 1590000, episodes 40866, returns 1.94/1.98/0.50/1.99/100 (mean/median/min/max/num), 13.26 steps/s
+2021-05-11 22:41:04,150 | total steps 1590000, total episodes 40866, Lipschitz: 2.289/0.02470/0.01610/0.00065/0.31355 (upper/mean/median/min/max)
+2021-05-11 22:53:40,656 | TRAIN LOG: steps 1600000, episodes 41249, returns 1.95/1.98/0.95/1.99/100 (mean/median/min/max/num), 13.22 steps/s
+2021-05-11 22:53:49,138 | total steps 1600000, total episodes 41249, Lipschitz: 2.299/0.02416/0.01076/0.00054/0.30647 (upper/mean/median/min/max)
+2021-05-11 23:06:24,963 | TRAIN LOG: steps 1610000, episodes 41596, returns 1.95/1.98/0.97/1.99/100 (mean/median/min/max/num), 13.23 steps/s
+2021-05-11 23:06:28,909 | total steps 1610000, total episodes 41596, Lipschitz: 2.307/0.02240/0.01614/0.00026/0.23490 (upper/mean/median/min/max)
+2021-05-11 23:19:05,025 | TRAIN LOG: steps 1620000, episodes 41880, returns 1.88/1.98/-1.50/1.99/100 (mean/median/min/max/num), 13.23 steps/s
+2021-05-11 23:19:10,321 | total steps 1620000, total episodes 41880, Lipschitz: 2.319/0.02690/0.01459/0.00055/0.30280 (upper/mean/median/min/max)
+2021-05-11 23:31:40,619 | TRAIN LOG: steps 1630000, episodes 42197, returns 1.94/1.97/0.95/1.99/100 (mean/median/min/max/num), 13.33 steps/s
+2021-05-11 23:31:49,742 | total steps 1630000, total episodes 42197, Lipschitz: 2.321/0.01777/0.01296/0.00028/0.23243 (upper/mean/median/min/max)
+2021-05-11 23:44:17,270 | TRAIN LOG: steps 1640000, episodes 42563, returns 1.95/1.98/0.76/1.99/100 (mean/median/min/max/num), 13.38 steps/s
+2021-05-11 23:44:23,899 | total steps 1640000, total episodes 42563, Lipschitz: 2.308/0.02728/0.01522/0.00069/0.29105 (upper/mean/median/min/max)
+2021-05-11 23:56:51,445 | TRAIN LOG: steps 1650000, episodes 42917, returns 1.93/1.98/-1.50/1.99/100 (mean/median/min/max/num), 13.38 steps/s
+2021-05-11 23:56:57,953 | total steps 1650000, total episodes 42917, Lipschitz: 2.317/0.02492/0.01708/0.00071/0.29393 (upper/mean/median/min/max)
+2021-05-12 00:09:30,096 | TRAIN LOG: steps 1660000, episodes 43295, returns 1.94/1.98/0.92/1.99/100 (mean/median/min/max/num), 13.30 steps/s
+2021-05-12 00:09:38,121 | total steps 1660000, total episodes 43295, Lipschitz: 2.325/0.02334/0.01541/0.00069/0.31619 (upper/mean/median/min/max)
+2021-05-12 00:22:04,484 | TRAIN LOG: steps 1670000, episodes 43630, returns 1.92/1.97/0.88/1.99/100 (mean/median/min/max/num), 13.40 steps/s
+2021-05-12 00:22:11,285 | total steps 1670000, total episodes 43630, Lipschitz: 2.329/0.02634/0.02047/0.00087/0.30465 (upper/mean/median/min/max)
+2021-05-12 00:34:35,996 | TRAIN LOG: steps 1680000, episodes 43983, returns 1.89/1.97/0.92/1.99/100 (mean/median/min/max/num), 13.43 steps/s
+2021-05-12 00:34:45,054 | total steps 1680000, total episodes 43983, Lipschitz: 2.324/0.03002/0.02043/0.00115/0.25742 (upper/mean/median/min/max)
+2021-05-12 00:47:06,803 | TRAIN LOG: steps 1690000, episodes 44321, returns 1.96/1.98/0.98/1.99/100 (mean/median/min/max/num), 13.48 steps/s
+2021-05-12 00:47:16,433 | total steps 1690000, total episodes 44321, Lipschitz: 2.332/0.02254/0.01423/0.00085/0.25954 (upper/mean/median/min/max)
+2021-05-12 00:59:35,646 | TRAIN LOG: steps 1700000, episodes 44638, returns 1.91/1.98/0.90/1.99/100 (mean/median/min/max/num), 13.53 steps/s
+2021-05-12 00:59:43,004 | total steps 1700000, total episodes 44638, Lipschitz: 2.335/0.02898/0.01942/0.00108/0.28714 (upper/mean/median/min/max)
+2021-05-12 01:12:02,035 | TRAIN LOG: steps 1710000, episodes 44902, returns 1.80/1.98/0.55/1.99/100 (mean/median/min/max/num), 13.53 steps/s
+2021-05-12 01:12:09,356 | total steps 1710000, total episodes 44902, Lipschitz: 2.334/0.03030/0.01917/0.00060/0.35712 (upper/mean/median/min/max)
+2021-05-12 01:24:06,341 | TRAIN LOG: steps 1720000, episodes 45251, returns 1.96/1.98/0.97/1.99/100 (mean/median/min/max/num), 13.95 steps/s
+2021-05-12 01:24:14,890 | total steps 1720000, total episodes 45251, Lipschitz: 2.335/0.03014/0.02068/0.00098/0.28395 (upper/mean/median/min/max)
+2021-05-12 01:35:05,445 | TRAIN LOG: steps 1730000, episodes 45585, returns 1.96/1.98/0.96/1.99/100 (mean/median/min/max/num), 15.37 steps/s
+2021-05-12 01:35:12,591 | total steps 1730000, total episodes 45585, Lipschitz: 2.349/0.02014/0.01174/0.00050/0.24298 (upper/mean/median/min/max)
+2021-05-12 01:46:02,721 | TRAIN LOG: steps 1740000, episodes 45932, returns 1.98/1.98/1.95/1.99/100 (mean/median/min/max/num), 15.38 steps/s
+2021-05-12 01:46:09,269 | total steps 1740000, total episodes 45932, Lipschitz: 2.364/0.02215/0.01350/0.00047/0.34700 (upper/mean/median/min/max)
+2021-05-12 01:57:00,776 | TRAIN LOG: steps 1750000, episodes 46258, returns 1.93/1.97/-0.22/1.99/100 (mean/median/min/max/num), 15.35 steps/s
+2021-05-12 01:57:04,519 | total steps 1750000, total episodes 46258, Lipschitz: 2.362/0.02076/0.01513/0.00032/0.26952 (upper/mean/median/min/max)
+2021-05-12 02:07:55,995 | TRAIN LOG: steps 1760000, episodes 46565, returns 1.94/1.98/-0.50/1.99/100 (mean/median/min/max/num), 15.35 steps/s
+2021-05-12 02:08:04,706 | total steps 1760000, total episodes 46565, Lipschitz: 2.364/0.02186/0.01423/0.00042/0.25324 (upper/mean/median/min/max)
+2021-05-12 02:18:59,517 | TRAIN LOG: steps 1770000, episodes 46889, returns 1.93/1.98/0.50/1.99/100 (mean/median/min/max/num), 15.27 steps/s
+2021-05-12 02:19:09,897 | total steps 1770000, total episodes 46889, Lipschitz: 2.368/0.02228/0.01434/0.00030/0.31764 (upper/mean/median/min/max)
+2021-05-12 02:29:57,392 | TRAIN LOG: steps 1780000, episodes 47188, returns 1.94/1.98/0.84/1.99/100 (mean/median/min/max/num), 15.44 steps/s
+2021-05-12 02:30:06,175 | total steps 1780000, total episodes 47188, Lipschitz: 2.380/0.02313/0.01379/0.00027/0.25115 (upper/mean/median/min/max)
+2021-05-12 02:40:56,133 | TRAIN LOG: steps 1790000, episodes 47497, returns 1.93/1.98/0.95/1.99/100 (mean/median/min/max/num), 15.39 steps/s
+2021-05-12 02:41:02,552 | total steps 1790000, total episodes 47497, Lipschitz: 2.390/0.02058/0.01243/0.00041/0.32191 (upper/mean/median/min/max)
+2021-05-12 02:51:53,811 | TRAIN LOG: steps 1800000, episodes 47879, returns 1.94/1.98/-0.50/1.99/100 (mean/median/min/max/num), 15.35 steps/s
+2021-05-12 02:52:00,727 | total steps 1800000, total episodes 47879, Lipschitz: 2.385/0.02048/0.01419/0.00061/0.28233 (upper/mean/median/min/max)
+2021-05-12 03:02:53,756 | TRAIN LOG: steps 1810000, episodes 48269, returns 1.94/1.98/0.80/1.99/100 (mean/median/min/max/num), 15.31 steps/s
+2021-05-12 03:03:02,246 | total steps 1810000, total episodes 48269, Lipschitz: 2.386/0.02636/0.01750/0.00052/0.27483 (upper/mean/median/min/max)
+2021-05-12 03:13:53,984 | TRAIN LOG: steps 1820000, episodes 48565, returns 1.93/1.97/0.91/1.99/100 (mean/median/min/max/num), 15.34 steps/s
+2021-05-12 03:14:02,199 | total steps 1820000, total episodes 48565, Lipschitz: 2.409/0.02015/0.01390/0.00043/0.23037 (upper/mean/median/min/max)
+2021-05-12 03:24:52,552 | TRAIN LOG: steps 1830000, episodes 48928, returns 1.95/1.98/0.50/1.99/100 (mean/median/min/max/num), 15.38 steps/s
+2021-05-12 03:24:58,698 | total steps 1830000, total episodes 48928, Lipschitz: 2.420/0.02058/0.01497/0.00036/0.21139 (upper/mean/median/min/max)
+2021-05-12 03:35:48,280 | TRAIN LOG: steps 1840000, episodes 49271, returns 1.92/1.98/0.87/1.99/100 (mean/median/min/max/num), 15.39 steps/s
+2021-05-12 03:35:51,192 | total steps 1840000, total episodes 49271, Lipschitz: 2.425/0.02410/0.01792/0.00075/0.24739 (upper/mean/median/min/max)
+2021-05-12 03:46:41,357 | TRAIN LOG: steps 1850000, episodes 49614, returns 1.95/1.98/0.89/1.99/100 (mean/median/min/max/num), 15.38 steps/s
+2021-05-12 03:46:49,746 | total steps 1850000, total episodes 49614, Lipschitz: 2.428/0.02512/0.01430/0.00078/0.24574 (upper/mean/median/min/max)
+2021-05-12 03:57:38,321 | TRAIN LOG: steps 1860000, episodes 49961, returns 1.93/1.98/0.88/1.99/100 (mean/median/min/max/num), 15.42 steps/s
+2021-05-12 03:57:46,559 | total steps 1860000, total episodes 49961, Lipschitz: 2.442/0.02825/0.01128/0.00051/0.26984 (upper/mean/median/min/max)
+2021-05-12 04:09:19,835 | TRAIN LOG: steps 1870000, episodes 50282, returns 1.92/1.98/0.72/1.99/100 (mean/median/min/max/num), 14.42 steps/s
+2021-05-12 04:09:28,358 | total steps 1870000, total episodes 50282, Lipschitz: 2.445/0.02168/0.01412/0.00047/0.27632 (upper/mean/median/min/max)
+2021-05-12 04:21:48,826 | TRAIN LOG: steps 1880000, episodes 50576, returns 1.92/1.97/0.84/1.99/100 (mean/median/min/max/num), 13.50 steps/s
+2021-05-12 04:21:56,290 | total steps 1880000, total episodes 50576, Lipschitz: 2.449/0.02071/0.01299/0.00068/0.27364 (upper/mean/median/min/max)
+2021-05-12 04:34:18,460 | TRAIN LOG: steps 1890000, episodes 50851, returns 1.95/1.98/0.96/1.99/100 (mean/median/min/max/num), 13.47 steps/s
+2021-05-12 04:34:25,499 | total steps 1890000, total episodes 50851, Lipschitz: 2.470/0.02133/0.01439/0.00075/0.22961 (upper/mean/median/min/max)
+2021-05-12 04:46:47,324 | TRAIN LOG: steps 1900000, episodes 51124, returns 1.94/1.98/0.95/1.99/100 (mean/median/min/max/num), 13.48 steps/s
+2021-05-12 04:46:51,190 | total steps 1900000, total episodes 51124, Lipschitz: 2.473/0.02029/0.01304/0.00028/0.21003 (upper/mean/median/min/max)
+2021-05-12 04:59:14,124 | TRAIN LOG: steps 1910000, episodes 51418, returns 1.95/1.98/0.94/1.99/100 (mean/median/min/max/num), 13.46 steps/s
+2021-05-12 04:59:17,140 | total steps 1910000, total episodes 51418, Lipschitz: 2.474/0.01828/0.01251/0.00054/0.22819 (upper/mean/median/min/max)
+2021-05-12 05:11:36,682 | TRAIN LOG: steps 1920000, episodes 51688, returns 1.92/1.98/0.91/1.99/100 (mean/median/min/max/num), 13.52 steps/s
+2021-05-12 05:11:40,347 | total steps 1920000, total episodes 51688, Lipschitz: 2.483/0.02252/0.01552/0.00057/0.23101 (upper/mean/median/min/max)
+2021-05-12 05:24:02,122 | TRAIN LOG: steps 1930000, episodes 52029, returns 1.94/1.97/0.74/1.99/100 (mean/median/min/max/num), 13.48 steps/s
+2021-05-12 05:24:05,605 | total steps 1930000, total episodes 52029, Lipschitz: 2.473/0.02388/0.01328/0.00041/0.27174 (upper/mean/median/min/max)
+2021-05-12 05:36:25,095 | TRAIN LOG: steps 1940000, episodes 52285, returns 1.90/1.98/-0.50/1.99/100 (mean/median/min/max/num), 13.52 steps/s
+2021-05-12 05:36:28,086 | total steps 1940000, total episodes 52285, Lipschitz: 2.464/0.02742/0.01819/0.00093/0.22925 (upper/mean/median/min/max)
+2021-05-12 05:48:48,108 | TRAIN LOG: steps 1950000, episodes 52590, returns 1.94/1.98/0.88/1.99/100 (mean/median/min/max/num), 13.51 steps/s
+2021-05-12 05:48:51,119 | total steps 1950000, total episodes 52590, Lipschitz: 2.491/0.01698/0.01084/0.00040/0.23625 (upper/mean/median/min/max)
+2021-05-12 06:01:10,253 | TRAIN LOG: steps 1960000, episodes 52868, returns 1.93/1.97/0.82/1.99/100 (mean/median/min/max/num), 13.53 steps/s
+2021-05-12 06:01:13,752 | total steps 1960000, total episodes 52868, Lipschitz: 2.494/0.02570/0.01534/0.00081/0.24922 (upper/mean/median/min/max)
+2021-05-12 06:13:38,719 | TRAIN LOG: steps 1970000, episodes 53172, returns 1.96/1.98/0.96/1.99/100 (mean/median/min/max/num), 13.42 steps/s
+2021-05-12 06:13:41,749 | total steps 1970000, total episodes 53172, Lipschitz: 2.504/0.02425/0.01745/0.00056/0.28138 (upper/mean/median/min/max)
+2021-05-12 06:26:06,570 | TRAIN LOG: steps 1980000, episodes 53484, returns 1.96/1.98/0.90/1.99/100 (mean/median/min/max/num), 13.43 steps/s
+2021-05-12 06:26:10,416 | total steps 1980000, total episodes 53484, Lipschitz: 2.503/0.01747/0.01426/0.00073/0.23842 (upper/mean/median/min/max)
+2021-05-12 06:38:08,599 | TRAIN LOG: steps 1990000, episodes 53779, returns 1.94/1.97/0.95/1.99/100 (mean/median/min/max/num), 13.92 steps/s
+2021-05-12 06:38:11,601 | total steps 1990000, total episodes 53779, Lipschitz: 2.495/0.01943/0.01309/0.00056/0.27008 (upper/mean/median/min/max)
+2021-05-12 06:49:24,761 | TRAIN LOG: steps 2000000, episodes 54139, returns 1.96/1.98/0.77/1.99/100 (mean/median/min/max/num), 14.86 steps/s
+2021-05-12 06:49:27,880 | total steps 2000000, total episodes 54139, Lipschitz: 2.492/0.01744/0.01163/0.00070/0.28067 (upper/mean/median/min/max)

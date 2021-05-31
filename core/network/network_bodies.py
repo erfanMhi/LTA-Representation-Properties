@@ -60,7 +60,8 @@ class ConvBody(nn.Module):
         x = functional.relu(self.layers[0](self.shape_image(x)))
         for layer in self.layers[1:]:
             x = functional.relu(layer(x))
-        return x.view(x.size(0), -1)
+        # return x.view(x.size(0), -1)
+        return x.reshape(x.size(0), -1)
 
     def shape_image(self, x):
         return x.reshape(-1, self.spatial_length, self.spatial_length, self.in_channels).permute(0, 3, 1, 2)

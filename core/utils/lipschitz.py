@@ -26,7 +26,7 @@ def compute_lipschitz(cfg, rep_net, val_net, env):
                 phi_i, phi_j = phi_s[i], phi_s[j]
                 vi, vj = values[i], values[j]
                 diff_v[idx] = torch.abs(vi - vj).max().item()
-                diff_phi[idx] = np.linalg.norm((phi_i - phi_j).numpy())
+                diff_phi[idx] = np.linalg.norm((phi_i - phi_j).cpu().numpy())
                 idx += 1
 
         ratio_dv_dphi = np.divide(diff_v, diff_phi, out=np.zeros_like(diff_phi), where=diff_phi != 0)
@@ -40,9 +40,9 @@ def compute_lipschitz(cfg, rep_net, val_net, env):
 def compute_dynamics_awareness(cfg, rep_net):
     def dist_difference(base_rep, similar_rep, different_idx):
         if type(base_rep) == torch.Tensor:
-            base_rep = base_rep.data.numpy()
+            base_rep = base_rep.data.cpu().numpy()
         if type(similar_rep) == torch.Tensor:
-            similar_rep = similar_rep.data.numpy()
+            similar_rep = similar_rep.data.cpu().numpy()
         similar_dist = np.linalg.norm(similar_rep - base_rep, axis=1).mean()
         diff_rep1 = base_rep[different_idx[:, 0]]
         diff_rep2 = base_rep[different_idx[:, 1]]
@@ -68,7 +68,7 @@ def compute_decorrelation(cfg, rep_net, env):
     states = cfg.state_normalizer(states)
 
     with torch.no_grad():
-        representations = rep_net(states).numpy()
+        representations = rep_net(states).cpu().numpy()
         correlation_matrix = np.corrcoef(representations.transpose(1, 0))
         correlation_matrix[np.tril_indices(32)] = 0.0
         correlation_matrix = np.abs(correlation_matrix)

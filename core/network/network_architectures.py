@@ -32,7 +32,7 @@ class LinearNetwork(nn.Module):
         return y
 
     def compute_lipschitz_upper(self):
-        return [np.linalg.norm(self.fc_head.weight.detach().numpy(), ord=2)]
+        return [np.linalg.norm(self.fc_head.weight.detach().cpu().numpy(), ord=2)]
 
 class FCNetwork(nn.Module):
     def __init__(self, device, input_units, hidden_units, output_units, head_activation=None):
@@ -57,7 +57,7 @@ class FCNetwork(nn.Module):
 
     def compute_lipschitz_upper(self):
         lips = self.body.compute_lipschitz_upper()
-        lips.append(np.linalg.norm(self.fc_head.weight.detach().numpy(), ord=2))
+        lips.append(np.linalg.norm(self.fc_head.weight.detach().cpu().numpy(), ord=2))
         return lips
 
 
@@ -114,7 +114,7 @@ class ConvNetwork(nn.Module):
     def compute_lipschitz_upper(self):
         lips_fc = self.fc_body.compute_lipschitz_upper()
         lips_conv = self.conv_body.compute_lipschitz_upper()
-        return lips_conv + lips_fc + [np.linalg.norm(self.fc_head.weight.detach().numpy(), ord=2)]
+        return lips_conv + lips_fc + [np.linalg.norm(self.fc_head.weight.detach().cpu().numpy(), ord=2)]
 
 
 class ConvBody(nn.Module):
@@ -221,5 +221,5 @@ class FCActionNetwork(nn.Module):
 
     def compute_lipschitz_upper(self):
         lips = self.body.compute_lipschitz_upper()
-        lips.append(np.linalg.norm(self.fc_head.weight.detach().numpy(), ord=2))
+        lips.append(np.linalg.norm(self.fc_head.weight.detach().cpu().numpy(), ord=2))
         return lips

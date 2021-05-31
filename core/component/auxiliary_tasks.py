@@ -71,7 +71,7 @@ class InputDecoder(Rgb2Xy):
         prediction, target = prediction[idx], target[idx]
 
         def invert(x):
-            x = (x.detach().numpy() + 1) * 255 / 2
+            x = (x.detach().cpu().numpy() + 1) * 255 / 2
             # x = x.astype(np.uint8)
             return np.clip(x/255.0, 0.0, 1.0)
 
@@ -355,7 +355,7 @@ class AuxControlCollect(AuxTask):
         states, actions, rewards, next_states, terminals = transition
 
         if self.flip_reward:
-            aux_rewards = self.flip(rewards)
+            aux_rewards = self.flip(rewards.cpu())
         else:
             aux_rewards = rewards
         aux_terminals = terminals

@@ -44,7 +44,9 @@ class Config:
         # self.retain_tasks = 1
         self.replay_with_len = False
         self.fruit_num = 6
-
+        self.log_observations = False
+        self.single_channel_color = True
+    
     def get_log_dir(self):
         d = os.path.join(self.data_root, self.exp_name, "{}_run".format(self.run),
                          "{}_param_setting".format(self.param_setting))

@@ -465,12 +465,13 @@ class CollectTwoColorXYEarlyTermin:
 
 
 class CollectTwoColorRGB(CollectTwoColorXYEarlyTermin):
-    def __init__(self, seed=np.random.randint(int(1e5)), fruit_num=6):
+    def __init__(self, seed=np.random.randint(int(1e5)), fruit_num=6, single_channel_color=True):
         super().__init__(seed, fruit_num)
 
         d = len(self.obstacles_map)
         self.state_dim = (d, d, 3)
         self.main_template = np.zeros(self.state_dim)
+        self.single_channel_color = single_channel_color
         for x in range(d):
             for y in range(d):
                 if self.obstacles_map[x][y]:
@@ -486,10 +487,18 @@ class CollectTwoColorRGB(CollectTwoColorXYEarlyTermin):
         episode_template = np.copy(self.main_template)
 
         for rx, ry in reds:
-            episode_template[rx][ry] = np.array([255, 0, 0])
+
+            if self.single_channel_color:
+                episode_template[rx][ry] = np.array([255, 0, 0])
+            else:
+                episode_template[rx][ry] = np.array([255, 100, 100])
 
         for gx, gy in greens:
-            episode_template[gx][gy] = np.array([0, 255, 0])
+
+            if self.single_channel_color:
+                episode_template[gx][gy] = np.array([0, 255, 0])
+            else:
+                episode_template[gx][gy] = np.array([100, 255, 100])
 
         return episode_template
 
@@ -531,18 +540,29 @@ class CollectTwoColorRGB(CollectTwoColorXYEarlyTermin):
             if not self.object_status[object_idx]:
                 ox, oy = coord
                 state[ox][oy] = np.array([128, 128, 128])
-        state[x][y] = np.array([0, 0, 255])
+
+        if self.single_channel_color:
+            state[x][y] = np.array([0, 0, 255])
+        else:
+            state[x][y] = np.array([100, 100, 255])
+
         return state
 
     def get_useful(self, img=None):
         if img is None:
             img = self.generate_state(self.agent_loc, self.object_status, self.greens, self.reds)
-        red, green, blue, gray = np.array([255., 0., 0.]), np.array([0., 255., 0.]), \
+        
+        if self.single_channel_color:
+            red, green, blue, gray = np.array([255., 0., 0.]), np.array([0., 255., 0.]), \
                                  np.array([0., 0., 255.]), np.array([128., 128., 128.])
-
-        agent_loc = np.argwhere(np.logical_and(np.logical_and(img[:, :, 2] == 255.0,
-                                                                img[:, :, 1] == 0.0),
-                                                 img[:, :, 0] == 0.0))[0]
+            agent_loc = np.argwhere(np.logical_and(np.logical_and(img[:, :, 2] == 255.0,
+                                                    img[:, :, 1] == 0.0), img[:, :, 0] == 0.0))[0]       
+        else:
+            red, green, blue, gray = np.array([255., 100., 100.]), np.array([100., 255., 100.]), \
+                                np.array([100., 100., 255.]), np.array([128., 128., 128.])
+            agent_loc = np.argwhere(np.logical_and(np.logical_and(img[:, :, 2] == 255.0,
+                                                    img[:, :, 1] == 100.0), img[:, :, 0] == 100.0))[0]
+        
         target = np.zeros((len(self.object_coords)))
 
         object_coords = np.array(self.object_coords)

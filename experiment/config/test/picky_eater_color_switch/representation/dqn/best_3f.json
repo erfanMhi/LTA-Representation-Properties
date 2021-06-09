@@ -1,9 +1,9 @@
 {
-    "config_class": "DQNAuxAgentConfig",
+    "config_class": "DQNAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test/picky_eater/representation/dqn_aux/aux_control/best_1f",
+        "exp_name": "test/picky_eater_color_switch/representation/dqn/best_3f",
         "env_name": "CollectTwoColorRGB",
-        "agent": "DQNAuxSuccessorAgent",
+        "agent": "DQNAgent",
         "discount": 0.99,
         "state_norm_coef": 255.0,
 
@@ -18,8 +18,7 @@
             "conv_architecture": {
                 "conv_layers": [
                    {"in": 3,  "out": 32, "kernel": 4, "stride": 1, "pad": 1},
-                   {"in": 32,  "out": 32, "kernel": 4, "stride": 1, "pad": 1},
-                   {"in": 32,  "out": 64, "kernel": 4, "stride": 2, "pad": 2}
+                   {"in": 32,  "out": 16, "kernel": 4, "stride": 2, "pad": 2}
                 ],
                 "fc_layers": {"hidden_units":[128, 128]}
             },
@@ -33,16 +32,6 @@
             "val_fn_type": "linear",
             "init_type": "lta"
          },
-
-        "aux_config": [
-            {
-            "aux_fn_type":  "linear",
-            "aux_out_dim": 4,
-            "aux_task": "aux_control_collect",
-            "discount": 0.9,
-            "flip_reward":  true
-            }
-        ],
 
         "replay": true,
         "memory_size": 100000,
@@ -59,11 +48,11 @@
         "save_interval": 0,
         "timeout": 500,
         "stats_queue_size": 100,
- 	"save_early": {"mean": 0.99, "min": 0.5},
+ 	"save_early": {"mean": 2.9, "min": 1.5},
 	"distance_paths": [{"current": "example/picky_eater/trained_dqn/distance_current_states_sameEP_green.npy", "action": "example/picky_eater/trained_dqn/distance_actions_sameEP_green.npy", "next": "example/picky_eater/trained_dqn/distance_next_states_sameEP_green.npy", "reward": "example/picky_eater/trained_dqn/distance_rewards_sameEP_green.npy", "terminal": "example/picky_eater/trained_dqn/distance_terminals_sameEP_green.npy", "label": "Green"}, {"current": "example/picky_eater/trained_dqn/distance_current_states_sameEP_red.npy", "action": "example/picky_eater/trained_dqn/distance_actions_sameEP_red.npy", "next": "example/picky_eater/trained_dqn/distance_next_states_sameEP_red.npy", "reward": "example/picky_eater/trained_dqn/distance_rewards_sameEP_red.npy", "terminal": "example/picky_eater/trained_dqn/distance_terminals_sameEP_red.npy", "label": "Red"}, {"current": "example/picky_eater/trained_dqn/distance_current_states_sameEP_random.npy", "action": "example/picky_eater/trained_dqn/distance_actions_sameEP_random.npy", "next": "example/picky_eater/trained_dqn/distance_next_states_sameEP_random.npy", "reward": "example/picky_eater/trained_dqn/distance_rewards_sameEP_random.npy", "terminal": "example/picky_eater/trained_dqn/distance_terminals_sameEP_random.npy", "label": "Random"}],
 
-	"online_property": true,
-        "tensorboard_logs": true,
+	"online_property": false,
+        "tensorboard_logs": false,
         "save_params": true,
         "visualize": false,
         "evaluate_lipschitz": true,
@@ -73,12 +62,14 @@
 	"evaluate_diversity": true,
 	"evaluate_sparsity": true,
         "evaluate_regression": false,
-	"fruit_num": 1
+	"fruit_num": 3,
+	"single_channel_color": false
     },
    "sweep_parameters": {
         "learning_rate": [0.0001],
         "memory_size": [100000],
         "epsilon_end": [0.1],
-        "target_network_update_freq": [1024]
-   }
+        "target_network_update_freq": [1024],
+	"single_channel_color": [false, true] 
+    }
 }

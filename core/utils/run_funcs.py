@@ -1,13 +1,16 @@
 import time
+import numpy as np
 
 def run_steps(agent):
     t0 = time.time()
+    observations = []
     agent.populate_returns()
     while True:
         if agent.cfg.log_interval and not agent.total_steps % agent.cfg.log_interval:
             agent.log_file(elapsed_time=agent.cfg.log_interval / (time.time() - t0))
-            if agent.cfg.tensorboard_logs: 
-                agent.log_tensorboard() 
+            agent.log_values()
+            if agent.cfg.tensorboard_logs:
+                agent.log_tensorboard()
             t0 = time.time()
         if agent.cfg.eval_interval and not agent.total_steps % agent.cfg.eval_interval:
             # agent.eval_episodes(elapsed_time=agent.cfg.log_interval / (time.time() - t0))
@@ -22,8 +25,15 @@ def run_steps(agent):
         if agent.cfg.max_steps and agent.total_steps >= agent.cfg.max_steps:
             agent.save()
             break
+        if agent.cfg.log_observations:
+            if agent.reset:
+                print(agent.total_steps)
+                observations.append([])
+            observations[-1].append(agent.state)
         agent.step()
-
+    
+    if agent.cfg.log_observations:
+        agent.cfg.logger.numpy_log(observations)
 
 def run_steps_nas_study(agent):
     t0 = time.time()

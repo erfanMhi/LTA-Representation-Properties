@@ -383,6 +383,7 @@ class CollectTwoColorXYEarlyTermin:
         reds = np.array(reds).flatten()
         return np.concatenate([np.array(agent_loc), object_status * 14, greens, reds])
 
+
     def reset(self):
         obj_ids = np.arange(len(self.object_coords))
         obj_ids = np.random.permutation(obj_ids)
@@ -409,6 +410,28 @@ class CollectTwoColorXYEarlyTermin:
                 self.agent_loc = rx, ry
                 self.object_status = np.ones(len(self.object_coords))
                 return self.generate_state(self.agent_loc, self.object_status, self.greens, self.reds)
+
+    def get_fruit_nearby_states(self, fruit_idx, fruit_color='green'):
+
+        state_action_list = []
+        if fruit_color == 'red':
+            fruit_x, fruit_y = self.reds[fruit_idx]
+        elif fruit_color == 'green':
+            fruit_x, fruit_y = self.greens[fruit_idx]
+        else:
+            raise ValueError('{} is not valid.'.format(fruit_color))
+
+        for action_idx, (i, j) in enumerate(self.actions):
+            x, y = fruit_x+i, fruit_y+j
+
+            # Ensuring the next position is within bounds
+            nx, ny = min(max(x, self.min_x), self.max_x), min(max(y, self.min_y), self.max_y)
+            if not self.obstacles_map[nx][ny] and (x, y) == (nx, ny):
+                object_status = np.ones(len(self.object_coords))
+                state = self.generate_state((x, y), object_status, self.greens, self.reds)
+                state_action_list.append((state, self.actions.index((-i, -j))))
+
+        return state_action_list
 
     def step(self, a):
         dx, dy = self.actions[a[0]]
@@ -446,6 +469,8 @@ class CollectTwoColorXYEarlyTermin:
         # if done:
         #     print("done", self.correct_collect, reward, self.rewarding_color)
         state = self.generate_state(self.agent_loc, self.object_status, self.greens, self.reds)
+                 
+
         return state, np.asarray(reward), done, ""
 
     def get_visualization_segment(self):

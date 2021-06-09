@@ -22,7 +22,7 @@ class DQNAgent(base.Agent):
             path = os.path.join(cfg.data_root, cfg.rep_config['path'])
             print("loading from", path)
             rep_net.load_state_dict(torch.load(path))
-        
+
         val_net = cfg.val_fn()
         if 'load_params' in cfg.val_fn_config:
             if cfg.val_fn_config['load_params']:
@@ -66,7 +66,7 @@ class DQNAgent(base.Agent):
         if self.reset is True:
             self.state = self.env.reset()
             self.reset = False
-
+        
         # with torch.no_grad():
         #     phi = self.rep_net(self.cfg.state_normalizer(self.state))
         #     q_values = self.val_net(phi)
@@ -76,6 +76,7 @@ class DQNAgent(base.Agent):
         #     action = np.random.randint(0, len(q_values))
         # else:
         #     action = np.random.choice(np.flatnonzero(q_values == q_values.max()))
+
         action = self.policy(self.state, self.cfg.eps_schedule())
 
         next_state, reward, done, _ = self.env.step([action])
@@ -150,6 +151,47 @@ class DQNAgent(base.Agent):
         self.cfg.logger.tensorboard_writer.add_scalar('dqn/reward/min_reward', min, self.total_steps)
         self.cfg.logger.tensorboard_writer.add_scalar('dqn/reward/max_reward', max, self.total_steps)
 
+    def log_values(self):
+        total_episodes = len(self.episode_rewards)
+        for fruit_color in ['red', 'green']:
+            for i in range(self.env.fruit_num):
+                state_action_list = self.env.get_fruit_nearby_states(i, fruit_color)
+                state_vals = 0
+                to_fruit_vals = 0
+                other_dir_vals_mean = 0
+                other_dir_vals_max = 0
+                other_dir_vals_min = 0
+                for state, fruit_action in state_action_list:
+                    with torch.no_grad():
+                        phi = self.rep_net(self.cfg.state_normalizer(state))
+                        q_values = self.val_net(phi)
+                    q_values = torch_utils.to_np(q_values).flatten()
+                    policy = 0.1/(len(self.env.actions)) * np.ones(len(self.env.actions))
+                    policy[q_values.argmax()] += 0.9
+                    state_vals += policy@q_values
+                    to_fruit_vals += q_values[fruit_action]
+                    other_dir_vals = q_values[np.arange(len(self.env.actions))!=fruit_action]
+                    other_dir_vals_mean += np.mean(other_dir_vals)
+                    other_dir_vals_max +=  np.max(other_dir_vals)
+                    other_dir_vals_min +=  np.min(other_dir_vals)
+
+                log_str = 'Fruit-undirected action-values (%s, %d) LOG: steps %d, episodes %3d, ' \
+                            'values %.10f (mean)'
+
+                self.cfg.logger.info(log_str % (fruit_color, i, self.total_steps, total_episodes, to_fruit_vals/len(self.env.actions)))
+
+                log_str = 'Fruit-undirected action-values (%s, %d) LOG: steps %d, episodes %3d, ' \
+                            'values %.10f/%.10f/%.10f (mean/min/max)'
+                
+                self.cfg.logger.info(log_str % (fruit_color, i, self.total_steps, total_episodes, other_dir_vals_mean/len(self.env.actions),
+                                            other_dir_vals_min/len(self.env.actions), other_dir_vals_max/len(self.env.actions)))
+                
+                log_str = 'Fruit state-values (%s, %d) LOG: steps %d, episodes %3d, ' \
+                            'values %.10f (mean)'
+
+                self.cfg.logger.info(log_str % (fruit_color, i, self.total_steps, total_episodes, state_vals/len(self.env.actions)))
+
+                
     def log_file(self, elapsed_time=-1):
         rewards = self.ep_returns_queue
         total_episodes = len(self.episode_rewards)
@@ -161,6 +203,7 @@ class DQNAgent(base.Agent):
         self.cfg.logger.info(log_str % (self.total_steps, total_episodes, mean, median,
                                         min, max, len(rewards),
                                         elapsed_time))
+
         return mean, median, min, max
 
     def log_lipschitz(self):

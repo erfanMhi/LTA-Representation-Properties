@@ -175,7 +175,7 @@ class DQNAgent(base.Agent):
                     other_dir_vals_max +=  np.max(other_dir_vals)
                     other_dir_vals_min +=  np.min(other_dir_vals)
 
-                log_str = 'Fruit-undirected action-values (%s, %d) LOG: steps %d, episodes %3d, ' \
+                log_str = 'Fruit-directed action-values (%s, %d) LOG: steps %d, episodes %3d, ' \
                             'values %.10f (mean)'
 
                 self.cfg.logger.info(log_str % (fruit_color, i, self.total_steps, total_episodes, to_fruit_vals/len(self.env.actions)))

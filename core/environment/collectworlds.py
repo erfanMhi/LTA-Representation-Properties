@@ -345,7 +345,7 @@ class CollectTwoColorXY:
 
 
 class CollectTwoColorXYEarlyTermin:
-    def __init__(self, seed=np.random.randint(int(1e5)), fruit_num=6):
+    def __init__(self, seed=np.random.randint(int(1e5)), fruit_num=6, rewarding_color='green'):
         random_seed(seed)
 
         self.object_coords = [(7, 2), (2, 7), (8, 6), (6, 8),
@@ -370,7 +370,7 @@ class CollectTwoColorXYEarlyTermin:
         self.min_x, self.max_x, self.min_y, self.max_y = 0, 14, 0, 14
 
         self.greens, self.reds = None, None
-        self.rewarding_color = 'green'
+        self.rewarding_color = rewarding_color
         self.rewarding_blocks = None
         self.correct_collect = 0
         self.wrong_collect = 0
@@ -411,7 +411,7 @@ class CollectTwoColorXYEarlyTermin:
                 self.object_status = np.ones(len(self.object_coords))
                 return self.generate_state(self.agent_loc, self.object_status, self.greens, self.reds)
 
-    def get_fruit_nearby_states(self, fruit_idx, fruit_color='green'):
+    def get_fruit_nearby_states(self, fruit_idx, fruit_color='green', removed_rewarding_fruits=[]):
 
         state_action_list = []
         if fruit_color == 'red':
@@ -490,8 +490,10 @@ class CollectTwoColorXYEarlyTermin:
 
 
 class CollectTwoColorRGB(CollectTwoColorXYEarlyTermin):
-    def __init__(self, seed=np.random.randint(int(1e5)), fruit_num=6, single_channel_color=True):
-        super().__init__(seed, fruit_num)
+    def __init__(self, seed=np.random.randint(int(1e5)), fruit_num=6, single_channel_color=True, rewarding_color='green'):
+        super().__init__(seed, fruit_num, rewarding_color)
+
+        print('rewarding_color: ', rewarding_color)
 
         d = len(self.obstacles_map)
         self.state_dim = (d, d, 3)

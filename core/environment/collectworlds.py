@@ -428,6 +428,9 @@ class CollectTwoColorXYEarlyTermin:
             nx, ny = min(max(x, self.min_x), self.max_x), min(max(y, self.min_y), self.max_y)
             if not self.obstacles_map[nx][ny] and (x, y) == (nx, ny):
                 object_status = np.ones(len(self.object_coords))
+                
+                for rrf in removed_rewarding_fruits:
+                    object_status[self.object_coords.index(self.rewarding_blocks[rrf])] = 0
                 state = self.generate_state((x, y), object_status, self.greens, self.reds)
                 state_action_list.append((state, self.actions.index((-i, -j))))
 
@@ -564,7 +567,7 @@ class CollectTwoColorRGB(CollectTwoColorXYEarlyTermin):
         x, y = agent_loc
 
         for object_idx, coord in enumerate(self.object_coords):
-            if not self.object_status[object_idx]:
+            if not object_status[object_idx]:
                 ox, oy = coord
                 state[ox][oy] = np.array([128, 128, 128])
 

@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test/picky_eater/control/last/different_task/fix_rep/dqn_aux/aux_control/sweep_3f",
+        "exp_name": "test/picky_eater_color_switch/control/last/different_task/fix_rep/dqn/best_3f",
         "env_name": "CollectTwoColorRGB",
         "agent": "DQNAgent",
         "discount": 0.99,
@@ -26,7 +26,7 @@
             "out_dim": 32,
             "load_params": true,
             "train_rep": false,
-            "path": "test/picky_eater_color_switch/representation/dqn_aux/aux_control/best_3f/{}_run/0_param_setting/parameters/rep_net"
+            "path": "test/picky_eater_color_switch/representation/dqn/best_3f/{}_run/0_param_setting/parameters/rep_net"
         },
 
         "val_fn_config": {
@@ -35,15 +35,15 @@
          },
 
         "replay": true,
-        "memory_size": 10000,
+        "memory_size": 100000,
         "batch_size": 32,
 
         "optimizer_type": "Adam",
         "use_target_network": true,
-        "target_network_update_freq": 2048,
+        "target_network_update_freq": 1024,
 
         "max_steps": 1000000,
-        "log_interval": 10000,
+        "log_interval": 1000,
         "eval_interval": 10000,
         "eval_episodes": 5,
         "save_interval": 0,
@@ -57,11 +57,11 @@
         "rewarding_color": "red",
 
 	"fruit_num": 3,
-        "evaluate_lipschitz": true,
+        "evaluate_lipschitz": false,
         "lipschitz_sampled_states_path": "example/picky_eater/trained_dqn/lip_sampled_states.npy"
     },
     "sweep_parameters": {
-         "learning_rate": [0.01, 0.003, 0.001, 0.0003, 0.0001],
+         "learning_rate": [0.0003],
          "memory_size": [100000],
          "epsilon_end": [0.1],
          "target_network_update_freq": [1024],

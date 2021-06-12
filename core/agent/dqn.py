@@ -1,5 +1,6 @@
 import os
 from collections import namedtuple
+from itertools import chain, combinations
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cmx
@@ -151,45 +152,56 @@ class DQNAgent(base.Agent):
         self.cfg.logger.tensorboard_writer.add_scalar('dqn/reward/min_reward', min, self.total_steps)
         self.cfg.logger.tensorboard_writer.add_scalar('dqn/reward/max_reward', max, self.total_steps)
 
+
     def log_values(self):
+        
+        def powerset(iterable):
+            "powerset([1,2,3]) --> () (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)"
+            s = list(iterable)
+            return chain.from_iterable(combinations(s, r) for r in range(len(s)+1))
+        
         total_episodes = len(self.episode_rewards)
         for fruit_color in ['red', 'green']:
             for i in range(self.env.fruit_num):
-                state_action_list = self.env.get_fruit_nearby_states(i, fruit_color)
-                state_vals = 0
-                to_fruit_vals = 0
-                other_dir_vals_mean = 0
-                other_dir_vals_max = 0
-                other_dir_vals_min = 0
-                for state, fruit_action in state_action_list:
-                    with torch.no_grad():
-                        phi = self.rep_net(self.cfg.state_normalizer(state))
-                        q_values = self.val_net(phi)
-                    q_values = torch_utils.to_np(q_values).flatten()
-                    policy = 0.1/(len(self.env.actions)) * np.ones(len(self.env.actions))
-                    policy[q_values.argmax()] += 0.9
-                    state_vals += policy@q_values
-                    to_fruit_vals += q_values[fruit_action]
-                    other_dir_vals = q_values[np.arange(len(self.env.actions))!=fruit_action]
-                    other_dir_vals_mean += np.mean(other_dir_vals)
-                    other_dir_vals_max +=  np.max(other_dir_vals)
-                    other_dir_vals_min +=  np.min(other_dir_vals)
+                remove_fruit_list = powerset(list(range(self.env.fruit_num)))
+                for rm_fruits in remove_fruit_list:
+                    if (i in rm_fruits and self.env.rewarding_color == fruit_color):
+                        continue
+                    state_action_list = self.env.get_fruit_nearby_states(i, fruit_color, rm_fruits)
+                    state_vals = 0
+                    to_fruit_vals = 0
+                    other_dir_vals_mean = 0
+                    other_dir_vals_max = 0
+                    other_dir_vals_min = 0
+                    for state, fruit_action in state_action_list:
+                        with torch.no_grad():
+                            phi = self.rep_net(self.cfg.state_normalizer(state))
+                            q_values = self.val_net(phi)
+                        q_values = torch_utils.to_np(q_values).flatten()
+                        policy = 0.1/(len(self.env.actions)) * np.ones(len(self.env.actions))
+                        policy[q_values.argmax()] += 0.9
+                        state_vals += policy@q_values
+                        to_fruit_vals += q_values[fruit_action]
+                        other_dir_vals = q_values[np.arange(len(self.env.actions))!=fruit_action]
+                        other_dir_vals_mean += np.mean(other_dir_vals)
+                        other_dir_vals_max +=  np.max(other_dir_vals)
+                        other_dir_vals_min +=  np.min(other_dir_vals)
 
-                log_str = 'Fruit-directed action-values (%s, %d) LOG: steps %d, episodes %3d, ' \
-                            'values %.10f (mean)'
+                    log_str = 'Fruit-directed action-values (%s, %d) removed_fruits %s LOG: steps %d, episodes %3d, ' \
+                                'values %.10f (mean)'
 
-                self.cfg.logger.info(log_str % (fruit_color, i, self.total_steps, total_episodes, to_fruit_vals/len(self.env.actions)))
+                    self.cfg.logger.info(log_str % (fruit_color, i, str(rm_fruits), self.total_steps, total_episodes, to_fruit_vals/len(self.env.actions)))
 
-                log_str = 'Fruit-undirected action-values (%s, %d) LOG: steps %d, episodes %3d, ' \
-                            'values %.10f/%.10f/%.10f (mean/min/max)'
-                
-                self.cfg.logger.info(log_str % (fruit_color, i, self.total_steps, total_episodes, other_dir_vals_mean/len(self.env.actions),
-                                            other_dir_vals_min/len(self.env.actions), other_dir_vals_max/len(self.env.actions)))
-                
-                log_str = 'Fruit state-values (%s, %d) LOG: steps %d, episodes %3d, ' \
-                            'values %.10f (mean)'
+                    log_str = 'Fruit-undirected action-values (%s, %d) removed_fruits %s LOG: steps %d, episodes %3d, ' \
+                                'values %.10f/%.10f/%.10f (mean/min/max)'
+                    
+                    self.cfg.logger.info(log_str % (fruit_color, i, str(rm_fruits), self.total_steps, total_episodes, other_dir_vals_mean/len(self.env.actions),
+                                                other_dir_vals_min/len(self.env.actions), other_dir_vals_max/len(self.env.actions)))
+                    
+                    log_str = 'Fruit state-values (%s, %d) removed_fruits %s LOG: steps %d, episodes %3d, ' \
+                                'values %.10f (mean)'
 
-                self.cfg.logger.info(log_str % (fruit_color, i, self.total_steps, total_episodes, state_vals/len(self.env.actions)))
+                    self.cfg.logger.info(log_str % (fruit_color, i, str(rm_fruits), self.total_steps, total_episodes, state_vals/len(self.env.actions)))
 
                 
     def log_file(self, elapsed_time=-1):

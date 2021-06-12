@@ -39,7 +39,8 @@ class Config:
         self.state_norm_coef = 1.0
         self.reward_normalizer = None
         self.reward_norm_coef = 1.0
-
+        self.rewarding_color = 'green'
+        
         # self.eval_set_size = 1000
         # self.retain_tasks = 1
         self.replay_with_len = False

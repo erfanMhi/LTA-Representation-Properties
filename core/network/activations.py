@@ -5,21 +5,22 @@ import torch.nn as nn
 import torch.nn.functional as functional
 
 class LTA(nn.Module):
-    def __init__(self, device, cfg):
+    def __init__(self, cfg):
         super().__init__()
         # self.tiling = cfg.activation['tiling']
         # 1 tiling, binning
-        self.to(device)
+        self.to(cfg.device)
 
         self.n_tilings = 1
         self.n_tiles = cfg.activation_config['tile']
         self.bound_low, self.bound_high = cfg.activation_config['bound_low'], cfg.activation_config['bound_high']
         self.delta = (self.bound_high - self.bound_low) / self.n_tiles
-        self.c_mat = torch.as_tensor(np.array([self.delta * i for i in range(self.n_tiles)]) + self.bound_low, dtype=torch.float32).to(device)
+        self.c_mat = torch.as_tensor(np.array([self.delta * i for i in range(self.n_tiles)]) + self.bound_low, dtype=torch.float32).to(device=cfg.device)
         self.eta = cfg.activation_config['eta']
         self.d = cfg.activation_config['input']
-        self.device = device
+        self.device = cfg.device
 
+    # def forward(self, reps):
     def __call__(self, reps):
         temp = reps
         temp = temp.reshape([-1, self.d, 1])

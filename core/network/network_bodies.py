@@ -8,10 +8,12 @@ from core.network import network_utils
 
 
 class FCBody(nn.Module):
-    def __init__(self, input_dim, hidden_units=(64, 64), activation=functional.relu):
+    def __init__(self, device, input_dim, hidden_units=(64, 64), activation=functional.relu):
         super().__init__()
+        self.to(device)
+        self.device = device
         dims = (input_dim,) + hidden_units
-        self.layers = nn.ModuleList([network_utils.layer_init_xavier(nn.Linear(dim_in, dim_out)) for dim_in, dim_out in zip(dims[:-1], dims[1:])])
+        self.layers = nn.ModuleList([network_utils.layer_init_xavier(nn.Linear(dim_in, dim_out).to(device)) for dim_in, dim_out in zip(dims[:-1], dims[1:])])
         self.activation = activation
         self.feature_dim = dims[-1]
 

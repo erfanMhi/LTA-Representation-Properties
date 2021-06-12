@@ -465,7 +465,7 @@ class Orthogonal(AuxTask):
         return l
 
     def compute_loss(self, transition, phi, nphi, action):
-        random_idx = torch.randperm(phi.size()[0])
+        random_idx = torch.randperm(phi.size()[0]).to(phi.device)
         phi2 = phi[random_idx]
         loss = self.loss(phi, phi2, self.weight)
         if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
@@ -526,6 +526,15 @@ class AuxFactory:
                                                                 aux_config['hidden_units'], aux_config['aux_out_dim'])
                     aux_target_predictor = network_architectures.FCNetwork(cfg.device, np.prod(cfg.rep_fn().output_dim),
                                                                 aux_config['hidden_units'], aux_config['aux_out_dim'])
+                else:
+                    raise NotImplementedError
+            elif aux_config['aux_task'] in ['color_predictor']:
+                if aux_config['aux_fn_type'] == 'linear':
+                    raise NotImplementedError
+                elif aux_config['aux_fn_type'] == 'fc':
+                    aux_predictor = network_architectures.FCNetwork(cfg.device, np.prod(cfg.rep_fn().output_dim),
+                                                                    aux_config['hidden_units'], aux_config['aux_out_dim'],
+                                                                    head_activation=nn.Softmax(1).to(cfg.device))
                 else:
                     raise NotImplementedError
             else:

@@ -356,7 +356,6 @@ class CollectTwoColorXYEarlyTermin:
         
         # Reducing number of the fruits to fruit_num
         self.object_coords = self.object_coords[:self.fruit_num] + self.object_coords[-self.fruit_num:]
-        
         # one indiciate the object is available to be picked up
         self.object_status = np.ones(self.fruit_num*2)
         self.action_dim = 4
@@ -723,7 +722,7 @@ class CollectRandColorRGBTest(CollectRandColorRGB):
 
 class CollectTwoColor(CollectTwoColorRGB):
     def __init__(self, rewarding_color, seed=np.random.randint(int(1e5)), fruit_num=6):
-        super().__init__(seed, fruit_num=fruit_num)
+        super().__init__(seed, fruit_num=fruit_num, rewarding_color=rewarding_color)
         self.rewarding_color = rewarding_color
 
 

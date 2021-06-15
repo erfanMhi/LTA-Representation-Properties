@@ -405,13 +405,15 @@ class ColorPredictor(AuxTask):
         self.target_color[np.all(color == self.gray, axis=1)] = 3
 
         target = torch_utils.tensor(self.target_color, phi.device).long()
-        loss = self.loss(prediction, target)
+        ls = self.loss(prediction, target)
 
         # self.total_steps += 1 # moved total_steps += 1 in the aux_agent code
         if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
-            self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/aux/color_predictor_{}'.format(self.id), loss.item(), self.total_steps)
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/aux/color_predictor_{}'.format(self.id), ls.item(), self.total_steps)
 
-        return loss
+        self.total_steps += 1
+
+        return ls
 
 
 class CountBlocks(AuxTask):

@@ -35,11 +35,16 @@ class LinearNetwork(nn.Module):
         return [np.linalg.norm(self.fc_head.weight.detach().cpu().numpy(), ord=2)]
 
 class FCNetwork(nn.Module):
-    def __init__(self, device, input_units, hidden_units, output_units, head_activation=None):
+    def __init__(self, device, input_units, hidden_units, output_units, head_activation=None, init_type='xavier'):
         super().__init__()
         self.to(device)
-        body = network_bodies.FCBody(device, input_units, hidden_units=tuple(hidden_units))
-        self.fc_head = network_utils.layer_init_xavier(nn.Linear(body.feature_dim, output_units)).to(device)
+        body = network_bodies.FCBody(device, input_units, hidden_units=tuple(hidden_units), init_type=init_type)
+        if init_type == "xavier":
+            self.fc_head = network_utils.layer_init_xavier(nn.Linear(body.feature_dim, output_units))
+        elif init_type == "lta":
+            self.fc_head = network_utils.layer_init_lta(nn.Linear(body.feature_dim, output_units))
+        else:
+            raise ValueError('init_type is not defined: {}'.format(init_type))
 
         self.device = device
         self.body = body

@@ -485,7 +485,13 @@ class AuxFactory:
     @classmethod
     def get_aux_task(cls, cfg):
         aux_tasks = []
+        aux_weights = []
         for aux_config in cfg.aux_config:
+            if "aux_weight" not in aux_config.keys():
+                aux_weights.append(1)
+            else:
+                aux_weights.append(aux_config["aux_weight"])
+
             # Creating aux_predictor (a network to predict aux targets)
             if aux_config['aux_task'] in ['nas_v1', 'nas_v1_delta', 'nas_v2', 'nas_v2_delta', 'reward_predictor']:
                 # Aux tasks where the prediction depends on state and action
@@ -610,4 +616,4 @@ class AuxFactory:
             else:
                 raise NotImplementedError
 
-        return aux_tasks
+        return aux_tasks, aux_weights

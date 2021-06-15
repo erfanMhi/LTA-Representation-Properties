@@ -37,9 +37,9 @@ class LinearNetwork(nn.Module):
 class FCNetwork(nn.Module):
     def __init__(self, device, input_units, hidden_units, output_units, head_activation=None):
         super().__init__()
-        body = network_bodies.FCBody(input_units, hidden_units=tuple(hidden_units))
-        self.fc_head = network_utils.layer_init_xavier(nn.Linear(body.feature_dim, output_units))
         self.to(device)
+        body = network_bodies.FCBody(device, input_units, hidden_units=tuple(hidden_units))
+        self.fc_head = network_utils.layer_init_xavier(nn.Linear(body.feature_dim, output_units)).to(device)
 
         self.device = device
         self.body = body
@@ -48,7 +48,6 @@ class FCNetwork(nn.Module):
     def forward(self, x):
         if not isinstance(x, torch.Tensor): x = torch_utils.tensor(x, self.device)
         if len(x.shape) > 2: x = x.view(x.shape[0], -1)
-
         phi = self.body(x)
         phi = self.fc_head(phi)
         if self.head_activation is not None:
@@ -66,7 +65,7 @@ class FCBody(nn.Module):
         super().__init__()
         hiddens = list.copy(hidden_units)
         hiddens.append(output_units)
-        body = network_bodies.FCBody(input_units, hidden_units=tuple(hiddens))
+        body = network_bodies.FCBody(device, input_units, hidden_units=tuple(hiddens))
         self.to(device)
 
         self.device = device
@@ -90,7 +89,7 @@ class ConvNetwork(nn.Module):
         self.conv_body = network_bodies.ConvBody(device, state_dim, architecture)
         if "fc_layers" in architecture:
             hidden_units = list.copy(architecture["fc_layers"]["hidden_units"])
-            self.fc_body = network_bodies.FCBody(self.conv_body.feature_dim, hidden_units=tuple(hidden_units))
+            self.fc_body = network_bodies.FCBody(device, self.conv_body.feature_dim, hidden_units=tuple(hidden_units))
             self.fc_head = network_utils.layer_init_xavier(nn.Linear(self.fc_body.feature_dim, output_units))
         else:
             self.fc_body = None
@@ -125,10 +124,10 @@ class ConvBody(nn.Module):
         if "fc_layers" in architecture:
             hidden_units = list.copy(architecture["fc_layers"]["hidden_units"])
             hidden_units.append(output_units)
-            self.fc_body = network_bodies.FCBody(self.conv_body.feature_dim, hidden_units=tuple(hidden_units))
+            self.fc_body = network_bodies.FCBody(device, self.conv_body.feature_dim, hidden_units=tuple(hidden_units))
         else:
             hidden_units = [output_units]
-            self.fc_body = network_bodies.FCBody(self.conv_body.feature_dim, hidden_units=tuple(hidden_units))
+            self.fc_body = network_bodies.FCBody(device, self.conv_body.feature_dim, hidden_units=tuple(hidden_units))
         self.to(device)
         self.device = device
 
@@ -150,7 +149,7 @@ class DeConvNetwork(nn.Module):
         super().__init__()
         if "fc_layers" in deconv_architecture:
             hidden_units = list.copy(deconv_architecture["fc_layers"]["hidden_units"])
-            self.fc_body = network_bodies.FCBody(in_dim, hidden_units=tuple(hidden_units))
+            self.fc_body = network_bodies.FCBody(device, in_dim, hidden_units=tuple(hidden_units))
             self.deconv_body = network_bodies.DeConvBody(device, self.fc_body.feature_dim,
                                                          deconv_architecture,
                                                          state_dim,
@@ -202,7 +201,7 @@ class LinearActionNetwork(nn.Module):
 class FCActionNetwork(nn.Module):
     def __init__(self, device, input_units, hidden_units, output_units, num_actions):
         super().__init__()
-        body = network_bodies.FCBody(input_units, hidden_units=tuple(hidden_units))
+        body = network_bodies.FCBody(device, input_units, hidden_units=tuple(hidden_units))
         self.fc_head = network_utils.layer_init_xavier(nn.Linear(body.feature_dim, output_units * num_actions))
         self.to(device)
         self.output_units = output_units

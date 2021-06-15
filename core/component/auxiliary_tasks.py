@@ -465,7 +465,7 @@ class Orthogonal(AuxTask):
         return l
 
     def compute_loss(self, transition, phi, nphi, action):
-        random_idx = torch.randperm(phi.size()[0])
+        random_idx = torch.randperm(phi.size()[0]).to(phi.device)
         phi2 = phi[random_idx]
         loss = self.loss(phi, phi2, self.weight)
         if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
@@ -485,7 +485,13 @@ class AuxFactory:
     @classmethod
     def get_aux_task(cls, cfg):
         aux_tasks = []
+        aux_weights = []
         for aux_config in cfg.aux_config:
+            if "aux_weight" not in aux_config.keys():
+                aux_weights.append(1)
+            else:
+                aux_weights.append(aux_config["aux_weight"])
+
             # Creating aux_predictor (a network to predict aux targets)
             if aux_config['aux_task'] in ['nas_v1', 'nas_v1_delta', 'nas_v2', 'nas_v2_delta', 'reward_predictor']:
                 # Aux tasks where the prediction depends on state and action
@@ -526,6 +532,15 @@ class AuxFactory:
                                                                 aux_config['hidden_units'], aux_config['aux_out_dim'])
                     aux_target_predictor = network_architectures.FCNetwork(cfg.device, np.prod(cfg.rep_fn().output_dim),
                                                                 aux_config['hidden_units'], aux_config['aux_out_dim'])
+                else:
+                    raise NotImplementedError
+            elif aux_config['aux_task'] in ['color_predictor']:
+                if aux_config['aux_fn_type'] == 'linear':
+                    raise NotImplementedError
+                elif aux_config['aux_fn_type'] == 'fc':
+                    aux_predictor = network_architectures.FCNetwork(cfg.device, np.prod(cfg.rep_fn().output_dim),
+                                                                    aux_config['hidden_units'], aux_config['aux_out_dim'],
+                                                                    head_activation=nn.Softmax(1).to(cfg.device))
                 else:
                     raise NotImplementedError
             else:
@@ -601,4 +616,4 @@ class AuxFactory:
             else:
                 raise NotImplementedError
 
-        return aux_tasks
+        return aux_tasks, aux_weights

@@ -4,13 +4,13 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as functional
 
-        
-# class LTA(nn.Module):
-class LTA:
+class LTA(nn.Module):
     def __init__(self, cfg):
-        # super(LTA, self).__init__()
+        super().__init__()
         # self.tiling = cfg.activation['tiling']
         # 1 tiling, binning
+        self.to(cfg.device)
+
         self.n_tilings = 1
         self.n_tiles = cfg.activation_config['tile']
         self.bound_low, self.bound_high = cfg.activation_config['bound_low'], cfg.activation_config['bound_high']
@@ -18,6 +18,7 @@ class LTA:
         self.c_mat = torch.as_tensor(np.array([self.delta * i for i in range(self.n_tiles)]) + self.bound_low, dtype=torch.float32).to(device=cfg.device)
         self.eta = cfg.activation_config['eta']
         self.d = cfg.activation_config['input']
+        self.device = cfg.device
 
     # def forward(self, reps):
     def __call__(self, reps):
@@ -25,7 +26,7 @@ class LTA:
         temp = temp.reshape([-1, self.d, 1])
         onehots = 1.0 - self.i_plus_eta(self.sum_relu(self.c_mat, temp))
         # out = torch.reshape(torch.cat([v for v in onehots], axis=1), [-1, int(self.d * self.n_tiles * self.n_tilings)])
-        out = torch.reshape(torch.reshape(onehots, [-1]), [-1, int(self.d * self.n_tiles * self.n_tilings)])
+        out = torch.reshape(torch.reshape(onehots, [-1]), [-1, int(self.d * self.n_tiles * self.n_tilings)]).to(self.device)
         return out
 
     def sum_relu(self, c, x):

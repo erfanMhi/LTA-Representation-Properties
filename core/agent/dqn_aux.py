@@ -16,6 +16,7 @@ class DQNAuxAgent(dqn.DQNAgent):
         super().__init__(cfg)
 
         aux_tasks = [aux_fn(cfg) for aux_fn in cfg.aux_fns]
+
         params = list(self.rep_net.parameters()) + list(self.val_net.parameters())
         for aux_task in aux_tasks:
             params += list(aux_task.parameters())
@@ -36,6 +37,7 @@ class DQNAuxAgent(dqn.DQNAgent):
         targets = TargetNets(rep_net=rep_net_target, val_net=val_net_target, aux_nets=aux_net_targets)
         self.targets = targets
         self.aux_nets = aux_tasks
+        self.aux_weights = cfg.aux_weights
 
         # TODO: Remove this patchwork
         self.cfg.agent = self
@@ -63,7 +65,7 @@ class DQNAuxAgent(dqn.DQNAgent):
         aux_loss = torch.zeros_like(loss)
         for i, aux_net in enumerate(self.aux_nets):
             transition = (states, actions, rewards, next_states, terminals)
-            aux_loss += aux_net.compute_loss(transition, phi, nphi)
+            aux_loss += self.aux_weights[i] * aux_net.compute_loss(transition, phi, nphi)
 
         if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
             self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/loss/val_loss', loss.item(), self.total_steps)
@@ -156,7 +158,7 @@ class DQNNasAuxAgent(DQNAuxAgent):
         aux_loss = torch.zeros_like(loss)
         for i, aux_net in enumerate(self.aux_nets):
             transition = (states, actions, rewards, next_states, terminals)
-            aux_loss += aux_net.compute_loss(transition, phi, nphi)
+            aux_loss += self.aux_weights[i] * aux_net.compute_loss(transition, phi, nphi)
 
         if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
             self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/loss/val_loss', loss.item(), self.total_steps)
@@ -221,9 +223,9 @@ class DQNAuxAgentGeneral(DQNAuxAgent):
             transition = (states, actions, rewards, next_states, terminals)
             sig = signature(aux_net.compute_loss)
             if len(sig.parameters) == 4:
-                aux_loss += aux_net.compute_loss(transition, phi, nphi, action_next)
+                aux_loss += self.aux_weights[i] * aux_net.compute_loss(transition, phi, nphi, action_next)
             else:
-                aux_loss += aux_net.compute_loss(transition, phi, nphi)
+                aux_loss += self.aux_weights[i] * aux_net.compute_loss(transition, phi, nphi)
 
         if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
             self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/loss/val_loss', loss.item(), self.total_steps)
@@ -260,8 +262,8 @@ class DQNSwitchHeadAgent(DQNAuxAgent):
             if self.head==0:
                 self.policy_head = self.val_net
             else:
-                # self.policy_head = self.aux_nets[self.head-1]
-                self.policy_head = self.aux_nets[self.head-1].aux_predictor
+                # self.policy_head = self.aux_nets[self.head-1].aux_predictor
+                self.policy_head = self.aux_nets[0].aux_predictor
 
         action = self.policy(self.state, self.cfg.eps_schedule())
 
@@ -323,7 +325,9 @@ class DQNSwitchHeadAgent(DQNAuxAgent):
         aux_loss = torch.zeros_like(loss)
         for i, aux_net in enumerate(self.aux_nets):
             transition = (states, actions, rewards, next_states, terminals_2)
-            aux_loss += aux_net.compute_loss(transition, phi, nphi, action_next)
+            al = aux_net.compute_loss(transition, phi, nphi, action_next)
+            aux_loss += self.aux_weights[i] * al
+            # print(self.aux_weights[i]*al)
 
         if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
             self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/loss/val_loss', loss.item(), self.total_steps)
@@ -372,7 +376,7 @@ class DQNAuxSuccessorAgent(DQNAuxAgent):
         aux_loss = torch.zeros_like(loss)
         for i, aux_net in enumerate(self.aux_nets):
             transition = (states, actions, rewards, next_states, terminals)
-            aux_loss += aux_net.compute_loss(transition, phi, nphi, action_next)
+            aux_loss += self.aux_weights[i] * aux_net.compute_loss(transition, phi, nphi, action_next)
 
         if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
             self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/loss/val_loss', loss.item(), self.total_steps)
@@ -537,7 +541,7 @@ class DQNAuxAgentLplcTrue(DQNAuxAgent):
         aux_loss = torch.zeros_like(loss)
         for i, aux_net in enumerate(self.aux_nets):
             transition = (states, actions, rewards, next_states, terminals, srs)
-            aux_loss += aux_net.compute_loss(transition, phi, nphi)
+            aux_loss += self.aux_weights[i] * aux_net.compute_loss(transition, phi, nphi)
 
         if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
             self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/loss/val_loss', loss.item(), self.total_steps)
@@ -599,8 +603,8 @@ class SuccessorRandomBaseline(DQNAuxAgent):
 
         transition = (states, actions, rewards, next_states, terminals)
 
-        aux_loss = self.aux_nets[0].compute_loss(transition, phi, nphi, random_actions)
-        aux_loss += self.aux_nets[1].compute_loss(transition, phi, nphi, random_actions)
+        aux_loss = self.aux_weights[0] * self.aux_nets[0].compute_loss(transition, phi, nphi, random_actions)
+        aux_loss += self.aux_weights[1] * self.aux_nets[1].compute_loss(transition, phi, nphi, random_actions)
 
         loss = aux_loss
 

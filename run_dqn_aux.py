@@ -33,7 +33,7 @@ if __name__ == '__main__':
     cfg.rep_fn = representation.RepFactory.get_rep_fn(cfg)
     cfg.env_fn = environment.EnvFactory.create_env_fn(cfg)
     cfg.val_fn = network.NetFactory.get_val_fn(cfg)
-    cfg.aux_fns = auxiliary_tasks.AuxFactory.get_aux_task(cfg)
+    cfg.aux_fns, cfg.aux_weights = auxiliary_tasks.AuxFactory.get_aux_task(cfg)
     cfg.optimizer_fn = optimizer.OptFactory.get_optimizer_fn(cfg)
     cfg.vf_loss_fn = optimizer.OptFactory.get_vf_loss_fn(cfg)
     cfg.vf_constr_fn = optimizer.OptFactory.get_constr_fn(cfg)

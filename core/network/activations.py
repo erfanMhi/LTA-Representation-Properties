@@ -48,7 +48,7 @@ class ActvFactory:
         if cfg.activation_config['name'] == 'None':
             return lambda x:x
         elif cfg.activation_config['name'] == 'LTA':
-            return LTA(cfg.device, cfg)
+            return LTA(cfg)
         else:
             raise NotImplementedError
 

@@ -8,7 +8,7 @@ def run_steps(agent):
     while True:
         if agent.cfg.log_interval and not agent.total_steps % agent.cfg.log_interval:
             agent.log_file(elapsed_time=agent.cfg.log_interval / (time.time() - t0))
-            agent.log_values()
+            # agent.log_values()
             if agent.cfg.tensorboard_logs:
                 agent.log_tensorboard()
             t0 = time.time()

@@ -47,6 +47,9 @@ class Config:
         self.fruit_num = 6
         self.log_observations = False
         self.single_channel_color = True
+
+        self.record_video = False
+        self.update_network = True
     
     def get_log_dir(self):
         d = os.path.join(self.data_root, self.exp_name, "{}_run".format(self.run),

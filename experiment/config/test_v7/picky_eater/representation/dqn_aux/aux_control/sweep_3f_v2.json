@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAuxAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test_v7/picky_eater/representation/dqn_aux/aux_control/sweep_3f",
+        "exp_name": "test_v7/picky_eater/representation/dqn_aux/aux_control/sweep_3f_v2",
         "env_name": "CollectTwoColorRGB",
         "agent": "DQNAuxSuccessorAgent",
         "discount": 0.99,
@@ -77,7 +77,7 @@
                 "aux_task": "aux_control_collect",
                 "discount": 0.99,
                 "flip_reward":  true,
-                "aux_weight": 1
+                "aux_weight": 0.9
                 }
             ],
              [
@@ -85,9 +85,9 @@
                 "aux_fn_type":  "linear",
                 "aux_out_dim": 4,
                 "aux_task": "aux_control_collect",
-                "discount": 0.9,
+                "discount": 0.99,
                 "flip_reward":  true,
-                "aux_weight": 1
+                "aux_weight": 0.1
                 }
             ]
 	],
@@ -98,14 +98,6 @@
         }, {
             "val_fn_type": "fc",
             "hidden_units": [128],
-            "init_type": "xavier"
-        }, {
-            "val_fn_type": "fc",
-            "hidden_units": [256],
-            "init_type": "xavier"
-        }, {
-            "val_fn_type": "fc",
-            "hidden_units": [512],
             "init_type": "xavier"
         }]
    }

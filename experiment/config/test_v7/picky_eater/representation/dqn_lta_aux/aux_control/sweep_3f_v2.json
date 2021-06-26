@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAuxAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test_v7/picky_eater/representation/dqn_aux/aux_control/sweep_3f",
+        "exp_name": "test_v7/picky_eater/representation/dqn_lta_aux/aux_control/sweep_3f_v2",
         "env_name": "CollectTwoColorRGB",
         "agent": "DQNAuxSuccessorAgent",
         "discount": 0.99,
@@ -13,7 +13,7 @@
         "epsilon_schedule_steps": 100000,
 
         "rep_config": {
-            "rep_type": "online",
+            "rep_type": "modular",
             "network_type": "conv",
             "conv_architecture": {
                 "conv_layers": [
@@ -29,8 +29,17 @@
 
         "val_fn_config": {
             "val_fn_type": "fc",
-            "hidden_units": [128],
+            "hidden_units": [128, 128],
             "init_type": "xavier"
+        },
+	
+        "activation_config": {
+            "name": "LTA",
+            "input": 64,
+            "tile": 20,
+            "eta": 2.0,
+            "bound_high": 20,
+            "bound_low": -20
         },
 
         "replay": true,
@@ -40,7 +49,7 @@
         "optimizer_type": "Adam",
         "use_target_network": true,
         "target_network_update_freq": 1024,
-        
+
         "max_steps": 1000000,
         "log_interval": 10000,
         "eval_interval": 10000,
@@ -48,18 +57,18 @@
         "save_interval": 0,
         "timeout": 500,
         "stats_queue_size": 100,
-        "save_early": {"mean": 2.9, "min": 1.5},
-        "distance_paths": [{"current": "example/picky_eater/trained_dqn/distance_current_states_sameEP_green.npy", "action": "example/picky_eater/trained_dqn/distance_actions_sameEP_green.npy", "next": "example/picky_eater/trained_dqn/distance_next_states_sameEP_green.npy", "reward": "example/picky_eater/trained_dqn/distance_rewards_sameEP_green.npy", "terminal": "example/picky_eater/trained_dqn/distance_terminals_sameEP_green.npy", "label": "Green"}, {"current": "example/picky_eater/trained_dqn/distance_current_states_sameEP_red.npy", "action": "example/picky_eater/trained_dqn/distance_actions_sameEP_red.npy", "next": "example/picky_eater/trained_dqn/distance_next_states_sameEP_red.npy", "reward": "example/picky_eater/trained_dqn/distance_rewards_sameEP_red.npy", "terminal": "example/picky_eater/trained_dqn/distance_terminals_sameEP_red.npy", "label": "Red"}, {"current": "example/picky_eater/trained_dqn/distance_current_states_sameEP_random.npy", "action": "example/picky_eater/trained_dqn/distance_actions_sameEP_random.npy", "next": "example/picky_eater/trained_dqn/distance_next_states_sameEP_random.npy", "reward": "example/picky_eater/trained_dqn/distance_rewards_sameEP_random.npy", "terminal": "example/picky_eater/trained_dqn/distance_terminals_sameEP_random.npy", "label": "Random"}],
+ 	    "save_early": {"mean": 2.9, "min": 1.5},
+	    "distance_paths": [{"current": "example/picky_eater/trained_dqn/distance_current_states_sameEP_green.npy", "action": "example/picky_eater/trained_dqn/distance_actions_sameEP_green.npy", "next": "example/picky_eater/trained_dqn/distance_next_states_sameEP_green.npy", "reward": "example/picky_eater/trained_dqn/distance_rewards_sameEP_green.npy", "terminal": "example/picky_eater/trained_dqn/distance_terminals_sameEP_green.npy", "label": "Green"}, {"current": "example/picky_eater/trained_dqn/distance_current_states_sameEP_red.npy", "action": "example/picky_eater/trained_dqn/distance_actions_sameEP_red.npy", "next": "example/picky_eater/trained_dqn/distance_next_states_sameEP_red.npy", "reward": "example/picky_eater/trained_dqn/distance_rewards_sameEP_red.npy", "terminal": "example/picky_eater/trained_dqn/distance_terminals_sameEP_red.npy", "label": "Red"}, {"current": "example/picky_eater/trained_dqn/distance_current_states_sameEP_random.npy", "action": "example/picky_eater/trained_dqn/distance_actions_sameEP_random.npy", "next": "example/picky_eater/trained_dqn/distance_next_states_sameEP_random.npy", "reward": "example/picky_eater/trained_dqn/distance_rewards_sameEP_random.npy", "terminal": "example/picky_eater/trained_dqn/distance_terminals_sameEP_random.npy", "label": "Random"}],
 
-        "online_property": false,
+    	"online_property": false,
         "tensorboard_logs": true,
         "save_params": true,
         "visualize": false,
         "evaluate_lipschitz": false,
         "evaluate_distance": false,
         "evaluate_orthogonality": false,
-        "evaluate_interference": false,
-        "evaluate_diversity": false,
+    	"evaluate_interference": false,
+    	"evaluate_diversity": false,
         "evaluate_sparsity": false,
         "evaluate_mutual_info": false,
         "evaluate_regression": false,
@@ -77,7 +86,7 @@
                 "aux_task": "aux_control_collect",
                 "discount": 0.99,
                 "flip_reward":  true,
-                "aux_weight": 1
+                "aux_weight": 0.9
                 }
             ],
              [
@@ -85,9 +94,9 @@
                 "aux_fn_type":  "linear",
                 "aux_out_dim": 4,
                 "aux_task": "aux_control_collect",
-                "discount": 0.9,
+                "discount": 0.99,
                 "flip_reward":  true,
-                "aux_weight": 1
+                "aux_weight": 0.1
                 }
             ]
 	],
@@ -98,14 +107,6 @@
         }, {
             "val_fn_type": "fc",
             "hidden_units": [128],
-            "init_type": "xavier"
-        }, {
-            "val_fn_type": "fc",
-            "hidden_units": [256],
-            "init_type": "xavier"
-        }, {
-            "val_fn_type": "fc",
-            "hidden_units": [512],
             "init_type": "xavier"
         }]
    }

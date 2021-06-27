@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test_v6/picky_eater/control/early_stop/different_task/fix_rep/dqn_aux/aux_control/sweep_3f_2/",
+        "exp_name": "test_v7/picky_eater/control/early_stop/different_task/fix_rep/dqn_aux/aux_control/sweep_3f/",
         "env_name": "CollectTwoColorLip",
         "agent": "DQNAgent",
         "discount": 0.99,
@@ -25,7 +25,7 @@
             "out_dim": 64,
             "load_params": true,
             "train_rep": false,
-            "path": "test_v6/picky_eater/representation/dqn_aux/aux_control/sweep_3f/{}_run/2_param_setting/parameters/rep_net_earlystop"
+            "path": "test_v7/picky_eater/representation/dqn_aux/aux_control/sweep_3f/{}_run/2_param_setting/parameters/rep_net"
         },
 
         "val_fn_config": {
@@ -35,14 +35,14 @@
         },
 
         "replay": true,
-        "memory_size": 200000,
+        "memory_size": 100000,
         "batch_size": 32,
 
         "optimizer_type": "Adam",
         "use_target_network": true,
         "target_network_update_freq": 1024,
 
-        "max_steps": 1000000,
+        "max_steps": 2000000,
         "log_interval": 10000,
         "eval_interval": 10000,
         "eval_episodes": 5,
@@ -61,6 +61,46 @@
         "lipschitz_sampled_states_path": "example/picky_eater/trained_dqn/lip_sampled_states.npy"
     },
     "sweep_parameters": {
-         "learning_rate": [0.000003, 0.000001, 0.0000003]
+         "learning_rate": [0.0003, 0.0001, 0.00003, 0.00001, 0.000003, 0.000001, 0.0000003],
+         "rep_config": [{
+            "rep_type": "online",
+            "network_type": "conv",
+            "conv_architecture": {
+                "conv_layers": [
+                   {"in": 3,  "out": 32, "kernel": 4, "stride": 1, "pad": 1},
+                   {"in": 32,  "out": 16, "kernel": 4, "stride": 2, "pad": 2}
+                ]
+            },
+            "in_dim": [15, 15, 3],
+            "out_dim": 64,
+            "load_params": true,
+            "train_rep": false,
+            "path": "test_v7/picky_eater/representation/dqn_aux/aux_control/sweep_3f/{}_run/2_param_setting/parameters/rep_net"
+        },
+	{
+            "rep_type": "online",
+            "network_type": "conv",
+            "conv_architecture": {
+                "conv_layers": [
+                   {"in": 3,  "out": 32, "kernel": 4, "stride": 1, "pad": 1},
+                   {"in": 32,  "out": 16, "kernel": 4, "stride": 2, "pad": 2}
+                ]
+            },
+            "in_dim": [15, 15, 3],
+            "out_dim": 64,
+            "load_params": true,
+            "train_rep": false,
+            "path": "test_v7/picky_eater/representation/dqn_aux/aux_control/sweep_3f/{}_run/7_param_setting/parameters/rep_net"
+        }
+	 ],
+        "val_fn_config": [{
+            "val_fn_type": "fc",
+            "hidden_units": [128],
+            "init_type": "xavier"
+        },{
+            "val_fn_type": "fc",
+            "hidden_units": [64],
+            "init_type": "xavier"
+        }]
     }
 }

@@ -70,7 +70,7 @@
         "lipschitz_sampled_states_path": "example/picky_eater/trained_dqn/lip_sampled_states.npy"
     },
     "sweep_parameters": {
-         "learning_rate": [0.001, 0.0003, 0.0001, 0.0003, 0.0001, 0.00003, 0.00001, 0.000003],
+         "learning_rate": [0.001, 0.0003, 0.0001, 0.00001],
          "rep_config": [{
             "rep_type": "modular",
             "network_type": "conv",
@@ -84,7 +84,21 @@
             "out_dim": 64,
             "load_params": true,
             "train_rep": false,
-            "path": "test_v7/picky_eater/representation/dqn_lta_aux/aux_control/sweep_3f/{}_run/2_param_setting/parameters/rep_net"
+            "path": "test_v7/picky_eater/representation/dqn_lta_aux/aux_control/sweep_5f/{}_run/9_param_setting/parameters/rep_net"
+        }, {
+            "rep_type": "modular",
+            "network_type": "conv",
+            "conv_architecture": {
+                "conv_layers": [
+                   {"in": 3,  "out": 32, "kernel": 4, "stride": 1, "pad": 1},
+                   {"in": 32,  "out": 16, "kernel": 4, "stride": 2, "pad": 2}
+                ]
+            },
+            "in_dim": [15, 15, 3],
+            "out_dim": 64,
+            "load_params": true,
+            "train_rep": false,
+            "path": "test_v7/picky_eater/representation/dqn_lta_aux/aux_control/sweep_5f/{}_run/5_param_setting/parameters/rep_net"
         },
 	{
             "rep_type": "modular",
@@ -99,7 +113,7 @@
             "out_dim": 64,
             "load_params": true,
             "train_rep": false,
-            "path": "test_v7/picky_eater/representation/dqn_lta_aux/aux_control/sweep_3f/{}_run/7_param_setting/parameters/rep_net"
+            "path": "test_v7/picky_eater/representation/dqn_lta_aux/aux_control/sweep_3f/{}_run/13_param_setting/parameters/rep_net"
         }
 	 ],
         "val_fn_config": [{
@@ -108,7 +122,12 @@
             "init_type": "xavier"
         },{
             "val_fn_type": "fc",
-            "hidden_units": [64],
+            "hidden_units": [256],
+            "init_type": "xavier"
+        },
+	{
+            "val_fn_type": "fc",
+            "hidden_units": [512],
             "init_type": "xavier"
         }]
     }

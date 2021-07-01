@@ -58,26 +58,28 @@
         "timeout": 500,
         "stats_queue_size": 100,
  	    "save_early": {"mean": 2.9, "min": 1.5},
-	    "distance_paths": [{"current": "example/picky_eater/trained_dqn/distance_current_states_sameEP_green.npy", "action": "example/picky_eater/trained_dqn/distance_actions_sameEP_green.npy", "next": "example/picky_eater/trained_dqn/distance_next_states_sameEP_green.npy", "reward": "example/picky_eater/trained_dqn/distance_rewards_sameEP_green.npy", "terminal": "example/picky_eater/trained_dqn/distance_terminals_sameEP_green.npy", "label": "Green"}, {"current": "example/picky_eater/trained_dqn/distance_current_states_sameEP_red.npy", "action": "example/picky_eater/trained_dqn/distance_actions_sameEP_red.npy", "next": "example/picky_eater/trained_dqn/distance_next_states_sameEP_red.npy", "reward": "example/picky_eater/trained_dqn/distance_rewards_sameEP_red.npy", "terminal": "example/picky_eater/trained_dqn/distance_terminals_sameEP_red.npy", "label": "Red"}, {"current": "example/picky_eater/trained_dqn/distance_current_states_sameEP_random.npy", "action": "example/picky_eater/trained_dqn/distance_actions_sameEP_random.npy", "next": "example/picky_eater/trained_dqn/distance_next_states_sameEP_random.npy", "reward": "example/picky_eater/trained_dqn/distance_rewards_sameEP_random.npy", "terminal": "example/picky_eater/trained_dqn/distance_terminals_sameEP_random.npy", "label": "Random"}],
+        
+	"distance_paths": [{"current": "example/picky_eater/trained_dqn/3f/distance_current_states_sameEP_green.npy", "action": "example/picky_eater/trained_dqn/3f/distance_actions_sameEP_green.npy", "next": "example/picky_eater/trained_dqn/3f/distance_next_states_sameEP_green.npy", "reward": "example/picky_eater/trained_dqn/3f/distance_rewards_sameEP_green.npy", "terminal": "example/picky_eater/trained_dqn/3f/distance_terminals_sameEP_green.npy", "label": "Green"}, {"current": "example/picky_eater/trained_dqn/3f/distance_current_states_sameEP_red.npy", "action": "example/picky_eater/trained_dqn/3f/distance_actions_sameEP_red.npy", "next": "example/picky_eater/trained_dqn/3f/distance_next_states_sameEP_red.npy", "reward": "example/picky_eater/trained_dqn/3f/distance_rewards_sameEP_red.npy", "terminal": "example/picky_eater/trained_dqn/3f/distance_terminals_sameEP_red.npy", "label": "Red"}, {"current": "example/picky_eater/trained_dqn/3f/distance_current_states_sameEP_random.npy", "action": "example/picky_eater/trained_dqn/3f/distance_actions_sameEP_random.npy", "next": "example/picky_eater/trained_dqn/3f/distance_next_states_sameEP_random.npy", "reward": "example/picky_eater/trained_dqn/3f/distance_rewards_sameEP_random.npy", "terminal": "example/picky_eater/trained_dqn/3f/distance_terminals_sameEP_random.npy", "label": "Random"}],
 
-    	"online_property": false,
+       
+	"online_property": true,
         "tensorboard_logs": true,
         "save_params": true,
         "visualize": false,
-        "evaluate_lipschitz": false,
-        "evaluate_distance": false,
-        "evaluate_orthogonality": false,
-    	"evaluate_interference": false,
-    	"evaluate_diversity": false,
-        "evaluate_sparsity": false,
-        "evaluate_mutual_info": false,
-        "evaluate_regression": false,
+        "evaluate_lipschitz": true,
+        "evaluate_distance": true,
+        "evaluate_orthogonality": true,
+        "evaluate_interference": true,
+        "evaluate_diversity": true,
+        "evaluate_sparsity": true,
+        "evaluate_mutual_info": true,
+        "evaluate_regression": true,
 	"fruit_num": 3,
         "rewarding_color": "green",
         "single_channel_color": true
     },
    "sweep_parameters": {
-        "learning_rate": [0.0003, 0.0001],
+        "learning_rate": [0.0001],
         "aux_config": [
             [
                 {
@@ -88,23 +90,9 @@
                 "flip_reward":  true,
                 "aux_weight": 1
                 }
-            ],
-             [
-                {
-                "aux_fn_type":  "linear",
-                "aux_out_dim": 4,
-                "aux_task": "aux_control_collect",
-                "discount": 0.9,
-                "flip_reward":  true,
-                "aux_weight": 1
-                }
             ]
 	],
         "val_fn_config": [{
-            "val_fn_type": "fc",
-            "hidden_units": [64],
-            "init_type": "xavier"
-        }, {
             "val_fn_type": "fc",
             "hidden_units": [128],
             "init_type": "xavier"

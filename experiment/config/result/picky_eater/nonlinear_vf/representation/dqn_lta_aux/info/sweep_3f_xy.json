@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAuxAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test_v6/picky_eater/representation/dqn_lta_aux/info/sweep_3f_xy",
+        "exp_name": "result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/info/sweep_3f_xy",
         "env_name": "CollectTwoColorRGB",
         "agent": "DQNAuxSuccessorAgent",
         "discount": 0.99,
@@ -41,9 +41,9 @@
             "bound_high": 20,
             "bound_low": -20
         },
-
-        "replay": true,
-        "memory_size": 200000,
+        
+	"replay": true,
+        "memory_size": 100000,
         "batch_size": 32,
 
         "optimizer_type": "Adam",
@@ -57,27 +57,27 @@
         "save_interval": 0,
         "timeout": 500,
         "stats_queue_size": 100,
- 	    "save_early": {"mean": 2.9, "min": 1.5},
-	    "distance_paths": [{"current": "example/picky_eater/trained_dqn/distance_current_states_sameEP_green.npy", "action": "example/picky_eater/trained_dqn/distance_actions_sameEP_green.npy", "next": "example/picky_eater/trained_dqn/distance_next_states_sameEP_green.npy", "reward": "example/picky_eater/trained_dqn/distance_rewards_sameEP_green.npy", "terminal": "example/picky_eater/trained_dqn/distance_terminals_sameEP_green.npy", "label": "Green"}, {"current": "example/picky_eater/trained_dqn/distance_current_states_sameEP_red.npy", "action": "example/picky_eater/trained_dqn/distance_actions_sameEP_red.npy", "next": "example/picky_eater/trained_dqn/distance_next_states_sameEP_red.npy", "reward": "example/picky_eater/trained_dqn/distance_rewards_sameEP_red.npy", "terminal": "example/picky_eater/trained_dqn/distance_terminals_sameEP_red.npy", "label": "Red"}, {"current": "example/picky_eater/trained_dqn/distance_current_states_sameEP_random.npy", "action": "example/picky_eater/trained_dqn/distance_actions_sameEP_random.npy", "next": "example/picky_eater/trained_dqn/distance_next_states_sameEP_random.npy", "reward": "example/picky_eater/trained_dqn/distance_rewards_sameEP_random.npy", "terminal": "example/picky_eater/trained_dqn/distance_terminals_sameEP_random.npy", "label": "Random"}],
+ 	"save_early": {"mean": 2.95, "min": 1.5},
 
-    	"online_property": true,
+	"distance_paths": [{"current": "example/picky_eater/trained_dqn/3f/distance_current_states_sameEP_green.npy", "action": "example/picky_eater/trained_dqn/3f/distance_actions_sameEP_green.npy", "next": "example/picky_eater/trained_dqn/3f/distance_next_states_sameEP_green.npy", "reward": "example/picky_eater/trained_dqn/3f/distance_rewards_sameEP_green.npy", "terminal": "example/picky_eater/trained_dqn/3f/distance_terminals_sameEP_green.npy", "label": "Green"}, {"current": "example/picky_eater/trained_dqn/3f/distance_current_states_sameEP_red.npy", "action": "example/picky_eater/trained_dqn/3f/distance_actions_sameEP_red.npy", "next": "example/picky_eater/trained_dqn/3f/distance_next_states_sameEP_red.npy", "reward": "example/picky_eater/trained_dqn/3f/distance_rewards_sameEP_red.npy", "terminal": "example/picky_eater/trained_dqn/3f/distance_terminals_sameEP_red.npy", "label": "Red"}, {"current": "example/picky_eater/trained_dqn/3f/distance_current_states_sameEP_random.npy", "action": "example/picky_eater/trained_dqn/3f/distance_actions_sameEP_random.npy", "next": "example/picky_eater/trained_dqn/3f/distance_next_states_sameEP_random.npy", "reward": "example/picky_eater/trained_dqn/3f/distance_rewards_sameEP_random.npy", "terminal": "example/picky_eater/trained_dqn/3f/distance_terminals_sameEP_random.npy", "label": "Random"}],
+    	
+	"online_property": false,
         "tensorboard_logs": true,
         "save_params": true,
         "visualize": false,
-        "evaluate_lipschitz": false,
-        "evaluate_distance": false,
-        "evaluate_orthogonality": false,
-    	"evaluate_interference": false,
-    	"evaluate_diversity": false,
-        "evaluate_sparsity": false,
-        "evaluate_mutual_info": false,
+        "evaluate_lipschitz": true,
+        "evaluate_distance": true,
+        "evaluate_orthogonality": true,
+    	"evaluate_interference": true,
+    	"evaluate_diversity": true,
+        "evaluate_sparsity": true,
         "evaluate_regression": false,
-	    "fruit_num": 3,
+	"fruit_num": 3,
         "rewarding_color": "green",
         "single_channel_color": true
     },
    "sweep_parameters": {
-        "learning_rate": [0.001, 0.0003, 0.0001, 0.00003],
+        "learning_rate": [0.001, 0.0003, 0.0001, 0.00003, 0.00001],
         "aux_config": [
             [
                 {

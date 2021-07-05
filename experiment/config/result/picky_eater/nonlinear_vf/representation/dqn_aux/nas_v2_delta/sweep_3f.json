@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAuxAgentConfig",
     "fixed_parameters": {
-        "exp_name": "result/picky_eater/representation/dqn_aux/nas_v2_delta/sweep_3f",
+        "exp_name": "result/picky_eater/nonlinear_vf/representation/dqn_aux/nas_v2_delta/sweep_3f",
     	"env_name": "CollectTwoColorRGB",
         "agent": "DQNAuxAgent",
         "discount": 0.99,
@@ -27,10 +27,11 @@
             "train_rep": true
         },
 
-        "val_fn_config": {
-            "val_fn_type": "linear",
-            "init_type": "lta"
-         },
+	"val_fn_config": {
+            "val_fn_type": "fc",
+            "hidden_units": [128, 128],
+            "init_type": "xavier"
+        },
 
         "aux_config": [{
             "aux_fn_type":  "linear",
@@ -39,7 +40,6 @@
             "aux_task": "nas_v2_delta",
 	    "aux_weight": 0.001
 	 }],
-
 
         "replay": true,
         "memory_size": 100000,

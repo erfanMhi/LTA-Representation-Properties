@@ -1,13 +1,16 @@
 {
     "config_class": "DQNAuxAgentConfig",
     "fixed_parameters": {
-        "exp_name": "result/picky_eater/online_property/dqn_aux/input_decoder/sweep_3f",
+        "exp_name": "result/picky_eater/nonlinear_vf/online_property/dqn_aux/input_decoder/sweep_3f",
 	"env_name": "CollectTwoColorRGB",
         "agent": "DQNAuxAgent",
         "discount": 0.99,
         "state_norm_coef": 255.0,
-
-        "epsilon": 0.1,
+        
+	"decay_epsilon": true,
+        "epsilon_start": 1.0,
+        "epsilon_end": 0.1,
+        "epsilon_schedule_steps": 100000,
 
         "rep_config": {
             "rep_type": "online",

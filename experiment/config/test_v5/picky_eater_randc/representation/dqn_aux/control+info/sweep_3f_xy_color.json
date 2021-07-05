@@ -20,7 +20,7 @@
                    {"in": 3,  "out": 32, "kernel": 4, "stride": 1, "pad": 1},
                    {"in": 32,  "out": 16, "kernel": 4, "stride": 2, "pad": 2}
                 ],
-                "fc_layers": {"hidden_units":[128, 128, 128]}
+                "fc_layers": {"hidden_units":[128, 128]}
             },
             "in_dim": [15, 15, 3],
             "out_dim": 64,
@@ -77,7 +77,7 @@
             "aux_fn_type":  "linear",
             "aux_out_dim": 4,
             "aux_task": "aux_control_collect",
-            "discount": 0.99,
+            "discount": 0.9,
             "flip_reward":  true,
             "aux_weight": 1
             },

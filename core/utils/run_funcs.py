@@ -5,13 +5,20 @@ def run_steps(agent):
     t0 = time.time()
     observations = []
     agent.populate_returns()
+    early_model_saved = False
     while True:
         if agent.cfg.log_interval and not agent.total_steps % agent.cfg.log_interval:
-            agent.log_file(elapsed_time=agent.cfg.log_interval / (time.time() - t0))
-            # agent.log_values()
-            if agent.cfg.tensorboard_logs:
-                agent.log_tensorboard()
+            if agent.cfg.tensorboard_logs: agent.log_tensorboard()
+            mean, median, min, max = agent.log_file(elapsed_time=agent.cfg.log_interval / (time.time() - t0))
+            if agent.cfg.save_early is not None and \
+                    mean >= agent.cfg.save_early["mean"] and \
+                    min >= agent.cfg.save_early["min"] and \
+                    (not early_model_saved):
+                agent.save(early=True)
+                early_model_saved = True
+                agent.cfg.logger.info('Save early-stopping model')
             t0 = time.time()
+
         if agent.cfg.eval_interval and not agent.total_steps % agent.cfg.eval_interval:
             # agent.eval_episodes(elapsed_time=agent.cfg.log_interval / (time.time() - t0))
             # agent.eval_episodes()
@@ -24,6 +31,10 @@ def run_steps(agent):
             t0 = time.time()
         if agent.cfg.max_steps and agent.total_steps >= agent.cfg.max_steps:
             agent.save()
+            if not early_model_saved and agent.cfg.save_params:
+                agent.save(early=True)
+                early_model_saved = True
+                agent.cfg.logger.info('Save the last learned model as the early-stopping model')
             break
         if agent.cfg.log_observations:
             if agent.reset:

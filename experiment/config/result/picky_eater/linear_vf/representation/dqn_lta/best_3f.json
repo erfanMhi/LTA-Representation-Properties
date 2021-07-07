@@ -1,9 +1,9 @@
 {
-    "config_class": "DQNAuxAgentConfig",
+    "config_class": "DQNAgentConfig",
     "fixed_parameters": {
-        "exp_name": "result/picky_eater/linear_vf/representation/dqn_lta_aux/reward/sweep_3f",
-	"env_name": "CollectTwoColorRGB",
-        "agent": "DQNAuxAgent",
+        "exp_name": "result/picky_eater/linear_vf/representation/dqn_lta/best_3f",
+        "env_name": "CollectTwoColorRGB",
+        "agent": "DQNAgent",
         "discount": 0.99,
         "state_norm_coef": 255.0,
 
@@ -26,14 +26,14 @@
             "load_params": false,
             "train_rep": true
         },
-
+        
 	"val_fn_config": {
             "val_fn_type": "linear",
             
             "init_type": "xavier"
         },
-        
-	"activation_config": {
+  
+        "activation_config": {
             "name": "LTA",
             "input": 64,
             "tile": 20,
@@ -41,16 +41,6 @@
             "bound_high": 20,
             "bound_low": -20
         },
- 
-        "aux_config": [
-            {
-            "aux_fn_type":  "linear",
-            "aux_in_dim": 1280,
-            "aux_out_dim": 1,
-            "aux_task": "reward_predictor",
-	    "aux_weight": 1
-            }
-        ],
 
         "replay": true,
         "memory_size": 100000,
@@ -84,9 +74,9 @@
         "evaluate_regression": false,
 	"fruit_num": 3,
         "rewarding_color": "green",
-        "single_channel_color": true    
+        "single_channel_color": true
     },
    "sweep_parameters": {
-        "learning_rate": [0.001, 0.0003, 0.0001, 0.00003, 0.00001]
-    }
+        "learning_rate": [0.0001]
+   }
 }

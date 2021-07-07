@@ -1,18 +1,18 @@
 {
     "config_class": "DQNAuxAgentConfig",
     "fixed_parameters": {
-        "exp_name": "result/picky_eater/linear_vf/representation/dqn_lta_aux/reward/sweep_3f",
-	"env_name": "CollectTwoColorRGB",
-        "agent": "DQNAuxAgent",
+        "exp_name": "result/picky_eater/linear_vf/representation/dqn_lta_aux/successor_as/sweep_3f_sameW",
+        "env_name": "CollectTwoColorRGB",
+        "agent": "DQNAuxSuccessorAgent",
         "discount": 0.99,
         "state_norm_coef": 255.0,
-
-        "decay_epsilon": true,
+        
+	"decay_epsilon": true,
         "epsilon_start": 1.0,
         "epsilon_end": 0.1,
         "epsilon_schedule_steps": 100000,
 
-        "rep_config": {
+	"rep_config": {
             "rep_type": "modular",
             "network_type": "conv",
             "conv_architecture": {
@@ -32,6 +32,24 @@
             
             "init_type": "xavier"
         },
+
+        "aux_config": [
+            {
+            "aux_fn_type":  "linear",
+            "aux_in_dim": 1280,
+            "aux_out_dim": 1280,
+            "aux_task": "successor_as",
+            "successor_lmbda":  0.99,
+	    "aux_weight": 1
+	    },
+            {
+            "aux_fn_type":  "linear",
+            "aux_in_dim": 1280,
+            "aux_out_dim": 1,
+            "aux_task": "reward_predictor",
+	    "aux_weight": 1
+            }
+        ],
         
 	"activation_config": {
             "name": "LTA",
@@ -42,16 +60,6 @@
             "bound_low": -20
         },
  
-        "aux_config": [
-            {
-            "aux_fn_type":  "linear",
-            "aux_in_dim": 1280,
-            "aux_out_dim": 1,
-            "aux_task": "reward_predictor",
-	    "aux_weight": 1
-            }
-        ],
-
         "replay": true,
         "memory_size": 100000,
         "batch_size": 32,

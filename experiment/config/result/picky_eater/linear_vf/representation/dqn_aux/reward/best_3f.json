@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAuxAgentConfig",
     "fixed_parameters": {
-        "exp_name": "result/picky_eater/linear_vf/representation/dqn_lta_aux/reward/sweep_3f",
+        "exp_name": "result/picky_eater/linear_vf/representation/dqn_aux/reward/best_3f",
 	"env_name": "CollectTwoColorRGB",
         "agent": "DQNAuxAgent",
         "discount": 0.99,
@@ -13,7 +13,7 @@
         "epsilon_schedule_steps": 100000,
 
         "rep_config": {
-            "rep_type": "modular",
+            "rep_type": "online",
             "network_type": "conv",
             "conv_architecture": {
                 "conv_layers": [
@@ -32,20 +32,11 @@
             
             "init_type": "xavier"
         },
-        
-	"activation_config": {
-            "name": "LTA",
-            "input": 64,
-            "tile": 20,
-            "eta": 2.0,
-            "bound_high": 20,
-            "bound_low": -20
-        },
- 
+
         "aux_config": [
             {
             "aux_fn_type":  "linear",
-            "aux_in_dim": 1280,
+            "aux_in_dim": 64,
             "aux_out_dim": 1,
             "aux_task": "reward_predictor",
 	    "aux_weight": 1
@@ -87,6 +78,6 @@
         "single_channel_color": true    
     },
    "sweep_parameters": {
-        "learning_rate": [0.001, 0.0003, 0.0001, 0.00003, 0.00001]
+        "learning_rate": [0.0003]
     }
 }

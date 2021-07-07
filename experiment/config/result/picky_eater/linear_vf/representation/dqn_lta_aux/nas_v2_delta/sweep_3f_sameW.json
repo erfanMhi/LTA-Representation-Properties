@@ -1,8 +1,8 @@
 {
     "config_class": "DQNAuxAgentConfig",
     "fixed_parameters": {
-        "exp_name": "result/picky_eater/linear_vf/representation/dqn_lta_aux/reward/sweep_3f",
-	"env_name": "CollectTwoColorRGB",
+        "exp_name": "result/picky_eater/linear_vf/representation/dqn_lta_aux/nas_v2_delta/sweep_3f_sameW",
+    	"env_name": "CollectTwoColorRGB",
         "agent": "DQNAuxAgent",
         "discount": 0.99,
         "state_norm_coef": 255.0,
@@ -32,8 +32,16 @@
             
             "init_type": "xavier"
         },
-        
-	"activation_config": {
+
+        "aux_config": [{
+            "aux_fn_type":  "linear",
+            "aux_in_dim": 1280,
+            "aux_out_dim": 1280,
+            "aux_task": "nas_v2_delta",
+	    "aux_weight": 0.001
+	 }],
+
+        "activation_config": {
             "name": "LTA",
             "input": 64,
             "tile": 20,
@@ -42,16 +50,6 @@
             "bound_low": -20
         },
  
-        "aux_config": [
-            {
-            "aux_fn_type":  "linear",
-            "aux_in_dim": 1280,
-            "aux_out_dim": 1,
-            "aux_task": "reward_predictor",
-	    "aux_weight": 1
-            }
-        ],
-
         "replay": true,
         "memory_size": 100000,
         "batch_size": 32,

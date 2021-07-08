@@ -32,7 +32,7 @@ class FCBody(nn.Module):
         return x
 
     def compute_lipschitz_upper(self):
-        return [np.linalg.norm(layer.weight.detach().numpy(), ord=2) for layer in self.layers]
+        return [np.linalg.norm(layer.weight.detach().cpu().numpy(), ord=2) for layer in self.layers]
 
     # def middle_ly(self, x, idx):
     #     for layer in self.layers[: idx]:

@@ -37,7 +37,6 @@ class LinearNetwork(nn.Module):
 class FCNetwork(nn.Module):
     def __init__(self, device, input_units, hidden_units, output_units, head_activation=None, init_type='xavier'):
         super().__init__()
-        self.to(device)
         body = network_bodies.FCBody(device, input_units, hidden_units=tuple(hidden_units), init_type=init_type)
         if init_type == "xavier":
             self.fc_head = network_utils.layer_init_xavier(nn.Linear(body.feature_dim, output_units))
@@ -49,6 +48,7 @@ class FCNetwork(nn.Module):
         self.device = device
         self.body = body
         self.head_activation = head_activation
+        self.to(device)
 
     def forward(self, x):
         if not isinstance(x, torch.Tensor): x = torch_utils.tensor(x, self.device)

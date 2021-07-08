@@ -1,13 +1,14 @@
 {
-    "config_class": "DQNAuxAgentConfig",
+    "config_class": "DQNAgentConfig",
     "fixed_parameters": {
-        "exp_name": "result/picky_eater/nonlinear_vf/representation/dqn_aux/info/sweep_3f_color",
+        "exp_name": "result/picky_eater/nonlinear_vf/representation/dqn/trained_dqn_3f",
         "env_name": "CollectTwoColorRGB",
-        "agent": "DQNAuxAgent",
+        "agent": "DQNAgent",
         "discount": 0.99,
         "state_norm_coef": 255.0,
 
-        "decay_epsilon": true,
+        "decay_epsilon": false,
+	"epsilon": 0.01,
         "epsilon_start": 1.0,
         "epsilon_end": 0.1,
         "epsilon_schedule_steps": 100000,
@@ -23,14 +24,18 @@
             },
             "in_dim": [15, 15, 3],
             "out_dim": 64,
-            "load_params": false,
-            "train_rep": true
+            "load_params": true,
+            "train_rep": false,
+            "path": "result/picky_eater/nonlinear_vf/representation/dqn/sweep_3f/0_run/2_param_setting/parameters/rep_net"
         },
 
         "val_fn_config": {
             "val_fn_type": "fc",
             "hidden_units": [128, 128],
-            "init_type": "xavier"
+            "init_type": "xavier",
+            "load_params": true,
+            "train_rep": false,
+            "path": "result/picky_eater/nonlinear_vf/representation/dqn/sweep_3f/0_run/2_param_setting/parameters/val_net"
         },
 
         "replay": true,
@@ -68,70 +73,6 @@
         "single_channel_color": true    
     },
    "sweep_parameters": {
-        "learning_rate": [0.001, 0.0003, 0.0001, 0.00003, 0.00001],
-        "aux_config": [
-            [
-                {
-                "aux_fn_type":  "fc",
-                "aux_in_dim": 64,
-                "aux_out_dim": 4,
-                "hidden_units": [],
-                "aux_task": "color_predictor",
-                "coord": [7, 2],
-                "id":0,
-                "aux_weight": 0.0001
-                },
-                {
-                "aux_fn_type":  "fc",
-                "aux_in_dim": 64,
-                "aux_out_dim": 4,
-                "hidden_units": [],
-                "aux_task": "color_predictor",
-                "coord": [2, 7],
-                "id":1,
-                "aux_weight": 0.0001
-                },
-                {
-                "aux_fn_type":  "fc",
-                "aux_in_dim": 64,
-                "aux_out_dim": 4,
-                "hidden_units": [],
-                "aux_task": "color_predictor",
-                "coord": [8, 6],
-                "id":2,
-                "aux_weight": 0.0001
-                },
-                {
-                "aux_fn_type":  "fc",
-                "aux_in_dim": 64,
-                "aux_out_dim": 4,
-                "hidden_units": [],
-                "aux_task": "color_predictor",
-                "coord": [14, 6],
-                "id":3,
-                "aux_weight": 0.0001
-                },
-                {
-                "aux_fn_type":  "fc",
-                "aux_in_dim": 64,
-                "aux_out_dim": 4,
-                "hidden_units": [],
-                "aux_task": "color_predictor",
-                "coord": [7, 11],
-                "id":4,
-                "aux_weight": 0.0001
-                },
-                {
-                "aux_fn_type":  "fc",
-                "aux_in_dim": 64,
-                "aux_out_dim": 4,
-                "hidden_units": [],
-                "aux_task": "color_predictor",
-                "coord": [11, 7],
-                "id":5,
-                "aux_weight": 0.0001
-                }
-            ]
-        ]
-   }
+        "learning_rate": [0.0001]
+    }
 }

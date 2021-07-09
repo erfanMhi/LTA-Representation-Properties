@@ -306,11 +306,13 @@ if __name__ == '__main__':
 #        ["run_dqn", "config/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta_aux/aux_control/sweep_2f.json"],
 #    ], prev_file=0, line_per_file=1, num_run=30)
     
-    rep_learning([
-    ["run_dqn_aux", "config/test/picky_eater_randc/representation/dqn_lta_aux/aux_control/sweep_3f_1.json"],
-    ["run_dqn_aux", "config/test/picky_eater_randc/representation/dqn_aux/aux_control/sweep_3f_1.json"]
-    ], prev_file=0, line_per_file=5, num_run=30)
-
+    #rep_learning([
+    #["run_dqn", "config/test/picky_eater_color_switch/control/last/different_task/fix_rep/dqn_aux/aux_control/sweep_3f.json"],
+    #["run_dqn", "config/test/picky_eater_color_switch/control/last/different_task/fix_rep/dqn/best_3f.json"],
+    #["run_dqn", "config/test/picky_eater_color_switch/representation/dqn/best_3f.json"],
+    #["run_dqn_aux", "config/test/picky_eater_color_switch/representation/dqn_aux/aux_control/best_3f.json"]
+#    ["run_dqn_aux", "config/test/picky_eater_color_switch/representation/dqn_lta_aux/aux_control/sweep_3f.json"]
+    #], prev_file=0, line_per_file=2, num_run=30)
 
     # rep_learning([
         # ["run_dqn", "config/test/picky_eater/control/different_task/fine_tune/dqn/best_final.json"],
@@ -327,15 +329,20 @@ if __name__ == '__main__':
         # ["run_dqn_aux", "config/test/picky_eater/online_property/dqn_aux/successor_as/initial.json"],
     # ], prev_file=0, line_per_file=1, num_run=30)
 
-    # rep_learning([
+    #rep_learning([
         # ["run_dqn_aux", "config/test/picky_eater/online_property/dqn_aux/aux_control/initial.json"],
         # ["run_dqn_aux", "config/test/picky_eater/online_property/dqn_aux/info/initial_xy.json"],
         # ["run_dqn_aux", "config/test/picky_eater/online_property/dqn_aux/input_decoder/initial.json"],
         # ["run_dqn_aux", "config/test/picky_eater/online_property/dqn_aux/nas_v2_delta/initial.json"],
         # ["run_dqn_aux", "config/test/picky_eater/online_property/dqn_aux/reward/initial.json"],
-        # ["run_dqn_aux", "config/test/picky_eater/online_property/dqn_aux/successor_as/initial.json"],
-    # ], prev_file=0, line_per_file=1, num_run=30)
+    #    ["run_dqn_aux", "config/test_v7/picky_eater/representation/dqn_lta_aux/aux_control/sweep_3f.json"],
+    #    ["run_dqn_aux", "config/test_v7/picky_eater/representation/dqn_aux/aux_control/sweep_3f.json"],
+    #], prev_file=0, line_per_file=1, num_run=10)
 
+    rep_learning([
+         ["run_dqn_aux", "config/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/nas_v2_delta/sweep_3f.json"],
+         ["run_dqn_aux", "config/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/successor_as/sweep_3f.json"],
+    ], prev_file=0, line_per_file=2, num_run=5)
 
 
     # rep_learning([

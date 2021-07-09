@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAuxAgentConfig",
     "fixed_parameters": {
-        "exp_name": "result/picky_eater/nonlinear_vf/representation/dqn_aux/info/sweep_3f_xy",
+        "exp_name": "result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/info/best_3f_xy",
         "env_name": "CollectTwoColorRGB",
         "agent": "DQNAuxAgent",
         "discount": 0.99,
@@ -13,7 +13,7 @@
         "epsilon_schedule_steps": 100000,
 
         "rep_config": {
-            "rep_type": "online",
+            "rep_type": "modular",
             "network_type": "conv",
             "conv_architecture": {
                 "conv_layers": [
@@ -32,15 +32,24 @@
             "hidden_units": [128, 128],
             "init_type": "xavier"
         },
-
-        "replay": true,
+	
+        "activation_config": {
+            "name": "LTA",
+            "input": 64,
+            "tile": 20,
+            "eta": 2.0,
+            "bound_high": 20,
+            "bound_low": -20
+        },
+        
+	"replay": true,
         "memory_size": 100000,
         "batch_size": 32,
 
         "optimizer_type": "Adam",
         "use_target_network": true,
         "target_network_update_freq": 1024,
-        
+
         "max_steps": 1000000,
         "log_interval": 10000,
         "eval_interval": 10000,
@@ -51,8 +60,8 @@
  	"save_early": {"mean": 2.95, "min": 1.5},
 
 	"distance_paths": [{"current": "example/picky_eater/trained_dqn/3f/distance_current_states_sameEP_green.npy", "action": "example/picky_eater/trained_dqn/3f/distance_actions_sameEP_green.npy", "next": "example/picky_eater/trained_dqn/3f/distance_next_states_sameEP_green.npy", "reward": "example/picky_eater/trained_dqn/3f/distance_rewards_sameEP_green.npy", "terminal": "example/picky_eater/trained_dqn/3f/distance_terminals_sameEP_green.npy", "label": "Green"}, {"current": "example/picky_eater/trained_dqn/3f/distance_current_states_sameEP_red.npy", "action": "example/picky_eater/trained_dqn/3f/distance_actions_sameEP_red.npy", "next": "example/picky_eater/trained_dqn/3f/distance_next_states_sameEP_red.npy", "reward": "example/picky_eater/trained_dqn/3f/distance_rewards_sameEP_red.npy", "terminal": "example/picky_eater/trained_dqn/3f/distance_terminals_sameEP_red.npy", "label": "Red"}, {"current": "example/picky_eater/trained_dqn/3f/distance_current_states_sameEP_random.npy", "action": "example/picky_eater/trained_dqn/3f/distance_actions_sameEP_random.npy", "next": "example/picky_eater/trained_dqn/3f/distance_next_states_sameEP_random.npy", "reward": "example/picky_eater/trained_dqn/3f/distance_rewards_sameEP_random.npy", "terminal": "example/picky_eater/trained_dqn/3f/distance_terminals_sameEP_random.npy", "label": "Random"}],
-
-    	"online_property": false,
+    	
+	"online_property": false,
         "tensorboard_logs": true,
         "save_params": true,
         "visualize": false,
@@ -65,15 +74,15 @@
         "evaluate_regression": false,
 	"fruit_num": 3,
         "rewarding_color": "green",
-        "single_channel_color": true    
+        "single_channel_color": true
     },
    "sweep_parameters": {
-        "learning_rate": [0.001, 0.0003, 0.0001, 0.00003, 0.00001],
+        "learning_rate": [0.0001],
         "aux_config": [
             [
                 {
                 "aux_fn_type":  "fc",
-                "aux_in_dim": 64,
+                "aux_in_dim": 1280,
                 "aux_out_dim": 2,
                 "hidden_units": [],
                 "aux_task": "rgb2xy",

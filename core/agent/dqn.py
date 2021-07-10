@@ -22,14 +22,14 @@ class DQNAgent(base.Agent):
         if cfg.rep_config['load_params']:
             path = os.path.join(cfg.data_root, cfg.rep_config['path'])
             print("loading from", path)
-            rep_net.load_state_dict(torch.load(path))
+            rep_net.load_state_dict(torch.load(path, map_location=cfg.device))
 
         val_net = cfg.val_fn()
         if 'load_params' in cfg.val_fn_config:
             if cfg.val_fn_config['load_params']:
                 path = os.path.join(cfg.data_root, cfg.val_fn_config['path'])
                 print("loading value function from", path)
-                val_net.load_state_dict(torch.load(path))
+                val_net.load_state_dict(torch.load(path, map_location=cfg.device))
 
         params = list(rep_net.parameters()) + list(val_net.parameters())
         optimizer = cfg.optimizer_fn(params)
@@ -370,13 +370,13 @@ class DQNAgent(base.Agent):
             path = os.path.join(parameters_dir, "rep_net_earlystop")
         else:
             path = os.path.join(parameters_dir, "rep_net")
-        self.rep_net.load_state_dict(torch.load(path))
+        self.rep_net.load_state_dict(torch.load(path, map_location=self.cfg.device))
 
         if early:
             path = os.path.join(parameters_dir, "val_net_earlystop")
         else:
             path = os.path.join(parameters_dir, "val_net")
-        self.val_net.load_state_dict(torch.load(path))
+        self.val_net.load_state_dict(torch.load(path, map_location=self.cfg.device))
 
         self.targets.rep_net.load_state_dict(self.rep_net.state_dict())
         self.targets.val_net.load_state_dict(self.val_net.state_dict())

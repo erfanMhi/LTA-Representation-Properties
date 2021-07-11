@@ -1,18 +1,18 @@
 {
     "config_class": "DQNAgentConfig",
     "fixed_parameters": {
-        "exp_name": "result/picky_eater/linear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/successor_as/sweep_3f",
-        "env_name": "CollectTwoColorRGB",
+        "exp_name": "result/picky_eater/linear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/nas_v2_delta/best_3f",
+    	"env_name": "CollectTwoColorRGB",
         "agent": "DQNAgent",
         "discount": 0.99,
         "state_norm_coef": 255.0,
-        
-	"decay_epsilon": true,
+
+        "decay_epsilon": true,
         "epsilon_start": 1.0,
         "epsilon_end": 0.1,
         "epsilon_schedule_steps": 100000,
 
-	"rep_config": {
+        "rep_config": {
             "rep_type": "modular",
             "network_type": "conv",
             "conv_architecture": {
@@ -25,7 +25,7 @@
             "out_dim": 64,
             "load_params": true,
             "train_rep": false,
-            "path": "result/picky_eater/linear_vf/representation/dqn_lta_aux/successor_as/best_3f/{}_run/0_param_setting/parameters/rep_net_earlystop"
+            "path": "result/picky_eater/linear_vf/representation/dqn_lta_aux/nas_v2_delta/best_3f/{}_run/0_param_setting/parameters/rep_net_earlystop"
         },
 
 	"val_fn_config": {
@@ -34,7 +34,7 @@
             "init_type": "xavier"
         },
 
-	"activation_config": {
+        "activation_config": {
             "name": "LTA",
             "input": 64,
             "tile": 20,
@@ -73,11 +73,11 @@
     	"evaluate_diversity": false,
         "evaluate_sparsity": false,
         "evaluate_regression": false,
-    	"fruit_num": 3,
+	"fruit_num": 3,
         "rewarding_color": "red",
         "single_channel_color": true    
     },
    "sweep_parameters": {
-        "learning_rate": [0.003, 0.001, 0.0003, 0.0001, 0.00003]
+        "learning_rate": [0.0003]
     }
 }

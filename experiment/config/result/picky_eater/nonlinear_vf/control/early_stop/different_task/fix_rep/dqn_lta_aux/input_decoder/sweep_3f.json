@@ -1,0 +1,75 @@
+{
+    "config_class": "DQNAgentConfig",
+    "fixed_parameters": {
+        "exp_name": "result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/input_decoder/sweep_3f/",
+        "env_name": "CollectTwoColorLip",
+        "agent": "DQNAgent",
+        "discount": 0.99,
+        "state_norm_coef": 255.0,
+
+        "decay_epsilon": true,
+        "epsilon_start": 1.0,
+        "epsilon_end": 0.1,
+        "epsilon_schedule_steps": 100000,
+
+        "rep_config": {
+            "rep_type": "modular",
+            "network_type": "conv",
+            "conv_architecture": {
+                "conv_layers": [
+                   {"in": 3,  "out": 32, "kernel": 4, "stride": 1, "pad": 1},
+                   {"in": 32,  "out": 16, "kernel": 4, "stride": 2, "pad": 2}
+                ]
+            },
+            "in_dim": [15, 15, 3],
+            "out_dim": 64,
+            "load_params": true,
+            "train_rep": false,
+            "path": "result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/input_decoder/best_3f/{}_run/0_param_setting/parameters/rep_net_earlystop"
+        },
+
+        "val_fn_config": {
+            "val_fn_type": "fc",
+            "hidden_units": [128, 128],
+            "init_type": "xavier"
+        },
+        
+	"activation_config": {
+            "name": "LTA",
+            "input": 64,
+            "tile": 20,
+            "eta": 2.0,
+            "bound_high": 20,
+            "bound_low": -20
+        },
+
+        "replay": true,
+        "memory_size": 100000,
+        "batch_size": 32,
+
+        "optimizer_type": "Adam",
+        "use_target_network": true,
+        "target_network_update_freq": 1024,
+
+        "max_steps": 2000000,
+        "log_interval": 10000,
+        "eval_interval": 10000,
+        "eval_episodes": 5,
+        "save_interval": 0,
+        "timeout": 500,
+        "stats_queue_size": 100,
+
+        "tensorboard_logs": false,
+        "save_params": false,
+        "visualize": false,
+        "visualize_aux_distance": false,
+        "rewarding_color": "red",
+	    "fruit_num": 3,
+
+        "evaluate_lipschitz": false,
+        "lipschitz_sampled_states_path": "example/picky_eater/trained_dqn/lip_sampled_states.npy"
+    },
+    "sweep_parameters": {
+        "learning_rate": [0.01, 0.003, 0.001, 0.0003, 0.0001, 0.00003, 0.00001, 0.000003]
+    }
+}

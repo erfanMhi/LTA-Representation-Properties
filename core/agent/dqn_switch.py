@@ -21,7 +21,7 @@ class DQNSwitchHeadAgent(base.Agent):
         if cfg.rep_config['load_params']:
             path = os.path.join(cfg.data_root, cfg.rep_config['path'])
             print("loading from", path)
-            rep_net.load_state_dict(torch.load(path))
+            rep_net.load_state_dict(torch.load(path, map_location=cfg.device))
 
         val_net_1 = cfg.val_fn_1()
         val_net_2 = cfg.val_fn_2()
@@ -30,8 +30,8 @@ class DQNSwitchHeadAgent(base.Agent):
                 path1 = os.path.join(cfg.data_root, cfg.val_fn_config['path1'])
                 path2 = os.path.join(cfg.data_root, cfg.val_fn_config['path2'])
                 print("loading value function from", path1)
-                val_net_1.load_state_dict(torch.load(path1))
-                val_net_2.load_state_dict(torch.load(path2))
+                val_net_1.load_state_dict(torch.load(path1, map_location=cfg.device))
+                val_net_2.load_state_dict(torch.load(path2, map_location=cfg.device))
 
         params = list(rep_net.parameters()) + list(val_net_1.parameters()) + list(val_net_2.parameters())
         optimizer = cfg.optimizer_fn(params)

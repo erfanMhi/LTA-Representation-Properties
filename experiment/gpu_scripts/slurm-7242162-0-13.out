@@ -1,0 +1,160 @@
+rewarding_color:  green
+rewarding_color:  green
+2021-07-08 12:55:14,016 | exp_name: result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/successor_as/sweep_3f
+2021-07-08 12:55:14,017 | data_root: /project/6010404/erfan/LTA-Representation-Properties/data/output
+2021-07-08 12:55:14,017 | device: cuda:0
+2021-07-08 12:55:14,017 | run: 0
+2021-07-08 12:55:14,017 | param_setting: 1
+2021-07-08 12:55:14,017 | env_name: CollectTwoColorRGB
+2021-07-08 12:55:14,018 | state_dim: (15, 15, 3)
+2021-07-08 12:55:14,018 | action_dim: 4
+2021-07-08 12:55:14,018 | max_steps: 1000000
+2021-07-08 12:55:14,018 | log_interval: 10000
+2021-07-08 12:55:14,018 | save_interval: 0
+2021-07-08 12:55:14,018 | eval_interval: 10000
+2021-07-08 12:55:14,018 | num_eval_episodes: 5
+2021-07-08 12:55:14,019 | timeout: 500
+2021-07-08 12:55:14,019 | stats_queue_size: 100
+2021-07-08 12:55:14,019 | tensorboard_logs: True
+2021-07-08 12:55:14,019 | tensorboard_interval: 100
+2021-07-08 12:55:14,019 | converge_window: 10
+2021-07-08 12:55:14,019 | converge_threshold: 0.0001
+2021-07-08 12:55:14,019 | linear_hidden_units: []
+2021-07-08 12:55:14,020 | coord_dim: 2
+2021-07-08 12:55:14,020 | state_norm_coef: 255.0
+2021-07-08 12:55:14,020 | reward_norm_coef: 1.0
+2021-07-08 12:55:14,020 | rewarding_color: green
+2021-07-08 12:55:14,020 | replay_with_len: False
+2021-07-08 12:55:14,020 | fruit_num: 3
+2021-07-08 12:55:14,020 | log_observations: False
+2021-07-08 12:55:14,021 | single_channel_color: True
+2021-07-08 12:55:14,021 | record_video: False
+2021-07-08 12:55:14,021 | update_network: True
+2021-07-08 12:55:14,021 | agent: DQNAuxSuccessorAgent
+2021-07-08 12:55:14,021 | learning_rate: 0.0003
+2021-07-08 12:55:14,021 | decay_epsilon: True
+2021-07-08 12:55:14,021 | epsilon: 0.1
+2021-07-08 12:55:14,022 | epsilon_start: 1.0
+2021-07-08 12:55:14,022 | epsilon_end: 0.1
+2021-07-08 12:55:14,022 | epsilon_schedule_steps: 100000
+2021-07-08 12:55:14,022 | random_action_prob: None
+2021-07-08 12:55:14,022 | discount: 0.99
+2021-07-08 12:55:14,022 | network_type: flat
+2021-07-08 12:55:14,022 | batch_size: 32
+2021-07-08 12:55:14,023 | use_target_network: True
+2021-07-08 12:55:14,023 | memory_size: 100000
+2021-07-08 12:55:14,023 | optimizer_type: Adam
+2021-07-08 12:55:14,023 | val_net: None
+2021-07-08 12:55:14,023 | target_network_update_freq: 1024
+2021-07-08 12:55:14,023 | evaluation_criteria: return
+2021-07-08 12:55:14,023 | vf_loss: mse
+2021-07-08 12:55:14,024 | vf_constraint: None
+2021-07-08 12:55:14,024 | constr_weight: 0
+2021-07-08 12:55:14,024 | rep_type: default
+2021-07-08 12:55:14,024 | evaluate_lipschitz: True
+2021-07-08 12:55:14,024 | evaluate_distance: True
+2021-07-08 12:55:14,024 | evaluate_orthogonality: True
+2021-07-08 12:55:14,024 | evaluate_interference: True
+2021-07-08 12:55:14,025 | evaluate_diversity: True
+2021-07-08 12:55:14,025 | evaluate_sparsity: True
+2021-07-08 12:55:14,025 | evaluate_regression: False
+2021-07-08 12:55:14,025 | save_params: True
+2021-07-08 12:55:14,025 | save_early: {'mean': 2.95, 'min': 1.5}
+2021-07-08 12:55:14,025 | visualize: False
+2021-07-08 12:55:14,025 | activation_config: {'name': 'LTA', 'input': 64, 'tile': 20, 'eta': 2.0, 'bound_high': 20, 'bound_low': -20}
+2021-07-08 12:55:14,026 | online_property: False
+2021-07-08 12:55:14,026 | visualize_aux_distance: False
+2021-07-08 12:55:14,026 | rep_config: {'rep_type': 'modular', 'network_type': 'conv', 'conv_architecture': {'conv_layers': [{'in': 3, 'out': 32, 'kernel': 4, 'stride': 1, 'pad': 1}, {'in': 32, 'out': 16, 'kernel': 4, 'stride': 2, 'pad': 2}]}, 'in_dim': [15, 15, 3], 'out_dim': 64, 'load_params': False, 'train_rep': True}
+2021-07-08 12:55:14,026 | val_fn_config: {'val_fn_type': 'fc', 'hidden_units': [128, 128], 'init_type': 'xavier'}
+2021-07-08 12:55:14,026 | aux_config: [{'aux_fn_type': 'linear', 'aux_in_dim': 1280, 'aux_out_dim': 1280, 'aux_task': 'successor_as', 'successor_lmbda': 0.99, 'aux_weight': 1}, {'aux_fn_type': 'linear', 'aux_in_dim': 1280, 'aux_out_dim': 1, 'aux_task': 'reward_predictor', 'aux_weight': 1}]
+2021-07-08 12:55:14,026 | replay: True
+2021-07-08 12:55:14,026 | eval_episodes: 100
+2021-07-08 12:55:14,027 | distance_paths: [{'current': 'example/picky_eater/trained_dqn/3f/distance_current_states_sameEP_green.npy', 'action': 'example/picky_eater/trained_dqn/3f/distance_actions_sameEP_green.npy', 'next': 'example/picky_eater/trained_dqn/3f/distance_next_states_sameEP_green.npy', 'reward': 'example/picky_eater/trained_dqn/3f/distance_rewards_sameEP_green.npy', 'terminal': 'example/picky_eater/trained_dqn/3f/distance_terminals_sameEP_green.npy', 'label': 'Green'}, {'current': 'example/picky_eater/trained_dqn/3f/distance_current_states_sameEP_red.npy', 'action': 'example/picky_eater/trained_dqn/3f/distance_actions_sameEP_red.npy', 'next': 'example/picky_eater/trained_dqn/3f/distance_next_states_sameEP_red.npy', 'reward': 'example/picky_eater/trained_dqn/3f/distance_rewards_sameEP_red.npy', 'terminal': 'example/picky_eater/trained_dqn/3f/distance_terminals_sameEP_red.npy', 'label': 'Red'}, {'current': 'example/picky_eater/trained_dqn/3f/distance_current_states_sameEP_random.npy', 'action': 'example/picky_eater/trained_dqn/3f/distance_actions_sameEP_random.npy', 'next': 'example/picky_eater/trained_dqn/3f/distance_next_states_sameEP_random.npy', 'reward': 'example/picky_eater/trained_dqn/3f/distance_rewards_sameEP_random.npy', 'terminal': 'example/picky_eater/trained_dqn/3f/distance_terminals_sameEP_random.npy', 'label': 'Random'}]
+2021-07-08 12:55:14,027 | cumulative: 5
+2021-07-08 12:55:14,027 | id: 1
+2021-07-08 12:55:14,027 | seed: 0
+2021-07-08 12:55:14,027 | aux_weights: [1, 1]
+rewarding_color:  green
+rewarding_color:  green
+2021-07-08 12:56:42,384 | TRAIN LOG: steps 0, episodes   0, returns -0.57/-0.50/-3.50/2.89/100 (mean/median/min/max/num), 113.27 steps/s
+2021-07-08 12:56:49,212 | total steps 0, total episodes   0, Lipschitz: 5.117/0.03633/0.03513/0.00099/0.09473 (upper/mean/median/min/max)
+rewarding_color:  green
+rewarding_color:  green
+2021-07-08 12:55:14,047 | exp_name: result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/successor_as/sweep_3f
+2021-07-08 12:55:14,047 | data_root: /project/6010404/erfan/LTA-Representation-Properties/data/output
+2021-07-08 12:55:14,047 | device: cuda:0
+2021-07-08 12:55:14,047 | run: 0
+2021-07-08 12:55:14,048 | param_setting: 2
+2021-07-08 12:55:14,048 | env_name: CollectTwoColorRGB
+2021-07-08 12:55:14,048 | state_dim: (15, 15, 3)
+2021-07-08 12:55:14,048 | action_dim: 4
+2021-07-08 12:55:14,048 | max_steps: 1000000
+2021-07-08 12:55:14,048 | log_interval: 10000
+2021-07-08 12:55:14,048 | save_interval: 0
+2021-07-08 12:55:14,048 | eval_interval: 10000
+2021-07-08 12:55:14,048 | num_eval_episodes: 5
+2021-07-08 12:55:14,048 | timeout: 500
+2021-07-08 12:55:14,048 | stats_queue_size: 100
+2021-07-08 12:55:14,048 | tensorboard_logs: True
+2021-07-08 12:55:14,048 | tensorboard_interval: 100
+2021-07-08 12:55:14,048 | converge_window: 10
+2021-07-08 12:55:14,048 | converge_threshold: 0.0001
+2021-07-08 12:55:14,048 | linear_hidden_units: []
+2021-07-08 12:55:14,049 | coord_dim: 2
+2021-07-08 12:55:14,049 | state_norm_coef: 255.0
+2021-07-08 12:55:14,049 | reward_norm_coef: 1.0
+2021-07-08 12:55:14,049 | rewarding_color: green
+2021-07-08 12:55:14,049 | replay_with_len: False
+2021-07-08 12:55:14,049 | fruit_num: 3
+2021-07-08 12:55:14,049 | log_observations: False
+2021-07-08 12:55:14,049 | single_channel_color: True
+2021-07-08 12:55:14,049 | record_video: False
+2021-07-08 12:55:14,049 | update_network: True
+2021-07-08 12:55:14,049 | agent: DQNAuxSuccessorAgent
+2021-07-08 12:55:14,049 | learning_rate: 0.0001
+2021-07-08 12:55:14,049 | decay_epsilon: True
+2021-07-08 12:55:14,049 | epsilon: 0.1
+2021-07-08 12:55:14,049 | epsilon_start: 1.0
+2021-07-08 12:55:14,050 | epsilon_end: 0.1
+2021-07-08 12:55:14,050 | epsilon_schedule_steps: 100000
+2021-07-08 12:55:14,050 | random_action_prob: None
+2021-07-08 12:55:14,050 | discount: 0.99
+2021-07-08 12:55:14,050 | network_type: flat
+2021-07-08 12:55:14,050 | batch_size: 32
+2021-07-08 12:55:14,050 | use_target_network: True
+2021-07-08 12:55:14,050 | memory_size: 100000
+2021-07-08 12:55:14,050 | optimizer_type: Adam
+2021-07-08 12:55:14,050 | val_net: None
+2021-07-08 12:55:14,050 | target_network_update_freq: 1024
+2021-07-08 12:55:14,050 | evaluation_criteria: return
+2021-07-08 12:55:14,050 | vf_loss: mse
+2021-07-08 12:55:14,050 | vf_constraint: None
+2021-07-08 12:55:14,050 | constr_weight: 0
+2021-07-08 12:55:14,051 | rep_type: default
+2021-07-08 12:55:14,051 | evaluate_lipschitz: True
+2021-07-08 12:55:14,051 | evaluate_distance: True
+2021-07-08 12:55:14,051 | evaluate_orthogonality: True
+2021-07-08 12:55:14,051 | evaluate_interference: True
+2021-07-08 12:55:14,051 | evaluate_diversity: True
+2021-07-08 12:55:14,051 | evaluate_sparsity: True
+2021-07-08 12:55:14,051 | evaluate_regression: False
+2021-07-08 12:55:14,051 | save_params: True
+2021-07-08 12:55:14,051 | save_early: {'mean': 2.95, 'min': 1.5}
+2021-07-08 12:55:14,051 | visualize: False
+2021-07-08 12:55:14,051 | activation_config: {'name': 'LTA', 'input': 64, 'tile': 20, 'eta': 2.0, 'bound_high': 20, 'bound_low': -20}
+2021-07-08 12:55:14,051 | online_property: False
+2021-07-08 12:55:14,051 | visualize_aux_distance: False
+2021-07-08 12:55:14,051 | rep_config: {'rep_type': 'modular', 'network_type': 'conv', 'conv_architecture': {'conv_layers': [{'in': 3, 'out': 32, 'kernel': 4, 'stride': 1, 'pad': 1}, {'in': 32, 'out': 16, 'kernel': 4, 'stride': 2, 'pad': 2}]}, 'in_dim': [15, 15, 3], 'out_dim': 64, 'load_params': False, 'train_rep': True}
+2021-07-08 12:55:14,051 | val_fn_config: {'val_fn_type': 'fc', 'hidden_units': [128, 128], 'init_type': 'xavier'}
+2021-07-08 12:55:14,052 | aux_config: [{'aux_fn_type': 'linear', 'aux_in_dim': 1280, 'aux_out_dim': 1280, 'aux_task': 'successor_as', 'successor_lmbda': 0.99, 'aux_weight': 1}, {'aux_fn_type': 'linear', 'aux_in_dim': 1280, 'aux_out_dim': 1, 'aux_task': 'reward_predictor', 'aux_weight': 1}]
+2021-07-08 12:55:14,052 | replay: True
+2021-07-08 12:55:14,052 | eval_episodes: 100
+2021-07-08 12:55:14,052 | distance_paths: [{'current': 'example/picky_eater/trained_dqn/3f/distance_current_states_sameEP_green.npy', 'action': 'example/picky_eater/trained_dqn/3f/distance_actions_sameEP_green.npy', 'next': 'example/picky_eater/trained_dqn/3f/distance_next_states_sameEP_green.npy', 'reward': 'example/picky_eater/trained_dqn/3f/distance_rewards_sameEP_green.npy', 'terminal': 'example/picky_eater/trained_dqn/3f/distance_terminals_sameEP_green.npy', 'label': 'Green'}, {'current': 'example/picky_eater/trained_dqn/3f/distance_current_states_sameEP_red.npy', 'action': 'example/picky_eater/trained_dqn/3f/distance_actions_sameEP_red.npy', 'next': 'example/picky_eater/trained_dqn/3f/distance_next_states_sameEP_red.npy', 'reward': 'example/picky_eater/trained_dqn/3f/distance_rewards_sameEP_red.npy', 'terminal': 'example/picky_eater/trained_dqn/3f/distance_terminals_sameEP_red.npy', 'label': 'Red'}, {'current': 'example/picky_eater/trained_dqn/3f/distance_current_states_sameEP_random.npy', 'action': 'example/picky_eater/trained_dqn/3f/distance_actions_sameEP_random.npy', 'next': 'example/picky_eater/trained_dqn/3f/distance_next_states_sameEP_random.npy', 'reward': 'example/picky_eater/trained_dqn/3f/distance_rewards_sameEP_random.npy', 'terminal': 'example/picky_eater/trained_dqn/3f/distance_terminals_sameEP_random.npy', 'label': 'Random'}]
+2021-07-08 12:55:14,052 | cumulative: 5
+2021-07-08 12:55:14,052 | id: 2
+2021-07-08 12:55:14,052 | seed: 0
+2021-07-08 12:55:14,052 | aux_weights: [1, 1]
+rewarding_color:  green
+rewarding_color:  green
+2021-07-08 12:56:42,420 | TRAIN LOG: steps 0, episodes   0, returns -0.57/-0.50/-3.50/2.89/100 (mean/median/min/max/num), 113.23 steps/s
+2021-07-08 12:56:49,974 | total steps 0, total episodes   0, Lipschitz: 5.117/0.03633/0.03513/0.00099/0.09473 (upper/mean/median/min/max)

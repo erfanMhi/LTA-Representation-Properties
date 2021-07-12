@@ -1,0 +1,54 @@
+perl: warning: Setting locale failed.
+perl: warning: Please check that your locale settings:
+	LANGUAGE = (unset),
+	LC_ALL = (unset),
+	LC_PAPER = "az_IR",
+	LC_ADDRESS = "az_IR",
+	LC_MONETARY = "az_IR",
+	LC_NUMERIC = "az_IR",
+	LC_TELEPHONE = "az_IR",
+	LC_IDENTIFICATION = "az_IR",
+	LC_MEASUREMENT = "az_IR",
+	LC_TIME = "az_IR",
+	LC_NAME = "az_IR",
+	LANG = "en_US.UTF-8"
+    are supported and installed on your system.
+perl: warning: Falling back to a fallback locale ("en_US.UTF-8").
+Traceback (most recent call last):
+  File "run_dqn_aux.py", line 53, in <module>
+    run_funcs.run_steps(agent)
+  File "/project/6010404/erfan/LTA-Representation-Properties/core/utils/run_funcs.py", line 44, in run_steps
+    agent.step()
+  File "/project/6010404/erfan/LTA-Representation-Properties/core/agent/dqn.py", line 89, in step
+    self.update()
+  File "/project/6010404/erfan/LTA-Representation-Properties/core/agent/dqn_aux.py", line 381, in update
+    ls = aux_net.compute_loss(transition, phi, nphi, action_next)
+  File "/project/6010404/erfan/LTA-Representation-Properties/core/component/auxiliary_tasks.py", line 231, in compute_loss
+    rewards = torch_utils.tensor(np.expand_dims(rewards, axis=1), self.device)
+  File "<__array_function__ internals>", line 6, in expand_dims
+  File "/home/miahi/rep_env/lib/python3.6/site-packages/numpy/lib/shape_base.py", line 591, in expand_dims
+    a = asanyarray(a)
+  File "/home/miahi/rep_env/lib/python3.6/site-packages/numpy/core/_asarray.py", line 136, in asanyarray
+    return array(a, dtype, copy=False, order=order, subok=True)
+  File "/home/miahi/rep_env/lib/python3.6/site-packages/torch/tensor.py", line 630, in __array__
+    return self.numpy()
+TypeError: can't convert cuda:0 device type tensor to numpy. Use Tensor.cpu() to copy the tensor to host memory first.
+Traceback (most recent call last):
+  File "run_dqn_aux.py", line 53, in <module>
+    run_funcs.run_steps(agent)
+  File "/project/6010404/erfan/LTA-Representation-Properties/core/utils/run_funcs.py", line 44, in run_steps
+    agent.step()
+  File "/project/6010404/erfan/LTA-Representation-Properties/core/agent/dqn.py", line 89, in step
+    self.update()
+  File "/project/6010404/erfan/LTA-Representation-Properties/core/agent/dqn_aux.py", line 381, in update
+    ls = aux_net.compute_loss(transition, phi, nphi, action_next)
+  File "/project/6010404/erfan/LTA-Representation-Properties/core/component/auxiliary_tasks.py", line 231, in compute_loss
+    rewards = torch_utils.tensor(np.expand_dims(rewards, axis=1), self.device)
+  File "<__array_function__ internals>", line 6, in expand_dims
+  File "/home/miahi/rep_env/lib/python3.6/site-packages/numpy/lib/shape_base.py", line 591, in expand_dims
+    a = asanyarray(a)
+  File "/home/miahi/rep_env/lib/python3.6/site-packages/numpy/core/_asarray.py", line 136, in asanyarray
+    return array(a, dtype, copy=False, order=order, subok=True)
+  File "/home/miahi/rep_env/lib/python3.6/site-packages/torch/tensor.py", line 630, in __array__
+    return self.numpy()
+TypeError: can't convert cuda:0 device type tensor to numpy. Use Tensor.cpu() to copy the tensor to host memory first.

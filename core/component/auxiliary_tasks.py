@@ -228,7 +228,7 @@ class RewardPredictor(AuxTask):
     def compute_loss(self, transition, phi, nphi, actions_next=None):
         _, action, rewards, _, _ = transition
         prediction = self.forward((phi, action))
-        rewards = torch_utils.tensor(np.expand_dims(rewards, axis=1), self.device)
+        rewards = torch_utils.tensor(torch.unsqueeze(rewards, 1), self.device)
         loss = self.loss(prediction, rewards)
 
         self.total_steps += 1

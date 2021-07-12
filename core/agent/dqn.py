@@ -22,14 +22,14 @@ class DQNAgent(base.Agent):
         if cfg.rep_config['load_params']:
             path = os.path.join(cfg.data_root, cfg.rep_config['path'])
             print("loading from", path)
-            rep_net.load_state_dict(torch.load(path))
+            rep_net.load_state_dict(torch.load(path, map_location=cfg.device))
 
         val_net = cfg.val_fn()
         if 'load_params' in cfg.val_fn_config:
             if cfg.val_fn_config['load_params']:
                 path = os.path.join(cfg.data_root, cfg.val_fn_config['path'])
                 print("loading value function from", path)
-                val_net.load_state_dict(torch.load(path))
+                val_net.load_state_dict(torch.load(path, map_location=cfg.device))
 
         params = list(rep_net.parameters()) + list(val_net.parameters())
         optimizer = cfg.optimizer_fn(params)
@@ -66,6 +66,10 @@ class DQNAgent(base.Agent):
     def step(self):
         if self.reset is True:
             self.state = self.env.reset()
+            
+            if self.record_video:
+                self.image_array.append(self.state)
+
             self.reset = False
         
         # with torch.no_grad():
@@ -85,13 +89,17 @@ class DQNAgent(base.Agent):
         self.state = next_state
         # print('action: ', action)
         self.update_stats(reward, done)
-
-        self.update()
+        if self.cfg.update_network:
+            self.update()
 
     def policy(self, state, eps):
+        
         with torch.no_grad():
+            # print(np.array(state).shape)
+            # state = torch_utils.tensor(state, self.cfg.device)
             phi = self.rep_net(self.cfg.state_normalizer(state))
             q_values = self.val_net(phi)
+
         q_values = torch_utils.to_np(q_values).flatten()
 
         if np.random.rand() < eps:
@@ -370,13 +378,13 @@ class DQNAgent(base.Agent):
             path = os.path.join(parameters_dir, "rep_net_earlystop")
         else:
             path = os.path.join(parameters_dir, "rep_net")
-        self.rep_net.load_state_dict(torch.load(path))
+        self.rep_net.load_state_dict(torch.load(path, map_location=self.cfg.device))
 
         if early:
             path = os.path.join(parameters_dir, "val_net_earlystop")
         else:
             path = os.path.join(parameters_dir, "val_net")
-        self.val_net.load_state_dict(torch.load(path))
+        self.val_net.load_state_dict(torch.load(path, map_location=self.cfg.device))
 
         self.targets.rep_net.load_state_dict(self.rep_net.state_dict())
         self.targets.val_net.load_state_dict(self.val_net.state_dict())

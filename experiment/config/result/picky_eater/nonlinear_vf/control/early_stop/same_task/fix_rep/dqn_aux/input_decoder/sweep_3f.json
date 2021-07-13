@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAgentConfig",
     "fixed_parameters": {
-        "exp_name": "result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_aux/aux_control/sweep_3f/",
+        "exp_name": "result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_aux/input_decoder/sweep_3f/",
         "env_name": "CollectTwoColorLip",
         "agent": "DQNAgent",
         "discount": 0.99,
@@ -25,7 +25,7 @@
             "out_dim": 64,
             "load_params": true,
             "train_rep": false,
-            "path": "result/picky_eater/nonlinear_vf/representation/dqn_aux/aux_control/best_3f/{}_run/0_param_setting/parameters/rep_net_earlystop"
+            "path": "result/picky_eater/nonlinear_vf/representation/dqn_aux/input_decoder/best_3f/{}_run/0_param_setting/parameters/rep_net_earlystop"
         },
 
         "val_fn_config": {
@@ -54,7 +54,7 @@
         "save_params": false,
         "visualize": false,
         "visualize_aux_distance": false,
-        "rewarding_color": "red",
+        "rewarding_color": "green",
 	    "fruit_num": 3,
 
         "evaluate_lipschitz": false,

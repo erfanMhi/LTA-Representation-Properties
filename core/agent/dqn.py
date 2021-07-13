@@ -66,6 +66,10 @@ class DQNAgent(base.Agent):
     def step(self):
         if self.reset is True:
             self.state = self.env.reset()
+            
+            if self.record_video:
+                self.image_array.append(self.state)
+
             self.reset = False
         
         # with torch.no_grad():
@@ -85,13 +89,17 @@ class DQNAgent(base.Agent):
         self.state = next_state
         # print('action: ', action)
         self.update_stats(reward, done)
-
-        self.update()
+        if self.cfg.update_network:
+            self.update()
 
     def policy(self, state, eps):
+        
         with torch.no_grad():
+            # print(np.array(state).shape)
+            # state = torch_utils.tensor(state, self.cfg.device)
             phi = self.rep_net(self.cfg.state_normalizer(state))
             q_values = self.val_net(phi)
+
         q_values = torch_utils.to_np(q_values).flatten()
 
         if np.random.rand() < eps:

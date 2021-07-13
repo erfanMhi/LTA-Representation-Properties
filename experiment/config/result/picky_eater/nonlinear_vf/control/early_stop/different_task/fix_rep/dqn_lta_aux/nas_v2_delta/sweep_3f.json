@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test_v6/picky_eater/control/early_stop/different_task/fix_rep/dqn_aux/aux_control/best_3f/",
+        "exp_name": "result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/nas_v2_delta/sweep_3f/",
         "env_name": "CollectTwoColorLip",
         "agent": "DQNAgent",
         "discount": 0.99,
@@ -13,7 +13,7 @@
         "epsilon_schedule_steps": 100000,
 
         "rep_config": {
-            "rep_type": "online",
+            "rep_type": "modular",
             "network_type": "conv",
             "conv_architecture": {
                 "conv_layers": [
@@ -25,7 +25,7 @@
             "out_dim": 64,
             "load_params": true,
             "train_rep": false,
-            "path": "test_v6/picky_eater/online_property/dqn_aux/aux_control/best_3f/{}_run/0_param_setting/parameters/rep_net_earlystop"
+            "path": "result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/nas_v2_delta/best_3f/{}_run/0_param_setting/parameters/rep_net_earlystop"
         },
 
         "val_fn_config": {
@@ -33,16 +33,25 @@
             "hidden_units": [128, 128],
             "init_type": "xavier"
         },
+        
+	"activation_config": {
+            "name": "LTA",
+            "input": 64,
+            "tile": 20,
+            "eta": 2.0,
+            "bound_high": 20,
+            "bound_low": -20
+        },
 
         "replay": true,
-        "memory_size": 200000,
+        "memory_size": 100000,
         "batch_size": 32,
 
         "optimizer_type": "Adam",
         "use_target_network": true,
         "target_network_update_freq": 1024,
 
-        "max_steps": 1000000,
+        "max_steps": 2000000,
         "log_interval": 10000,
         "eval_interval": 10000,
         "eval_episodes": 5,
@@ -57,10 +66,10 @@
         "rewarding_color": "red",
 	    "fruit_num": 3,
 
-        "evaluate_lipschitz": true,
+        "evaluate_lipschitz": false,
         "lipschitz_sampled_states_path": "example/picky_eater/trained_dqn/lip_sampled_states.npy"
     },
     "sweep_parameters": {
-         "learning_rate": [0.000003]
+        "learning_rate": [0.01, 0.003, 0.001, 0.0003, 0.0001, 0.00003, 0.00001, 0.000003]
     }
 }

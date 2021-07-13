@@ -105,10 +105,17 @@ def simple_maze_check_aux(targets, title, early_stopped, x_group=None, c_group=N
     x = np.arange(len(targets))  # the reps
     width = 0.5  # the width of the bars
 
-    col = 2
-    row = 4
-    fig, axs = plt.subplots(row, col, figsize=(5, 5))
+    col = 1
+    row = 7
+    fig, axs = plt.subplots(row, col, figsize=(5, 7))
+    axs = axs.reshape((row, col))
     v_colors = [violin_colors[t] for t in targets]
+    vert_line = []
+    vert_label = [x_group[0]]
+    for idx in range(len(x_group) - 1):
+        if x_group[idx] != x_group[idx + 1]:
+            vert_line.append(idx + 0.5)
+            vert_label.append(x_group[idx + 1])
     for i,l in enumerate(labels):
         ax = axs[i//col, i%col]
         for j in range(len(diff_prop[i])):
@@ -117,18 +124,35 @@ def simple_maze_check_aux(targets, title, early_stopped, x_group=None, c_group=N
         ax.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
         ax.set_xticks([])
         ax.set_yticks([diff_prop[i].min(), diff_prop[i].max()])
-    for i,t in enumerate(targets):
-        plt.plot([], c=violin_colors[t], label=t)
+
+        if l in y_lims:
+            ax.set_ylim(y_lims[l])
+            ax.set_yticks(y_lims[l])
+        ax.vlines(vert_line, 0, 1, transform=ax.get_xaxis_transform(), ls=":", colors="grey", alpha=1, linewidth=1)
+
+    for t in c_group.keys():
+        plt.plot([], c=c_group[t], label=t)
+    # for i,t in enumerate(targets):
+    #     plt.plot([], c=violin_colors[t], label=t)
     if len(labels) <= (col * row):
         for i in range(len(labels), col*row):
             ax = axs[i//col, i%col]
             ax.axis('off')
 
+    vert_line = [0]+vert_line+[len(x_group)]
+    vert_label_pos = [(vert_line[i]+vert_line[i+1])/2 for i in range(len(vert_line)-1)]
+    for i in range(col):
+        axs[-1, i].set_xticks(vert_label_pos)
+        axs[-1, i].set_xticklabels(vert_label, rotation=30)
+        axs[-1, i].text(1.5, 1., "eta=0.4", rotation=30, c=c_group["study eta"], size='xx-small')
+        axs[-1, i].text(2.5, 1., "eta=0.6", rotation=30, c=c_group["study eta"], size='xx-small')
+        axs[-1, i].text(3.5, 1., "eta=0.8", rotation=30, c=c_group["study eta"], size='xx-small')
+
     fig.tight_layout(pad=1.0)
     fontP = FontProperties()
     fontP.set_size('xx-small')
-    # plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', prop=fontP)
-    plt.legend(bbox_to_anchor=(0.2, 0.5), loc='center', prop=fontP)
+    # plt.legend(bbox_to_anchor=(0.2, 0.5), loc='center', prop=fontP)
+    plt.legend(bbox_to_anchor=(0.01, -0.7), loc='center', prop=fontP)
     plt.savefig("plot/img/{}.pdf".format(title), dpi=300, bbox_inches='tight')
     plt.close()
     plt.clf()
@@ -302,7 +326,8 @@ def simple_maze():
     c_group = {"ReLU": violin_colors["ReLU"],
                "FTA": violin_colors["FTA eta=0.2"],
                "study eta": violin_colors["FTA eta=0.4"]}
-    y_lims = {"noninterference":[0.99, 1.0]}
+    # y_lims = {"noninterference":[0.5, 1.0]}
+    y_lims = {}
     simple_maze_check_aux(targets, "maze_aux_all", True, x_group, c_group, y_lims)
     # simple_maze_check_aux(targets_relu, "maze_aux_relu", True)
     # simple_maze_check_aux(targets_fta, "maze_aux_fta", True)
@@ -328,5 +353,5 @@ def simple_picky_eater():
 
 
 if __name__ == '__main__':
-    # simple_maze()
+    simple_maze()
     simple_picky_eater()

@@ -37,7 +37,7 @@ def learning_curve(all_paths_dict, title, targets=None, xlim=None):
     for label in labels:
         print(label)
         returns = arrange_order(control[label])
-        draw_curve(returns, plt, label, violin_colors[label])
+        draw_curve(returns, plt, label, violin_colors[label], style=curve_styles[label])
 
     plt.title(title)
     plt.gca().spines['right'].set_visible(False)
@@ -90,15 +90,16 @@ def simple_maze():
     print("\nRep learning")
     targets = ["FTA eta=0.2", "FTA+Control1g", "FTA+Control5g",
                "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
-               "ReLU", "Random", "Input"]
+               "ReLU", "ReLU+Control1g", "ReLU+Control5g",
+               "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",]
 
     # learning_curve(gh_online, "maze online measure", targets, xlim=[0, 30])
-    #
-    # learning_curve(gh_same_early, "maze same early", targets, xlim=[0, 10])
-    # learning_curve(gh_similar_early, "maze similar early", targets, xlim=[0, 10])
-    # learning_curve(gh_diff_early, "maze different (fix) early", targets, xlim=[0, 10])
+
+    learning_curve(gh_same_early, "maze same early", targets, xlim=[0, 30])
+    learning_curve(gh_similar_early, "maze similar early", targets, xlim=[0, 30])
+    learning_curve(gh_diff_early, "maze different (fix) early", targets, xlim=[0, 30])
     # learning_curve(gh_diff_tune_early, "maze different (fine tune) early", targets, xlim=[0, 10])
-    #
+
     # learning_curve(gh_same_last, "maze same last", targets, xlim=[0, 10])
     # learning_curve(gh_similar_last, "maze similar last", targets, xlim=[0, 10])
     # learning_curve(gh_diff_last, "maze different (fix) last", targets, xlim=[0, 10])
@@ -114,8 +115,11 @@ def picky_eater():
     learning_curve(crgb_online_st_fr, "Same Task")
     learning_curve(crgb_online_dt_ft, "Dissimilar Task (fine tune)")
 
+def pe_temp():
+    learning_curve(pe_trans_best_temp, "pe diff fix v6 best")
 
 if __name__ == '__main__':
     # mountain_car()
-    #simple_maze()
+    simple_maze()
     picky_eater()
+    # pe_temp()

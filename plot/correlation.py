@@ -163,19 +163,19 @@ def simple_maze_correlation_early(perc):
     diff_diversity = calculation([gh_diff_early], "maze_early_diff-fix_diversity", property_key="diversity", perc=perc, targets=targets, early_stopped=True)
     diff_spars = calculation([gh_diff_early], "maze_early_diff-fix_sparsity", property_key="sparsity", perc=perc, targets=targets, early_stopped=True)
 
-    print("\nDifferent task - tune")
-    difftune_lip = calculation([gh_diff_tune_early], "maze_early_diff-tune_lip", property_key="lipschitz", perc=perc, targets=targets, early_stopped=True)
-    difftune_dist = calculation([gh_diff_tune_early], "maze_early_diff-tune_distance", property_key="distance", perc=perc, targets=targets, early_stopped=True)
-    difftune_ortho = calculation([gh_diff_tune_early], "maze_early_diff-tune_ortho", property_key="ortho", perc=perc, targets=targets, early_stopped=True)
-    difftune_interf = calculation([gh_diff_tune_early], "maze_early_diff-tune_interf", property_key="interf", perc=perc, targets=targets, early_stopped=True)
-    difftune_diversity = calculation([gh_diff_tune_early], "maze_early_diff-tune_diversity", property_key="diversity", perc=perc, targets=targets, early_stopped=True)
-    difftune_spars = calculation([gh_diff_tune_early], "maze_early_diff-tune_sparsity", property_key="sparsity", perc=perc, targets=targets, early_stopped=True)
+    # print("\nDifferent task - tune")
+    # difftune_lip = calculation([gh_diff_tune_early], "maze_early_diff-tune_lip", property_key="lipschitz", perc=perc, targets=targets, early_stopped=True)
+    # difftune_dist = calculation([gh_diff_tune_early], "maze_early_diff-tune_distance", property_key="distance", perc=perc, targets=targets, early_stopped=True)
+    # difftune_ortho = calculation([gh_diff_tune_early], "maze_early_diff-tune_ortho", property_key="ortho", perc=perc, targets=targets, early_stopped=True)
+    # difftune_interf = calculation([gh_diff_tune_early], "maze_early_diff-tune_interf", property_key="interf", perc=perc, targets=targets, early_stopped=True)
+    # difftune_diversity = calculation([gh_diff_tune_early], "maze_early_diff-tune_diversity", property_key="diversity", perc=perc, targets=targets, early_stopped=True)
+    # difftune_spars = calculation([gh_diff_tune_early], "maze_early_diff-tune_sparsity", property_key="sparsity", perc=perc, targets=targets, early_stopped=True)
 
     labels = ["complexity reduction", "dynamics awareness", "orthogonality", "noninterference", "diversity", "sparsity"]
     same = [same_lip, same_dist, same_ortho, same_interf, same_diversity, same_spars]
     similar = [similar_lip, similar_dist, similar_ortho, similar_interf, similar_diversity, similar_spars]
     diff = [diff_lip, diff_dist, diff_ortho, diff_interf, diff_diversity, diff_spars]
-    difftune = [difftune_lip, difftune_dist, difftune_ortho, difftune_interf, difftune_diversity, difftune_spars]
+    # difftune = [difftune_lip, difftune_dist, difftune_ortho, difftune_interf, difftune_diversity, difftune_spars]
 
     x = np.arange(len(labels))  # the label locations
     width = 0.2  # the width of the bars
@@ -196,17 +196,18 @@ def simple_maze_correlation_early(perc):
     for i in range(len(x)):
         ax.text(x[i]-0.45+width*2.6, max(0, diff[i]) + label_pos, "{:.4f}".format(diff[i]), color=cmap(1, 4), fontsize=fontsize, rotation=rotation)
 
-    rects4 = ax.bar(x-0.45+width*4, difftune, width, label='dissimilar(tune)', color=cmap(3, 4))
-    for i in range(len(x)):
-        ax.text(x[i]-0.45+width*3.6, max(0, difftune[i]) + label_pos, "{:.4f}".format(difftune[i]), color=cmap(3, 4), fontsize=fontsize, rotation=rotation)
+    # rects4 = ax.bar(x-0.45+width*4, difftune, width, label='dissimilar(tune)', color=cmap(3, 4))
+    # for i in range(len(x)):
+    #     ax.text(x[i]-0.45+width*3.6, max(0, difftune[i]) + label_pos, "{:.4f}".format(difftune[i]), color=cmap(3, 4), fontsize=fontsize, rotation=rotation)
 
     ax.plot([x[0]-0.45, x[-1]+0.45], [0, 0], "--", color="grey")
 
 
     # ax.legend()
     ax.set_ylabel('Correlation')
-    ax.set_ylim(-0.5, 1)
+    ax.set_ylim(-1, 1.2)
     ax.set_xticks(x)
+    ax.set_yticks([-1, 0, 1])
     # ax.set_yticks([-1, -0.7, -0.5, 0, 0.5, 0.7, 1])
     ax.set_xticklabels(labels, rotation=30)
     # plt.grid(True)
@@ -375,6 +376,58 @@ def simple_picky_eater_correlation_last(perc, early=True, p_label='Random'):
     plt.close()
     plt.clf()
 
+def picky_eater_correlation(perc, early=True, p_label='Random'):
+
+    if early:
+        crgb_diff_path = pe_trans_best_temp
+    else:
+        raise NotImplementedError
+
+    print("\nDifferent task - fix")
+    diff_lip = calculation([crgb_diff_path], "picky_eater_early_diff-fix_lip", property_key="lipschitz", perc=perc, targets=targets, p_label=p_label)
+    diff_dist = calculation([crgb_diff_path], "picky_eater_early_diff-fix_distance", property_key="distance", perc=perc, targets=targets, p_label=p_label)
+    diff_ortho = calculation([crgb_diff_path], "picky_eater_early_diff-fix_ortho", property_key="ortho", perc=perc, targets=targets, p_label=p_label)
+    diff_interf = calculation([crgb_diff_path], "picky_eater_early_diff-fix_interf", property_key="interf", perc=perc, targets=targets)
+    diff_diversity = calculation([crgb_diff_path], "picky_eater_early_diff-fix_diversity", property_key="diversity", perc=perc, targets=targets, p_label=p_label)
+    diff_spars = calculation([crgb_diff_path], "picky_eater_early_diff-fix_sparsity", property_key="sparsity", perc=perc, targets=targets, p_label=p_label)
+
+    labels = ["complexity reduction", "dynamics awareness", "orthogonality", "noninterference", "diversity", "sparsity"]
+    # labels = ["interference", "sparsity"]
+    # same = [same_lip, same_dist, same_ortho, same_interf, same_diversity, same_spars]
+    diff = [diff_lip, diff_dist, diff_ortho, diff_interf, diff_diversity, diff_spars]
+    # difftune = [difftune_lip, difftune_dist, difftune_ortho, difftune_interf, difftune_diversity, difftune_spars]
+
+
+    x = np.arange(len(labels))  # the label locations
+    width = 0.2  # the width of the bars
+    label_pos = 0.03
+    fontsize = 9
+    rotation = 90
+
+    fig, ax = plt.subplots()
+
+    rects3 = ax.bar(x-0.45+width*2, diff, width, label='dissimilar(fix)', color=cmap(1, 4))
+    for i in range(len(x)):
+        ax.text(x[i]-0.45+width*1.6, max(0, diff[i]) + label_pos, "{:.4f}".format(diff[i]), color=cmap(1, 4), fontsize=fontsize, rotation=rotation)
+
+    ax.plot([x[0]-0.45, x[-1]+0.45], [0, 0], "--", color="grey")
+    ax.legend()
+    ax.set_ylabel('Correlation')
+    ax.set_ylim(-0.8, 1)
+    ax.set_xticks(x)
+    # ax.set_yticks([-1, -0.7, -0.5, 0, 0.5, 0.7, 1])
+    ax.set_xticklabels(labels, rotation=30)
+    # plt.grid(True)
+    # plt.show()
+
+   # plt.show()
+    if early:
+        plt.savefig("plot/img/{}_{}.png".format(p_label, "crgb_correlation_early_model"), dpi=300, bbox_inches='tight')
+    else:
+        plt.savefig("plot/img/{}_{}.png".format(p_label, "crgb_correlation_last_model"), dpi=300, bbox_inches='tight')
+    plt.close()
+    plt.clf()
+
 if __name__ == '__main__':
     perc=[0, 1]
     targets_crgb = ["ReLU",
@@ -390,8 +443,6 @@ if __name__ == '__main__':
                # "Random", "Input",
                ]
 
-
-    perc=[0, 1]
     targets = ["ReLU",
                "ReLU+Control", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
                "FTA eta=2"
@@ -399,8 +450,9 @@ if __name__ == '__main__':
                # "Random", "Input",
                ]
 
-    simple_picky_eater_correlation_last(perc, p_label='Random')
-    simple_picky_eater_correlation_last(perc, p_label='Red')
-    simple_picky_eater_correlation_last(perc, p_label='Green') 
+    # simple_picky_eater_correlation_last(perc, p_label='Random')
+    # simple_picky_eater_correlation_last(perc, p_label='Red')
+    # simple_picky_eater_correlation_last(perc, p_label='Green')
     # simple_maze_correlation_early(perc)
     # simple_maze_correlation_last(perc)
+    # picky_eater_correlation(perc, p_label='Random')

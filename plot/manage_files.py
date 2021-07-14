@@ -1,6 +1,8 @@
 import os
 import shutil
 
+from plot_paths import *
+
 # <<<<<<< HEAD
 # def walk_through(root, target_param, new_folder):
 #     from distutils.dir_util import copy_tree
@@ -45,8 +47,8 @@ from distutils.dir_util import copy_tree
 from plot_paths import *
 
 def walk_through():
-    for sweep in crgb_same_early_sweep:
-        # root = "../data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/aux_control/sweep_5g/"
+    for sweep in switch_color_control_sweep:
+        # root = "../data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/aux_control/sweep_5g/" 
         root = "../" + sweep['control']
         assert os.path.isdir(root)
         print('------------------------------------------------------------------------')
@@ -65,11 +67,15 @@ def walk_through():
                     # set = int(name.split("_param_setting")[0])
                     # set += 5
                     file1 = os.path.join(path, name)
+                    tmp_root = '/'.join(root.rsplit('/', 1)[:-1]) + '/' + root.rsplit('/', 1)[-1].replace('sweep', 'best')
+
                     print(file1)
-                    if 'sweep_xy' in file1:
-                        file2 = root+"../best_xy/"+file1.split("/")[-2] + "/{}_param_setting".format(0)
-                    else:
-                        file2 = root+"../best/"+file1.split("/")[-2] + "/{}_param_setting".format(0)
+                    file2 = tmp_root + "/" + file1.split("/")[-2] + "/{}_param_setting".format(0)
+
+                    # if 'sweep_xy' in file1:
+                        # file2 = root+"../best_xy/"+file1.split("/")[-2] + "/{}_param_setting".format(0)
+                    # else:
+                        # file2 = root+"../best/"+file1.split("/")[-2] + "/{}_param_setting".format(0)
 
                     # file2 = root+"/../sweep/"+file1.split("/")[-2] + "/{}_param_setting".format(set)
                     print(file2, "\n")
@@ -266,13 +272,13 @@ def check_json():
         os.system("cat {} | grep eta".format(f))
         print()
 
-# walk_through("../data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta_aux/reward/sweep2/", 1, "sweep")
-walk_through("../data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn/sweep/", 2, "best")
-walk_through("../data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_aux/aux_control/sweep/", 5, "best")
-walk_through("../data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_aux/reward/sweep/", 1, "best")
-walk_through("../data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta/sweep/", 6, "best")
-walk_through("../data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta_aux/aux_control/sweep/", 6, "best")
-walk_through("../data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta_aux/reward/sweep/", 0, "best")
-
+# walk_through("../data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta_aux/reward/sweep2/", 1, "s# weep")
+# walk_through("../data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn/sweep/", 2, "best")
+# walk_through("../data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_aux/aux_control/sweep/", 5, "best")
+# walk_through("../data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_aux/reward/sweep/", 1, "best")
+# walk_through("../data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta/sweep/", 6, "best")
+# walk_through("../data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta_aux/aux_control/sweep/", 6, "best")
+# walk_through("../data/output/test/picky_eater/control_test/decayep/last/different_task/fix_rep/dqn_lta_aux/reward/sweep/", 0, "best")
+walk_through()
 # check_log()
 # check_json()

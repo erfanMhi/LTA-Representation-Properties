@@ -12,20 +12,20 @@ def arrange_order(dict1, cut_length=True, scale=1):
     for i in sorted(dict1):
         v1 = dict1[i]
         
-        if len(v1) == 201:
+#         if len(v1) == 201:
+            # lst.append(v1)
+        # else:
+            # print('Length: ', len(v1))
+#             print('Run: ', i)
+        if len(v1) in [1, 11, 16, 31, 101, 151] or len(v1) > 25:
+        # if len(v1) > 25:
             lst.append(v1)
         else:
-            print('Length: ', len(v1))
-            print('Run: ', i)
+            print('Length: ', len(v1), 'Run: ', i)
             continue
-# <<<<<<< HEAD
+
         l = len(v1)
         min_l = l if l < min_l else min_l
-    # print("min length: ", min_l)
-    # for i in range(len(lst)):
-        # lst[i] = lst[i][:min_l]
-    # return np.array(lst)
-# =======
         if cut_length:
             l = len(v1)
             min_l = l if l < min_l else min_l
@@ -53,7 +53,10 @@ def load_return(paths, setting_list):
     return all_rt
 
 def draw_curve(all_res, ax, label, color=None, style="-", alpha=1, linewidth=1.5):
+    if len(all_res) == 0:
+        return None
     mu = all_res.mean(axis=0)
+    # mu = all_res.max(axis=0)
     std = all_res.std(axis=0)
     # ste = std / np.sqrt(len(std))
     ste = std / np.sqrt(all_res.shape[0])
@@ -70,7 +73,6 @@ def draw_cut(cuts, all_res, ax, color, ymin):
     mu = all_res.mean(axis=0)
     x_mean = cuts.mean()
     x_max = cuts.max()
-    # ax.vlines(x_mean, ymin, np.interp(x_mean, list(range(len(mu))), mu), ls="--", colors=color, alpha=0.5)
     ax.vlines(x_max, ymin, np.interp(x_max, list(range(len(mu))), mu), ls=":", colors=color, alpha=0.8, linewidth=3)
 
 def extract_from_single_run(file, key, label=None, before_step=None):
@@ -92,9 +94,12 @@ def extract_from_single_run(file, key, label=None, before_step=None):
             #print('i_list: ', i_list)
             if "EVAL:" == i_list[0] or "total" == i_list[0] or "TRAIN" == i_list[0]:
 
-                # print('i_list: ', i_list[0])
+                # print('i_list: ', i_list[0], "returns" in i_list)
                 if key=="return" and "returns" in i_list:
                     returns.append(float(i_list[i_list.index("returns")+1].split("/")[0].strip())) # mean
+                    # returns.append(float(i_list[i_list.index("returns")+1].split("/")[1].strip())) # median
+                    # returns.append(float(i_list[i_list.index("returns")+1].split("/")[2].strip())) # min
+                    # returns.append(float(i_list[i_list.index("returns")+1].split("/")[3].strip())) # max
                 elif key == "lipschitz" and "Lipschitz:" in i_list:
                     if label is None:
                         returns.append(float(i_list[i_list.index("Lipschitz:") + 1].split("/")[1].strip()))  # mean
@@ -142,10 +147,16 @@ def extract_from_single_run(file, key, label=None, before_step=None):
                         # key_label = "%s Instance Sparsity:" % label
                         if label in i_list:
                             returns.append(float(i_list[i_list.index("Sparsity:") + 1].split(",")[0].strip()))
+                elif key == "mi" and "Mutual Info:" in info:
+                    if label is None:
+                        returns.append(float(i_list[i_list.index("Info:") + 1].split(",")[0].strip()))
+                    else:
+                        if label in i_list:
+                            returns.append(float(i_list[i_list.index("Info:") + 1].split(",")[0].strip()))
 
                 # used only when extract property for early-stopping model
                 if before_step is not None:
-                    current_step = int(info.split("total steps")[1].split(",")[0])
+                    current_step = int(info.split("steps")[1].split(",")[0])
                     if current_step == before_step:
                         return returns
             #Fruit state-values (green, 2) LOG: steps 0, episodes   0, values 0.0001073884 (mean)
@@ -180,7 +191,8 @@ def extract_from_single_run(file, key, label=None, before_step=None):
             
             if "early-stopping" in i_list and key == "model":
                 cut = num - 1 # last line
-                converge_at = int(content[cut].split("total steps")[1].split(",")[0])
+                # converge_at = int(content[cut].split("total steps")[1].split(",")[0])
+                converge_at = int(content[cut].split("steps")[1].split(",")[0])
 
                 l = cut
                 found = False
@@ -217,7 +229,7 @@ def extract_from_single_run(file, key, label=None, before_step=None):
 
     # Sanity Check
     if not isinstance(returns, int):
-        if len(returns) in [0, 1] :
+        if len(returns) in [0]:#, 1] :
             print('Empty returns {}: '.format(key), returns)
             print('File Name: ', file)
     return returns

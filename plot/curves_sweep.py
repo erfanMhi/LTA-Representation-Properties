@@ -105,11 +105,10 @@ def learning_curve(all_paths_dict, title, total_param=None,
         axs = [axs]
     
     for idx, label in enumerate(labels):
+        print("\n", idx, label)
         all_params = control[label]
-        
         for param, returns in all_params.items():
             returns = arrange_order(returns)
-        
             # draw_curve(returns, axs[idx], param, cmap(float(param)/len(list(all_params.keys()))))
             draw_curve(returns, axs[idx], param, cmap(param, len(list(all_params.keys()))))
         axs[idx].set_title(label)
@@ -130,19 +129,22 @@ def mountain_car():
 
 def simple_maze():
     # print("\nRep learning")
-    learning_curve(gh_online_sweep, "maze online property sweep")
+    learning_curve(gh_online_sweep, "maze rep sweep result ")
 
     # # print("\nControl")
-    learning_curve(gh_same_early_sweep, "maze same sweep")
-    learning_curve(gh_similar_early_sweep, "maze similar sweep")
-    learning_curve(gh_diff_early_sweep, "maze different (fix) sweep")
-    learning_curve(gh_diff_tune_early_sweep, "maze different (fine tune) sweep")
+    # learning_curve(gh_same_early_sweep, "maze same sweep")
+    # learning_curve(gh_similar_early_sweep, "maze similar sweep")
+    # learning_curve(gh_diff_early_sweep, "maze different (fix) sweep(temp)")
+    # learning_curve(gh_diff_tune_early_sweep, "maze different (fine tune) sweep")
 
 def picky_eater():
     titles = ["ReLU", "ReLU+Control", "ReLU+XY", "ReLU+Color", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF" ,"FTA", "FTA+Control", "FTA+Decoder", "FTA+XY", "FTA+Color", "FTA+NAS", "FTA+Reward", "FTA+SF"]
     for i, crgb_sweep in enumerate(pe_transfer_sweep_same):
         compare_learning_curve([crgb_sweep], titles[i], label_keys=None)
         # learning_curve([crgb_sweep], "maze online property")
+    # for crgb_sweep in crgb_online_sweep_1_f:
+    #     compare_learning_curve([crgb_sweep], "maze online property", label_keys=['learning_rate', ])
+    #     # learning_curve([crgb_sweep], "maze online property")
 
     # learning_curve(crgb_online_best, "maze online property")
     #compare_learning_curve(pe_learn_sweep, "picky eater learning curve",
@@ -156,14 +158,16 @@ def picky_eater():
     #        label_keys = [['target_network_update_freq', 'learning_rate']], config_paths = ['experiment/config/test/picky_eater/online_property/dqn_lta/sweep.json'])
     # compare_learning_curve(dqn_lta_1_learn_sweep, "picky eater learning curve (DQN+LTA+Without target)",
             # label_keys = [['target_network_update_freq', 'learning_rate']], config_paths = ['experiment/config/test/picky_eater/online_property/dqn_lta/sweep.json'])
-
+    return
 def pe_temp():
-    # learning_curve(pe_sweep_temp, "pe rep")
-    learning_curve(pe_trans_sweep_temp, "pe diff fix")
+    # learning_curve(pe_sweep_temp, "pe rep result temp")
+    # learning_curve(perand_sweep_temp, "perandc rep v6")
+    learning_curve(pe_trans_sweep_temp, "pe diff fix result")
+    # learning_curve(perand_trans_sweep_temp, "perandc diff fix avg v6")
 
 
 if __name__ == '__main__':
     # mountain_car()
-    # simple_maze()
+    simple_maze()
     picky_eater()
     # pe_temp()

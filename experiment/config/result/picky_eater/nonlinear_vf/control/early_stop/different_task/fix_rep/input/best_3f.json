@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAgentConfig",
     "fixed_parameters": {
-        "exp_name": "result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn/best_3f/",
+        "exp_name": "result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/input/best_3f/",
         "env_name": "CollectTwoColorLip",
         "agent": "DQNAgent",
         "discount": 0.99,
@@ -13,19 +13,11 @@
         "epsilon_schedule_steps": 100000,
 
         "rep_config": {
-            "rep_type": "online",
-            "network_type": "conv",
-            "conv_architecture": {
-                "conv_layers": [
-                   {"in": 3,  "out": 32, "kernel": 4, "stride": 1, "pad": 1},
-                   {"in": 32,  "out": 16, "kernel": 4, "stride": 2, "pad": 2}
-                ]
-            },
+            "rep_type": "identity",
             "in_dim": [15, 15, 3],
-            "out_dim": 64,
-            "load_params": true,
+            "out_dim": 675,
             "train_rep": false,
-            "path": "result/picky_eater/nonlinear_vf/representation/dqn/best_3f/{}_run/0_param_setting/parameters/rep_net_earlystop"
+            "load_params": false
         },
 
         "val_fn_config": {
@@ -54,13 +46,13 @@
         "save_params": false,
         "visualize": false,
         "visualize_aux_distance": false,
-        "rewarding_color": "green",
+        "rewarding_color": "red",
 	"fruit_num": 3,
 
         "evaluate_lipschitz": false,
         "lipschitz_sampled_states_path": "example/picky_eater/trained_dqn/lip_sampled_states.npy"
     },
     "sweep_parameters": {
-        "learning_rate": [0.00003]
+        "learning_rate": [0.0001]
     }
 }

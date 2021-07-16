@@ -138,8 +138,10 @@ def simple_maze():
     # learning_curve(gh_diff_tune_early_sweep, "maze different (fine tune) sweep")
 
 def picky_eater():
-    titles = ["ReLU", "ReLU+Control", "ReLU+XY", "ReLU+Color", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF" ,"FTA", "FTA+Control", "FTA+Decoder", "FTA+XY", "FTA+Color", "FTA+NAS", "FTA+Reward", "FTA+SF"]
-    for i, crgb_sweep in enumerate(pe_transfer_sweep_same):
+#    titles = ["ReLU", "ReLU+Control", "ReLU+XY", "ReLU+Color", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF" ,"FTA", "FTA+Control", "FTA+Decoder", "FTA+XY", "FTA+Color", "FTA+NAS", "FTA+Reward", "FTA+SF"]
+    titles = ["FTA+Decoder", "ReLU+Control", "FTA", "FTA+Control"]
+    print('here')
+    for i, crgb_sweep in enumerate(pe_t_sweep_v2):
         compare_learning_curve([crgb_sweep], titles[i], label_keys=None)
         # learning_curve([crgb_sweep], "maze online property")
     # for crgb_sweep in crgb_online_sweep_1_f:
@@ -168,6 +170,6 @@ def pe_temp():
 
 if __name__ == '__main__':
     # mountain_car()
-    simple_maze()
+    # simple_maze()
     picky_eater()
     # pe_temp()

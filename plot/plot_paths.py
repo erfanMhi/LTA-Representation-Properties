@@ -3099,6 +3099,7 @@ pe_linear_trans_diff = [
     {"label": "ReLU",
      "control": "data/output/result/picky_eater/linear_vf/control/early_stop/different_task/fix_rep/dqn/best_3f/",
      },
+]
 pe_trans_sweep_temp = [
     {"label": "ReLU+Control",
      "control": "data/output/result/picky_eater/linear_vf/control/early_stop/different_task/fix_rep/dqn_aux/aux_control/best_3f/",
@@ -3332,10 +3333,10 @@ pe_transfer_sweep = [
      "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn/sweep_3f/",
      "best": "5"
      },
-#    {"label": "ReLU+Control",
-    # "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_aux/aux_control/sweep_3f/",
-    # "best": "2"
-    # },
+   {"label": "ReLU+Control",
+    "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_aux/aux_control/sweep_3f/",
+    "best": "7"
+    },
      {"label": "ReLU+XY",
       "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_aux/info/sweep_3f_xy/",
      "best": "6"
@@ -3364,10 +3365,10 @@ pe_transfer_sweep = [
      "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta/sweep_3f/",
      "best": "7"
      },
-#     {"label": "FTA+Control",
-     # "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/aux_control/sweep_3f/",
-     # "best": "2"
-#      },
+    {"label": "FTA+Control",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/aux_control/sweep_3f/",
+     "best": "4"
+     },
      {"label": "FTA+XY",
       "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/info/sweep_3f_xy/",
      "best": "7"
@@ -3394,15 +3395,96 @@ pe_transfer_sweep = [
      }
 ]
 
+
+
+pe_t_sweep_v2 = [
+  {"label": "FTA+Decoder",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/input_decoder/sweep_3f/",
+     "best": "4"
+   },
+ #  {"label": "ReLU+Control",
+    # "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_aux/aux_control/sweep_3f/",
+    # "best": "2"
+    # },
+   # {"label": "FTA",
+     # "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta/sweep_3f_v2/",
+     # "best": "7"
+     # },
+    # {"label": "FTA+Control",
+     # "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/aux_control/sweep_3f/",
+     # "best": "4"
+     # },
+     # {"label": "FTA+XY",
+      # "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/info/sweep_3f_xy_v2/",
+     # "best": "7"
+      # },
+    # {"label": "FTA+NAS",
+     # "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/nas_v2_delta/sweep_3f_v2/",
+     # "best": "7"
+     # },
+    # {"label": "FTA+Reward",
+     # "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/reward/sweep_3f_v2/",
+     # "best": "7"
+     # },
+    # {"label": "FTA+SF",
+     # "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/successor_as/sweep_3f_v2/",
+     # "best": "7"
+  #    }
+]
+
+
+pe_transfer_sweep_v2 = [
+  {"label": "ReLU+Control",
+    "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_aux/aux_control/sweep_3f/",
+    "best": "2"
+    },
+   {"label": "FTA",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta/sweep_3f_v2/",
+     "best": "7"
+     },
+    {"label": "FTA+Control",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/aux_control/sweep_3f/",
+     "best": "4"
+     },
+     {"label": "FTA+XY",
+      "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/info/sweep_3f_xy_v2/",
+     "best": "7"
+      },
+    {"label": "FTA+NAS",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/nas_v2_delta/sweep_3f_v2/",
+     "best": "7"
+     },
+    {"label": "FTA+Reward",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/reward/sweep_3f_v2/",
+     "best": "7"
+     },
+    {"label": "FTA+SF",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/successor_as/sweep_3f_v2/",
+     "best": "7"
+     }
+]
+
+
+pe_transfer_sweep_same_v2 = [
+  {"label": "ReLU+Control",
+    "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_aux/aux_control/sweep_3f/",
+    "best": "4"
+    },
+    {"label": "FTA+Control",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_lta_aux/aux_control/sweep_3f/",
+     "best": "4"
+     },
+]
+
 pe_transfer_sweep_same = [
     {"label": "ReLU",
      "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn/sweep_3f/",
      "best": "3"
      },
-#    {"label": "ReLU+Control",
-    # "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_aux/aux_control/sweep_3f/",
-    # "best": "2"
-#     },
+   {"label": "ReLU+Control",
+    "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_aux/aux_control/sweep_3f/",
+    "best": "4"
+    },
      {"label": "ReLU+XY",
       "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_aux/info/sweep_3f_xy/",
      "best": "3"
@@ -3431,10 +3513,10 @@ pe_transfer_sweep_same = [
      "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_lta/sweep_3f/",
      "best": "4"
      },
-#     {"label": "FTA+Control",
-     # "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_lta_aux/aux_control/sweep_3f/",
-     # "best": "2"
-#      },
+    {"label": "FTA+Control",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_lta_aux/aux_control/sweep_3f/",
+     "best": "4"
+     },
      {"label": "FTA+XY",
       "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_lta_aux/info/sweep_3f_xy/",
      "best": "4"
@@ -3461,3 +3543,23 @@ pe_transfer_sweep_same = [
      }
 ]
 
+
+pe_in_rand_sweep = [
+    {"label": "Input",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/input/sweep_3f/",
+     "best": "4"
+     },
+    {"label": "Input",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/input/sweep_3f/",
+     "best": "4"
+     },
+    {"label": "Random",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/random/sweep_3f/",
+     "best": "4"
+     },
+        {"label": "Random",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/random/sweep_3f/",
+     "best": "3"
+     },
+
+]

@@ -1,4 +1,5 @@
 import os
+import re
 import numpy as np
 import matplotlib.pyplot as plt
 from plot.plot_paths import violin_colors, curve_styles
@@ -11,12 +12,19 @@ def arrange_order(dict1, cut_length=True, scale=1):
     min_l = np.inf
     for i in sorted(dict1):
         v1 = dict1[i]
+        
+#         if len(v1) == 201:
+            # lst.append(v1)
+        # else:
+            # print('Length: ', len(v1))
+#             print('Run: ', i)
         if len(v1) in [1, 11, 16, 31, 101, 151] or len(v1) > 25:
         # if len(v1) > 25:
             lst.append(v1)
         else:
             print('Length: ', len(v1), 'Run: ', i)
             continue
+
         l = len(v1)
         min_l = l if l < min_l else min_l
         if cut_length:
@@ -55,7 +63,7 @@ def draw_curve(all_res, ax, label, color=None, style="-", alpha=1, linewidth=1.5
     ste = std / np.sqrt(all_res.shape[0])
     if color is None:
         p = ax.plot(mu, label=label, alpha=alpha, linestyle=style, linewidth=linewidth)
-        color = p.get_color()
+        # color = p.get_color()
     else:
         ax.plot(mu, label=label, color=color, alpha=alpha, linestyle=style, linewidth=linewidth)
     ax.fill_between(list(range(len(mu))), mu - ste * 2, mu + ste * 2, color=color, alpha=0.1, linewidth=0.)
@@ -84,7 +92,7 @@ def extract_from_single_run(file, key, label=None, before_step=None):
         if "|" in l:
             info = l.split("|")[1].strip()
             i_list = info.split(" ")
-            # print('i_list: ', i_list[0])
+            #print('i_list: ', i_list)
             if "EVAL:" == i_list[0] or "total" == i_list[0] or "TRAIN" == i_list[0]:
 
                 # print('i_list: ', i_list[0], "returns" in i_list)
@@ -152,7 +160,36 @@ def extract_from_single_run(file, key, label=None, before_step=None):
                     current_step = int(info.split("steps")[1].split(",")[0])
                     if current_step == before_step:
                         return returns
+            #Fruit state-values (green, 2) LOG: steps 0, episodes   0, values 0.0001073884 (mean)
+            if "Fruit" in i_list[0] and key in ["action-values", "state-values"]:
 
+                match_fruit = re.search(r"\(([A-Za-z0-9_, ]*)\)", info)
+                label_match_fruit = re.search(r"\(([A-Za-z0-9_, ]*)\)", label)
+
+                match_rm_fruits = re.search(r"\(([A-Za-z0-9_, ]*)\)", info[match_fruit.end():])
+
+                label_match_rm_fruits = re.search(r"\(([A-Za-z0-9_, ]*)\)", label[label_match_fruit.end():])
+           #      print('---------fruit check---------')
+                # print(file)
+                # print(info)
+                # print(match_fruit)
+                # print(label_match_fruit)
+                # print(match_rm_fruits)
+                # print(label_match_rm_fruits)
+# #                 #print(result.group(0))
+                if key=="state-values" and "state-values" in i_list:
+                    if label_match_fruit.group(0) == match_fruit.group(0) and label_match_rm_fruits.group(0) == match_rm_fruits.group(0):
+                        returns.append(float(i_list[i_list.index("values")+1].split("/")[0].strip())) # mean
+                
+                if key=="action-values" and "action-values" in i_list:
+                    if label_match_fruit.group(0) == match_fruit.group(0) and label_match_rm_fruits.group(0) == match_rm_fruits.group(0) and 'Fruit-undirected' in info and ') undirected' in label:
+                    # if len(i_list[i_list.index("values")+1].split("/")) == 3 and ') undirected' in label:
+                        returns.append(float(i_list[i_list.index("values")+1].split("/")[0].strip())) # mean
+                    # if len(i_list[i_list.index("values")+1].split("/")) == 1 and ') directed' in label:
+                    if label_match_fruit.group(0) == match_fruit.group(0) and label_match_rm_fruits.group(0) == match_rm_fruits.group(0) and 'Fruit-directed' in info and ') directed' in label:
+                            returns.append(float(i_list[i_list.index("values")+1].split("/")[0].strip())) # mean
+ 
+            
             if "early-stopping" in i_list and key == "model":
                 cut = num - 1 # last line
                 # converge_at = int(content[cut].split("total steps")[1].split(",")[0])

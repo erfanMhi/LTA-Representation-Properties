@@ -106,12 +106,12 @@ def mountain_car():
 
 def simple_maze():
     # print("\nRep learning")
-    learning_curve(gh_online_sweep, "maze rep sweep result ")
+    # learning_curve(gh_online_sweep, "maze rep sweep result ")
 
     # # print("\nControl")
     # learning_curve(gh_same_early_sweep, "maze same sweep")
     # learning_curve(gh_similar_early_sweep, "maze similar sweep")
-    # learning_curve(gh_diff_early_sweep, "maze different (fix) sweep(temp)")
+    learning_curve(gh_diff_early_sweep, "maze different (fix) sweep(temp)")
     # learning_curve(gh_diff_tune_early_sweep, "maze different (fine tune) sweep")
 
 def picky_eater():

@@ -327,7 +327,7 @@ def simple_maze():
                "FTA": violin_colors["FTA eta=0.2"],
                "study eta": violin_colors["FTA eta=0.4"]}
     # y_lims = {"noninterference":[0.5, 1.0]}
-    y_lims = {}
+    y_lims = {"noninterference":[0.3, 1.0], "sparsity":[0.4, 1.0], "orthogonality": [0, 0.6], "dynamics awareness": [0.4, 1.0], "diversity": [0, 0.7]}
     simple_maze_check_aux(targets, "maze_aux_all", True, x_group, c_group, y_lims)
     # simple_maze_check_aux(targets_relu, "maze_aux_relu", True)
     # simple_maze_check_aux(targets_fta, "maze_aux_fta", True)
@@ -354,4 +354,4 @@ def simple_picky_eater():
 
 if __name__ == '__main__':
     simple_maze()
-    simple_picky_eater()
+    # simple_picky_eater()

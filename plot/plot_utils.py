@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+from plot.plot_paths import violin_colors, curve_styles
 
 flatten = lambda t: [item for sublist in t for item in sublist]
 
@@ -387,3 +388,14 @@ def box_plot(ax1, color, data, xpos, width):
     bp = ax1.boxplot(data, positions=xpos, widths=width, patch_artist=True)
     set_box_color(bp, color=color)
 
+def draw_label(targets, save_path, ncol):
+    plt.figure(figsize=(0.1, 2))
+    for label in targets:
+        plt.plot([], color=violin_colors[label], linestyle=curve_styles[label], label=label)
+    plt.axis('off')
+    plt.legend(ncol=ncol)
+    plt.savefig("plot/img/{}.pdf".format(save_path), dpi=300, bbox_inches='tight')
+    # plt.savefig("plot/img/{}.png".format(save_path), dpi=300, bbox_inches='tight')
+    # plt.show()
+    plt.close()
+    plt.clf()

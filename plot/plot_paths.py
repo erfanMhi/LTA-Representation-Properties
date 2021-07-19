@@ -84,6 +84,7 @@ violin_colors = {
 
     "Random": c_default[12],
     "Input": c_default[11],
+    "Scratch": "black",
 }
 
 curve_styles = {
@@ -126,6 +127,7 @@ curve_styles = {
 
     "Random": s_default[0],
     "Input": s_default[0],
+    "Scratch": s_default[0],
 }
 
 marker_styles = {
@@ -458,9 +460,10 @@ gh_diff_early_sweep = [
     {"label": "Input",
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fix_rep/input/sweep/",
      },
-    # {"label": "FTA+Control5g+XY",
-    #  "control": "data/output/test/gridhard/control/early_stop/different_task/fix_rep/dqn_lta_aux/control+info/sweep_5g/",
-    #  },
+    {"label": "Scratch",
+     "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/scratch/dqn/sweep/",
+     },
+
 ]
 
 gh_diff_tune_early_sweep = [
@@ -844,6 +847,9 @@ gh_diff_early = [
     {"label": "Input",
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fix_rep/input/best/",
      "online_measure": "data/output/result/gridhard/linear_vf/fixrep_property/input/best",
+     },
+    {"label": "Scratch",
+     "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/scratch/dqn/best/",
      },
 ]
 
@@ -3019,5 +3025,9 @@ pe_linear_trans_diff = [
      },
     {"label": "FTA+SF",
      "control": "data/output/result/picky_eater/linear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/successor_as/best_3f/",
+     },
+
+    {"label": "Scratch",
+     "control": "data/output/result/picky_eater/linear_vf/representation/dqn/best_3f/",
      },
     ]

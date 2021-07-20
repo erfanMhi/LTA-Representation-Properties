@@ -6,7 +6,9 @@ import string
 
 import pickle as pkl
 import numpy as np
-import sklearn.metrics as sklm
+# import sklearn.metrics as sklm
+import sklearn.feature_selection as sklf
+
 import core.network.optimizer as optimizer
 import core.component.linear_probing_tasks as linear_probing_tasks
 
@@ -89,9 +91,21 @@ def test_input_changeNoise(agent):
 
 def generate_distance_datasets(cfg):
 
+    def classify_states(states):
+        count = 0
+        classified = {}
+        class_ = []
+        for s in states:
+            if str(s) not in classified.keys():
+                classified[str(s)] = count
+                count += 1
+            class_.append(classified[str(s)])
+        return class_
+
     datasets = []
     for distance_path in cfg.distance_paths:
         base_obs = np.load(os.path.join(cfg.data_root, distance_path["current"]))
+        class_ = classify_states(base_obs)
         similar_obs = np.load(os.path.join(cfg.data_root, distance_path["next"]))
         actions = np.load(os.path.join(cfg.data_root, distance_path["action"]))
         rewards = np.load(os.path.join(cfg.data_root, distance_path["reward"]))
@@ -99,7 +113,7 @@ def generate_distance_datasets(cfg):
         samples = len(base_obs)
         different_idx = np.random.randint(samples, size=samples*2).reshape((samples, 2))
         label = None if 'label' not in distance_path.keys() else distance_path["label"]
-        datasets.append((base_obs, similar_obs, different_idx, actions, rewards, terminal, label))
+        datasets.append((base_obs, similar_obs, different_idx, actions, rewards, terminal, label, class_))
     
     return datasets
 
@@ -238,9 +252,11 @@ def generate_linear_probing_dataset(env, cfg):
 
 def dist_difference(base_rep, similar_rep, different_idx):
     if type(base_rep) == torch.Tensor:
-        base_rep = base_rep.data.numpy()
+        # base_rep = base_rep.data.numpy()
+        base_rep = torch_utils.to_np(base_rep.data)
     if type(similar_rep) == torch.Tensor:
-        similar_rep = similar_rep.data.numpy()
+        # similar_rep = similar_rep.data.numpy()
+        similar_rep = torch_utils.to_np(similar_rep.data)
     similar_dist = np.linalg.norm(similar_rep - base_rep, axis=1).mean()
     diff_rep1 = base_rep[different_idx[:, 0]]
     diff_rep2 = base_rep[different_idx[:, 1]]
@@ -256,9 +272,11 @@ def dist_difference(base_rep, similar_rep, different_idx):
 
 def dist_difference_v2(base_rep, similar_rep, different_idx):
     if type(base_rep) == torch.Tensor:
-        base_rep = base_rep.data.numpy()
+        # base_rep = base_rep.data.numpy()
+        base_rep = torch_utils.to_np(base_rep.data)
     if type(similar_rep) == torch.Tensor:
-        similar_rep = similar_rep.data.numpy()
+        # similar_rep = similar_rep.data.numpy()
+        similar_rep = torch_utils.to_np(similar_rep.data)
     similar_dist = np.linalg.norm(similar_rep - base_rep, axis=1)
     diff_rep1 = base_rep[:]
     diff_rep2 = base_rep[different_idx[:, 1]]
@@ -378,7 +396,8 @@ def test_orthogonality(agent):
         reps = model(s)
 
         # Vincent's thesis
-        reps = reps.detach().numpy()
+        # reps = reps.detach().numpy()
+        reps = torch_utils.to_np(reps.detach())
         dot_prod = np.matmul(reps, reps.T)
         norm = np.linalg.norm(reps, axis=1).reshape((-1, 1))
         norm_prod = np.matmul(norm, norm.T)
@@ -402,7 +421,8 @@ def online_orthogonality(agent, states, label):
         with torch.no_grad():
             reps = agent.rep_net(s)
         # Vincent's thesis
-        reps = reps.detach().numpy()
+        # reps = reps.detach().numpy()
+        reps = torch_utils.to_np(reps.detach())
         dot_prod = np.matmul(reps, reps.T)
         norm = np.linalg.norm(reps, axis=1).reshape((-1, 1))
         norm_prod = np.matmul(norm, norm.T)
@@ -477,7 +497,8 @@ def online_sparsity(agent, img, label):
     
     with torch.no_grad():
         img = agent.cfg.state_normalizer(img)
-        rep = agent.rep_net(img).detach().numpy()
+        # rep = agent.rep_net(img).detach().numpy()
+        rep = torch_utils.to_np(agent.rep_net(img))
     # print('rep: ', rep.shape)
     # rep = rep.reshape((rep.shape[0], rep.shape[1], 1))
     # print('new rep: ', rep.shape)
@@ -511,7 +532,8 @@ def test_sparsity(agent):
     img, _, _, _, _, _ = generate_distance_dataset(agent.cfg)
     with torch.no_grad():
         img = agent.cfg.state_normalizer(img)
-        rep = agent.rep_net(img).detach().numpy()
+        # rep = agent.rep_net(img).detach().numpy()
+        rep = torch_utils.to_np(agent.rep_net(img))
 
     rep = rep.reshape((rep.shape[0], rep.shape[1], 1))
     zeros = np.all(rep==0, axis=2).astype(int)
@@ -540,7 +562,8 @@ def test_sparsity(agent):
 #     img, _, _, _, _, _ = generate_distance_dataset(agent.cfg)
 #     with torch.no_grad():
 #         img = agent.cfg.state_normalizer(img)
-#         rep = agent.rep_net(img).detach().numpy()
+#         #rep = agent.rep_net(img).detach().numpy()
+#         rep = torch_utils.to_np(agent.rep_net(img))
 #
 #     rep = rep.reshape((rep.shape[0], rep.shape[1], 1))
 #     zeros = np.all(abs(rep) < 0.1, axis=2).astype(int)
@@ -685,7 +708,8 @@ def test_sparsity(agent):
 #         grad_list = []
 #         for para in agent.val_net.parameters():
 #             if para.grad is not None:
-#                 grad_list.append(para.grad.flatten().numpy())
+#                 #grad_list.append(para.grad.flatten().numpy())
+#                 grad_list.append(torch_utils.to_np(para.grad.flatten()))
 #         grad_mat[i] = np.concatenate(grad_list)
 #
 #     agent.val_net.zero_grad()
@@ -776,7 +800,8 @@ def test_sparsity(agent):
 #             grad_list = []
 #             for para in model.parameters():
 #                 if para.grad is not None:
-#                     grad_list.append(para.grad.flatten().numpy())
+#                     #grad_list.append(para.grad.flatten().numpy())
+#                     grad_list.append(torch_utils.to_np(para.grad.flatten()))
 #             grad_mat[i] = np.concatenate(grad_list)
 #
 #         ntk_mat = np.matmul(grad_mat, grad_mat.T)
@@ -838,7 +863,8 @@ def test_sparsity(agent):
 #             grad_list = []
 #             for para in agent.val_net.parameters():
 #                 if para.grad is not None:
-#                     grad_list.append(para.grad.flatten().numpy())
+#                     #grad_list.append(para.grad.flatten().numpy())
+#                     grad_list.append(torch_utils.to_np(para.grad.flatten()))
 #             grad_mat[i] = np.concatenate(grad_list)
 #
 #         ntk_mat = np.matmul(grad_mat, grad_mat.T)
@@ -870,7 +896,8 @@ def test_sparsity(agent):
 # def test_decorrelation(agent):
 #     state_all, next_s_all, _, action_all, reward_all, terminal_all = generate_distance_dataset(agent.cfg)
 #     with torch.no_grad():
-#         representations = agent.rep_net(agent.cfg.state_normalizer(state_all)).numpy()
+#         #representations = agent.rep_net(agent.cfg.state_normalizer(state_all)).numpy()
+#         representations = torch_utils.to_np(agent.rep_net(agent.cfg.state_normalizer(state_all)))
 #
 #         # remove dead features
 #         std_test = np.std(representations, axis=0)
@@ -893,7 +920,8 @@ def test_sparsity(agent):
 #
 # def online_decorrelation(agent, state_all, label):
 #     with torch.no_grad():
-#         representations = agent.rep_net(agent.cfg.state_normalizer(state_all)).numpy()
+#         #representations = agent.rep_net(agent.cfg.state_normalizer(state_all)).numpy()
+#         representations = torch_utils.to_np(agent.rep_net(agent.cfg.state_normalizer(state_all)))
 #         # remove dead features
 #         std_test = np.std(representations, axis=0)
 #         zeros = np.where(std_test == 0)[0]
@@ -944,7 +972,7 @@ def online_lipschitz(agent, state_all, label=None):
                     phi_i, phi_j = phi_s[i], phi_s[j]
                     vi, vj = values[i], values[j]
                     diff_v[idx] = torch.abs(vi - vj).max().item() # for lipschitz
-                    diff_phi[idx] = np.linalg.norm((phi_i - phi_j).numpy())  # for lipschitz
+                    diff_phi[idx] = np.linalg.norm(torch_utils.to_np(phi_i - phi_j))  # for lipschitz
 
                     diff_v_all.append(torch.abs(vi.max() - vj.max()).item()) # for specialization
                     diff_phi_all.append(diff_phi[idx]) # for specialization
@@ -1001,12 +1029,14 @@ def online_lipschitz(agent, state_all, label=None):
         agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, normalized_div))
 
 
-def online_mutual_info(agent, states, label):
+def online_mutual_info(agent, states, label, class_):
     with torch.no_grad():
         states = agent.cfg.state_normalizer(states)
-        rep = agent.rep_net(states).detach().numpy()
+        # rep = agent.rep_net(states).detach().numpy()
+        rep = torch_utils.to_np(agent.rep_net(states))
 
-    mutual_info = sklm.mutual_info_score(states, rep)
+    # mutual_info = sklm.mutual_info_score(states, rep)
+    mutual_info = sklf.mutual_info_regression(rep, class_).mean()
 
     if label is None:
         log_str = 'total steps %d, total episodes %3d, ' \
@@ -1031,7 +1061,7 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
         totalsize = np.sum(np.array([len(dataset[0]) for dataset in datasets]))
         agent.cfg.eval_dataset = Replay(memory_size=totalsize, batch_size=agent.cfg.batch_size)
         for dataset in datasets:
-            state_all, next_s_all, _, action_all, reward_all, terminal_all, _ = dataset
+            state_all, next_s_all, _, action_all, reward_all, terminal_all, _, _ = dataset
             for i in range(len(state_all)):
                 agent.cfg.eval_dataset.feed([state_all[i], action_all[i], next_s_all[i], reward_all[i], int(terminal_all[i])])
         agent.cfg.logger.info('Save eval_dataset buffer')
@@ -1062,7 +1092,7 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
             if agent.cfg.evaluate_interference: # dataset is saved in agent
                 agent.log_interference()
             for dataset in datasets:
-                state_all, next_s_all, different_idx, action_all, reward_all, terminal_all, label = dataset
+                state_all, next_s_all, different_idx, action_all, reward_all, terminal_all, label, class_all = dataset
                 if agent.cfg.evaluate_lipschitz or agent.cfg.evaluate_diversity:
                     online_lipschitz(agent, state_all, label)
                     # agent.log_lipschitz()
@@ -1075,7 +1105,7 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
                 if agent.cfg.evaluate_sparsity:
                     online_sparsity(agent, state_all, label)
                 # if agent.cfg.evaluate_mutual_info:
-                #     online_mutual_info(agent, state_all, label)
+                #     online_mutual_info(agent, state_all, label, class_all)
 
 #                 if agent.cfg.evaluate_regression:
                     

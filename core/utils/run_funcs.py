@@ -119,3 +119,8 @@ def run_modular(agent):
 #             break
 
 
+def data_collection_steps(agent):
+    while True:
+        if agent.check_done():
+            break
+        agent.step()

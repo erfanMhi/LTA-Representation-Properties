@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAuxAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test_v10/maze_multigoal/nonlinear_vf/source_task/dqn_aux/reward/sweep_2",
+        "exp_name": "test_v10/maze_multigoal/linear_vf/source_task/dqn_aux/reward/sweep_smallw",
         "env_name": "GridHardRGBMultiGoal",
         "task_id": 0,
         "agent": "DQNAuxAgent",
@@ -29,8 +29,7 @@
         },
 
         "val_fn_config": {
-            "val_fn_type": "fc",
-            "hidden_units": [128, 128],
+            "val_fn_type": "linear",
             "init_type": "xavier"
         },
 

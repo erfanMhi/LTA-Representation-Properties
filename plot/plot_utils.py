@@ -3,6 +3,8 @@ import re
 import numpy as np
 import matplotlib.pyplot as plt
 
+from plot_paths import *
+
 flatten = lambda t: [item for sublist in t for item in sublist]
 
 
@@ -250,7 +252,7 @@ def extract_from_single_run(file, key, label=None, before_step=None):
 def extract_from_setting(find_in, setting, key="return", final_only=False, label=None, cut_at_step=None):
     setting_folder = "{}_param_setting".format(setting)
     all_runs = {}
-    assert os.path.isdir(find_in), print("\nERROR: {} is not a directory\n".format(find_in))
+    assert os.path.isdir(find_in), ("\nERROR: {} is not a directory\n".format(find_in))
     for path, subdirs, files in os.walk(find_in):
         for name in files:
             if name in ["log"] and setting_folder in path:
@@ -423,4 +425,16 @@ def box_plot(ax1, color, data, xpos, width):
 
     bp = ax1.boxplot(data, positions=xpos, widths=width, patch_artist=True)
     set_box_color(bp, color=color)
+
+def draw_label(targets, save_path, ncol):
+    plt.figure(figsize=(0.1, 2))
+    for label in targets:
+        plt.plot([], color=violin_colors[label], linestyle=curve_styles[label], label=label)
+    plt.axis('off')
+    plt.legend(ncol=ncol)
+    plt.savefig("plot/img/{}.pdf".format(save_path), dpi=300, bbox_inches='tight')
+    # plt.savefig("plot/img/{}.png".format(save_path), dpi=300, bbox_inches='tight')
+    # plt.show()
+    plt.close()
+    plt.clf()
 

@@ -445,7 +445,6 @@ def picky_eater(data_label='Random'):
 #     # learning_curve_mean(gh_similar_early, "maze similar return", key="return", targets=targets, xlim=[0, 11], show_avg=False, show_model=False)
 #     # learning_curve_mean(gh_diff_early, "maze diff (fix) return", key="return", targets=targets, xlim=[0, 11], show_avg=False, show_model=False)
 #     # learning_curve_mean(gh_diff_tune_early, "maze diff (tune) return", key="return", targets=targets, xlim=[0, 11], show_avg=False, show_model=False)
->>>>>>> 2eb65a09cbfa654195050bf4e6c4a2a94f9c59c6
 
 def picky_eater():
     print("\nRep learning")
@@ -454,15 +453,17 @@ def picky_eater():
         "ReLU+Control", "ReLU+Color", "FTA+Control", "FTA+Color",
         # "ReLU+Control+XY+Color", "FTA+Control+XY+Color"
     ]
-    learning_curve_mean(pe_best_temp, "pe return", key="return", data_label=data_label, xlim=[0, 91], ylim=[0, 3], show_model=False, targets=targets, legend=True)
-    learning_curve_mean(pe_best_temp, "pe lipschitz", key="lipschitz", data_label=data_label, xlim=[0, 91], ylim=[0, 1], show_model=False, targets=targets, legend=True)
-    learning_curve_mean(pe_best_temp, "pe dynamic awareness", key="distance", data_label=data_label, xlim=[0, 91], ylim=[0.5, 1], show_model=False, targets=targets, legend=True)
-    learning_curve_mean(pe_best_temp, "pe orthogonal", key="ortho", data_label=data_label, xlim=[0, 91], ylim=[0, 0.4], show_model=False, targets=targets, legend=True)
-    learning_curve_mean(pe_best_temp, "pe noninterference", key="interf", data_label=data_label, xlim=[1, 91], ylim=[0.7, 1], show_model=False, targets=targets, legend=True)
-    learning_curve_mean(pe_best_temp, "pe diversity", key="diversity", data_label=data_label, xlim=[0, 91], ylim=[0.3, 0.8], show_model=False, targets=targets, legend=True)
-    learning_curve_mean(pe_best_temp, "pe sparsity", key="sparsity", data_label=data_label, xlim=[0, 91], ylim=[0.5, 1], show_model=False, targets=targets, legend=True)
-    learning_curve_mean(pe_best_temp, "pe multual info", key="mi", data_label=data_label, xlim=[0, 91], ylim=[0, 0.05], show_model=False, targets=targets, legend=True)
-    learning_curve_mean(pe_trans_best_temp, "pe transfer", key="return", data_label=data_label, xlim=[0, 101], ylim=[0, 3], show_model=False, targets=targets, legend=True)
+
+    rep_data_addr = pe_rep_best
+    learning_curve_mean(rep_data_addr, "pe return", key="return", data_label=data_label, xlim=[0, 101], ylim=[0, 3], show_model=False, targets=targets, legend=True)
+    learning_curve_mean(rep_data_addr, "pe complexity reduction", key="lipschitz", data_label=data_label, xlim=[0, 101], ylim=[0, 1], show_model=False, targets=targets, legend=True)
+    learning_curve_mean(rep_data_addr, "pe dynamic awareness", key="distance", data_label=data_label, xlim=[0, 101], ylim=[0, 1], show_model=False, targets=targets, legend=True)
+    learning_curve_mean(rep_data_addr, "pe orthogonal", key="ortho", data_label=data_label, xlim=[0, 101], ylim=[0, 1], show_model=False, targets=targets, legend=True)
+    learning_curve_mean(rep_data_addr, "pe noninterference", key="interf", data_label=data_label, xlim=[1, 101], ylim=[0, 1], show_model=False, targets=targets, legend=True)
+    learning_curve_mean(rep_data_addr, "pe diversity", key="diversity", data_label=data_label, xlim=[0, 101], ylim=[0, 1], show_model=False, targets=targets, legend=True)
+    learning_curve_mean(rep_data_addr, "pe sparsity", key="sparsity", data_label=data_label, xlim=[0, 101], ylim=[0, 1], show_model=False, targets=targets, legend=True)
+    #learning_curve_mean(rep_data_addr, "pe multual info", key="mi", data_label=data_label, xlim=[0, 101], ylim=[0, 0.05], show_model=False, targets=targets, legend=True)
+    learning_curve_mean(pe_transfer_best_dissimilar, "pe transfer", key="return", data_label=data_label, xlim=[0, 101], ylim=[0, 3], show_model=False, targets=targets, legend=True)
 
 def pe_test():
     targets = [
@@ -521,8 +522,8 @@ if __name__ == '__main__':
     # picky_eater('Green')
 #     simple_maze()
     #picky_eater()
-    pe_test()
-    simple_maze()
+    #pe_test()
+    #simple_maze()
     picky_eater()
     # picky_eater('Random')
     # picky_eater('Red')

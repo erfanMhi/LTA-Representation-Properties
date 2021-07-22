@@ -2,6 +2,7 @@ import os
 import re
 import numpy as np
 import matplotlib.pyplot as plt
+from plot.plot_paths import violin_colors, curve_styles
 
 from plot_paths import *
 
@@ -437,4 +438,3 @@ def draw_label(targets, save_path, ncol):
     # plt.show()
     plt.close()
     plt.clf()
-

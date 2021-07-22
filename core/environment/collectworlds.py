@@ -1,3 +1,7 @@
+# import os, sys
+# # sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# sys.path.append("../../")
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -808,8 +812,34 @@ def draw(state):
     ax.imshow(frame)
     plt.axis('off')
     plt.show()
+    # plt.savefig("../../plot/img/picky_eater.pdf", dpi=300, bbox_inches='tight')
     plt.close()
+def draw_pretty(state):
+    frame = state.astype(np.uint8)
 
+    red, green, blue, gray, black = np.array([255., 0., 0.]), np.array([0., 255., 0.]), \
+                             np.array([0., 0., 255.]), np.array([128., 128., 128.]), np.array([0., 0., 0.])
+    reddish, bluish = np.array([204., 121., 167.]), np.array([0., 158., 115.])
+    light_g, light_b = np.array([236., 236., 236.]), np.array([165., 165., 165.])
+
+    reds = np.all(frame == red, axis=2)
+    greens = np.all(frame == green, axis=2)
+    blues = np.all(frame == blue, axis=2)
+    grays = np.all(frame == gray, axis=2)
+    blacks = np.all(frame == black, axis=2)
+
+    frame[reds] = reddish
+    frame[greens] = bluish
+    frame[blues] = light_g
+    frame[grays] = light_g
+    frame[blacks] = light_b
+
+    figure, ax = plt.subplots()
+    ax.imshow(frame, interpolation='nearest')
+    plt.axis('off')
+    # plt.show()
+    plt.savefig("../../plot/img/picky_eater.pdf", dpi=300, bbox_inches='tight')
+    plt.close()
 
 if __name__ == '__main__':
     # env = CollectXY()
@@ -822,18 +852,18 @@ if __name__ == '__main__':
     #     print(state, ' ', reward, ' ', done)
 
 
-
     # env = CollectColor('green')
-    env = CollectRandColorRGB(1, 3)
+    env = CollectTwoColorRGB(fruit_num=3)
     state = env.reset()
-    draw(state)
+    # draw(state)
+    draw_pretty(state)
     done = False
-    while not done:
-        try:
-            action = int(input('input_action: '))
-        except ValueError:
-            action = 0
-        state, reward, done, _ = env.step([action])
-        print(reward, ' ', done, env.rewarding_blocks, env.correct_collect)
-        draw(state)
+    # while not done:
+    #     try:
+    #         action = int(input('input_action: '))
+    #     except ValueError:
+    #         action = 0
+    #     state, reward, done, _ = env.step([action])
+    #     print(reward, ' ', done, env.rewarding_blocks, env.correct_collect)
+    #     draw(state)
 

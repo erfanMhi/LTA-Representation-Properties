@@ -11,8 +11,45 @@ from core.agent import base
 from core.utils import torch_utils
 from core.utils.lipschitz import compute_lipschitz
 
+class DataCollectionAgent(base.Agent):
+    def __init__(self, cfg):
+        super().__init__(cfg)
+        self.total_samples = cfg.total_samples
 
-class TrainedDQNAgent(base.Agent):
+        self.state = None
+        self.action = None
+        self.next_state = None
+
+        self.trajectory = []
+        self.actions = []
+        self.rewards = []
+        self.termins = []
+
+        self.sampled_states = []
+        self.sampled_next_states = []
+        self.sampled_actions = []
+        self.sampled_rewards = []
+        self.sampled_termins = []
+        self.sampled_different = []
+
+    def check_done(self):
+        return len(self.sampled_states) >= self.total_samples
+
+    def log_lipschitz(self):
+        pass
+
+    def visualize(self):
+        pass
+
+    def save(self):
+        pass
+
+    def load(self, parameters_dir):
+        pass
+
+
+
+class TrainedDQNAgent(DataCollectionAgent):
     def __init__(self, cfg):
         super().__init__(cfg)
 
@@ -48,21 +85,6 @@ class TrainedDQNAgent(base.Agent):
         self.vf_loss = cfg.vf_loss_fn()
         self.replay = cfg.replay_fn()
 
-        self.state = None
-        self.action = None
-        self.next_state = None
-
-        self.trajectory = []
-        self.actions = []
-        self.rewards = []
-        self.termins = []
-
-        self.sampled_states = []
-        self.sampled_next_states = []
-        self.sampled_actions = []
-        self.sampled_rewards = []
-        self.sampled_termins = []
-        self.sampled_different = []
 
     def step(self):
         if self.reset is True:
@@ -181,46 +203,19 @@ class TrainedDQNAgent(base.Agent):
                                         min, max, len(rewards),
                                         elapsed_time))
 
-    def log_lipschitz(self):
-        pass
 
-    def visualize(self):
-        pass
-
-    def save(self):
-        pass
-
-    def load(self, parameters_dir):
-        pass
-
-
-class RandomAgent(base.Agent):
+class RandomAgent(DataCollectionAgent):
     def __init__(self, cfg):
         super().__init__(cfg)
         self.env = cfg.env_fn()
 
-        self.state = None
-        self.action = None
-        self.next_state = None
-
-        self.trajectory = []
-        self.actions = []
-        self.rewards = []
-        self.termins = []
-
-        self.sampled_states = []
-        self.sampled_next_states = []
-        self.sampled_actions = []
-        self.sampled_rewards = []
-        self.sampled_termins = []
-        self.sampled_different = []
-    
     def step(self):
         if self.reset is True:
             self.state = self.env.reset()
             self.reset = False
 
             self.sample_states()
+            print(len(self.sampled_states))
 
         action = np.random.randint(0, self.env.action_dim)
         next_state, reward, done, _ = self.env.step([action])
@@ -305,15 +300,3 @@ class RandomAgent(base.Agent):
         self.cfg.logger.info(log_str % (self.total_steps, total_episodes, mean, median,
                                         min, max, len(rewards),
                                         elapsed_time))
-
-    def log_lipschitz(self):
-        pass
-
-    def visualize(self):
-        pass
-
-    def save(self):
-        pass
-
-    def load(self, parameters_dir):
-        pass

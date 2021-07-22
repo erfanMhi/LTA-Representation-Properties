@@ -203,7 +203,7 @@ def simple_maze_correlation_early(perc):
     ax.plot([x[0]-0.45, x[-1]+0.45], [0, 0], "--", color="grey")
 
 
-    # ax.legend()
+    ax.legend(loc=4)
     ax.set_ylabel('Correlation')
     ax.set_ylim(-1, 1.2)
     ax.set_xticks(x)

@@ -167,9 +167,13 @@ def pe_temp():
     learning_curve(pe_trans_sweep_temp, "pe diff fix result")
     # learning_curve(perand_trans_sweep_temp, "perandc diff fix avg v6")
 
+def maze_multigoals():
+    # learning_curve(maze_source_sweep, "maze source")
+    learning_curve(maze_target_sweep, "maze dissimilar")
 
 if __name__ == '__main__':
     # mountain_car()
     # simple_maze()
-    picky_eater()
+    # picky_eater()
     # pe_temp()
+    maze_multigoals()

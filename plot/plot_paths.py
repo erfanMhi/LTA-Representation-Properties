@@ -674,6 +674,9 @@ gh_same_early = [
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/same_task/fix_rep/input/best/",
      "online_measure": "data/output/result/gridhard/linear_vf/fixrep_property/input/best",
      },
+    {"label": "Scratch",
+     "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/scratch/dqn/best/",
+     },
 ]
 
 gh_similar_early = [
@@ -853,88 +856,89 @@ gh_diff_early = [
      },
 ]
 
-# gh_diff_tune_early = [
-#     {"label": "ReLU", "property": "data/output/result/",
-#      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn/best/",
-#      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn/best/"
-#      },
-#     {"label": "ReLU+Control1g",
-#      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_aux/aux_control/best_1g_gamma0.9/",
-#      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_aux/aux_control/best_1g_gamma0.9/"
-#      },
-#     {"label": "ReLU+Control5g",
-#      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_aux/aux_control/best_5g_gamma0.9/",
-#      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_aux/aux_control/best_5g_gamma0.9/"
-#      },
-#     {"label": "ReLU+XY",
-#      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_aux/info/best/",
-#      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_aux/info/best/"
-#      },
-#     {"label": "ReLU+Decoder",
-#      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_aux/input_decoder/best/",
-#      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_aux/info/best/"
-#      },
-#     {"label": "ReLU+NAS",
-#      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_aux/nas_v2_delta/best/",
-#      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_aux/nas_v2_delta/best/"
-#      },
-#     {"label": "ReLU+Reward",
-#      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_aux/reward/best/",
-#      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_aux/reward/best/"
-#      },
-#     {"label": "ReLU+SF",
-#      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_aux/successor_as/best/",
-#      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_aux/successor_as/best/"
-#      },
-#     {"label": "FTA eta=0.2",
-#      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta/eta_study_0.2_best/",
-#      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta/eta_study_0.2_best/"
-#      },
-#     {"label": "FTA eta=0.4",
-#      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta/eta_study_0.4_best/",
-#      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta/eta_study_0.4_best/"
-#      },
-#     {"label": "FTA eta=0.6",
-#      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta/eta_study_0.6_best/",
-#      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta/eta_study_0.6_best/"
-#      },
-#     {"label": "FTA eta=0.8",
-#      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta/eta_study_0.8_best/",
-#      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta/eta_study_0.8_best/"
-#      },
-#     {"label": "FTA+Control1g",
-#      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta_aux/aux_control/best_1g_gamma0.9/",
-#      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta_aux/aux_control/best_1g_gamma0.9/"
-#      },
-#     {"label": "FTA+Control5g",
-#      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta_aux/aux_control/best_5g_gamma0.9/",
-#      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta_aux/aux_control/best_5g_gamma0.9/"
-#      },
-#     {"label": "FTA+XY",
-#      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta_aux/info/best/",
-#      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta_aux/info/best/"
-#      },
-#     {"label": "FTA+Decoder",
-#      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta_aux/input_decoder/best/",
-#      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta_aux/input_decoder/best/"
-#      },
-#     {"label": "FTA+NAS",
-#      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta_aux/nas_v2_delta/best/",
-#      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta_aux/nas_v2_delta/best/"
-#      },
-#     {"label": "FTA+Reward",
-#      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta_aux/reward/best/",
-#      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta_aux/reward/best/"
-#      },
-#     {"label": "FTA+SF",
-#      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta_aux/successor_as/best/",
-#      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta_aux/successor_as/best/"
-#      },
-#     {"label": "Random",
-#      "control": "data/output/result/gridhard/linear_vf/control/baseline/different_task/fine_tune/random/best/",
-#      "online_measure": "data/output/result/gridhard/linear_vf/fixrep_property/random/best",
-#      },
-# ]
+
+gh_diff_tune_early = [
+    {"label": "ReLU", "property": "data/output/result/",
+     "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn/best/",
+     "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn/best/"
+     },
+    {"label": "ReLU+Control1g",
+     "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_aux/aux_control/best_1g_gamma0.9/",
+     "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_aux/aux_control/best_1g_gamma0.9/"
+     },
+    {"label": "ReLU+Control5g",
+     "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_aux/aux_control/best_5g_gamma0.9/",
+     "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_aux/aux_control/best_5g_gamma0.9/"
+     },
+    {"label": "ReLU+XY",
+     "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_aux/info/best/",
+     "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_aux/info/best/"
+     },
+    {"label": "ReLU+Decoder",
+     "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_aux/input_decoder/best/",
+     "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_aux/info/best/"
+     },
+    {"label": "ReLU+NAS",
+     "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_aux/nas_v2_delta/best/",
+     "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_aux/nas_v2_delta/best/"
+     },
+    {"label": "ReLU+Reward",
+     "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_aux/reward/best/",
+     "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_aux/reward/best/"
+     },
+    {"label": "ReLU+SF",
+     "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_aux/successor_as/best/",
+     "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_aux/successor_as/best/"
+     },
+    {"label": "FTA eta=0.2",
+     "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta/eta_study_0.2_best/",
+     "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta/eta_study_0.2_best/"
+     },
+    {"label": "FTA eta=0.4",
+     "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta/eta_study_0.4_best/",
+     "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta/eta_study_0.4_best/"
+     },
+    {"label": "FTA eta=0.6",
+     "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta/eta_study_0.6_best/",
+     "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta/eta_study_0.6_best/"
+     },
+    {"label": "FTA eta=0.8",
+     "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta/eta_study_0.8_best/",
+     "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta/eta_study_0.8_best/"
+     },
+    {"label": "FTA+Control1g",
+     "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta_aux/aux_control/best_1g_gamma0.9/",
+     "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta_aux/aux_control/best_1g_gamma0.9/"
+     },
+    {"label": "FTA+Control5g",
+     "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta_aux/aux_control/best_5g_gamma0.9/",
+     "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta_aux/aux_control/best_5g_gamma0.9/"
+     },
+    {"label": "FTA+XY",
+     "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta_aux/info/best/",
+     "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta_aux/info/best/"
+     },
+    {"label": "FTA+Decoder",
+     "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta_aux/input_decoder/best/",
+     "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta_aux/input_decoder/best/"
+     },
+    {"label": "FTA+NAS",
+     "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta_aux/nas_v2_delta/best/",
+     "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta_aux/nas_v2_delta/best/"
+     },
+    {"label": "FTA+Reward",
+     "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta_aux/reward/best/",
+     "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta_aux/reward/best/"
+     },
+    {"label": "FTA+SF",
+     "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta_aux/successor_as/best/",
+     "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta_aux/successor_as/best/"
+     },
+    {"label": "Random",
+     "control": "data/output/result/gridhard/linear_vf/control/baseline/different_task/fine_tune/random/best/",
+     "online_measure": "data/output/result/gridhard/linear_vf/fixrep_property/random/best",
+     },
+]
 
 gh_same_last = [
     {"label": "ReLU", "property": "data/output/test/",
@@ -3569,4 +3573,111 @@ pe_in_rand_sweep = [
      "best": "3"
      },
 
+]
+
+maze_source_sweep = [
+    {"label": "ReLU",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn/sweep/",
+     },
+    {"label": "ReLU+XY",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_aux/info/sweep/",
+     },
+    {"label": "ReLU+Decoder",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_aux/input_decoder/sweep/",
+     },
+    {"label": "ReLU+NAS",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_aux/nas_v2_delta/sweep/",
+     },
+    {"label": "ReLU+Reward",
+     # "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_aux/reward/sweep/",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_aux/reward/sweep_smallw/",
+     },
+    {"label": "ReLU+SF",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_aux/successor_as/sweep/",
+     },
+    {"label": "FTA eta=0.2",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_lta/eta_study_0.2_sweep/",
+     },
+    {"label": "FTA eta=0.4",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_lta/eta_study_0.4_sweep/",
+     },
+    {"label": "FTA eta=0.6",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_lta/eta_study_0.6_sweep/",
+     },
+    {"label": "FTA eta=0.8",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_lta/eta_study_0.8_sweep/",
+     },
+    {"label": "FTA+XY",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_lta_aux/info/sweep/",
+     },
+    {"label": "FTA+Decoder",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_lta_aux/input_decoder/sweep/",
+     },
+    {"label": "FTA+NAS",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_lta_aux/nas_v2_delta/sweep/",
+     },
+    {"label": "FTA+Reward",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_lta_aux/reward/sweep/",
+     },
+    {"label": "FTA+SF",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_lta_aux/successor_as/sweep/",
+     }
+]
+
+maze_target_sweep = [
+    {"label": "ReLU",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/fix_rep/dqn/sweep/",
+     },
+    {"label": "ReLU+XY",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/fix_rep/dqn_aux/info/sweep/",
+     },
+    {"label": "ReLU+Decoder",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/fix_rep/dqn_aux/input_decoder/sweep/",
+     },
+    {"label": "ReLU+NAS",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/fix_rep/dqn_aux/nas_v2_delta/sweep/",
+     },
+    {"label": "ReLU+Reward",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/fix_rep/dqn_aux/reward/sweep/",
+     },
+    {"label": "ReLU+SF",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/fix_rep/dqn_aux/successor_as/sweep/",
+     },
+    {"label": "FTA eta=0.2",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/fix_rep/dqn_lta/eta_study_0.2_sweep/",
+     },
+    {"label": "FTA eta=0.4",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/fix_rep/dqn_lta/eta_study_0.4_sweep/",
+     },
+    {"label": "FTA eta=0.6",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/fix_rep/dqn_lta/eta_study_0.6_sweep/",
+     },
+    {"label": "FTA eta=0.8",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/fix_rep/dqn_lta/eta_study_0.8_sweep/",
+     },
+    {"label": "FTA+XY",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/fix_rep/dqn_lta_aux/info/sweep/",
+     },
+    {"label": "FTA+Decoder",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/fix_rep/dqn_lta_aux/input_decoder/sweep/",
+     },
+    {"label": "FTA+NAS",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/fix_rep/dqn_lta_aux/nas_v2_delta/sweep/",
+     },
+    {"label": "FTA+Reward",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/fix_rep/dqn_lta_aux/reward/sweep/",
+     },
+    {"label": "FTA+SF",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/fix_rep/dqn_lta_aux/successor_as/sweep/",
+     },
+
+    {"label": "Random",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/fix_rep/random/sweep/",
+     },
+    {"label": "Input",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/fix_rep/input/sweep/",
+     },
+    {"label": "Scratch",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/scratch/dqn/sweep/",
+     },
 ]

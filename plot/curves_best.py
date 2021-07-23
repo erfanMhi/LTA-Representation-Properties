@@ -93,13 +93,14 @@ def simple_maze():
                "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
                "ReLU", "ReLU+Control1g", "ReLU+Control5g",
                "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
-               "Random", "Input", "Scratch"]
+               # "Random", "Input",
+               "Scratch"]
 
     # learning_curve(gh_online, "maze online measure", targets, xlim=[0, 30])
 
-    # learning_curve(gh_same_early, "maze same early", targets, xlim=[0, 30])
+    learning_curve(gh_same_early, "maze same early", targets, xlim=[0, 15])
     # learning_curve(gh_similar_early, "maze similar early", targets, xlim=[0, 30])
-    learning_curve(gh_diff_early, "maze different (fix) early", targets, xlim=[0, 30], data_label=False)
+    # learning_curve(gh_diff_early, "maze different (fix) early", targets, xlim=[0, 10], data_label=False)
     draw_label(targets, "maze_label", ncol=2)
 
     # learning_curve(gh_diff_tune_early, "maze different (fine tune) early", targets, xlim=[0, 10])
@@ -145,9 +146,20 @@ def pe_linear():
     learning_curve(pe_linear_trans_diff, "pelinear_diff", targets, data_label=False)
     draw_label(targets, "pelinear_label", ncol=2)
 
+def maze_multigoals():
+    targets = ["ReLU", "ReLU+Control",
+               "ReLU+XY", "ReLU+Color", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+               "FTA eta=2", "FTA+Control",
+               "FTA+XY", "FTA+Color", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+               "Random", "Input", "Scratch"]
+    learning_curve(maze_source_best, "maze source")
+    learning_curve(maze_target_same_best, "maze same")
+    # learning_curve(maze_target_diff_best, "maze dissimilar")
+
 if __name__ == '__main__':
     # mountain_car()
     simple_maze()
     picky_eater()
     # pe_temp()
     # pe_linear()
+    maze_multigoals()

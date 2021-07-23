@@ -132,6 +132,7 @@ curve_styles = {
 
 marker_styles = {
         "ReLU": m_default[1],
+        "ReLU+Color": m_default[1],
         "ReLU+Control": m_default[1],
         "ReLU+Control1g": m_default[1],
         "ReLU+Control5g": m_default[1],
@@ -153,6 +154,7 @@ marker_styles = {
     "FTA eta=0.6": m_default[0],
     "FTA eta=0.8": m_default[0],
 
+    "FTA+Color": m_default[0],
     "FTA+Control": m_default[0],
     "FTA+Control1g": m_default[0],
     "FTA+Control5g": m_default[0],
@@ -166,6 +168,7 @@ marker_styles = {
 
     "Random": m_default[0],
     "Input": m_default[0],
+    "Scratch": s_default[0],
 }
 
 mc_learn_sweep = [
@@ -3276,45 +3279,330 @@ pe_rep_sweep = [
 pe_rep_best = [
     {"label": "ReLU",
      "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn/best_3f/",
-     "best": "2"
      },
     {"label": "ReLU+Control",
      "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/aux_control/best_3f/",
-     "best": "2"
      },
       {"label": "ReLU+XY",
       "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/info/best_3f_xy/",
       },
       {"label": "ReLU+Color",
       "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/info/best_3f_color/",
-     "best": "2"
       },   
       {"label": "ReLU+Decoder",
      "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/input_decoder/best_3f/",
-     "best": "1"
      },
     {"label": "ReLU+NAS",
      "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/nas_v2_delta/best_3f/",
-     "best": "2"
      },
     {"label": "ReLU+Reward",
      "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/reward/best_3f/",
-     "best": "2"
      },
     {"label": "ReLU+SF",
      "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/successor_as/best_3f/",
-     "best": "2"
      },
     {"label": "FTA",
      "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta/best_3f/",
-     "best": "2"
      },
    {"label": "FTA+Control",
     "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/aux_control/best_3f/",
+    },
+     {"label": "FTA+XY",
+      "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/info/best_3f_xy/",
+      },
+      {"label": "FTA+Color",
+      "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/info/best_3f_color/",
+      },
+      {"label": "FTA+Decoder",
+     "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/input_decoder/best_3f/",
+     },
+    {"label": "FTA+NAS",
+     "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/nas_v2_delta/best_3f/",
+     },
+    {"label": "FTA+Reward",
+     "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/reward/best_3f/",
+     },
+    {"label": "FTA+SF",
+     "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/successor_as/best_3f/",
+     }
+]
+
+pe_transfer_sweep = [
+    {"label": "ReLU",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn/sweep_3f/",
+     "best": "5"
+     },
+   {"label": "ReLU+Control",
+    "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_aux/aux_control/sweep_3f/",
+    "best": "7"
+    },
+     {"label": "ReLU+XY",
+      "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_aux/info/sweep_3f_xy/",
+     "best": "6"
+      },
+      {"label": "ReLU+Color",
+      "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_aux/info/sweep_3f_color/",
+     "best": "6"
+      },   
+      {"label": "ReLU+Decoder",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_aux/input_decoder/sweep_3f/",
+     "best": "4"
+     },
+    {"label": "ReLU+NAS",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_aux/nas_v2_delta/sweep_3f/",
+     "best": "6"
+     },
+    {"label": "ReLU+Reward",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_aux/reward/sweep_3f/",
+     "best": "5"
+     },
+    {"label": "ReLU+SF",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_aux/successor_as/sweep_3f/",
+     "best": "6"
+     },
+    {"label": "FTA",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta/sweep_3f/",
+     "best": "7"
+     },
+    {"label": "FTA+Control",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/aux_control/sweep_3f/",
+     "best": "4"
+     },
+     {"label": "FTA+XY",
+      "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/info/sweep_3f_xy/",
+     "best": "7"
+      },
+      {"label": "FTA+Color",
+      "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/info/sweep_3f_color/",
+     "best": "4"
+      },
+      {"label": "FTA+Decoder",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/input_decoder/sweep_3f/",
+     "best": "4"
+     },
+    {"label": "FTA+NAS",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/nas_v2_delta/sweep_3f/",
+     "best": "7"
+     },
+    {"label": "FTA+Reward",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/reward/sweep_3f/",
+     "best": "7"
+     },
+    {"label": "FTA+SF",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/successor_as/sweep_3f/",
+     "best": "7"
+     }
+]
+
+
+
+pe_t_sweep_v2 = [
+  {"label": "FTA+Decoder",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/input_decoder/sweep_3f/",
+     "best": "4"
+   },
+ #  {"label": "ReLU+Control",
+    # "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_aux/aux_control/sweep_3f/",
+    # "best": "2"
+    # },
+   # {"label": "FTA",
+     # "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta/sweep_3f_v2/",
+     # "best": "7"
+     # },
+    # {"label": "FTA+Control",
+     # "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/aux_control/sweep_3f/",
+     # "best": "4"
+     # },
+     # {"label": "FTA+XY",
+      # "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/info/sweep_3f_xy_v2/",
+     # "best": "7"
+      # },
+    # {"label": "FTA+NAS",
+     # "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/nas_v2_delta/sweep_3f_v2/",
+     # "best": "7"
+     # },
+    # {"label": "FTA+Reward",
+     # "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/reward/sweep_3f_v2/",
+     # "best": "7"
+     # },
+    # {"label": "FTA+SF",
+     # "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/successor_as/sweep_3f_v2/",
+     # "best": "7"
+  #    }
+]
+
+
+pe_transfer_sweep_v2 = [
+  {"label": "ReLU+Control",
+    "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_aux/aux_control/sweep_3f/",
+    "best": "2"
+    },
+   {"label": "FTA",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta/sweep_3f_v2/",
+     "best": "7"
+     },
+    {"label": "FTA+Control",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/aux_control/sweep_3f/",
+     "best": "4"
+     },
+     {"label": "FTA+XY",
+      "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/info/sweep_3f_xy_v2/",
+     "best": "7"
+      },
+    {"label": "FTA+NAS",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/nas_v2_delta/sweep_3f_v2/",
+     "best": "7"
+     },
+    {"label": "FTA+Reward",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/reward/sweep_3f_v2/",
+     "best": "7"
+     },
+    {"label": "FTA+SF",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/successor_as/sweep_3f_v2/",
+     "best": "7"
+     }
+]
+
+
+pe_transfer_sweep_same_v2 = [
+  {"label": "ReLU+Control",
+    "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_aux/aux_control/sweep_3f/",
+    "best": "4"
+    },
+    {"label": "FTA+Control",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_lta_aux/aux_control/sweep_3f/",
+     "best": "4"
+     },
+]
+
+pe_transfer_sweep_same = [
+    {"label": "ReLU",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn/sweep_3f/",
+     "best": "3"
+     },
+   {"label": "ReLU+Control",
+    "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_aux/aux_control/sweep_3f/",
+    "best": "4"
+    },
+     {"label": "ReLU+XY",
+      "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_aux/info/sweep_3f_xy/",
+     "best": "3"
+      },
+      {"label": "ReLU+Color",
+      "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_aux/info/sweep_3f_color/",
+     "best": "4"
+      },   
+      {"label": "ReLU+Decoder",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_aux/input_decoder/sweep_3f/",
+     "best": "3"
+     },
+    {"label": "ReLU+NAS",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_aux/nas_v2_delta/sweep_3f/",
+     "best": "4"
+     },
+    {"label": "ReLU+Reward",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_aux/reward/sweep_3f/",
+     "best": "4"
+     },
+    {"label": "ReLU+SF",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_aux/successor_as/sweep_3f/",
+     "best": "3"
+     },
+    {"label": "FTA",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_lta/sweep_3f/",
+     "best": "4"
+     },
+    {"label": "FTA+Control",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_lta_aux/aux_control/sweep_3f/",
+     "best": "4"
+     },
+     {"label": "FTA+XY",
+      "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_lta_aux/info/sweep_3f_xy/",
+     "best": "4"
+      },
+      {"label": "FTA+Color",
+      "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_lta_aux/info/sweep_3f_color/",
+     "best": "4"
+      },
+      {"label": "FTA+Decoder",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_lta_aux/input_decoder/sweep_3f/",
+     "best": "4"
+     },
+    {"label": "FTA+NAS",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_lta_aux/nas_v2_delta/sweep_3f/",
+     "best": "4"
+     },
+    {"label": "FTA+Reward",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_lta_aux/reward/sweep_3f/",
+     "best": "4"
+     },
+    {"label": "FTA+SF",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_lta_aux/successor_as/sweep_3f/",
+     "best": "4"
+     }
+]
+
+
+pe_in_rand_sweep = [
+    {"label": "Input",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/input/sweep_3f/",
+     "best": "4"
+     },
+       {"label": "Random",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/random/sweep_3f/",
+     "best": "3"
+     },
+
+]
+
+
+
+pe_transfer_best = [
+    {"label": "ReLU",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn/best_3f/",
+     "best": "2"
+     },
+    {"label": "ReLU+Control",
+     "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/aux_control/best_3f/",
+     "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/aux_control/best_3f/",
+     "best": "2"
+     },
+      {"label": "ReLU+XY",
+      "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/info/best_3f_xy/",
+     "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/info/best_3f_xy/",
+      },
+      {"label": "ReLU+Color",
+      "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/info/best_3f_color/",
+     "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/info/best_3f_color/",
+      },   
+      {"label": "ReLU+Decoder",
+     "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/input_decoder/best_3f/",
+     "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/input_decoder/best_3f/",
+     },
+    {"label": "ReLU+NAS",
+     "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/nas_v2_delta/best_3f/",
+     "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/nas_v2_delta/best_3f/",
+     },
+    {"label": "ReLU+Reward",
+     "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/reward/best_3f/",
+     "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/reward/best_3f/",
+     },
+    {"label": "ReLU+SF",
+     "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/successor_as/best_3f/",
+     "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/successor_as/best_3f/",
+     },
+    {"label": "FTA",
+     "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta/best_3f/",
+     "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta/best_3f/",
+     },
+   {"label": "FTA+Control",
+    "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/aux_control/best_3f/",
+     "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/aux_control/best_3f/",
     "best": "2"
     },
      {"label": "FTA+XY",
       "control": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/info/best_3f_xy/",
+     "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/aux_control/best_3f/",
      "best": "2"
       },
       {"label": "FTA+Color",
@@ -3560,18 +3848,169 @@ pe_in_rand_sweep = [
      "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/input/sweep_3f/",
      "best": "4"
      },
-    {"label": "Input",
-     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/input/sweep_3f/",
-     "best": "4"
-     },
-    {"label": "Random",
-     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/random/sweep_3f/",
-     "best": "4"
-     },
-        {"label": "Random",
+       {"label": "Random",
      "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/random/sweep_3f/",
      "best": "3"
      },
+
+]
+
+
+
+pe_transfer_best_dissimilar = [
+#    {"label": "Scratch",
+#     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/scratch/dqn/best_3f/",
+#     "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn/best_3f/",
+#     },
+    {"label": "ReLU",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn/best_3f/",
+     "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn/best_3f/",
+     },
+   {"label": "ReLU+Control",
+    "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_aux/aux_control/best_3f/",
+     "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/aux_control/best_3f/",
+    },
+     {"label": "ReLU+XY",
+      "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_aux/info/best_3f_xy/",
+     "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/info/best_3f_xy/",
+      },
+      {"label": "ReLU+Color",
+      "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_aux/info/best_3f_color/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/info/best_3f_color/",
+      },   
+      {"label": "ReLU+Decoder",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_aux/input_decoder/best_3f/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/input_decoder/best_3f/",
+     },
+    {"label": "ReLU+NAS",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_aux/nas_v2_delta/best_3f/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/nas_v2_delta/best_3f/",
+     },
+    {"label": "ReLU+Reward",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_aux/reward/best_3f/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/reward/best_3f/",
+     },
+    {"label": "ReLU+SF",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_aux/successor_as/best_3f/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/successor_as/best_3f/",
+     },
+    {"label": "FTA",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta/best_3f/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta/best_3f/",
+     },
+    {"label": "FTA+Control",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/aux_control/best_3f/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/aux_control/best_3f/",
+     },
+     {"label": "FTA+XY",
+      "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/info/best_3f_xy/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/info/best_3f_xy/",
+      },
+      {"label": "FTA+Color",
+      "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/info/best_3f_color/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/info/best_3f_color/",
+      },
+      {"label": "FTA+Decoder",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/input_decoder/best_3f/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/input_decoder/best_3f/",
+     },
+    {"label": "FTA+NAS",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/nas_v2_delta/best_3f/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/nas_v2_delta/best_3f/",
+     },
+    {"label": "FTA+Reward",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/reward/best_3f/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/reward/best_3f/",
+     },
+    {"label": "FTA+SF",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/successor_as/best_3f/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/successor_as/best_3f/",
+     "best": "7"
+     },
+    {"label": "Input",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/input/best_3f/",
+     "best": "4"
+    },
+    {"label": "Random",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/different_task/fix_rep/random/best_3f/",
+     "best": "4"
+    },
+]
+
+pe_transfer_best_similar = [
+    {"label": "ReLU",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn/best_3f/",
+     "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn/best_3f/",
+     },
+   {"label": "ReLU+Control",
+    "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_aux/aux_control/best_3f/",
+     "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/aux_control/best_3f/",
+    },
+     {"label": "ReLU+XY",
+      "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_aux/info/best_3f_xy/",
+     "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/info/best_3f_xy/",
+      },
+      {"label": "ReLU+Color",
+      "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_aux/info/best_3f_color/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/info/best_3f_color/",
+      },   
+      {"label": "ReLU+Decoder",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_aux/input_decoder/best_3f/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/input_decoder/best_3f/",
+     },
+    {"label": "ReLU+NAS",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_aux/nas_v2_delta/best_3f/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/nas_v2_delta/best_3f/",
+     },
+    {"label": "ReLU+Reward",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_aux/reward/best_3f/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/reward/best_3f/",
+     },
+    {"label": "ReLU+SF",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_aux/successor_as/best_3f/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_aux/successor_as/best_3f/",
+     },
+    {"label": "FTA",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_lta/best_3f/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta/best_3f/",
+     },
+    {"label": "FTA+Control",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_lta_aux/aux_control/best_3f/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/aux_control/best_3f/",
+     },
+     {"label": "FTA+XY",
+      "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_lta_aux/info/best_3f_xy/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/info/best_3f_xy/",
+      },
+      {"label": "FTA+Color",
+      "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_lta_aux/info/best_3f_color/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/info/best_3f_color/",
+      },
+      {"label": "FTA+Decoder",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_lta_aux/input_decoder/best_3f/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/input_decoder/best_3f/",
+     },
+    {"label": "FTA+NAS",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_lta_aux/nas_v2_delta/best_3f/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/nas_v2_delta/best_3f/",
+     },
+    {"label": "FTA+Reward",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_lta_aux/reward/best_3f/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/reward/best_3f/",
+     },
+    {"label": "FTA+SF",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/dqn_lta_aux/successor_as/best_3f/",
+      "online_measure": "data/output/result/picky_eater/nonlinear_vf/representation/dqn_lta_aux/successor_as/best_3f/",
+     "best": "7"
+     },
+    {"label": "Input",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/input/best_3f/",
+     "best": "4"
+    },
+    {"label": "Random",
+     "control": "data/output/result/picky_eater/nonlinear_vf/control/early_stop/same_task/fix_rep/random/best_3f/",
+     "best": "4"
+    },
 
 ]
 

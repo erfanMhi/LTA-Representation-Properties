@@ -1,17 +1,19 @@
 import os
 import sys
 import numpy as np
-sys.path.insert(0, '..')
 
 import matplotlib.pyplot as plt
 
-from plot.plot_utils import *
+sys.path.insert(0, '..')
+print(sys.path)
 from plot.plot_paths import *
+from plot.plot_utils import *
 from experiment.sweeper import Sweeper
 
-os.chdir("..")
 print("Change dir to", os.getcwd())
 
+os.chdir("..")
+print(os.getcwd())
 # def arrange_order(dict1):
 #     lst = []
 #     min_l = np.inf
@@ -138,10 +140,10 @@ def simple_maze():
     # learning_curve(gh_diff_tune_early_sweep, "maze different (fine tune) sweep")
 
 def picky_eater():
-#    titles = ["ReLU", "ReLU+Control", "ReLU+XY", "ReLU+Color", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF" ,"FTA", "FTA+Control", "FTA+Decoder", "FTA+XY", "FTA+Color", "FTA+NAS", "FTA+Reward", "FTA+SF"]
-    titles = ["FTA+Decoder", "ReLU+Control", "FTA", "FTA+Control"]
+    titles = ["ReLU", "ReLU+Control", "ReLU+XY", "ReLU+Color", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF" ,"FTA", "FTA+Control", "FTA+Decoder", "FTA+XY", "FTA+Color", "FTA+NAS", "FTA+Reward", "FTA+SF"]
+#    titles = ["FTA+Decoder", "ReLU+Control", "FTA", "FTA+Control"]
     print('here')
-    for i, crgb_sweep in enumerate(pe_t_sweep_v2):
+    for i, crgb_sweep in enumerate(pe_transfer_best_dissimilar):
         compare_learning_curve([crgb_sweep], titles[i], label_keys=None)
         # learning_curve([crgb_sweep], "maze online property")
     # for crgb_sweep in crgb_online_sweep_1_f:
@@ -164,7 +166,7 @@ def picky_eater():
 def pe_temp():
     # learning_curve(pe_sweep_temp, "pe rep result temp")
     # learning_curve(perand_sweep_temp, "perandc rep v6")
-    learning_curve(pe_trans_sweep_temp, "pe diff fix result")
+    learning_curve(pe_transfer_best_dissimilar, "pe diff fix result")
     # learning_curve(perand_trans_sweep_temp, "perandc diff fix avg v6")
 
 def maze_multigoals():

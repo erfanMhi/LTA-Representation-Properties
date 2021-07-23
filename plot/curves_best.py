@@ -113,12 +113,18 @@ def simple_maze():
     # learning_curve_mean(gh_online, "maze online measure", targets, xlim=[0, 30])
 
 def picky_eater():
-    # learning_curve(crgb_online_dqn, "maze online dqn")
+   # learning_curve(crgb_online_dqn, "maze online dqn")
+    targets = ["FTA", "FTA+Control", "FTA+XY", "FTA+Color", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+               "ReLU", "ReLU+Control", "ReLU+XY", "ReLU+Color", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", 
+               "ReLU+SF", "Input", "Random", "Scratch"]
 
-    # learning_curve(crgb_online_dqn_lta, "maze online dqn with lta")
-    learning_curve(crgb_online_dt_fr, "Dissimilar Task")
-    learning_curve(crgb_online_st_fr, "Same Task")
-    learning_curve(crgb_online_dt_ft, "Dissimilar Task (fine tune)")
+    #targets = ["ReLU+Decoder", "ReLU+Reward", "FTA+Decoder", "FTA+Reward"]
+
+    learning_curve(pe_rep_best,  "Picky Eater Task", targets, xlim=[0,101])
+    learning_curve(pe_transfer_best_dissimilar, "Dissimilar Task", targets, xlim=[0,201], legend=False)
+    learning_curve(pe_transfer_best_similar, "Same Task", targets, xlim=[0,25])
+    #learning_curve(crgb_online_dt_ft, "Dissimilar Task (fine tune)")
+    draw_label(targets, "pe_best_chosen_label", ncol=4)
 
 def pe_temp():
     learning_curve(pe_trans_best_temp, "pe diff fix v6 best")
@@ -158,7 +164,7 @@ def maze_multigoals():
 
 if __name__ == '__main__':
     # mountain_car()
-    simple_maze()
+    #simple_maze()
     picky_eater()
     # pe_temp()
     # pe_linear()

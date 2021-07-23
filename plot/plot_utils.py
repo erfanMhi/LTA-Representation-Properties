@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from plot.plot_paths import violin_colors, curve_styles
 
+from plot_paths import *
+
 flatten = lambda t: [item for sublist in t for item in sublist]
 
 
@@ -251,7 +253,7 @@ def extract_from_single_run(file, key, label=None, before_step=None):
 def extract_from_setting(find_in, setting, key="return", final_only=False, label=None, cut_at_step=None):
     setting_folder = "{}_param_setting".format(setting)
     all_runs = {}
-    assert os.path.isdir(find_in), print("\nERROR: {} is not a directory\n".format(find_in))
+    assert os.path.isdir(find_in), ("\nERROR: {} is not a directory\n".format(find_in))
     for path, subdirs, files in os.walk(find_in):
         for name in files:
             if name in ["log"] and setting_folder in path:

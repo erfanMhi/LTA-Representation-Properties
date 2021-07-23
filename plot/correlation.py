@@ -379,7 +379,8 @@ def simple_picky_eater_correlation_last(perc, early=True, p_label='Random'):
 def picky_eater_correlation(perc, early=True, p_label='Random'):
 
     if early:
-        crgb_diff_path = pe_trans_best_temp
+        crgb_diff_path = pe_transfer_best_dissimilar
+        crgb_same_path = pe_transfer_best_similar
     else:
         raise NotImplementedError
 
@@ -391,9 +392,17 @@ def picky_eater_correlation(perc, early=True, p_label='Random'):
     diff_diversity = calculation([crgb_diff_path], "picky_eater_early_diff-fix_diversity", property_key="diversity", perc=perc, targets=targets, p_label=p_label)
     diff_spars = calculation([crgb_diff_path], "picky_eater_early_diff-fix_sparsity", property_key="sparsity", perc=perc, targets=targets, p_label=p_label)
 
+    print("\nSame task")
+    same_lip = calculation([crgb_same_path], "picky_eater_early_same-fix_lip", property_key="lipschitz", perc=perc, targets=targets, p_label=p_label)
+    same_dist = calculation([crgb_same_path], "picky_eater_early_same-fix_distance", property_key="distance", perc=perc, targets=targets, p_label=p_label)
+    same_ortho = calculation([crgb_same_path], "picky_eater_early_same-fix_ortho", property_key="ortho", perc=perc, targets=targets, p_label=p_label)
+    same_interf = calculation([crgb_same_path], "picky_eater_early_same-fix_interf", property_key="interf", perc=perc, targets=targets)
+    same_diversity = calculation([crgb_same_path], "picky_eater_early_same-fix_diversity", property_key="diversity", perc=perc, targets=targets, p_label=p_label)
+    same_spars = calculation([crgb_same_path], "picky_eater_early_same-fix_sparsity", property_key="sparsity", perc=perc, targets=targets, p_label=p_label)    
+    
     labels = ["complexity reduction", "dynamics awareness", "orthogonality", "noninterference", "diversity", "sparsity"]
     # labels = ["interference", "sparsity"]
-    # same = [same_lip, same_dist, same_ortho, same_interf, same_diversity, same_spars]
+    same = [same_lip, same_dist, same_ortho, same_interf, same_diversity, same_spars]
     diff = [diff_lip, diff_dist, diff_ortho, diff_interf, diff_diversity, diff_spars]
     # difftune = [difftune_lip, difftune_dist, difftune_ortho, difftune_interf, difftune_diversity, difftune_spars]
 
@@ -405,6 +414,10 @@ def picky_eater_correlation(perc, early=True, p_label='Random'):
     rotation = 90
 
     fig, ax = plt.subplots()
+    
+    rects1 = ax.bar(x-0.45+width, same, width, label='same', color=cmap(0, 4))
+    for i in range(len(x)):
+        ax.text(x[i]-0.45+width*0.6, max(0, same[i])+label_pos, "{:.4f}".format(same[i]), color=cmap(0, 4), fontsize=fontsize, rotation=rotation)
 
     rects3 = ax.bar(x-0.45+width*2, diff, width, label='dissimilar(fix)', color=cmap(1, 4))
     for i in range(len(x)):
@@ -422,9 +435,9 @@ def picky_eater_correlation(perc, early=True, p_label='Random'):
 
    # plt.show()
     if early:
-        plt.savefig("plot/img/{}_{}.png".format(p_label, "crgb_correlation_early_model"), dpi=300, bbox_inches='tight')
+        plt.savefig("plot/img/{}_{}.pdf".format(p_label, "crgb_correlation_early_model"), dpi=300, bbox_inches='tight')
     else:
-        plt.savefig("plot/img/{}_{}.png".format(p_label, "crgb_correlation_last_model"), dpi=300, bbox_inches='tight')
+        plt.savefig("plot/img/{}_{}.pdf".format(p_label, "crgb_correlation_last_model"), dpi=300, bbox_inches='tight')
     plt.close()
     plt.clf()
 
@@ -443,10 +456,8 @@ if __name__ == '__main__':
                # "Random", "Input",
                ]
 
-    targets = ["ReLU",
-               "ReLU+Control", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
-               "FTA eta=2"
-               "FTA+Control", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+    targets = ["ReLU", "ReLU+Control", "ReLU+XY", "ReLU+Color", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+               "FTA", "FTA+Control", "FTA+XY", "FTA+Color", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
                # "Random", "Input",
                ]
 
@@ -455,4 +466,4 @@ if __name__ == '__main__':
     # simple_picky_eater_correlation_last(perc, p_label='Green')
     # simple_maze_correlation_early(perc)
     # simple_maze_correlation_last(perc)
-    # picky_eater_correlation(perc, p_label='Random')
+    picky_eater_correlation(perc, p_label='Random')

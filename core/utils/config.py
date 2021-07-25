@@ -50,7 +50,10 @@ class Config:
 
         self.record_video = False
         self.update_network = True
-    
+
+        self.train_test_split = False
+        self.task_data_path = ''
+
     def get_log_dir(self):
         d = os.path.join(self.data_root, self.exp_name, "{}_run".format(self.run),
                          "{}_param_setting".format(self.param_setting))

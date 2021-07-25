@@ -28,7 +28,14 @@ if __name__ == '__main__':
     cfg = Sweeper(project_root, args.config_file).parse(args.id)
     cfg.device = torch_utils.select_device(args.device)
     torch_utils.random_seed(cfg.seed)
-
+    
+    if cfg.train_test_split:
+        cfg.task_data_path = cfg.task_data_path.format(cfg.run)
+        path = os.path.join(cfg.data_root, cfg.task_data_path)
+        if not os.path.isfile(path):
+            print("Run {} doesn't exist. {}".format(cfg.run, path))
+            exit(1)
+ 
     cfg.rep_activation_fn = activations.ActvFactory.get_activation_fn(cfg)
     cfg.rep_fn = representation.RepFactory.get_rep_fn(cfg)
     cfg.env_fn = environment.EnvFactory.create_env_fn(cfg)

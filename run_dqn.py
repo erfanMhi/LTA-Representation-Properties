@@ -28,6 +28,13 @@ if __name__ == '__main__':
     cfg.device = torch_utils.select_device(args.device)
     torch_utils.random_seed(cfg.seed)
 
+    if cfg.train_test_split:
+        cfg.task_data_path = cfg.task_data_path.format(cfg.run)
+        path = os.path.join(cfg.data_root, cfg.task_data_path)
+        if not os.path.isfile(path):
+            print("Run {} doesn't exist. {}".format(cfg.run, path))
+            exit(1)
+ 
     if cfg.rep_config["load_params"]:
         run_num = int(args.id / cfg.cumulative)
         cfg.rep_config["path"] = cfg.rep_config["path"].format(run_num)
@@ -35,7 +42,7 @@ if __name__ == '__main__':
         if not os.path.isfile(path):
             print("Run {} doesn't exist. {}".format(run_num, path))
             exit(1)
-
+ 
     if "load_params" in cfg.val_fn_config.keys() and cfg.val_fn_config["load_params"]:
         run_num = int(args.id / cfg.cumulative)
         cfg.val_fn_config["path"] = cfg.val_fn_config["path"].format(run_num)

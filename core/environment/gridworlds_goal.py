@@ -14,20 +14,17 @@ class GridHardXYGoal(GridHardXY):
         self.goals = [[9, 9], [0, 0], [0, 14], [14, 0], [14, 14], [7, 7]]
         self.goal_x, self.goal_y = self.goals[goal_id]
 
-
 class GridHardRGBGoal(GridHardRGB):
     def __init__(self, goal_id, seed=np.random.randint(int(1e5))):
         super().__init__(seed)
         self.goals = [[9, 9], [0, 0], [0, 14], [14, 0], [14, 14], [7, 7]]
         self.goal_x, self.goal_y = self.goals[goal_id]
 
-
 class GridTwoRoomRGBGoal(GridTwoRoomRGB):
     def __init__(self, goal_id, seed=np.random.randint(int(1e5))):
         super().__init__(seed)
         self.goals = [[8, 14], [14, 0], [7, 7]]
         self.goal_x, self.goal_y = self.goals[goal_id]
-
 
 class GridOneRoomRGBGoal(GridOneRoomRGB):
     def __init__(self, goal_id, seed=np.random.randint(int(1e5))):
@@ -74,6 +71,24 @@ class GridHardRGBMultiGoal(GridHardRGB):
         idx = rds.choice(list(range(len(self.goals))), size=len(self.goals)//2, replace=False)
         print(idx) # [2 8 4 9 1]
 
+class GridHardRGBMultiGoalVI(GridHardRGBMultiGoal):
+    def __init__(self, task_id, seed=np.random.randint(int(1e5))):
+        super().__init__(task_id, seed)
+        task_0 = [[0, 11], [1, 0], [2, 8], [4, 2], [3, 12], [5, 9],
+                  [7, 5], [7, 11], [9, 9], [10, 3], [11, 0], [11, 7],
+                  [11, 12], [14, 4], [14, 11]]
+        task_1 = [[7, 0], [0, 4], [4, 14], [9, 12], [13, 13]]
+        tasks = [task_0, task_1]
+        self.goal_sets = tasks[task_id]
+        
+        self.episode_goal()
+
+class GridHardRGBMultiGoalSelect(GridHardRGBMultiGoal):
+    def __init__(self, goals_file, seed=np.random.randint(int(1e5))):
+        super().__init__(0, seed)
+        self.goal_sets = np.load(goals_file) 
+        
+        self.episode_goal()
 
 
 def draw(state):

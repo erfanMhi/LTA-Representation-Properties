@@ -31,9 +31,9 @@ if __name__ == '__main__':
     
     if cfg.train_test_split:
         cfg.task_data_path = cfg.task_data_path.format(cfg.run)
-        path = os.path.join(cfg.data_root, cfg.task_data_path)
+        path = cfg.task_data_path
         if not os.path.isfile(path):
-            print("Run {} doesn't exist. {}".format(cfg.run, path))
+            print("Data File {} doesn't exist. {}".format(cfg.run, path))
             exit(1)
  
     cfg.rep_activation_fn = activations.ActvFactory.get_activation_fn(cfg)

@@ -3,14 +3,14 @@
     "fixed_parameters": {
         "exp_name": "test_v12/maze_multigoal/linear_vf/fixrep_property/input/best",
         "env_name": "GridHardRGBMultiGoalSelect",
+        "train_test_split": true,
+        "task_data_path": "data/output/example/gridhard/train_test_data/data_v2/train/{}.npy",
         "task_id": 0,
         "agent": "DQNAgent",
         "discount": 0.99,
         "state_norm_coef": 255.0,
 
         "decay_epsilon": true,
-        "train_test_split": true,
-        "task_data_path": "data/output/example/gridhard/train_test_data/data_v2/train/{}.npy",
         "epsilon_start": 1.0,
         "epsilon_end": 0.1,
         "epsilon_schedule_steps": 100000,

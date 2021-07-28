@@ -82,8 +82,8 @@ violin_colors = {
     "FTA+Reward": c_default[9],
     "FTA+SF": c_default[10],
 
-    "Random": c_default[12],
-    "Input": c_default[11],
+    "Random": 'red',
+    "Input": 'brown',
     "Scratch": "black",
 }
 
@@ -4282,5 +4282,513 @@ maze_target_diff_sweep = [
      },
     {"label": "Scratch",
      "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/dissimilar/scratch/dqn/sweep/",
+     },
+]
+
+maze_source_sweep_v11 = [
+    {"label": "ReLU",
+     "control": "data/output/test_v11/maze_multigoal/linear_vf/source_task/dqn/sweep/",
+     },
+#    {"label": "ReLU+XY",
+#     "control": "data/output/test_v11/maze_multigoal/linear_vf/source_task/dqn_aux/info/sweep/",
+#     },
+    {"label": "ReLU+Decoder",
+     "control": "data/output/test_v11/maze_multigoal/linear_vf/source_task/dqn_aux/input_decoder/sweep/",
+     },
+    {"label": "ReLU+NAS",
+     "control": "data/output/test_v11/maze_multigoal/linear_vf/source_task/dqn_aux/nas_v2_delta/sweep/",
+     },
+    {"label": "ReLU+Reward",
+     "control": "data/output/test_v11/maze_multigoal/linear_vf/source_task/dqn_aux/reward/sweep/",
+     },
+    {"label": "ReLU+SF",
+     "control": "data/output/test_v11/maze_multigoal/linear_vf/source_task/dqn_aux/successor_as/sweep/",
+     },
+    {"label": "FTA eta=0.2",
+     "control": "data/output/test_v11/maze_multigoal/linear_vf/source_task/dqn_lta/eta_study_0.2_sweep/",
+     },
+    {"label": "FTA eta=0.4",
+     "control": "data/output/test_v11/maze_multigoal/linear_vf/source_task/dqn_lta/eta_study_0.4_sweep/",
+     },
+    {"label": "FTA eta=0.6",
+     "control": "data/output/test_v11/maze_multigoal/linear_vf/source_task/dqn_lta/eta_study_0.6_sweep/",
+     },
+    {"label": "FTA eta=0.8",
+     "control": "data/output/test_v11/maze_multigoal/linear_vf/source_task/dqn_lta/eta_study_0.8_sweep/",
+     },
+    {"label": "FTA+XY",
+     "control": "data/output/test_v11/maze_multigoal/linear_vf/source_task/dqn_lta_aux/info/sweep/",
+     },
+    {"label": "FTA+Decoder",
+     "control": "data/output/test_v11/maze_multigoal/linear_vf/source_task/dqn_lta_aux/input_decoder/sweep/",
+     },
+    {"label": "FTA+NAS",
+     "control": "data/output/test_v11/maze_multigoal/linear_vf/source_task/dqn_lta_aux/nas_v2_delta/sweep/",
+     },
+    {"label": "FTA+Reward",
+     "control": "data/output/test_v11/maze_multigoal/linear_vf/source_task/dqn_lta_aux/reward/sweep/",
+     },
+    {"label": "FTA+SF",
+     "control": "data/output/test_v11/maze_multigoal/linear_vf/source_task/dqn_lta_aux/successor_as/sweep/",
+     }
+]
+
+maze_source_sweep_v12 = [
+    {"label": "ReLU",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/source_task/dqn/sweep/",
+     "best": "2"
+     },
+#    {"label": "ReLU+XY",
+#     "control": "data/output/test_v12/maze_multigoal/linear_vf/source_task/dqn_aux/info/sweep/",
+#     },
+    {"label": "ReLU+Decoder",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/source_task/dqn_aux/input_decoder/sweep/",
+     "best": "2"
+     },
+    {"label": "ReLU+NAS",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/source_task/dqn_aux/nas_v2_delta/sweep/",
+     "best": "2"
+     },
+    {"label": "ReLU+Reward",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/source_task/dqn_aux/reward/sweep/",
+     "best": "1"
+     },
+    {"label": "ReLU+SF",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/source_task/dqn_aux/successor_as/sweep/",
+     "best": "1"
+     },
+    {"label": "FTA eta=0.2",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/source_task/dqn_lta/eta_study_0.2_sweep/",
+     "best": "2"
+     },
+    {"label": "FTA eta=0.4",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/source_task/dqn_lta/eta_study_0.4_sweep/",
+     "best": "2"
+     },
+    {"label": "FTA eta=0.6",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/source_task/dqn_lta/eta_study_0.6_sweep/",
+     "best": "2"
+     },
+    {"label": "FTA eta=0.8",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/source_task/dqn_lta/eta_study_0.8_sweep/",
+     "best": "2"
+     },
+    {"label": "FTA+XY",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/source_task/dqn_lta_aux/info/sweep/",
+     "best": "2"
+     },
+    {"label": "FTA+Decoder",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/source_task/dqn_lta_aux/input_decoder/sweep/",
+     "best": "3"
+     },
+    {"label": "FTA+NAS",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/source_task/dqn_lta_aux/nas_v2_delta/sweep/",
+     },
+    {"label": "FTA+Reward",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/source_task/dqn_lta_aux/reward/sweep/",
+     "best": "2"
+     },
+    {"label": "FTA+SF",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/source_task/dqn_lta_aux/successor_as/sweep/",
+     }
+]
+maze_source_best = [
+    {"label": "ReLU",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn/best/",
+     },
+    {"label": "ReLU+XY",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_aux/info/best/",
+     },
+    {"label": "ReLU+Decoder",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_aux/input_decoder/best/",
+     },
+    {"label": "ReLU+NAS",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_aux/nas_v2_delta/best/",
+     },
+    {"label": "ReLU+Reward",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_aux/reward/best/",
+     },
+    {"label": "ReLU+SF",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_aux/successor_as/best/",
+     },
+    {"label": "FTA eta=0.2",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_lta/eta_study_0.2_best/",
+     },
+    {"label": "FTA eta=0.4",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_lta/eta_study_0.4_best/",
+     },
+    {"label": "FTA eta=0.6",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_lta/eta_study_0.6_best/",
+     },
+    {"label": "FTA eta=0.8",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_lta/eta_study_0.8_best/",
+     },
+    {"label": "FTA+XY",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_lta_aux/info/best/",
+     },
+    {"label": "FTA+Decoder",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_lta_aux/input_decoder/best/",
+     },
+    {"label": "FTA+NAS",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_lta_aux/nas_v2_delta/best/",
+     },
+    {"label": "FTA+Reward",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_lta_aux/reward/best/",
+     },
+    {"label": "FTA+SF",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn_lta_aux/successor_as/best/",
+     }
+]
+
+maze_target_same_sweep = [
+    {"label": "ReLU",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn/sweep/",
+     },
+    {"label": "ReLU+XY",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_aux/info/sweep/",
+     },
+    {"label": "ReLU+Decoder",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_aux/input_decoder/sweep/",
+     },
+    {"label": "ReLU+NAS",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_aux/nas_v2_delta/sweep/",
+     },
+    {"label": "ReLU+Reward",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_aux/reward/sweep/",
+     },
+    {"label": "ReLU+SF",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_aux/successor_as/sweep/",
+     },
+    {"label": "FTA eta=0.2",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta/eta_study_0.2_sweep/",
+     },
+    {"label": "FTA eta=0.4",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta/eta_study_0.4_sweep/",
+     },
+    {"label": "FTA eta=0.6",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta/eta_study_0.6_sweep/",
+     },
+    {"label": "FTA eta=0.8",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta/eta_study_0.8_sweep/",
+     },
+    {"label": "FTA+XY",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta_aux/info/sweep/",
+     },
+    {"label": "FTA+Decoder",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta_aux/input_decoder/sweep/",
+     },
+    {"label": "FTA+NAS",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta_aux/nas_v2_delta/sweep/",
+     },
+    {"label": "FTA+Reward",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta_aux/reward/sweep/",
+     },
+    {"label": "FTA+SF",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta_aux/successor_as/sweep/",
+     },
+
+    {"label": "Random",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/same/fix_rep/random/sweep/",
+     },
+    {"label": "Input",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/target_task/same/fix_rep/input/sweep/",
+     },
+    {"label": "Scratch",
+     "control": "data/output/test_v10/maze_multigoal/linear_vf/source_task/dqn/sweep/",
+     },
+]
+
+maze_target_same_sweep_v12 = [
+    {"label": "ReLU",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn/sweep/",
+     "best": "2"
+     },
+    {"label": "ReLU+XY",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_aux/info/sweep/",
+     "best": "2"
+     },
+    {"label": "ReLU+Decoder",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_aux/input_decoder/sweep/",
+     "best": "2"
+     },
+    {"label": "ReLU+NAS",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_aux/nas_v2_delta/sweep/",
+     "best": "2"
+     },
+    {"label": "ReLU+Reward",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_aux/reward/sweep/",
+     "best": "2"
+     },
+    {"label": "ReLU+SF",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_aux/successor_as/sweep/",
+     "best": "1"
+     },
+    {"label": "FTA eta=0.2",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta/eta_study_0.2_sweep/",
+     "best": "2"
+     },
+    {"label": "FTA eta=0.4",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta/eta_study_0.4_sweep/",
+     "best": "3"
+     },
+    {"label": "FTA eta=0.6",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta/eta_study_0.6_sweep/",
+     "best": "3"
+     },
+    {"label": "FTA eta=0.8",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta/eta_study_0.8_sweep/",
+     "best": "2"
+     },
+    {"label": "FTA+XY",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta_aux/info/sweep/",
+     "best": "4"
+     },
+    {"label": "FTA+Decoder",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta_aux/input_decoder/sweep/",
+     "best": "4"
+     },
+    {"label": "FTA+NAS",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta_aux/nas_v2_delta/sweep/",
+     "best": "3"
+     },
+    {"label": "FTA+Reward",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta_aux/reward/sweep/",
+     "best": "3"
+     },
+    {"label": "FTA+SF",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta_aux/successor_as/sweep/",
+     "best": "4"
+     },
+
+    {"label": "Random",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/random/sweep/",
+     "best": "0"
+     },
+    {"label": "Input",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/input/sweep/",
+     "best": "2"
+     },
+    {"label": "Scratch",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/source_task/dqn/sweep/",
+     "best": "1"
+     },
+]
+
+maze_target_diff_sweep_v12 = [
+    {"label": "ReLU",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn/sweep/",
+     "best": "2"
+     },
+    {"label": "ReLU+XY",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_aux/info/sweep/",
+     "best": "2"
+     },
+    {"label": "ReLU+Decoder",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_aux/input_decoder/sweep/",
+     "best": "2"
+     },
+    {"label": "ReLU+NAS",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_aux/nas_v2_delta/sweep/",
+     "best": "2"
+     },
+    {"label": "ReLU+Reward",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_aux/reward/sweep/",
+     "best": "2"
+     },
+    {"label": "ReLU+SF",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_aux/successor_as/sweep/",
+     "best": "1"
+     },
+    {"label": "FTA eta=0.2",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_lta/eta_study_0.2_sweep/",
+     "best": "2"
+     },
+    {"label": "FTA eta=0.4",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_lta/eta_study_0.4_sweep/",
+     "best": "4"
+     },
+    {"label": "FTA eta=0.6",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_lta/eta_study_0.6_sweep/",
+     "best": "4"
+     },
+    {"label": "FTA eta=0.8",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_lta/eta_study_0.8_sweep/",
+     "best": "2"
+     },
+    {"label": "FTA+XY",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_lta_aux/info/sweep/",
+     "best": "4"
+     },
+    {"label": "FTA+Decoder",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_lta_aux/input_decoder/sweep/",
+     "best": "4"
+     },
+    {"label": "FTA+NAS",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_lta_aux/nas_v2_delta/sweep/",
+     "best": "3"
+     },
+    {"label": "FTA+Reward",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_lta_aux/reward/sweep/",
+     "best": "3"
+     },
+    {"label": "FTA+SF",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_lta_aux/successor_as/sweep/",
+     "best": "4"
+     },
+
+    {"label": "Random",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/random/sweep/",
+     "best": "0"
+     },
+    {"label": "Input",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/input/sweep/",
+     "best": "2"
+     },
+    {"label": "Scratch",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/scratch/dqn/sweep/",
+     "best": "1"
+     },
+]
+
+maze_target_same_best_v12 = [
+    {"label": "ReLU",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn/best/",
+     "best": "2"
+     },
+    {"label": "ReLU+XY",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_aux/info/best/",
+     },
+    {"label": "ReLU+Decoder",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_aux/input_decoder/best/",
+     "best": "2"
+     },
+    {"label": "ReLU+NAS",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_aux/nas_v2_delta/best/",
+     "best": "2"
+     },
+    {"label": "ReLU+Reward",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_aux/reward/best/",
+     },
+    {"label": "ReLU+SF",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_aux/successor_as/best/",
+     "best": "2"
+     },
+    {"label": "FTA eta=0.2",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta/eta_study_0.2_best/",
+     "best": "2"
+     },
+    {"label": "FTA eta=0.4",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta/eta_study_0.4_best/",
+     "best": "3"
+     },
+    {"label": "FTA eta=0.6",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta/eta_study_0.6_best/",
+     "best": "3"
+     },
+    {"label": "FTA eta=0.8",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta/eta_study_0.8_best/",
+     "best": "2"
+     },
+    {"label": "FTA+XY",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta_aux/info/best/",
+     "best": "2"
+     },
+    {"label": "FTA+Decoder",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta_aux/input_decoder/best/",
+     "best": "2"
+     },
+    {"label": "FTA+NAS",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta_aux/nas_v2_delta/best/",
+     },
+    {"label": "FTA+Reward",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta_aux/reward/best/",
+     "best": "2"
+     },
+    {"label": "FTA+SF",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/dqn_lta_aux/successor_as/best/",
+     },
+
+    {"label": "Random",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/random/best/",
+     "best": "0"
+     },
+    {"label": "Input",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/same/fix_rep/input/best/",
+     "best": "3"
+     },
+    {"label": "Scratch",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/source_task/dqn/best/",
+     "best": "2"
+     },
+]
+
+maze_target_diff_best_v12 = [
+    {"label": "ReLU",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn/best/",
+     "best": "2"
+     },
+    {"label": "ReLU+XY",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_aux/info/best/",
+     },
+    {"label": "ReLU+Decoder",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_aux/input_decoder/best/",
+     "best": "2"
+     },
+    {"label": "ReLU+NAS",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_aux/nas_v2_delta/best/",
+     "best": "2"
+     },
+    {"label": "ReLU+Reward",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_aux/reward/best/",
+     },
+    {"label": "ReLU+SF",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_aux/successor_as/best/",
+     "best": "1"
+     },
+    {"label": "FTA eta=0.2",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_lta/eta_study_0.2_best/",
+     "best": "2"
+     },
+    {"label": "FTA eta=0.4",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_lta/eta_study_0.4_best/",
+     "best": "4"
+     },
+    {"label": "FTA eta=0.6",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_lta/eta_study_0.6_best/",
+     "best": "4"
+     },
+    {"label": "FTA eta=0.8",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_lta/eta_study_0.8_best/",
+     "best": "2"
+     },
+    {"label": "FTA+XY",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_lta_aux/info/best/",
+     "best": "4"
+     },
+    {"label": "FTA+Decoder",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_lta_aux/input_decoder/best/",
+     "best": "4"
+     },
+    {"label": "FTA+NAS",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_lta_aux/nas_v2_delta/best/",
+     },
+    {"label": "FTA+Reward",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_lta_aux/reward/best/",
+     "best": "3"
+     },
+    {"label": "FTA+SF",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/dqn_lta_aux/successor_as/best/",
+     },
+
+    {"label": "Random",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/random/best/",
+     "best": "0"
+     },
+    {"label": "Input",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/fix_rep/input/best/",
+     "best": "2"
+     },
+    {"label": "Scratch",
+     "control": "data/output/test_v12/maze_multigoal/linear_vf/target_task/dissimilar/scratch/dqn/best/",
      },
 ]

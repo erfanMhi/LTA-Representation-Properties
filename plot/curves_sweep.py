@@ -84,11 +84,11 @@ def compare_learning_curve(all_paths_dict, title, total_param=None,
             # print('activation_config: ', str(getattr(cfg, 'activation_config')))
             # print('-------------------------------------------------')
     
-    fig.suptitle(title)
+    fig.suptitle(label)
     # plt.xlim(0, 30)
     plt.xlabel('step ($10^4$)')
     plt.ylabel('return')
-    plt.savefig("plot/img/{}.png".format(title), dpi=300, bbox_inches='tight')
+    plt.savefig("plot/img/{}.png".format(label), dpi=300, bbox_inches='tight')
     plt.show()
     plt.close()
     # plt.clf()
@@ -140,11 +140,12 @@ def simple_maze():
     # learning_curve(gh_diff_tune_early_sweep, "maze different (fine tune) sweep")
 
 def picky_eater():
-    titles = ["ReLU", "ReLU+Control", "ReLU+XY", "ReLU+Color", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF" ,"FTA", "FTA+Control", "FTA+Decoder", "FTA+XY", "FTA+Color", "FTA+NAS", "FTA+Reward", "FTA+SF"]
+    #titles = ["ReLU", "ReLU+Control", "ReLU+XY", "ReLU+Color", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF" ,"FTA", "FTA+Control", "FTA+Decoder", "FTA+XY", "FTA+Color", "FTA+NAS", "FTA+Reward", "FTA+SF"]
+    #titles = ["ReLU", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF" ,"FTA", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF"]
 #    titles = ["FTA+Decoder", "ReLU+Control", "FTA", "FTA+Control"]
     print('here')
-    for i, crgb_sweep in enumerate(pe_transfer_best_dissimilar):
-        compare_learning_curve([crgb_sweep], titles[i], label_keys=None)
+    for i, crgb_sweep in enumerate(maze_target_diff_sweep_v12):
+        compare_learning_curve([crgb_sweep], None, label_keys=None)
         # learning_curve([crgb_sweep], "maze online property")
     # for crgb_sweep in crgb_online_sweep_1_f:
     #     compare_learning_curve([crgb_sweep], "maze online property", label_keys=['learning_rate', ])
@@ -176,6 +177,6 @@ def maze_multigoals():
 if __name__ == '__main__':
     # mountain_car()
     # simple_maze()
-    # picky_eater()
+    picky_eater()
     # pe_temp()
-    maze_multigoals()
+    #maze_multigoals()

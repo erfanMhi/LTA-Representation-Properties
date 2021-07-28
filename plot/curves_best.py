@@ -36,6 +36,7 @@ def learning_curve(all_paths_dict, title, targets=None, xlim=None, data_label=Tr
     plt.figure()
     for label in labels:
         print(label)
+        #print(control)
         returns = arrange_order(control[label])
         draw_curve(returns, plt, label, violin_colors[label], style=curve_styles[label])
 
@@ -158,14 +159,20 @@ def maze_multigoals():
                "FTA eta=2", "FTA+Control",
                "FTA+XY", "FTA+Color", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
                "Random", "Input", "Scratch"]
-    learning_curve(maze_source_best, "maze source")
-    learning_curve(maze_target_same_best, "maze same")
+    targets = ["ReLU", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+               "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8"
+               "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+               "Random", "Input", "Scratch"]
+ 
+    #learning_curve(maze_source_best_v12, "maze source")
+#    learning_curve(maze_target_same_best_v12, "maze same")
+    learning_curve(maze_target_diff_best_v12, "maze diff same")
     # learning_curve(maze_target_diff_best, "maze dissimilar")
 
 if __name__ == '__main__':
     # mountain_car()
     #simple_maze()
-    picky_eater()
+    #picky_eater()
     # pe_temp()
     # pe_linear()
     maze_multigoals()

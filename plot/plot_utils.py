@@ -255,12 +255,14 @@ def extract_from_setting(find_in, setting, key="return", final_only=False, label
     all_runs = {}
     assert os.path.isdir(find_in), ("\nERROR: {} is not a directory\n".format(find_in))
     for path, subdirs, files in os.walk(find_in):
+        print(path)
         for name in files:
             if name in ["log"] and setting_folder in path:
                 file = os.path.join(path, name)
                 run_num = int(file.split("_run")[0].split("/")[-1])
                 before_step = None if cut_at_step is None else cut_at_step[run_num]
                 res = extract_from_single_run(file, key, label, before_step=before_step)
+                print(res)
                 if final_only:
                     # print("--", res)
                     res = res[-1]

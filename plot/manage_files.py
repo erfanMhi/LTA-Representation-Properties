@@ -1,8 +1,9 @@
 import os
 import shutil
 
+from distutils.dir_util import copy_tree, remove_tree
+
 def walk_through_h(root, target_param, new_folder):
-    from distutils.dir_util import copy_tree
 
     assert os.path.isdir(root)
     for path, subdirs, files in os.walk(root):
@@ -44,9 +45,10 @@ from distutils.dir_util import copy_tree
 from plot_paths import *
 
 def walk_through():
-    for sweep in switch_color_control_sweep:
+    for sweep in maze_target_diff_sweep_v12:
         # root = "../data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/aux_control/sweep_5g/" 
         root = "../" + sweep['control']
+        print(root)
         assert os.path.isdir(root)
         print('------------------------------------------------------------------------')
         print(root)
@@ -64,11 +66,15 @@ def walk_through():
                     # set = int(name.split("_param_setting")[0])
                     # set += 5
                     file1 = os.path.join(path, name)
-                    tmp_root = '/'.join(root.rsplit('/', 1)[:-1]) + '/' + root.rsplit('/', 1)[-1].replace('sweep', 'best')
+                    print(root.rsplit('/', 2))
+                    #tmp_root = '/'.join(root.rsplit('/', 1)[:-1]) + '/' + root.rsplit('/', 1)[-1].replace('sweep', 'best')
+
 
                     print(file1)
-                    file2 = tmp_root + "/" + file1.split("/")[-2] + "/{}_param_setting".format(0)
-
+                    file2 = file1.replace('sweep', 'best')
+                    #remove_tree(file2)
+                    file2 = file2.replace(file2.split('/')[-1], '0_param_setting')
+                    #tmp_root + "/" + file1.split("/")[-2] + "/{}_param_setting".format(0)
                     # if 'sweep_xy' in file1:
                         # file2 = root+"../best_xy/"+file1.split("/")[-2] + "/{}_param_setting".format(0)
                     # else:
@@ -269,7 +275,7 @@ def check_json():
         os.system("cat {} | grep eta".format(f))
         print()
 
-walk_through_h("../data/output/result/gridhard/linear_vf/control/early_stop/different_task/scratch/dqn/sweep/", 3, "best")
+#walk_through_h("../data/output/result/gridhard/linear_vf/control/early_stop/different_task/scratch/dqn/sweep/", 3, "best")
 walk_through()
 # check_log()
 # check_json()

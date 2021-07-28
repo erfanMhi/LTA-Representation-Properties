@@ -62,7 +62,7 @@ def compare_learning_curve(all_paths_dict, title, total_param=None,
             aucs.append(returns.mean(axis=0).sum())
             # print('max: ', np.max(returns))
             print('dimensions: ', returns.shape)
-            draw_curve(returns, axs[idx], l, cmap(param, len(list(all_params.keys()))))
+            draw_curve(returns, axs[idx], l, cmap(list(all_params.keys()).index(param), len(list(all_params.keys()))))
         
         axs[idx].set_title(label)
         axs[idx].legend()
@@ -100,7 +100,7 @@ def learning_curve(all_paths_dict, title, total_param=None,
 
     labels = [i["label"] for i in all_paths_dict]
     # control = load_return(all_paths_dict, total_param, start_param)
-    control = load_return(all_paths_dict, total_param)#, start_param)
+    control = load_return(all_paths_dict, total_param, search_lr=True)#, start_param)
     fig, axs = plt.subplots(nrows=1, ncols=len(labels), figsize=(6*len(labels), 4))
 
     if len(labels) == 1:
@@ -111,8 +111,7 @@ def learning_curve(all_paths_dict, title, total_param=None,
         all_params = control[label]
         for param, returns in all_params.items():
             returns = arrange_order(returns)
-            # draw_curve(returns, axs[idx], param, cmap(float(param)/len(list(all_params.keys()))))
-            draw_curve(returns, axs[idx], param, cmap(param, len(list(all_params.keys()))))
+            draw_curve(returns, axs[idx], param, cmap(list(all_params.keys()).index(param), len(list(all_params.keys()))))
         axs[idx].set_title(label)
         axs[idx].legend()
 
@@ -171,8 +170,8 @@ def pe_temp():
     # learning_curve(perand_trans_sweep_temp, "perandc diff fix avg v6")
 
 def maze_multigoals():
-    # learning_curve(maze_source_sweep, "maze source")
-    learning_curve(maze_target_sweep, "maze dissimilar")
+    learning_curve(maze_source_sweep, "maze source")
+    # learning_curve(maze_target_sweep, "maze dissimilar")
 
 if __name__ == '__main__':
     # mountain_car()

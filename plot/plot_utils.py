@@ -41,17 +41,17 @@ def load_info(paths, param, key, label=None, path_key="control"):
     all_rt = {}
     for i in paths:
         path = i[path_key]
-        res = extract_from_setting(path, param, key, label=label)
+        res, _ = extract_from_setting(path, param, key, label=label)
         all_rt[i["label"]] = res
     return all_rt
 
 # def load_return(paths, total_param, start_param):
-def load_return(paths, setting_list):
+def load_return(paths, setting_list, search_lr=False):
     all_rt = {}
     for i in paths:
         path = i["control"]
         # print("Loading returns from", path)
-        returns = extract_return_all(path, setting_list)#total_param, start_param)
+        returns = extract_return_all(path, setting_list, search_lr=search_lr)#total_param, start_param)
         all_rt[i["label"]] = returns
     return all_rt
 
@@ -95,6 +95,10 @@ def extract_from_single_run(file, key, label=None, before_step=None):
             info = l.split("|")[1].strip()
             i_list = info.split(" ")
             #print('i_list: ', i_list)
+            if key == "learning_rate" and "learning_rate:" in i_list:
+                returns = i_list[1]
+                return returns
+
             if "EVAL:" == i_list[0] or "total" == i_list[0] or "TRAIN" == i_list[0]:
 
                 # print('i_list: ', i_list[0], "returns" in i_list)
@@ -253,6 +257,7 @@ def extract_from_single_run(file, key, label=None, before_step=None):
 def extract_from_setting(find_in, setting, key="return", final_only=False, label=None, cut_at_step=None):
     setting_folder = "{}_param_setting".format(setting)
     all_runs = {}
+    lr = -1
     assert os.path.isdir(find_in), ("\nERROR: {} is not a directory\n".format(find_in))
     for path, subdirs, files in os.walk(find_in):
         for name in files:
@@ -265,7 +270,9 @@ def extract_from_setting(find_in, setting, key="return", final_only=False, label
                     # print("--", res)
                     res = res[-1]
                 all_runs[run_num] = res
-    return all_runs
+
+                lr = extract_from_single_run(file, "learning_rate", label, before_step=before_step)
+    return all_runs, lr
 
 # def extract_return_all(path, total=None, start=0):
 #     if total is None:
@@ -278,7 +285,7 @@ def extract_from_setting(find_in, setting, key="return", final_only=False, label
 #     else:
 #         setting_list = list(range(start, total))
 
-def extract_return_all(path, setting_list):
+def extract_return_all(path, setting_list, search_lr=False):
     if setting_list is None:
         all_param = os.listdir(path + "/0_run")
         setting_list = []
@@ -288,7 +295,11 @@ def extract_return_all(path, setting_list):
         setting_list.sort()
     all_sets = {}
     for setting in setting_list:
-        all_sets[setting] = extract_from_setting(path, setting)
+        res, lr = extract_from_setting(path, setting)
+        if search_lr:
+            all_sets[lr] = res
+        else:
+            all_sets[setting] = res
     return all_sets
 
 def extract_property_single_run(file, keyword):
@@ -323,18 +334,14 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
 
         if target_key in ["return"]:
             path = i["control"]
-            returns = extract_from_setting(path, 0, target_key, final_only=False)
+            returns,_ = extract_from_setting(path, 0, target_key, final_only=False)
             values = {}
             for run in returns:
                 values[run] = np.array(returns[run]).sum()
 
-        # elif target_key in []:  # ["lipschitz", "interf"]:
-        #     path = i["control"]
-        #     values = extract_from_setting(path, 0, target_key, final_only=True, cut_at_step=cas)
-
         elif target_key in ["interf"]:
             path = i["online_measure"]
-            returns = extract_from_setting(path, 0, target_key, final_only=False, cut_at_step=cas)
+            returns, _ = extract_from_setting(path, 0, target_key, final_only=False, cut_at_step=cas)
             values = {}
             for run in returns:
                 t = np.array(returns[run])[1:] # remove the first measure, which is always nan
@@ -344,7 +351,7 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
 
         else:
             path = i["online_measure"]
-            values = extract_from_setting(path, 0, target_key, final_only=True, cut_at_step=cas, label=p_label)
+            values, _ = extract_from_setting(path, 0, target_key, final_only=True, cut_at_step=cas, label=p_label)
 
         all_property[i["label"]] = values
 

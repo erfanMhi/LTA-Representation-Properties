@@ -11,16 +11,6 @@ from plot.plot_paths import *
 os.chdir("..")
 print("Change dir to", os.getcwd())
 
-# def load_return(paths):
-#     all_rt = {}
-#     for i in paths:
-#         path = i["control"]
-#         # print("Loading returns from", path)
-#         returns = extract_from_setting(path, 0)
-#         all_rt[i["label"]] = returns
-#     return all_rt
-
-
 def learning_curve(all_paths_dict, title, targets=None, xlim=None, data_label=True):
     if targets is not None:
         temp = []

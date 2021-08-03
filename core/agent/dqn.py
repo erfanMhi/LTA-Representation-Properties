@@ -363,6 +363,8 @@ class DQNAgent(base.Agent):
         parameters_dir = self.cfg.get_parameters_dir()
         if early:
             path = os.path.join(parameters_dir, "rep_net_earlystop")
+        elif self.cfg.checkpoints:
+            path = os.path.join(parameters_dir, "rep_net_{}".format(self.total_steps))
         else:
             path = os.path.join(parameters_dir, "rep_net")
         torch.save(self.rep_net.state_dict(), path)

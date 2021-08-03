@@ -54,6 +54,8 @@ class Config:
         self.train_test_split = False
         self.task_data_path = ''
 
+        self.checkpoints = False
+
     def get_log_dir(self):
         d = os.path.join(self.data_root, self.exp_name, "{}_run".format(self.run),
                          "{}_param_setting".format(self.param_setting))

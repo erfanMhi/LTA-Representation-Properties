@@ -242,3 +242,63 @@ class EvaluateConfig(Config):
                   'reward_normalizer', 'rep_fn', 'val_fn', 'optimizer_fn']:
             del attrs[k]
         return attrs
+
+
+class QLearningAgentConfig(Config):
+    def __init__(self):
+        super().__init__()
+        self.agent = 'QLearningAgent'
+        self.learning_rate = 0
+
+        self.decay_epsilon = False
+        self.epsilon = 0.1
+        self.epsilon_start = None
+        self.epsilon_end = None
+        self.eps_schedule = None
+        self.epsilon_schedule_steps = None
+        self.random_action_prob = None
+
+        self.discount = None
+
+        self.network_type = 'flat'
+        self.batch_size = 1
+        self.optimizer_type = 'RMSProp'
+        self.optimizer_fn = None
+
+        self.val_net = None
+
+        self.evaluation_criteria = "return"
+        self.vf_loss = "mse"
+        self.vf_loss_fn = None
+        self.vf_constraint = None
+        self.vf_constr_fn = None
+        self.constr_weight = 0
+        self.rep_type = "default"
+
+        self.evaluate_lipschitz = False
+        self.evaluate_distance = False
+        self.evaluate_orthogonality = False
+        self.evaluate_interference = False
+        # self.evaluate_decorrelation = False
+        self.evaluate_diversity = False
+        self.evaluate_sparsity = False
+        self.evaluate_regression = False
+        self.save_params = False
+        self.save_early = None
+        self.visualize = False
+
+        self.activation_config = {'name': 'None'}
+        self.online_property = False
+
+    def get_print_attrs(self):
+        attrs = dict(self.__dict__)
+        for k in ['logger', 'eps_schedule', 'optimizer_fn', 'vf_constr_fn', 'vf_loss_fn',
+                  '_Config__env_fn', 'state_normalizer',
+                  'reward_normalizer', 'rep_fn', 'val_fn', 'rep_activation_fn']:
+            del attrs[k]
+        return attrs
+
+    def get_logdir_format(self):
+        return os.path.join(self.data_root, self.exp_name,
+                            "{}_run",
+                            "{}_param_setting".format(self.param_setting))

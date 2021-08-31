@@ -105,13 +105,18 @@ def learning_curve(all_paths_dict, title, total_param=None,
 
     if len(labels) == 1:
         axs = [axs]
-    
+
     for idx, label in enumerate(labels):
         print("\n", idx, label)
         all_params = control[label]
+        auc_rec = []
+        param_rec = []
         for param, returns in all_params.items():
             returns = arrange_order(returns)
-            draw_curve(returns, axs[idx], param, cmap(list(all_params.keys()).index(param), len(list(all_params.keys()))))
+            mu = draw_curve(returns, axs[idx], param.split("_")[1], cmap(list(all_params.keys()).index(param), len(list(all_params.keys()))))
+            auc_rec.append(np.sum(mu))
+            param_rec.append(param)
+        print("best index {} (param {})".format(param_rec[np.argmax(auc_rec)].split("_")[0], param_rec[np.argmax(auc_rec)].split("_")[1]))
         axs[idx].set_title(label)
         axs[idx].legend()
 
@@ -171,11 +176,14 @@ def pe_temp():
 
 def maze_multigoals():
     learning_curve(maze_source_sweep, "maze source")
-    # learning_curve(maze_target_sweep, "maze dissimilar")
+    # learning_curve(maze_checkpoint50000_same_sweep_v12, "maze checkpoint50000 same")
+    # learning_curve(maze_checkpoint50000_dissimilar_sweep_v12, "maze checkpoint50000 dissimilar")
+    # learning_curve(maze_checkpoint150000_same_sweep_v12, "maze checkpoint150000 same")
+    # learning_curve(maze_checkpoint150000_dissimilar_sweep_v12, "maze checkpoint150000 dissimilar")
 
 if __name__ == '__main__':
     # mountain_car()
     # simple_maze()
-    picky_eater()
+    # picky_eater()
     # pe_temp()
-    #maze_multigoals()
+    maze_multigoals()

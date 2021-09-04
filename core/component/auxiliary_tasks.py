@@ -245,10 +245,11 @@ class AuxControl(AuxTask):
         self.aux_target_predictor = aux_target_predictor
         self.batch_indices = torch.arange(self.cfg.batch_size).long().to(cfg.device)
         self.goal_id = goal_id
-        self.goals = [[9, 9], [0, 0], [0, 14], [14, 0], [14, 14], [7, 7]]
-        self.goal = np.array(self.goals[self.goal_id])
         self.env = cfg.env_fn()
+        self.goals = self.env.goals
         self.discount = discount
+        # self.goals = [[9, 9], [0, 0], [0, 14], [14, 0], [14, 14], [7, 7]]
+        self.goal = np.array(self.goals[self.goal_id])
 
     def compute_rewards_dones(self, state):
         # Un-normalizing and finding the xy coordinate of the agent

@@ -1,9 +1,9 @@
 {
     "config_class": "DQNAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test_v12/maze_multigoal/linear_vf/target_task_30g_notarget/dissimilar/scratch/dqn/sweep",
+        "exp_name": "test_v12/maze_multigoal/linear_vf/target_task_30g_notarget/dissimilar/fix_rep/dqn_lta_aux/nas_v2_delta/sweep",
         "env_name": "GridHardRGBMultiGoalSelect",
-        "task_id": 0,
+        "task_id": 1,
         "agent": "DQNAgent",
         "discount": 0.99,
         "state_norm_coef": 255.0,
@@ -14,7 +14,7 @@
         "epsilon": 0.1,
 
         "rep_config": {
-            "rep_type": "online",
+            "rep_type": "modular",
             "network_type": "conv",
             "conv_architecture": {
                 "conv_layers": [
@@ -24,14 +24,33 @@
             },
             "in_dim": [15, 15, 3],
             "out_dim": 64,
-            "load_params": false,
-            "train_rep": true
+            "load_params": true,
+            "train_rep": false,
+            "path": "test_v12/maze_multigoal/linear_vf/source_task/dqn_lta_aux/nas_v2_delta/best/{}_run/0_param_setting/parameters/rep_net_earlystop"
+        },
+
+        "activation_config": {
+            "name": "LTA",
+            "input": 64,
+            "tile": 20,
+            "eta": 0.2,
+            "bound_high": 2,
+            "bound_low": -2
         },
 
         "val_fn_config": {
             "val_fn_type": "linear",
             "init_type": "xavier"
         },
+
+        "aux_config": [{
+            "aux_fn_type":  "linear",
+            "aux_in_dim": 1280,
+            "aux_out_dim": 1280,
+            "aux_task": "nas_v2_delta",
+            "aux_weight": 0.001
+        }
+        ],
 
         "replay": true,
         "memory_size": 100000,
@@ -64,6 +83,6 @@
         "distance_paths": [{"current": "../dataset/maze_multigoal/target_task/random_dqn/distance_current_states.npy", "action": "../dataset/maze_multigoal/target_task/random_dqn/distance_actions.npy", "next": "../dataset/maze_multigoal/target_task/random_dqn/distance_next_states.npy", "reward": "../dataset/maze_multigoal/target_task/random_dqn/distance_rewards.npy", "terminal": "../dataset/maze_multigoal/target_task/random_dqn/distance_terminals.npy"}]
     },
     "sweep_parameters": {
-        "learning_rate": [0.01, 0.003, 0.001, 0.0003, 0.0001]
+        "learning_rate": [0.001, 0.0003, 0.0001, 0.00003, 0.00001]
     }
 }

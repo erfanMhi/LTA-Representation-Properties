@@ -1,9 +1,9 @@
 {
     "config_class": "DQNAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test_v12/maze_multigoal/linear_vf/target_task_30g_notarget/dissimilar/scratch/dqn/sweep",
+        "exp_name": "test_v12/maze_multigoal/linear_vf/target_task_30g_notarget/dissimilar/fix_rep/dqn_aux/successor_as/sweep",
         "env_name": "GridHardRGBMultiGoalSelect",
-        "task_id": 0,
+        "task_id": 1,
         "agent": "DQNAgent",
         "discount": 0.99,
         "state_norm_coef": 255.0,
@@ -24,14 +24,33 @@
             },
             "in_dim": [15, 15, 3],
             "out_dim": 64,
-            "load_params": false,
-            "train_rep": true
+            "load_params": true,
+            "train_rep": false,
+            "path": "test_v12/maze_multigoal/linear_vf/source_task/dqn_aux/successor_as/best/{}_run/0_param_setting/parameters/rep_net_earlystop"
         },
 
         "val_fn_config": {
             "val_fn_type": "linear",
             "init_type": "xavier"
         },
+
+        "aux_config": [
+            {
+            "aux_fn_type":  "linear",
+            "aux_in_dim": 64,
+            "aux_out_dim": 64,
+            "aux_task": "successor_as",
+            "successor_lmbda":  0.99,
+            "aux_weight": 1
+            },
+            {
+            "aux_fn_type":  "linear",
+            "aux_in_dim": 64,
+            "aux_out_dim": 1,
+            "aux_task": "reward_predictor",
+            "aux_weight": 1
+            }
+        ],
 
         "replay": true,
         "memory_size": 100000,

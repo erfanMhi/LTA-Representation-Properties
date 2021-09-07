@@ -1,5 +1,6 @@
 import os
 import sys
+import copy
 import numpy as np
 
 import matplotlib.pyplot as plt
@@ -94,9 +95,8 @@ def compare_learning_curve(all_paths_dict, title, total_param=None,
     # plt.clf()
 
 
-
 def learning_curve(all_paths_dict, title, total_param=None,
-        start_param=0, labels_map=None):
+        start_param=0, labels_map=None, xlim=[]):
 
     labels = [i["label"] for i in all_paths_dict]
     # control = load_return(all_paths_dict, total_param, start_param)
@@ -117,11 +117,12 @@ def learning_curve(all_paths_dict, title, total_param=None,
             auc_rec.append(np.sum(mu))
             param_rec.append(param)
         print("best index {} (param {})".format(param_rec[np.argmax(auc_rec)].split("_")[0], param_rec[np.argmax(auc_rec)].split("_")[1]))
+        if xlim != []:
+            axs[idx].set_xlim(xlim[0], xlim[1])
         axs[idx].set_title(label)
         axs[idx].legend()
 
     fig.suptitle(title)
-    # plt.xlim(0, 30)
     plt.xlabel('step ($10^4$)')
     plt.ylabel('return')
     plt.savefig("plot/img/{}.png".format(title), dpi=300, bbox_inches='tight')
@@ -130,17 +131,70 @@ def learning_curve(all_paths_dict, title, total_param=None,
     plt.close()
     # plt.clf()
 
+
+
+def performance_change(all_paths_dict, goal_ids, ranks, title, total_param=None):
+    labels = [i["label"] for i in all_paths_dict]
+    # control = load_return(all_paths_dict, total_param, start_param)
+
+    all_goals_auc = {}
+    for goal in goal_ids:
+        print("Loading auc from goal id {}".format(goal))
+        single_goal_paths_dict = copy.deepcopy(all_paths_dict)
+        for i in range(len(single_goal_paths_dict)):
+            single_goal_paths_dict[i]["control"] = single_goal_paths_dict[i]["control"].format(goal)
+        control = load_return(single_goal_paths_dict, total_param, search_lr=True)  # , start_param)
+
+        rep_auc = {}
+        for idx, label in enumerate(labels):
+            print("\n", idx, label)
+            all_params = control[label]
+            auc_rec = []
+            param_rec = []
+            curve_rec = []
+            for param, returns in all_params.items():
+                print(param, returns)
+                returns = arrange_order(returns)
+                mu, ste = get_avg(returns)
+                auc_rec.append(np.sum(mu))
+                param_rec.append(param)
+                curve_rec.append([mu, ste])
+            best_idx = np.argmax(auc_rec)
+            best_param_folder = param_rec[best_idx].split("_")[0]
+            best_param = param_rec[best_idx].split("_")[1]
+            best_auc = auc_rec[best_idx]
+            rep_auc[label] = [best_auc, best_param_folder, best_param]
+        all_goals_auc[goal] = rep_auc
+
+    curves = {}
+    for label in labels:
+        ranked_auc = np.zeros(len(goal_ids))
+        for goal in goal_ids:
+            rank = ranks[goal]
+            ranked_auc[rank] = all_goals_auc[goal][label][0]
+        curves[label] = ranked_auc
+
+    plt.figure()
+    for label in labels:
+        plt.plot(curves[label], color=violin_colors[label], linestyle=curve_styles[label], label=label)
+    plt.legend()
+    plt.show()
+
 def mountain_car():
     learning_curve(mc_learn_sweep, "mountain car learning sweep")
 
 def simple_maze():
     # print("\nRep learning")
-    # learning_curve(gh_online_sweep, "maze rep sweep result ")
+    # learning_curve(gh_original_sweep_v13, "maze rep sweep result ")
+
+    ranks = np.load("data/dataset/gridhard/srs/goal(9, 9)_simrank.npy", allow_pickle=True).item()
+    goal_ids = [106, 107, 108, 109, 110, 111, 118, 119, 120, 121, 122, 123, 128, 129, 130]
+    performance_change(gh_transfer_samelr_v13, goal_ids, ranks, "maze transfer change")
 
     # # print("\nControl")
     # learning_curve(gh_same_early_sweep, "maze same sweep")
     # learning_curve(gh_similar_early_sweep, "maze similar sweep")
-    learning_curve(gh_diff_early_sweep, "maze different (fix) sweep(temp)")
+    # learning_curve(gh_diff_early_sweep, "maze different (fix) sweep(temp)")
     # learning_curve(gh_diff_tune_early_sweep, "maze different (fine tune) sweep")
 
 def picky_eater():
@@ -175,15 +229,29 @@ def pe_temp():
     # learning_curve(perand_trans_sweep_temp, "perandc diff fix avg v6")
 
 def maze_multigoals():
-    learning_curve(maze_source_sweep, "maze source")
+    # learning_curve(maze_source_sweep, "maze source")
     # learning_curve(maze_checkpoint50000_same_sweep_v12, "maze checkpoint50000 same")
     # learning_curve(maze_checkpoint50000_dissimilar_sweep_v12, "maze checkpoint50000 dissimilar")
+    # learning_curve(maze_checkpoint100000_same_sweep_v12, "maze checkpoint100000 same")
+    # learning_curve(maze_checkpoint100000_dissimilar_sweep_v12, "maze checkpoint100000 dissimilar")
     # learning_curve(maze_checkpoint150000_same_sweep_v12, "maze checkpoint150000 same")
     # learning_curve(maze_checkpoint150000_dissimilar_sweep_v12, "maze checkpoint150000 dissimilar")
+    # learning_curve(maze_checkpoint200000_same_sweep_v12, "maze checkpoint200000 same")
+    # learning_curve(maze_checkpoint200000_dissimilar_sweep_v12, "maze checkpoint200000 dissimilar")
+    # learning_curve(maze_checkpoint250000_same_sweep_v12, "maze checkpoint250000 same")
+    # learning_curve(maze_checkpoint250000_dissimilar_sweep_v12, "maze checkpoint250000 dissimilar")
+    # learning_curve(maze_checkpoint300000_same_sweep_v12, "maze checkpoint300000 same")
+    # learning_curve(maze_checkpoint300000_dissimilar_sweep_v12, "maze checkpoint300000 dissimilar")
+
+    # learning_curve(mazesimple_notarget_same_sweep_v12, "mazesimple dqn notarget same")
+    # learning_curve(mazesimple_qlearning_same_sweep_v12, "mazesimple qlearning same")
+    # learning_curve(maze_multigoal_notarget_same_sweep_v12, "maze_multigoal dqn notarget same")
+    learning_curve(maze_multigoal_notarget_diff_sweep_v12, "maze_multigoal dqn notarget dissimilar", xlim=[0, 30])
+    # learning_curve(maze_multigoal_qlearning_same_sweep_v12, "maze_multigoal qlearning same")
 
 if __name__ == '__main__':
     # mountain_car()
-    # simple_maze()
+    simple_maze()
     # picky_eater()
     # pe_temp()
-    maze_multigoals()
+    # maze_multigoals()

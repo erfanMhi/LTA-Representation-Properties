@@ -11,7 +11,7 @@ from plot.plot_paths import *
 os.chdir("..")
 print("Change dir to", os.getcwd())
 
-def learning_curve(all_paths_dict, title, targets=None, xlim=None, data_label=True):
+def learning_curve(all_paths_dict, title, targets=None, xlim=None, ylim=None, data_label=True):
     if targets is not None:
         temp = []
         for item in all_paths_dict:
@@ -37,6 +37,9 @@ def learning_curve(all_paths_dict, title, targets=None, xlim=None, data_label=Tr
         plt.legend()
     if xlim is not None:
         plt.xlim(xlim[0], xlim[1])
+    if ylim is not None:
+        plt.ylim(ylim[0], ylim[1])
+
     # plt.xlabel('step ($10^4$)')
     plt.ylabel('return')
     plt.savefig("plot/img/{}.pdf".format(title), dpi=300, bbox_inches='tight')
@@ -150,14 +153,20 @@ def maze_multigoals():
                "FTA+XY", "FTA+Color", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
                "Random", "Input", "Scratch"]
     targets = ["ReLU", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
-               "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8"
+               "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
                "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
                "Random", "Input", "Scratch"]
  
-    #learning_curve(maze_source_best_v12, "maze source")
+    # learning_curve(maze_source_best_v12, "maze source")
 #    learning_curve(maze_target_same_best_v12, "maze same")
-    learning_curve(maze_target_diff_best_v12, "maze diff same")
+#     learning_curve(maze_target_diff_best_v12, "maze diff same")
     # learning_curve(maze_target_diff_best, "maze dissimilar")
+
+    learning_curve(maze_checkpoint50000_same_best_v12, "maze checkpoint50000 same", xlim=[0, 31], ylim=[0, 1.1])
+    learning_curve(maze_checkpoint50000_dissimilar_best_v12, "maze checkpoint50000 dissimilar", xlim=[0, 31], ylim=[0, 1.1])
+    learning_curve(maze_checkpoint150000_same_best_v12, "maze checkpoint150000 same", xlim=[0, 31], ylim=[0, 1.1])
+    learning_curve(maze_checkpoint150000_dissimilar_best_v12, "maze checkpoint150000 dissimilar", xlim=[0, 31], ylim=[0, 1.1])
+
 
 if __name__ == '__main__':
     # mountain_car()

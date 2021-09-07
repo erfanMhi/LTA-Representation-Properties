@@ -118,7 +118,7 @@ def draw_goal_dist(goals_dist, original, name):
     plt.savefig("{}".format(name), dpi=100, bbox_inches='tight', pad_inches=0)
     # plt.show()
 
-def rank_goals(goals_dist, original, name, reversed=False):
+def rank_goals(goals_dist, original, name, reversed=False, all_goals=None):
     goals_dist[np.where(goals_dist==0)] = np.inf
     if not reversed:
         rank = goals_dist.ravel().argsort().argsort().reshape(goals_dist.shape)
@@ -133,12 +133,20 @@ def rank_goals(goals_dist, original, name, reversed=False):
     for k in range(rank.shape[0]):
         for j in range(rank.shape[1]):
             if rank[k, j] != -1:
-                plt.text(j, k, "{:1.0f}".format(rank[k, j]),
+                plt.text(j, k, "{:1.0f}".format(rank[k, j]+1),
                          ha="center", va="center", color="orange")
     plt.text(original[1], original[0], "O",
              ha="center", va="center", color="black")
     plt.savefig("{}".format(name), dpi=100, bbox_inches='tight', pad_inches=0)
     # plt.show()
+
+    if all_goals:
+        ranks = {}
+        for i, goal in enumerate(all_goals):
+            ranks[i] = rank[goal[0], goal[1]]
+        savepath = "data/dataset/gridhard/srs/goal{}_simrank.npy".format(original)
+        np.save(savepath, ranks)
+        print("Save rank in {}".format(savepath))
 
 def concatenate_srs(srs):
     csrs = np.zeros((len(srs), np.prod(srs.shape[1:])))
@@ -185,19 +193,19 @@ def main(metrics = "l2"):
     """
     Dot product similarity
     """
-    # csrs = concatenate_srs(srs)
-    # goals_dist = dist_between_goals_v1(csrs, states2d, (9,9), size)
-    # draw_goal_dist(goals_dist, (9, 9), "plot/img/simil.png")
-    # rank_goals(goals_dist, (9, 9), "plot/img/similrank.png", reversed=True)
+    csrs = concatenate_srs(srs)
+    goals_dist = dist_between_goals_v1(csrs, states2d, (9,9), size)
+    draw_goal_dist(goals_dist, (9, 9), "plot/img/simil.png")
+    rank_goals(goals_dist, (9, 9), "plot/img/similrank.png", reversed=True, all_goals=states2d)
 
     """
     Fixed start similarity
     """
-    for fs in np.random.randint(0, len(states2d), size=5):
-        csrs = fix_start_srs(srs, fs)
-        goals_dist = dist_between_goals_v1(csrs, states2d, (9,9), size)
-        draw_goal_dist(goals_dist, (9, 9), "plot/img/fixstart{}.png".format(states2d[fs]))
-        rank_goals(goals_dist, (9, 9), "plot/img/fixstartrank{}.png".format(states2d[fs]), reversed=True)
+    # for fs in np.random.randint(0, len(states2d), size=5):
+    #     csrs = fix_start_srs(srs, fs)
+    #     goals_dist = dist_between_goals_v1(csrs, states2d, (9,9), size)
+    #     draw_goal_dist(goals_dist, (9, 9), "plot/img/fixstart{}.png".format(states2d[fs]))
+    #     rank_goals(goals_dist, (9, 9), "plot/img/fixstartrank{}.png".format(states2d[fs]), reversed=True)
 
 if __name__ == '__main__':
     main("l2")

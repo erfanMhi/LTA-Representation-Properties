@@ -133,7 +133,7 @@ def learning_curve(all_paths_dict, title, total_param=None,
 
 
 
-def performance_change(all_paths_dict, goal_ids, ranks, title, total_param=None):
+def performance_change(all_paths_dict, goal_ids, ranks, title, total_param=None, xlim=[]):
     labels = [i["label"] for i in all_paths_dict]
     # control = load_return(all_paths_dict, total_param, start_param)
 
@@ -153,9 +153,10 @@ def performance_change(all_paths_dict, goal_ids, ranks, title, total_param=None)
             param_rec = []
             curve_rec = []
             for param, returns in all_params.items():
-                print(param, returns)
                 returns = arrange_order(returns)
                 mu, ste = get_avg(returns)
+                if xlim != []:
+                    mu, ste = mu[xlim[0]: xlim[1]], ste[xlim[0]: xlim[1]]
                 auc_rec.append(np.sum(mu))
                 param_rec.append(param)
                 curve_rec.append([mu, ste])
@@ -169,9 +170,12 @@ def performance_change(all_paths_dict, goal_ids, ranks, title, total_param=None)
     curves = {}
     for label in labels:
         ranked_auc = np.zeros(len(goal_ids))
+        ranked_ste = np.zeros(len(goal_ids))
         for goal in goal_ids:
             rank = ranks[goal]
+            print(rank, goal, label, all_goals_auc[goal][label][0])
             ranked_auc[rank] = all_goals_auc[goal][label][0]
+            ranked_ste[rank] = all_goals_auc[goal][label][0]
         curves[label] = ranked_auc
 
     plt.figure()
@@ -188,8 +192,11 @@ def simple_maze():
     # learning_curve(gh_original_sweep_v13, "maze rep sweep result ")
 
     ranks = np.load("data/dataset/gridhard/srs/goal(9, 9)_simrank.npy", allow_pickle=True).item()
-    goal_ids = [106, 107, 108, 109, 110, 111, 118, 119, 120, 121, 122, 123, 128, 129, 130]
-    performance_change(gh_transfer_samelr_v13, goal_ids, ranks, "maze transfer change")
+    for i in ranks:
+        ranks[i] += 1
+    goal_ids = [106, 107, 108, 109, 110, 111, 118, 119, 120, 121, 122, 123, 128, 129, 130,
+                138, 139, 140, 141, 142, 143, 144, 152, 153, 154, 155, 156, 157, 158, 166, 167, 168, 169, 170, 171, 172]
+    performance_change(gh_transfer_samelr_v13, goal_ids, ranks, "maze transfer change", xlim=[0, 11])
 
     # # print("\nControl")
     # learning_curve(gh_same_early_sweep, "maze same sweep")
@@ -201,7 +208,7 @@ def picky_eater():
     #titles = ["ReLU", "ReLU+Control", "ReLU+XY", "ReLU+Color", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF" ,"FTA", "FTA+Control", "FTA+Decoder", "FTA+XY", "FTA+Color", "FTA+NAS", "FTA+Reward", "FTA+SF"]
     #titles = ["ReLU", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF" ,"FTA", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF"]
 #    titles = ["FTA+Decoder", "ReLU+Control", "FTA", "FTA+Control"]
-    print('here')
+
     for i, crgb_sweep in enumerate(maze_target_diff_sweep_v12):
         compare_learning_curve([crgb_sweep], None, label_keys=None)
         # learning_curve([crgb_sweep], "maze online property")

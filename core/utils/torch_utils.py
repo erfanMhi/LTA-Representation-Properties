@@ -12,7 +12,6 @@ def select_device(gpu_id):
     else:
         return torch.device('cpu')
 
-
 def tensor(x, device):
     if isinstance(x, torch.Tensor):
         return x

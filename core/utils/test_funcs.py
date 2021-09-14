@@ -1074,7 +1074,7 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
         if agent.cfg.log_interval and not agent.total_steps % agent.cfg.log_interval:
             if agent.cfg.tensorboard_logs: agent.log_tensorboard()
             mean, median, min, max = agent.log_file(elapsed_time=agent.cfg.log_interval / (time.time() - t0))
-            if agent.cfg.save_early is not None and \
+            if agent.cfg.save_params and agent.cfg.save_early is not None and \
                     mean >= agent.cfg.save_early["mean"] and \
                     min >= agent.cfg.save_early["min"] and \
                     (not early_model_saved):
@@ -1147,7 +1147,8 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
             t0 = time.time()
         
         if agent.cfg.max_steps and agent.total_steps >= agent.cfg.max_steps:
-            agent.save()
+            if agent.cfg.save_params:
+                agent.save()
             if not early_model_saved and agent.cfg.save_params:
                 agent.save(early=True)
                 early_model_saved = True

@@ -45,6 +45,7 @@ class ActvFactory:
     @classmethod
     def get_activation_fn(cls, cfg):
         # Creates a function for constructing the value value_network
+        print(cfg.activation_config)
         if cfg.activation_config['name'] == 'None':
             return lambda x:x
         elif cfg.activation_config['name'] == 'LTA':

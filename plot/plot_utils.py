@@ -55,14 +55,18 @@ def load_return(paths, setting_list, search_lr=False):
         all_rt[i["label"]] = returns
     return all_rt
 
-def draw_curve(all_res, ax, label, color=None, style="-", alpha=1, linewidth=1.5):
-    if len(all_res) == 0:
-        return None
+def get_avg(all_res):
     mu = all_res.mean(axis=0)
     # mu = all_res.max(axis=0)
     std = all_res.std(axis=0)
     # ste = std / np.sqrt(len(std))
     ste = std / np.sqrt(all_res.shape[0])
+    return mu, ste
+
+def draw_curve(all_res, ax, label, color=None, style="-", alpha=1, linewidth=1.5):
+    if len(all_res) == 0:
+        return None
+    mu, ste = get_avg(all_res)
     if color is None:
         p = ax.plot(mu, label=label, alpha=alpha, linestyle=style, linewidth=linewidth)
         # color = p.get_color()
@@ -260,14 +264,14 @@ def extract_from_setting(find_in, setting, key="return", final_only=False, label
     lr = -1
     assert os.path.isdir(find_in), ("\nERROR: {} is not a directory\n".format(find_in))
     for path, subdirs, files in os.walk(find_in):
-        print(path)
+        # print(path)
         for name in files:
             if name in ["log"] and setting_folder in path:
                 file = os.path.join(path, name)
                 run_num = int(file.split("_run")[0].split("/")[-1])
                 before_step = None if cut_at_step is None else cut_at_step[run_num]
                 res = extract_from_single_run(file, key, label, before_step=before_step)
-                print(res)
+                # print(res)
                 if final_only:
                     # print("--", res)
                     res = res[-1]
@@ -299,7 +303,7 @@ def extract_return_all(path, setting_list, search_lr=False):
     for setting in setting_list:
         res, lr = extract_from_setting(path, setting)
         if search_lr:
-            all_sets[lr] = res
+            all_sets["{}_{}".format(setting, lr)] = res
         else:
             all_sets[setting] = res
     return all_sets
@@ -442,8 +446,8 @@ def draw_label(targets, save_path, ncol):
         plt.plot([], color=violin_colors[label], linestyle=curve_styles[label], label=label)
     plt.axis('off')
     plt.legend(ncol=ncol)
-    plt.savefig("plot/img/{}.pdf".format(save_path), dpi=300, bbox_inches='tight')
-    # plt.savefig("plot/img/{}.png".format(save_path), dpi=300, bbox_inches='tight')
+    # plt.savefig("plot/img/{}.pdf".format(save_path), dpi=300, bbox_inches='tight')
+    plt.savefig("plot/img/{}.png".format(save_path), dpi=300, bbox_inches='tight')
     # plt.show()
     plt.close()
     plt.clf()

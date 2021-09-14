@@ -46,8 +46,8 @@ def learning_curve_mean(all_paths_dict, title, key, targets=[], xlim=None, ylim=
         draw_curve(returns, ax, label, violin_colors[label], curve_styles[label], alpha=alpha, linewidth=linewidth)
         if independent_runs:
             for i, r in enumerate(returns):
-                # draw_curve(r.reshape((1, -1)), ax, None, violin_colors[label], curve_styles[label], alpha=alpha, linewidth=linewidth)
-                draw_curve(r.reshape((1, -1)), ax, None, c_default[k], curve_styles[label], alpha=alpha, linewidth=linewidth)
+                draw_curve(r.reshape((1, -1)), ax, None, violin_colors[label], curve_styles[label], alpha=alpha, linewidth=linewidth)
+                # draw_curve(r.reshape((1, -1)), ax, None, c_default[k], curve_styles[label], alpha=alpha, linewidth=linewidth)
             plt.plot([], color=violin_colors[label], linestyle=curve_styles[label], label=label)
         else:
             if show_avg:
@@ -67,7 +67,7 @@ def learning_curve_mean(all_paths_dict, title, key, targets=[], xlim=None, ylim=
         ylim = ax.get_ylim()
         ax.set_ylim(ylim[0], ylim[1])
 
-    ax.set_xticks([xlim[0], xlim[1]-1])
+    # ax.set_xticks([xlim[0], xlim[1]-1])
     if ylim[1] > 1:
         ax.set_yticks([ylim[0], int(ylim[1])])
     else:
@@ -79,7 +79,11 @@ def learning_curve_mean(all_paths_dict, title, key, targets=[], xlim=None, ylim=
     if show_model:
         for label in labels:
             vline = arrange_order(model_saving[label], cut_length=False, scale=10000)
-            draw_cut(vline, arranged[label], ax, violin_colors[label], ylim[0])
+            if independent_runs:
+                for i in range(len(vline)):
+                    draw_cut(vline[i].reshape((1, -1)), arranged[label][i].reshape((1, -1)), ax, violin_colors[label], ylim[0])
+            else:
+                draw_cut(vline, arranged[label], ax, violin_colors[label], ylim[0])
 
     plt.xlabel('step ($10^4$)')
     # plt.ylabel(key)
@@ -88,9 +92,9 @@ def learning_curve_mean(all_paths_dict, title, key, targets=[], xlim=None, ylim=
     save_path = save_path if save_path!='unknown' else title
     
     if data_label is None:
-        plt.savefig("plot/img/{}.pdf".format(save_path), dpi=300, bbox_inches='tight')
+        plt.savefig("plot/img/{}.png".format(save_path), dpi=300, bbox_inches='tight')
     else:    
-        plt.savefig("plot/img/{}_{}.pdf".format(data_label, save_path), dpi=300, bbox_inches='tight')
+        plt.savefig("plot/img/{}_{}.png".format(data_label, save_path), dpi=300, bbox_inches='tight')
     
     # plt.savefig("plot/img/{}.png".format(save_path), dpi=300, bbox_inches='tight')
     # plt.show()
@@ -488,20 +492,52 @@ def pelinear():
     draw_label(targets_fta, "pelinear_fta_label", ncol=2)
 
 
+def maze_multigoals():
+    targets = [
+        # "ReLU", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward",
+        # "ReLU+SF",
+        "FTA eta=0.2",
+        "FTA eta=0.4",
+        "FTA eta=0.6",
+        "FTA eta=0.8",
+        "FTA+XY",
+        # "FTA+Decoder",
+        "FTA+NAS",
+        "FTA+Reward",
+        "FTA+SF",
+        #"Random", "Input",
+        "Scratch",
+        # "Scratch(ReLU)",
+        # "Scratch(FTA)",
+        ]
+
+    # learning_curve_mean(maze_source_best_v12, "maze source", key="return", targets=targets, xlim=[0, 71], ylim=[0, 1.1], show_model=True, independent_runs=True)
+
+    # learning_curve_mean(maze_checkpoint50000_same_best_v12, "maze checkpoint50000 same", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1.1], show_model=False, independent_runs=False)
+    # learning_curve_mean(maze_checkpoint50000_dissimilar_best_v12, "maze checkpoint50000 dissimilar", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1.1], show_model=False, independent_runs=False)
+    # learning_curve_mean(maze_checkpoint100000_same_best_v12, "maze checkpoint100000 same", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1.1], show_model=False, independent_runs=False)
+    # learning_curve_mean(maze_checkpoint100000_dissimilar_best_v12, "maze checkpoint100000 dissimilar", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1.1], show_model=False, independent_runs=False)
+    # learning_curve_mean(maze_checkpoint150000_same_best_v12, "maze checkpoint150000 same", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1.1], show_model=False, independent_runs=False)
+    # learning_curve_mean(maze_checkpoint150000_dissimilar_best_v12, "maze checkpoint150000 dissimilar", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1.1], show_model=False, independent_runs=False)
+    # learning_curve_mean(maze_checkpoint200000_same_best_v12, "maze checkpoint200000 same", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1.1], show_model=False, independent_runs=False)
+    # learning_curve_mean(maze_checkpoint200000_dissimilar_best_v12, "maze checkpoint200000 dissimilar", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1.1], show_model=False, independent_runs=False)
+    # learning_curve_mean(maze_checkpoint250000_same_best_v12, "maze checkpoint250000 same", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1.1], show_model=False, independent_runs=False)
+    # learning_curve_mean(maze_checkpoint250000_dissimilar_best_v12, "maze checkpoint250000 dissimilar", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1.1], show_model=False, independent_runs=False)
+    # learning_curve_mean(maze_checkpoint300000_same_best_v12, "maze checkpoint300000 same", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1.1], show_model=False, independent_runs=False)
+    # learning_curve_mean(maze_checkpoint300000_dissimilar_best_v12, "maze checkpoint300000 dissimilar", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1.1], show_model=False, independent_runs=False)
+
+    # learning_curve_mean(mazesimple_qlearning_same_best_v12, "mazesimple same", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1.1], show_model=False, independent_runs=False, legend=True)
+    learning_curve_mean(maze_multigoal_notarget_same_best_v12, "maze same", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1.1], show_model=False, independent_runs=False, legend=True)
+
+    # draw_label(targets, "maze_checkpoint_label", ncol=1)
+
 if __name__ == '__main__':
     # mountain_car()
     # simple_maze()
     # picky_eater()
-#     picky_eater('Random')
-    # picky_eater('Red')
-    # picky_eater('Green')
-#     simple_maze()
-    #picky_eater()
-    #pe_test()
-    #simple_maze()
-    picky_eater()
     # picky_eater('Random')
     # picky_eater('Red')
     # picky_eater('Green')
     # pe_test()
     # pelinear()
+    maze_multigoals()

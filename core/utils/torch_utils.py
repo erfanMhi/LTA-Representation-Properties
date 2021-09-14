@@ -5,9 +5,10 @@ import torch
 
 
 def select_device(gpu_id):
-    # if torch.cuda.is_available() and gpu_id >= 0:
-    if gpu_id >= 0:
-        return torch.device('cuda:%d' % (gpu_id))
+    if torch.cuda.is_available() and gpu_id >= 0:
+        return torch.device('cuda')
+    # if gpu_id >= 0:
+    #     return torch.device('cuda:%d' % (gpu_id))
     else:
         return torch.device('cpu')
 

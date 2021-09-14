@@ -20,6 +20,35 @@ class GridHardRGBGoal(GridHardRGB):
         self.goals = [[9, 9], [0, 0], [0, 14], [14, 0], [14, 14], [7, 7]]
         self.goal_x, self.goal_y = self.goals[goal_id]
 
+
+class GridHardRGBGoalAll(GridHardRGB):
+    def __init__(self, goal_id, seed=np.random.randint(int(1e5))):
+        super().__init__(seed)
+        # self.nos = (self.state_dim[0] * self.state_dim[1]) - int(np.sum(self.obstacles_map))
+        self.goals = [[i, j] for i in range(self.state_dim[0]) \
+                              for j in range(self.state_dim[1]) if not self.obstacles_map[i, j]]
+        self.goal_x, self.goal_y = self.goals[goal_id]
+        self.goal_state_idx = goal_id
+
+    def get_goal(self):
+        return self.goal_state_idx, [self.goal_x, self.goal_y]
+
+    def get_goals_list(self):
+        return self.goals
+
+    def visualize_goal_id(self):
+        ids = np.zeros((self.state_dim[0], self.state_dim[1]))
+        for idx, xy in enumerate(self.goals):
+            ids[xy[0], xy[1]] = idx
+        plt.figure()
+        plt.imshow(ids, interpolation='nearest', cmap="Blues")
+        for k in range(self.state_dim[0]):
+            for j in range(self.state_dim[1]):
+                if ids[k, j] != 0:
+                    plt.text(j, k, "{:1.0f}".format(ids[k, j]),
+                             ha="center", va="center", color="orange")
+        plt.show()
+
 class GridTwoRoomRGBGoal(GridTwoRoomRGB):
     def __init__(self, goal_id, seed=np.random.randint(int(1e5))):
         super().__init__(seed)
@@ -99,8 +128,7 @@ def draw(state):
     plt.show()
     plt.close()
 
-if __name__ == '__main__':
-
+def test_GridHardRGBMultiGoal():
     env = GridHardRGBMultiGoal(task_id=1)
     # env.generate_source_goal()
     done = False
@@ -114,4 +142,40 @@ if __name__ == '__main__':
         if reset:
             draw(state)
             print(reward)
+
+def test_GridHardRGBGoalAll():
+    env = GridHardRGBGoalAll(goal_id=0)
+    env.visualize_goal_id()
+    goals = env.get_goals_list()
+    print(list(range(len(goals))))
+
+    env = GridHardRGBGoalAll(goal_id=106) # 9,9
+    print(env.get_goal())
+    env = GridHardRGBGoalAll(goal_id=0) # 0,0
+    print(env.get_goal())
+    env = GridHardRGBGoalAll(goal_id=172) # 14,14
+    print(env.get_goal())
+    env = GridHardRGBGoalAll(goal_id=159) # 14,0
+    print(env.get_goal())
+    env = GridHardRGBGoalAll(goal_id=100) # 9,0
+    print(env.get_goal())
+
+    env = GridHardRGBGoalAll(goal_id=106) # 9,9
+    done = False
+    reset = True
+    while not done:
+        if reset:
+            count = 0
+            state = env.reset()
+            draw(state)
+        action = np.random.randint(4)
+        state, reward, reset, _ = env.step([action])
+        count += 1
+        if reset:
+            draw(state)
+            print(reward, count, env.goal_x, env.goal_y)
+
+
+if __name__ == '__main__':
+    test_GridHardRGBGoalAll()
 

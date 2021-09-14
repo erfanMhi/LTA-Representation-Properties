@@ -1,0 +1,58 @@
+{
+    "config_class": "EmptyConfig",
+    "fixed_parameters": {
+        "exp_name": "test_v13/gridhard/linear_vf/original_0909/online_property/dqn/test_policy",
+        "env_name": "GridHardRGBGoalAll",
+        "agent": "TrainedDQN",
+        "discount": 0.99,
+        "state_norm_coef": 255.0,
+
+        "decay_epsilon": false,
+        "epsilon": 0,
+
+        "rep_config": {
+            "rep_type": "online",
+            "network_type": "conv",
+            "conv_architecture": {
+                "conv_layers": [
+                   {"in": 3,  "out": 32, "kernel": 4, "stride": 1, "pad": 1},
+                   {"in": 32,  "out": 16, "kernel": 4, "stride": 2, "pad": 2}
+                ]
+            },
+            "in_dim": [15, 15, 3],
+            "out_dim": 32,
+            "load_params": true,
+            "train_rep": false,
+            "path": "test_v13/gridhard/linear_vf/original_0909/online_property/dqn/sweep/{}_run/1_param_setting/parameters/rep_net_earlystop"
+        },
+
+        "activation_config": {
+                "name": "None"
+        },
+
+        "val_fn_config": {
+            "val_fn_type": "linear",
+            "init_type": "xavier",
+            "load_params": true,
+            "train_rep": false,
+            "path": "test_v13/gridhard/linear_vf/original_0909/online_property/dqn/sweep/{}_run/1_param_setting/parameters/val_net_earlystop"
+        },
+        "reward_norm_coef": 1,
+
+        "total_samples": 100000,
+        "stop_criteria": "total",
+
+        "log_interval": 10000,
+        "eval_interval": 10000,
+        "eval_episodes": 5,
+        "save_interval": 0,
+        "timeout": 100,
+        "stats_queue_size": 100,
+
+        "check": "value"
+    },
+    "sweep_parameters": {
+        "learning_rate": [0],
+        "goal_id": [106]
+    }
+}

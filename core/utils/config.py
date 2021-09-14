@@ -2,6 +2,54 @@ import os
 
 from core.utils import torch_utils
 
+class EmptyConfig:
+    def __init__(self):
+        self.exp_name = 'test'
+        self.data_root = None
+        self.run = 0
+        self.param_setting = 0
+        self.logger = None
+        self.tensorboard_logs = False
+        self.record_video = False
+        self.batch_size = 0
+        self.replay_with_len = False
+        self.memory_size = 1
+        self.evaluation_criteria = "return"
+
+        return
+
+    def get_log_dir(self):
+        d = os.path.join(self.data_root, self.exp_name, "{}_run".format(self.run),
+                         "{}_param_setting".format(self.param_setting))
+        torch_utils.ensure_dir(d)
+        return d
+
+    def log_config(self):
+        attrs = self.get_print_attrs()
+        for param, value in attrs.items():
+            self.logger.info('{}: {}'.format(param, value))
+
+    def get_print_attrs(self):
+        attrs = dict(self.__dict__)
+        return attrs
+
+    @property
+    def env_fn(self):
+        return self.__env_fn
+
+    @env_fn.setter
+    def env_fn(self, env_fn):
+        self.__env_fn = env_fn
+        self.state_dim = env_fn().state_dim
+        self.action_dim = env_fn().action_dim
+
+    def get_parameters_dir(self):
+        d = os.path.join(self.data_root, self.exp_name,
+                         "{}_run".format(self.run),
+                         "{}_param_setting".format(self.param_setting),
+                         "parameters")
+        torch_utils.ensure_dir(d)
+        return d
 
 class Config:
     def __init__(self):

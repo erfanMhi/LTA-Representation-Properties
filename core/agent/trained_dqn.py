@@ -15,12 +15,14 @@ class DataCollectionAgent(base.Agent):
     def __init__(self, cfg):
         super().__init__(cfg)
         self.total_samples = cfg.total_samples
+        self.stop_criteria = cfg.stop_criteria
 
         self.state = None
         self.action = None
         self.next_state = None
 
         self.trajectory = []
+        self.all_trajectory = []
         self.actions = []
         self.rewards = []
         self.termins = []
@@ -33,7 +35,12 @@ class DataCollectionAgent(base.Agent):
         self.sampled_different = []
 
     def check_done(self):
-        return len(self.sampled_states) >= self.total_samples
+        if self.stop_criteria == "sampled":
+            return len(self.sampled_states) >= self.total_samples
+        elif self.stop_criteria == "total":
+            return len(self.all_trajectory) >= self.total_samples
+        else:
+            raise NotImplementedError
 
     def log_lipschitz(self):
         pass
@@ -64,7 +71,7 @@ class TrainedDQNAgent(DataCollectionAgent):
             val_net.load_state_dict(torch.load(path))
 
         params = list(rep_net.parameters()) + list(val_net.parameters())
-        optimizer = cfg.optimizer_fn(params)
+        # optimizer = cfg.optimizer_fn(params)
 
         # Creating target networks for value, representation, and auxiliary val_net
         rep_net_target = cfg.rep_fn()
@@ -78,13 +85,18 @@ class TrainedDQNAgent(DataCollectionAgent):
 
         self.rep_net = rep_net
         self.val_net = val_net
-        self.optimizer = optimizer
+        # self.optimizer = optimizer
         self.targets = targets
 
         self.env = cfg.env_fn()
-        self.vf_loss = cfg.vf_loss_fn()
+        # self.vf_loss = cfg.vf_loss_fn()
         self.replay = cfg.replay_fn()
 
+    def get_q_values(self, states):
+        with torch.no_grad():
+            phi = self.rep_net(self.cfg.state_normalizer(states))
+            q_values = self.val_net(phi)
+        return torch_utils.to_np(q_values).flatten()
 
     def step(self):
         if self.reset is True:
@@ -113,6 +125,7 @@ class TrainedDQNAgent(DataCollectionAgent):
         self.g = done
 
         self.trajectory.append(next_state)
+        self.all_trajectory.append(next_state)
 
         self.replay.feed([self.state, action, reward, next_state, int(done)])
         self.state = next_state
@@ -225,6 +238,8 @@ class RandomAgent(DataCollectionAgent):
             self.rewards.append(reward)
             self.termins.append(done)
         self.trajectory.append(next_state)
+        self.all_trajectory.append(next_state)
+
         self.state = next_state
 
         self.update_stats(reward, done)

@@ -451,3 +451,14 @@ def draw_label(targets, save_path, ncol):
     # plt.show()
     plt.close()
     plt.clf()
+
+def exp_smooth(ary, alpha):
+    new = np.zeros(len(ary))
+    for j in range(len(ary)):
+        new[j] = ary[j]
+        if not np.isnan(ary[j]):
+            break
+    for i in range(j+1, len(ary)):
+        new[i] = alpha * ary[i] + (1-alpha) * new[i-1]
+        # print(alpha, new[i-1:i+1], ary[i])
+    return new

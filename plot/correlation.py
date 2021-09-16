@@ -11,35 +11,6 @@ from plot.plot_paths import *
 os.chdir("..")
 print("Change dir to", os.getcwd())
 
-def arrange_order(dict1, dict2):
-    l1, l2 = [], []
-    if set(dict1.keys()) != set(dict2.keys()):
-        print("Warning: Keys are different", dict1.keys(), dict2.keys())
-        dk1 = list(dict1.keys()).copy()
-        dk2 = list(dict2.keys()).copy()
-        for k in dk1:
-            if k not in dict2.keys():
-                print("Pop", k, dict1.pop(k))
-        for k in dk2:
-            if k not in dict1.keys():
-                print("Pop", k, dict2.pop(k))
-
-    for i in dict1.keys():
-        # assert not np.isnan(dict1[i]), print(i, dict1[i])
-        # assert not np.isnan(dict2[i]), print(i, dict2[i])
-        # v1 = 0 if np.isnan(dict1[i]) else dict1[i]
-        # v2 = 0 if np.isnan(dict2[i]) else dict2[i]
-        v1 = dict1[i]
-        v2 = dict2[i]
-        if np.isnan(v1):
-            print("run {} is nan".format(i))
-            v1 = 0
-        if np.isnan(v2):
-            print("run {} is nan".format(i))
-            v2 = 0
-        l1.append(v1)
-        l2.append(v2)
-    return l1, l2
 
 
 def calculation(all_groups, title, property_key=None, perc=None, relationship=None, targets=[], early_stopped=False, p_label=None):
@@ -74,7 +45,7 @@ def calculation(all_groups, title, property_key=None, perc=None, relationship=No
         color = violin_colors[old_rep]
         marker = marker_styles[old_rep]
         # print("---------------", rep, control[rep], properties[rep])
-        ctr, prop = arrange_order(control[rep], properties[rep])
+        ctr, prop = arrange_order_2(control[rep], properties[rep])
         all_control += ctr
         all_property += prop
         all_color.append(color)
@@ -101,41 +72,6 @@ def calculation(all_groups, title, property_key=None, perc=None, relationship=No
     # plt.clf()
     # # print("save {} in plot/img/".format(title))
     return cor
-
-def merge_groups(all_groups):
-    # to make sure the labels are different after merging
-    all_group_dict = []
-    all_groups_changed = []
-    for i in range(len(all_groups)):
-        group = all_groups[i]
-        changed = []
-        for p in group:
-            cp = p.copy()
-            cp["label"] += "_"+str(i)
-            changed.append(cp)
-        all_group_dict += changed
-        all_groups_changed.append(changed)
-    return all_groups_changed, all_group_dict
-
-def perform_filter(controls, properties, perc):
-    if perc==[0, 1] or perc is None:
-        return controls, properties
-    idx_sort = sorted(range(len(controls)), key=lambda k: controls[k]) # from low to high
-    target = idx_sort[int(perc[0] * len(idx_sort)): int(perc[1] * len(idx_sort))]
-    ctarget, ptarget = controls[target], properties[target]
-    return ctarget, ptarget
-
-def perform_transformer(controls, properties, relationship):
-    if relationship is None:
-        return controls, properties
-    elif relationship == "log":
-        properties = np.log((properties+1)*100)
-        return controls, properties
-    elif relationship == "sqrt":
-        properties = np.sqrt(properties)
-        return controls, properties
-    else:
-        raise NotImplementedError
 
 
 def simple_maze_correlation_early(perc):

@@ -9,6 +9,43 @@ from plot_paths import *
 flatten = lambda t: [item for sublist in t for item in sublist]
 
 
+def merge_groups(all_groups):
+    # to make sure the labels are different after merging
+    all_group_dict = []
+    all_groups_changed = []
+    for i in range(len(all_groups)):
+        group = all_groups[i]
+        changed = []
+        for p in group:
+            cp = p.copy()
+            cp["label"] += "_"+str(i)
+            changed.append(cp)
+        all_group_dict += changed
+        all_groups_changed.append(changed)
+    return all_groups_changed, all_group_dict
+
+def perform_filter(controls, properties, perc):
+    if perc==[0, 1] or perc is None:
+        return controls, properties
+    idx_sort = sorted(range(len(controls)), key=lambda k: controls[k]) # from low to high
+    target = idx_sort[int(perc[0] * len(idx_sort)): int(perc[1] * len(idx_sort))]
+    ctarget, ptarget = controls[target], properties[target]
+    return ctarget, ptarget
+
+def perform_transformer(controls, properties, relationship):
+    if relationship is None:
+        return controls, properties
+    elif relationship == "log":
+        properties = np.log((properties+1)*100)
+        return controls, properties
+    elif relationship == "sqrt":
+        properties = np.sqrt(properties)
+        return controls, properties
+    else:
+        raise NotImplementedError
+
+
+
 def arrange_order(dict1, cut_length=True, scale=1):
     lst = []
     min_l = np.inf
@@ -37,10 +74,44 @@ def arrange_order(dict1, cut_length=True, scale=1):
             lst[i] = lst[i][:min_l]
     return np.array(lst) / float(scale)
 
+def arrange_order_2(dict1, dict2):
+    l1, l2 = [], []
+    if set(dict1.keys()) != set(dict2.keys()):
+        print("Warning: Keys are different", dict1.keys(), dict2.keys())
+        dk1 = list(dict1.keys()).copy()
+        dk2 = list(dict2.keys()).copy()
+        for k in dk1:
+            if k not in dict2.keys():
+                print("Pop", k, dict1.pop(k))
+        for k in dk2:
+            if k not in dict1.keys():
+                print("Pop", k, dict2.pop(k))
+
+    for i in dict1.keys():
+        # assert not np.isnan(dict1[i]), print(i, dict1[i])
+        # assert not np.isnan(dict2[i]), print(i, dict2[i])
+        # v1 = 0 if np.isnan(dict1[i]) else dict1[i]
+        # v2 = 0 if np.isnan(dict2[i]) else dict2[i]
+        v1 = dict1[i]
+        v2 = dict2[i]
+        if np.isnan(v1):
+            print("run {} is nan".format(i))
+            v1 = 0
+        if np.isnan(v2):
+            print("run {} is nan".format(i))
+            v2 = 0
+        l1.append(v1)
+        l2.append(v2)
+    return l1, l2
+
 def load_info(paths, param, key, label=None, path_key="control"):
     all_rt = {}
     for i in paths:
         path = i[path_key]
+        param = param if type(path) != list else path[1]
+        if type(path) == list:
+            param = path[1]
+            path = path[0]
         res, _ = extract_from_setting(path, param, key, label=label)
         all_rt[i["label"]] = res
     return all_rt
@@ -340,14 +411,24 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
 
         if target_key in ["return"]:
             path = i["control"]
-            returns,_ = extract_from_setting(path, 0, target_key, final_only=False)
+            if type(path) == list:
+                setting = path[1]
+                path = path[0]
+            else:
+                setting = 0
+            returns,_ = extract_from_setting(path, setting, target_key, final_only=False)
             values = {}
             for run in returns:
                 values[run] = np.array(returns[run]).sum()
 
         elif target_key in ["interf"]:
             path = i["online_measure"]
-            returns, _ = extract_from_setting(path, 0, target_key, final_only=False, cut_at_step=cas)
+            if type(path) == list:
+                setting = path[1]
+                path = path[0]
+            else:
+                setting = 0
+            returns, _ = extract_from_setting(path, setting, target_key, final_only=False, cut_at_step=cas)
             values = {}
             for run in returns:
                 t = np.array(returns[run])[1:] # remove the first measure, which is always nan
@@ -357,7 +438,12 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
 
         else:
             path = i["online_measure"]
-            values, _ = extract_from_setting(path, 0, target_key, final_only=True, cut_at_step=cas, label=p_label)
+            if type(path) == list:
+                setting = path[1]
+                path = path[0]
+            else:
+                setting = 0
+            values, _ = extract_from_setting(path, setting, target_key, final_only=True, cut_at_step=cas, label=p_label)
 
         all_property[i["label"]] = values
 
@@ -462,3 +548,46 @@ def exp_smooth(ary, alpha):
         new[i] = alpha * ary[i] + (1-alpha) * new[i-1]
         # print(alpha, new[i-1:i+1], ary[i])
     return new
+
+def load_property(all_groups, property_key=None, perc=None, relationship=None, targets=[], early_stopped=False, p_label=None):
+    if len(targets) > 0:
+        temp = []
+        for g in all_groups:
+            t = []
+            for i in g:
+                if i["label"] in targets:
+                    t.append(i)
+            temp.append(t)
+        all_groups = temp
+
+    all_groups, all_group_dict = merge_groups(all_groups)
+    # print(all_groups, "\n\n", all_group_dict, "\n")
+    reverse = True if property_key in ["lipschitz", "interf"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
+    model_saving = load_info(all_group_dict, 0, "model", path_key="online_measure") if early_stopped else None
+    properties = load_online_property(all_group_dict, property_key, reverse=reverse, cut_at_step=model_saving, p_label=p_label)
+
+    return properties, all_group_dict
+
+def correlation_calc(all_group_dict, control, properties, property_key, perc=None, relationship=None):
+    labels = [i["label"] for i in all_group_dict]
+
+    # all reps:
+    all_control = []
+    all_property = []
+    indexs = [0]
+    for idx in range(len(labels)):
+        rep = labels[idx]
+        assert len(rep.split("_")) == 2
+        ctr, prop = arrange_order_2(control[rep], properties[rep])
+        all_control += ctr
+        all_property += prop
+        assert len(ctr) == len(prop)
+        indexs.append(len(ctr)+indexs[-1])
+
+    all_control = np.array(all_control)
+    all_property = np.array(all_property)
+    all_control, all_property = perform_filter(all_control, all_property, perc=perc)
+    all_control, all_property = perform_transformer(all_control, all_property, relationship=relationship)
+    cor = np.corrcoef(all_control, all_property)[0][1]
+    # print("All reps: {} correlation = {:.4f}".format(property_key, cor))
+    return cor

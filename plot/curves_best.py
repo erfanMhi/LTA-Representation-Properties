@@ -77,6 +77,7 @@ def learning_curve_mean(all_paths_dict, title, targets=None, xlim=None):
     plt.close()
     plt.clf()
 
+
 def mountain_car():
     print("\nRep learning")
     learning_curve(mc_learn, "mountain car learning")
@@ -92,7 +93,7 @@ def simple_maze():
 
     # learning_curve(gh_online, "maze online measure", targets, xlim=[0, 30])
 
-    learning_curve(gh_same_early, "maze same early", targets, xlim=[0, 15])
+    # learning_curve(gh_same_early, "maze same early", targets, xlim=[0, 11])
     # learning_curve(gh_similar_early, "maze similar early", targets, xlim=[0, 30])
     # learning_curve(gh_diff_early, "maze different (fix) early", targets, xlim=[0, 10], data_label=False)
     draw_label(targets, "maze_label", ncol=2)
@@ -186,8 +187,8 @@ def maze_multigoals():
 
 if __name__ == '__main__':
     # mountain_car()
-    #simple_maze()
+    simple_maze()
     #picky_eater()
     # pe_temp()
     # pe_linear()
-    maze_multigoals()
+    # maze_multigoals()

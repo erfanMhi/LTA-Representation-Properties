@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAuxAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test_v13/gridhard/linear_vf/original_0909/online_property/dqn_aux/aux_control/sweep_1g_gamma0.9",
+        "exp_name": "test_v13/gridhard/linear_vf/original_0909/online_property/dqn_aux/aux_control/sweep_1g_gamma0.9_slow_sync",
         "env_name": "GridHardRGBGoalAll",
         "agent": "DQNAuxSuccessorAgent",
         "discount": 0.99,
@@ -49,7 +49,7 @@
 
         "optimizer_type": "Adam",
         "use_target_network": true,
-        "target_network_update_freq": 256,
+        "target_network_update_freq": 1024,
 
         "max_steps": 300000,
         "log_interval": 10000,

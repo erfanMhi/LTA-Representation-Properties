@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test_v13/gridhard/linear_vf/original_0909/transfer/dqn_lta_aux/aux_control/sweep_1g",
+        "exp_name": "test_v13/gridhard/linear_vf/original_0909/transfer/dqn_lta_aux/aux_control/sweep_1g_slow_sync",
         "env_name": "GridHardRGBGoalAll",
         "agent": "DQNAgent",
         "discount": 0.99,
@@ -23,7 +23,7 @@
             "out_dim": 32,
             "load_params": true,
             "train_rep": false,
-            "path": "test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta_aux/aux_control/sweep_1g_gamma0.9/{}_run/2_param_setting/parameters/rep_net_earlystop"
+            "path": "test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta_aux/aux_control/sweep_1g_gamma0.9_slow_sync/{}_run/2_param_setting/parameters/rep_net_earlystop"
         },
 
         "activation_config": {
@@ -74,7 +74,14 @@
         "learning_rate": [0.0003, 0.0001, 0.00003, 0.00001, 0.000003]
     },
     "generate": {
-        "goal_id": [79, 48, 72, 94, 52, 146, 73, 49, 33, 100, 134, 34, 74, 50, 147, 35, 112, 75, 135, 160, 36, 148, 76, 161, 63, 77, 124, 149, 78, 162, 163, 131, 53, 145, 159, 54, 55, 56, 57, 58, 59, 64, 51, 38, 60, 39, 40, 46, 41, 42, 43, 44, 45, 32, 31, 37, 30, 22, 21, 23, 20, 24, 19, 25, 18, 26, 17, 16, 27, 15, 28, 29, 7, 8, 6, 9, 5, 10, 4, 11, 3, 12, 2, 13, 1, 14, 0],
-        "goal_id_exp_name": "test_v13/gridhard/linear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/aux_control/sweep_1g"
+        "goal_id": [106,
+                107, 108, 109, 110, 111, 118, 119, 120, 121, 122, 123, 128, 129, 130,
+                138, 139, 140, 141, 142, 143, 144, 152, 153, 154, 155, 156, 157, 158, 166, 167, 168, 169, 170, 171, 172,
+                137, 151, 165, 127, 117, 105, 99, 98, 104, 116, 126, 136, 150, 164, 86, 85, 84, 87, 83, 88, 89, 97, 90, 103, 115,
+                91, 92, 93, 82, 96, 102, 114, 81, 80, 71, 95, 70, 69, 68, 101, 67, 66, 113, 62, 65, 125, 61, 132, 47, 133,
+                79, 48, 72, 94, 52, 146, 73, 49, 33, 100, 134, 34, 74, 50, 147, 35, 112, 75, 135, 160, 36, 148, 76, 161, 63, 77, 124, 149, 78, 162, 163, 131, 53, 145, 159, 54, 55, 56, 57, 58, 59, 64, 51, 38,
+                60, 39, 40, 46, 41, 42, 43, 44, 45, 32, 31, 37, 30, 22, 21, 23, 20, 24, 19, 25, 18, 26, 17, 16, 27, 15, 28, 29, 7, 8, 6, 9, 5, 10, 4, 11, 3, 12, 2, 13, 1, 14, 0
+        ],
+        "goal_id_exp_name": "test_v13/gridhard/linear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/aux_control/sweep_1g_slow_sync"
     }
 }

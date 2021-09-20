@@ -133,7 +133,6 @@ def learning_curve(all_paths_dict, title, total_param=None,
 
 
 def pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels):
-    # control = load_return(all_paths_dict, total_param, start_param)
 
     all_goals_auc = {}
     for goal in goal_ids:
@@ -210,13 +209,8 @@ def performance_change(all_paths_dict, goal_ids, ranks, title, total_param=None,
     # plt.show()
     plt.close()
 
-
-def correlation_change(all_paths_dict, goal_ids, ranks, title, total_param=None, xlim=[], smooth=1.0):
+def correlation_load(all_paths_dict, goal_ids, total_param=None, xlim=[]):
     labels = [i["label"] for i in all_paths_dict]
-    all_ranks = []
-    for goal in goal_ids:
-        all_ranks.append(ranks[goal])
-    all_ranks = np.array(all_ranks)
 
     all_goals_auc = pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels)
 
@@ -240,6 +234,16 @@ def correlation_change(all_paths_dict, goal_ids, ranks, title, total_param=None,
             transf_perf, temp_labels = load_property([formated_path[goal]], property_key="return", early_stopped=True)
             cor = correlation_calc(temp_labels, transf_perf, properties, pk, perc=None, relationship=None)
             all_goals_cor[pk][goal] = cor
+
+    return all_goals_cor, property_keys
+
+def correlation_change(all_paths_dict, goal_ids, ranks, title, total_param=None, xlim=[], smooth=1.0):
+    all_ranks = []
+    for goal in goal_ids:
+        all_ranks.append(ranks[goal])
+    all_ranks = np.array(all_ranks)
+
+    all_goals_cor, property_keys = correlation_load(all_paths_dict, goal_ids, total_param=total_param, xlim=xlim)
 
     curves = {}
     for pk in property_keys.keys():
@@ -270,6 +274,51 @@ def correlation_change(all_paths_dict, goal_ids, ranks, title, total_param=None,
     print("Save in plot/img/{}.png".format(title))
     # plt.show()
     plt.close()
+
+def correlation_bar(all_paths_dict, goal_ids, ranks, title, total_param=None, xlim=[], smooth=1.0):
+    all_ranks = []
+    for goal in goal_ids:
+        all_ranks.append(ranks[goal])
+    all_ranks = np.array(all_ranks)
+
+    all_goals_cor, property_keys = correlation_load(all_paths_dict, goal_ids, total_param=total_param, xlim=xlim)
+
+    ordered_prop = list(property_keys.keys())
+    ordered_labels = [property_keys[k] for k in ordered_prop]
+
+    x = np.arange(len(ordered_labels))  # the label locations
+    width = 0.2  # the width of the bars
+    label_pos = 0.03
+    fontsize = 9
+    rotation = 90
+    fig, ax = plt.subplots()
+
+    for j, goal in enumerate(goal_ids):
+        ordered_corr = []
+        for pk in ordered_prop:
+            ordered_corr.append(all_goals_cor[pk][goal])
+        ax.bar(x-0.45+width*(j+1), ordered_corr, width, label="Rank={}".format(all_ranks[j]), color=cmap(j, 4))
+        for i in range(len(x)):
+            ax.text(x[i]-0.45+width*(0.6+j), max(0, ordered_corr[i])+label_pos, "{:.4f}".format(ordered_corr[i]), color=cmap(j, 4), fontsize=fontsize, rotation=rotation)
+
+    ax.plot([x[0]-0.45, x[-1]+0.45], [0, 0], "--", color="grey")
+
+    ax.legend(loc=4)
+    ax.set_ylabel('Correlation')
+    ax.set_ylim(-1, 1.2)
+    ax.set_xticks(x)
+    ax.set_yticks([-1, 0, 1])
+    ax.set_xticklabels(ordered_labels, rotation=30)
+    plt.savefig("plot/img/{}.pdf".format(title), dpi=300, bbox_inches='tight')
+    plt.close()
+    plt.clf()
+
+def label_filter(targets, all_paths):
+    filtered = []
+    for item in all_paths:
+        if item["label"] in targets:
+            filtered.append(item)
+    return filtered
 
 def transfer_curve_choose(all_paths_dict, goal_ids, ranks, title, total_param=None, xlim=[]):
     labels = [i["label"] for i in all_paths_dict]
@@ -360,27 +409,49 @@ def mountain_car():
 
 def simple_maze():
     # print("\nRep learning")
-    # learning_curve(gh_original_sweep_v13, "maze rep sweep result ")
+    # learning_curve(gh_original_sweep_v13, "maze rep sweep result")
 
     ranks = np.load("data/dataset/gridhard/srs/goal(9, 9)_simrank.npy", allow_pickle=True).item()
     for i in ranks:
         ranks[i] += 1
+    targets = [
+        "ReLU",
+        "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+        "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
+        "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+        "Scratch", "Random", "Input",
+    ]
     goal_ids = [106,
-                107, 108, 109, 110, 111, 118, 119, 120, 121, 122, 123, 128, 129, 130,
-                138, 139, 140, 141, 142, 143, 144, 152, 153, 154, 155, 156, 157, 158, 166, 167, 168, 169, 170, 171, 172,
-                137, 151, 165, 127, 117, 105, 99, 98, 104, 116, 126, 136, 150, 164, 86, 85, 84, 87, 83, 88, 89, 97, 90, 103, 115,
+                107, 108, 118, 119, 109, 120, 121, 128, 110, 111, 122, 123, 129, 130, 142, 143, 144, 141, 140, 139, 138, 156, 157, 158, 155, 170, 171, 172, 169,
+                154, 168, 153, 167, 152, 166, 137, 151, 165, 127, 117, 105, 99, 136, 126, 150, 164, 116, 104, 86, 98, 85, 84, 87, 83, 88, 89, 97, 90, 103, 115,
                 91, 92, 93, 82, 96, 102, 114, 81, 80, 71, 95, 70, 69, 68, 101, 67, 66, 113, 62, 65, 125, 61, 132, 47, 133,
                 79, 48, 72, 94, 52, 146, 73, 49, 33, 100, 134, 34, 74, 50, 147, 35, 112, 75, 135, 160, 36, 148, 76, 161, 63, 77, 124, 149, 78, 162, 163, 131, 53, 145, 159, 54, 55, 56, 57, 58, 59, 64, 51, 38,
                 60, 39, 40, 46, 41, 42, 43, 44, 45, 32, 31, 37, 30, 22, 21, 23, 20, 24, 19, 25, 18, 26, 17, 16, 27, 15, 28, 29, 7, 8, 6, 9, 5, 10, 4, 11, 3, 12, 2, 13, 1, 14, 0,
     ]
-    # performance_change(gh_transfer_samelr_v13, goal_ids, ranks, "maze transfer change (same lr)", xlim=[0, 11])
-    performance_change(gh_transfer_sweep_v13, goal_ids, ranks, "maze transfer change (smooth 0.2)", xlim=[0, 11], smooth=0.2)
-    # correlation_change(gh_transfer_sweep_v13, goal_ids, ranks, "maze correlation change (smooth 0.2)", xlim=[0, 11], smooth=0.2)
-    # correlation_change(gh_transfer_sweep_v13, goal_ids, ranks, "maze correlation change", xlim=[0, 11], smooth=1)
-    # goal_ids = [107, 108,
-    #             90, 103,
-    # ]
-    # transfer_curve_choose(gh_transfer_sweep_v13, goal_ids, ranks, "transfer", total_param=None, xlim=[0, 11])
+
+    performance_change(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "maze transfer change (smooth 0.2)", xlim=[0, 11], smooth=0.2)
+
+    targets = [
+        "ReLU",
+        "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+        "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
+        "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+    ]
+    correlation_change(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "maze correlation change (smooth 0.2)", xlim=[0, 11], smooth=0.2)
+    targets = [
+        "ReLU",
+        "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+    ]
+    correlation_change(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "maze correlation change (smooth 0.2, relu)", xlim=[0, 11], smooth=0.2)
+    targets = [
+        "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
+        "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+    ]
+    correlation_change(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "maze correlation change (smooth 0.2, fta)", xlim=[0, 11], smooth=0.2)
+
+    goal_ids = [106, 109, 147]
+    correlation_bar(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "maze correlation bar (fta)", xlim=[0, 11])
+    # transfer_curve_choose(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "transfer", total_param=None, xlim=[0, 11])
     # print(len(goal_ids))
 
     # # print("\nControl")

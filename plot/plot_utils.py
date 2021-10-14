@@ -1,5 +1,6 @@
 import os
 import re
+import copy
 import numpy as np
 import matplotlib.pyplot as plt
 from plot.plot_paths import violin_colors, curve_styles
@@ -57,7 +58,7 @@ def arrange_order(dict1, cut_length=True, scale=1):
         # else:
             # print('Length: ', len(v1))
 #             print('Run: ', i)
-        if len(v1) in [1, 11, 16, 31, 101, 151] or len(v1) > 25:
+        if len(v1) in [1, 11, 16, 31, 101, 151] or len(v1) > 10:
         # if len(v1) > 25:
             lst.append(v1)
         else:
@@ -117,12 +118,12 @@ def load_info(paths, param, key, label=None, path_key="control"):
     return all_rt
 
 # def load_return(paths, total_param, start_param):
-def load_return(paths, setting_list, search_lr=False):
+def load_return(paths, setting_list, search_lr=False, key="return"):
     all_rt = {}
     for i in paths:
         path = i["control"]
         # print("Loading returns from", path)
-        returns = extract_return_all(path, setting_list, search_lr=search_lr)#total_param, start_param)
+        returns = extract_return_all(path, setting_list, search_lr=search_lr, key=key)#total_param, start_param)
         all_rt[i["label"]] = returns
     return all_rt
 
@@ -362,7 +363,7 @@ def extract_from_setting(find_in, setting, key="return", final_only=False, label
 #     else:
 #         setting_list = list(range(start, total))
 
-def extract_return_all(path, setting_list, search_lr=False):
+def extract_return_all(path, setting_list, search_lr=False, key="return"):
     if setting_list is None:
         all_param = os.listdir(path + "/0_run")
         setting_list = []
@@ -372,7 +373,7 @@ def extract_return_all(path, setting_list, search_lr=False):
         setting_list.sort()
     all_sets = {}
     for setting in setting_list:
-        res, lr = extract_from_setting(path, setting)
+        res, lr = extract_from_setting(path, setting, key=key)
         if search_lr:
             all_sets["{}_{}".format(setting, lr)] = res
         else:
@@ -591,3 +592,94 @@ def correlation_calc(all_group_dict, control, properties, property_key, perc=Non
     cor = np.corrcoef(all_control, all_property)[0][1]
     # print("All reps: {} correlation = {:.4f}".format(property_key, cor))
     return cor
+
+def correlation_load(all_paths_dict, goal_ids, total_param=None, xlim=[]):
+    labels = [i["label"] for i in all_paths_dict]
+
+    all_goals_auc = pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels)
+
+    formated_path = {}
+    for goal in goal_ids:
+        g_path = copy.deepcopy(all_paths_dict)
+        for i in range(len(all_paths_dict)):
+            label = g_path[i]["label"]
+            best_param_folder = all_goals_auc[goal][label][1]
+            best = int(best_param_folder.split("_")[0])
+            g_path[i]["control"] = [g_path[i]["control"].format(goal), best]
+        formated_path[goal] = g_path
+
+    property_keys = {"lipschitz": "complexity reduction", "distance": "dynamics awareness", "ortho": "orthogonality", "interf":"noninterference", "diversity":"diversity", "sparsity":"sparsity"}
+
+    all_goals_cor = {}
+    for pk in property_keys.keys():
+        properties, _ = load_property([formated_path[goal]], property_key=pk, early_stopped=True)
+        all_goals_cor[pk] = {}
+        for goal in goal_ids:
+            transf_perf, temp_labels = load_property([formated_path[goal]], property_key="return", early_stopped=True)
+            cor = correlation_calc(temp_labels, transf_perf, properties, pk, perc=None, relationship=None)
+            all_goals_cor[pk][goal] = cor
+
+    return all_goals_cor, property_keys
+
+def pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels, top_runs=[0, 1.0]):
+
+    all_goals_auc = {}
+    for goal in goal_ids:
+        print("Loading auc from goal id {}".format(goal))
+        single_goal_paths_dict = copy.deepcopy(all_paths_dict)
+        for i in range(len(single_goal_paths_dict)):
+            single_goal_paths_dict[i]["control"] = single_goal_paths_dict[i]["control"].format(goal)
+        control = load_return(single_goal_paths_dict, total_param, search_lr=True)  # , start_param)
+
+        rep_auc = {}
+        for idx, label in enumerate(labels):
+            print("\n", idx, label)
+            all_params = control[label]
+            returns_rec = []
+            auc_rec = []
+            param_rec = []
+            curve_rec = []
+            for param, returns in all_params.items():
+                returns = arrange_order(returns)
+                mu, ste = get_avg(returns)
+                if xlim != []:
+                    mu, ste = mu[xlim[0]: xlim[1]], ste[xlim[0]: xlim[1]]
+                    returns = returns[:, xlim[0]: xlim[1]]
+                returns_rec.append(returns)
+                auc_rec.append(np.sum(mu))
+                param_rec.append(param)
+                curve_rec.append([mu, ste])
+            best_idx = np.argmax(auc_rec)
+            best_param_folder = param_rec[best_idx].split("_")[0]
+            best_param = param_rec[best_idx].split("_")[1]
+            # if top_runs == 1.0:
+            #     best_auc = auc_rec[best_idx]
+            # else:
+            #     best_return = returns_rec[best_idx]
+            #     run_auc = np.sum(best_return, axis=1)
+            #     sort_run = np.argsort(run_auc)
+            #     take = int(np.ceil(len(run_auc) * top_runs))
+            #     take_runs = best_return[sort_run[-take: ]]
+            #     best_auc = np.average(take_runs, axis=0).sum()
+            best_return = returns_rec[best_idx]
+            run_auc = np.sum(best_return, axis=1)
+            sort_run = np.argsort(run_auc)
+            take_start = int(np.floor(len(run_auc) * top_runs[0]))
+            take_end = int(np.ceil(len(run_auc) * top_runs[1]))
+            take_runs = best_return[sort_run[take_start: take_end]]
+            print("number of chosen runs", len(take_runs))
+            best_auc = np.average(take_runs, axis=0).sum()
+
+            rep_auc[label] = [best_auc, best_param_folder, best_param]
+            print("{}, best param {}".format(label, best_param))
+        all_goals_auc[goal] = rep_auc
+
+    return all_goals_auc
+
+def label_filter(targets, all_paths):
+    filtered = []
+    for item in all_paths:
+        if item["label"] in targets:
+            filtered.append(item)
+    return filtered
+

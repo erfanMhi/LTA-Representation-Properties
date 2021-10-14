@@ -58,6 +58,8 @@ violin_colors = {
     "ReLU+Reward": c_default[9],
     "ReLU+SF": c_default[10],
 
+    "ReLU+divConstr": c_default[11],
+
     "FTA": c_default[0],
     "FTA(no target)": c_default[0],
 
@@ -87,6 +89,11 @@ violin_colors = {
     "Scratch": "black",
     "Scratch(ReLU)": "black",
     "Scratch(FTA)": "black",
+
+    "ReLU close10": c_default[1],
+    "ReLU close25": c_default[2],
+    "ReLU close50": c_default[3],
+    "ReLU close75": c_default[4],
 }
 
 curve_styles = {
@@ -103,6 +110,7 @@ curve_styles = {
     "ReLU+SF": s_default[1],
     "ReLU+Color": s_default[1],
     "ReLU+Control+XY+Color": s_default[1],
+    "ReLU+divConstr": s_default[1],
 
     "FTA": s_default[0],
     "FTA(no target)": s_default[0],
@@ -132,6 +140,12 @@ curve_styles = {
     "Scratch": s_default[0],
     "Scratch(ReLU)": s_default[1],
     "Scratch(FTA)": s_default[0],
+
+    "ReLU close10": s_default[0],
+    "ReLU close25": s_default[0],
+    "ReLU close50": s_default[0],
+    "ReLU close75": s_default[0],
+
 }
 
 marker_styles = {
@@ -147,6 +161,7 @@ marker_styles = {
         "ReLU+NAS": m_default[1],
         "ReLU+Reward": m_default[1],
         "ReLU+SF": m_default[1],
+        "ReLU+divConstr": m_default[1],
 
     "FTA": m_default[0],
     "FTA(no target)": m_default[0],
@@ -172,7 +187,13 @@ marker_styles = {
 
     "Random": m_default[0],
     "Input": m_default[0],
-    "Scratch": s_default[0],
+    "Scratch": m_default[0],
+
+    "ReLU close10": m_default[0],
+    "ReLU close25": m_default[0],
+    "ReLU close50": m_default[0],
+    "ReLU close75": m_default[0],
+
 }
 
 mc_learn_sweep = [
@@ -6032,6 +6053,19 @@ maze_multigoal_qlearning_same_sweep_v12 = [
 
 
 gh_original_sweep_v13 = [
+    {"label": "ReLU+divConstr w0.01",
+     "control": "data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_div_constr/sweep_w0.01/",
+     },
+    {"label": "ReLU+divConstr w0.001",
+     "control": "data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_div_constr/sweep_w0.001/",
+     },
+    {"label": "ReLU+divConstr w0.0001",
+     "control": "data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_div_constr/sweep_w0.0001/",
+     },
+    {"label": "ReLU+divConstr w0.00001",
+     "control": "data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_div_constr/sweep_w0.00001/",
+     },
+
     {"label": "ReLU",
      "control": "data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn/sweep/",
      },
@@ -6231,14 +6265,116 @@ gh_transfer_sweep_v13 = [
      "control": "data/output/test_v13/gridhard/linear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/successor_as/sweep/",
      "online_measure": ["data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta_aux/successor_as/sweep/", 2],
      },
-    # {"label": "Scratch",
-    #  # "control": "data/output/test_v13/gridhard/linear_vf/learning_scratch/goal_id_{}/dqn/fix_eps_sweep/",
-    #  "control": "data/output/test_v13/gridhard/linear_vf/learning_scratch/goal_id_{}/dqn/sweep/",
+    {"label": "Scratch",
+     # "control": "data/output/test_v13/gridhard/linear_vf/learning_scratch/goal_id_{}/dqn/fix_eps_sweep/",
+     "control": "data/output/test_v13/gridhard/linear_vf/learning_scratch/goal_id_{}/dqn/sweep/",
+     },
+    {"label": "Random",
+     "control": "data/output/test_v13/gridhard/linear_vf/learning_scratch/goal_id_{}/random/sweep/",
+     },
+    {"label": "Input",
+     "control": "data/output/test_v13/gridhard/linear_vf/learning_scratch/goal_id_{}/input/sweep/",
+     },
+    # {"label": "ReLU+divConstr",
+    #  "control": "data/output/test_v13/gridhard/linear_vf/original_0909/transfer/goal_id_{}/dqn_div_constr/sweep_w0.0001_last/",
+    #  "online_measure": ["data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_div_constr/sweep_w0.0001/", 1],
     #  },
-    # {"label": "Random",
-    #  "control": "data/output/test_v13/gridhard/linear_vf/learning_scratch/goal_id_{}/random/sweep/",
-    #  },
-    # {"label": "Input",
-    #  "control": "data/output/test_v13/gridhard/linear_vf/learning_scratch/goal_id_{}/input/sweep/",
-    #  },
+]
+
+gh_nonlinear_original_sweep_v13 = [
+    {"label": "ReLU",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/",
+     },
+    {"label": "ReLU+Control5g",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/aux_control/sweep_5g/",
+     },
+]
+
+gh_nonlinear_transfer_sweep_v13 = [
+    {"label": "ReLU",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn/sweep/",
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/", 3]
+     },
+    {"label": "ReLU+Control5g",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/aux_control/sweep_5g/",
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/aux_control/sweep_5g/", 2],
+     },
+    {"label": "Scratch",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/learning_scratch/goal_id_{}/dqn/sweep/",
+     },
+]
+
+ghmg_original_sweep_v13 = [
+    {"label": "ReLU close10",
+     "control": "data/output/test_v13/gridhard_multigoal/linear_vf/close_10perc/online_property/dqn/sweep/",
+     },
+    {"label": "ReLU close25",
+     "control": "data/output/test_v13/gridhard_multigoal/linear_vf/close_25perc/online_property/dqn/sweep/",
+     },
+    {"label": "ReLU close50",
+     "control": "data/output/test_v13/gridhard_multigoal/linear_vf/close_50perc/online_property/dqn/sweep/",
+     },
+    {"label": "ReLU close75",
+     "control": "data/output/test_v13/gridhard_multigoal/linear_vf/close_75perc/online_property/dqn/sweep/",
+     },
+]
+
+ghmg_transfer_sweep_v13 = [
+    {"label": "ReLU",
+     "control": "data/output/test_v13/gridhard/linear_vf/original_0909/transfer/goal_id_{}/dqn/sweep/",
+     "online_measure": ["data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn/sweep/", 1]
+     },
+    {"label": "ReLU close10",
+     "control": "data/output/test_v13/gridhard_multigoal/linear_vf/close_10perc/transfer/goal_id_{}/dqn/sweep/",
+     "online_measure": ["data/output/test_v13/gridhard_multigoal/linear_vf/close_10perc/online_property/dqn/sweep/", 1]
+     },
+    {"label": "ReLU close25",
+     "control": "data/output/test_v13/gridhard_multigoal/linear_vf/close_25perc/transfer/goal_id_{}/dqn/sweep/",
+     "online_measure": ["data/output/test_v13/gridhard_multigoal/linear_vf/close_25perc/online_property/dqn/sweep/", 1]
+     },
+    {"label": "ReLU close50",
+     "control": "data/output/test_v13/gridhard_multigoal/linear_vf/close_50perc/transfer/goal_id_{}/dqn/sweep/",
+     "online_measure": ["data/output/test_v13/gridhard_multigoal/linear_vf/close_50perc/online_property/dqn/sweep/", 2]
+     },
+
+    {"label": "Scratch",
+     # "control": "data/output/test_v13/gridhard/linear_vf/learning_scratch/goal_id_{}/dqn/fix_eps_sweep/",
+     "control": "data/output/test_v13/gridhard/linear_vf/learning_scratch/goal_id_{}/dqn/sweep/",
+     },
+    {"label": "Random",
+     "control": "data/output/test_v13/gridhard/linear_vf/learning_scratch/goal_id_{}/random/sweep/",
+     },
+    {"label": "Input",
+     "control": "data/output/test_v13/gridhard/linear_vf/learning_scratch/goal_id_{}/input/sweep/",
+     },
+]
+
+ghmg_transfer_last_sweep_v13 = [
+    {"label": "ReLU",
+     "control": "data/output/test_v13/gridhard/linear_vf/original_0909/transfer/goal_id_{}/dqn/sweep/",
+     "online_measure": ["data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn/sweep/", 1]
+     },
+    {"label": "ReLU close10",
+     "control": "data/output/test_v13/gridhard_multigoal/linear_vf/close_10perc/transfer/goal_id_{}/dqn/last_sweep/",
+     "online_measure": ["data/output/test_v13/gridhard_multigoal/linear_vf/close_10perc/online_property/dqn/sweep/", 1]
+     },
+    {"label": "ReLU close25",
+     "control": "data/output/test_v13/gridhard_multigoal/linear_vf/close_25perc/transfer/goal_id_{}/dqn/last_sweep/",
+     "online_measure": ["data/output/test_v13/gridhard_multigoal/linear_vf/close_25perc/online_property/dqn/sweep/", 1]
+     },
+    {"label": "ReLU close50",
+     "control": "data/output/test_v13/gridhard_multigoal/linear_vf/close_50perc/transfer/goal_id_{}/dqn/last_sweep/",
+     "online_measure": ["data/output/test_v13/gridhard_multigoal/linear_vf/close_50perc/online_property/dqn/sweep/", 2]
+     },
+
+    {"label": "Scratch",
+     # "control": "data/output/test_v13/gridhard/linear_vf/learning_scratch/goal_id_{}/dqn/fix_eps_sweep/",
+     "control": "data/output/test_v13/gridhard/linear_vf/learning_scratch/goal_id_{}/dqn/sweep/",
+     },
+    {"label": "Random",
+     "control": "data/output/test_v13/gridhard/linear_vf/learning_scratch/goal_id_{}/random/sweep/",
+     },
+    {"label": "Input",
+     "control": "data/output/test_v13/gridhard/linear_vf/learning_scratch/goal_id_{}/input/sweep/",
+     },
 ]

@@ -1,7 +1,8 @@
 import os
 
 # from core.environment.acrobot import Acrobot
-from core.environment.gridworlds_goal import GridHardRGBMultiGoalSelect, GridHardXYGoal, GridHardRGBGoal, GridHardRGBGoalAll, \
+from core.environment.gridworlds_goal import GridHardRGBMultiGoalSelect, GridHardXYGoal, GridHardRGBGoal, \
+    GridHardRGBGoalAll, GridHardRGBGoalAllRandom,\
     GridHardRGBMultiGoal, GridHardRGBMultiGoalVI
 from core.environment.gridworlds_noise import *
 from core.environment.collectworlds import CollectRGB, CollectColor, CollectTwoColorRGB, CollectTwoColor, CollectTwoColorLip, \
@@ -28,6 +29,9 @@ class EnvFactory:
             return lambda: GridHardRGBGoal(cfg.goal_id, cfg.seed)
         elif cfg.env_name == 'GridHardRGBGoalAll':
             return lambda: GridHardRGBGoalAll(cfg.goal_id, cfg.seed)
+        elif cfg.env_name == 'GridHardRGBGoalAllRandom':
+            return lambda: GridHardRGBGoalAllRandom(cfg.goal_ids, cfg.seed)
+
         elif cfg.env_name == 'NoisyGridHardXY':
             return lambda: NoisyGridHardXY(cfg.seed)
         elif cfg.env_name == 'NoisyGridHardGS':

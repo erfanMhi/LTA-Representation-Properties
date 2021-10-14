@@ -50,7 +50,10 @@ class GridHardXY:
         state_coords = [[x, y] for x in range(15)
                        for y in range(15) if not int(self.obstacles_map[x][y])]
         states = [self.generate_state(coord) for coord in state_coords]
-        goal_coords = [[9, 9], [0, 0], [14, 0], [7, 14]]
+        # goal_coords = [[9, 9], [0, 0], [14, 0], [7, 14]]
+        # goal_coords = [[9, 9], [9, 12], [13, 11], [8, 6], [13, 2]] # 0 5 25 50 100
+        # goal_coords = [[9, 9], [13, 11], [8, 6], [9, 1], [13, 2], [4, 13], [1, 3]] # 0 25 50 75 100 125 150
+        goal_coords = [[9, 9], [3, 4], [1, 0], [0, 14], [3, 14], [7, 14], [10, 3], [14, 4]] #
         goal_states = [self.generate_state(coord) for coord in goal_coords]
         return np.array(states), np.array(state_coords), np.array(goal_states), np.array(goal_coords)
 

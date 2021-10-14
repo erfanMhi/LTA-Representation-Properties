@@ -1,0 +1,80 @@
+{
+    "config_class": "DQNAgentConfig",
+    "fixed_parameters": {
+        "exp_name": "test_v13/gridhard_multigoal/linear_vf/close_50perc/online_property/dqn/sweep",
+        "env_name": "GridHardRGBGoalAllRandom",
+        "goal_ids": [106, 107, 108, 118, 119, 109, 120, 121, 128, 110, 111, 122, 123, 129,
+            130, 142, 143, 144, 141, 140, 139, 138, 156, 157, 158, 155, 170, 171, 172, 169,
+            154, 168, 153, 167, 152, 166, 137, 151, 165, 127, 117, 105, 99, 136, 126, 150,
+            164, 116, 104, 86, 98, 85, 84, 87, 83, 88, 89, 97, 90, 103, 115, 91, 92, 93, 82, 96,
+            102, 114, 81, 80, 71, 95, 70, 69, 68, 101, 67, 66, 113, 62, 65, 125, 61, 132, 47, 133, 79],
+
+        "agent": "DQNAgent",
+        "discount": 0.99,
+        "state_norm_coef": 255.0,
+
+        "decay_epsilon": true,
+        "epsilon_start": 1.0,
+        "epsilon_end": 0.1,
+        "epsilon_schedule_steps": 100000,
+
+        "rep_config": {
+            "rep_type": "online",
+            "network_type": "conv",
+            "conv_architecture": {
+                "conv_layers": [
+                   {"in": 3,  "out": 32, "kernel": 4, "stride": 1, "pad": 1},
+                   {"in": 32,  "out": 16, "kernel": 4, "stride": 2, "pad": 2}
+                ]
+            },
+            "in_dim": [15, 15, 3],
+            "out_dim": 32,
+            "load_params": false,
+            "train_rep": true
+        },
+
+        "val_fn_config": {
+            "val_fn_type": "linear",
+            "init_type": "xavier"
+        },
+
+        "replay": true,
+        "memory_size": 100000,
+        "batch_size": 32,
+
+        "optimizer_type": "Adam",
+        "use_target_network": true,
+        "target_network_update_freq": 256,
+
+        "max_steps": 500000,
+        "log_interval": 10000,
+        "eval_interval": 10000,
+        "eval_episodes": 5,
+        "save_interval": 0,
+        "timeout": 100,
+        "stats_queue_size": 100,
+
+        "save_early": {"mean": 1.0, "min": 1.0},
+
+        "online_property": true,
+        "tensorboard_logs": false,
+        "save_params": true,
+        "visualize": false,
+        "evaluate_lipschitz": true,
+        "evaluate_distance": true,
+        "evaluate_orthogonality": true,
+        "evaluate_interference": true,
+        "evaluate_diversity": true,
+        "evaluate_sparsity": true,
+        "distance_paths": [{
+            "current": "../dataset/gridhard_multigoal/source_task/close_100perc/random_dqn/distance_current_states.npy",
+            "action": "../dataset/gridhard_multigoal/source_task/close_100perc/random_dqn/distance_actions.npy",
+            "next": "../dataset/gridhard_multigoal/source_task/close_100perc/random_dqn/distance_next_states.npy",
+            "reward": "../dataset/gridhard_multigoal/source_task/close_100perc/random_dqn/distance_rewards.npy",
+            "terminal": "../dataset/gridhard_multigoal/source_task/close_100perc/random_dqn/distance_terminals.npy"
+        }]
+    },
+    "sweep_parameters": {
+        "learning_rate": [0.001, 0.0003, 0.0001, 0.00003, 0.00001]
+    }
+}

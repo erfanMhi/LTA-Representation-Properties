@@ -45,7 +45,7 @@ from distutils.dir_util import copy_tree
 from plot_paths import *
 
 def walk_through():
-    for sweep in maze_target_diff_sweep_v12:
+    for sweep in maze_target_diff_sweep_v12_30g:
         # root = "../data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/aux_control/sweep_5g/" 
         root = "../" + sweep['control']
         print(root)

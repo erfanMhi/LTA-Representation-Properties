@@ -148,6 +148,22 @@ def pe_linear():
     draw_label(targets, "pelinear_label", ncol=2)
 
 def maze_multigoals():
+    #targets = ["ReLU", "ReLU+Control",
+    #           "ReLU+XY", "ReLU+Color", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+    #           "FTA eta=2", "FTA+Control",
+    #           "FTA+XY", "FTA+Color", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+    #           "Random", "Input", "Scratch"]
+    #targets = ["ReLU", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+    #           "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8"
+    #           "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+    #           "Random", "Input", "Scratch"]
+    #targets = ["ReLU","Scratch"]
+    #targets = None
+    #learning_curve(maze_source_best_v12, "maze source")
+#    learning_curve(maze_target_same_best_v12, "maze same")
+    #learning_curve(maze_target_diff_best_v12_30g, "maze diff same (30 test goals)", targets=targets)
+    #learning_curve(maze_target_diff_best_v12_15g, "maze diff same (15 test goals)", targets=targets)
+    #learning_curve(maze_target_diff_fine_tune_best_v12, "maze diff same (1 test goal)", targets=targets)
     targets = ["ReLU", "ReLU+Control",
                "ReLU+XY", "ReLU+Color", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
                "FTA eta=2", "FTA+Control",

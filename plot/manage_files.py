@@ -16,15 +16,15 @@ def walk_through_h(root, target_param, new_folder):
         #         os.rename(file1, file2)
 
         for name in subdirs:
-            if "{}_param_setting".format(target_param) in name:
-            # if "_param_setting" in name:
-            #     set = int(name.split("_param_setting")[0])
-            #     set += 5
+            # if "{}_param_setting".format(target_param) in name:
+            if "_param_setting" in name:
+                set = int(name.split("_param_setting")[0])
+                set += 5
 
                 file1 = os.path.join(path, name)
                 print(file1)
-                file2 = root+"/../{}/".format(new_folder)+file1.split("/")[-2] + "/{}_param_setting".format(0)
-                # file2 = root+"/../{}/".format(new_folder)+file1.split("/")[-2] + "/{}_param_setting".format(set)
+                # file2 = root+"/../{}/".format(new_folder)+file1.split("/")[-2] + "/{}_param_setting".format(0)
+                file2 = root+"/../{}/".format(new_folder)+file1.split("/")[-2] + "/{}_param_setting".format(set)
                 print(file2, "\n")
                 # shutil.rmtree(file1)
 
@@ -275,7 +275,9 @@ def check_json():
         os.system("cat {} | grep eta".format(f))
         print()
 
-#walk_through_h("../data/output/result/gridhard/linear_vf/control/early_stop/different_task/scratch/dqn/sweep/", 3, "best")
-walk_through()
+for i in range(173):
+    walk_through_h("../data/output/result/gridhard/nonlinear_vf/leraning_scratch/goal_id_{}/input/sweep2/", 3, "sweep")
+    walk_through_h("../data/output/result/gridhard/nonlinear_vf/leraning_scratch/goal_id_{}/random/sweep2/", 3, "sweep")
+# walk_through()
 # check_log()
 # check_json()

@@ -9,12 +9,15 @@ def exchange_kv(dictionary):
 
 def main():
     goal_order = load_goals("../data/dataset/gridhard/srs/goal(9, 9)_simrank.npy")
+    goal_coord = load_goals("../data/dataset/gridhard/srs/goal(9, 9)_id2coord.npy")
     order_goal = exchange_kv(goal_order)
-    # for order in range(60, 85):
-    for order in range(0, 172):
-        # print("Order {}: goal {}".format(order, order_goal[order]))
+    for order in range(-1, 172):
+        # print(len(list(range(-1, 172))))
         print(order_goal[order], end=", ")
+    # for order in range(-1, 172):
+    #     print("Order {}: goal {}, coord {}".format(order, order_goal[order], goal_coord[order_goal[order]]))
     print()
+
 
 if __name__ == '__main__':
     main()

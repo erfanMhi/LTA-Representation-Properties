@@ -25,10 +25,12 @@ class OptFactory:
 
     @classmethod
     def get_constr_fn(cls, cfg):
-        if cfg.vf_constraint == "sparse":
-            assert cfg.val_fn_config["val_fn_type"] == "linear", "Sparse constraint only used when the value function is linear"
-            return lambda: Sparse(cfg.constr_weight, cfg.sparse_level)
-        elif cfg.vf_constraint is None:
+        if cfg.vf_constraint is None:
             return lambda: NullConstraint(0)
+        elif cfg.vf_constraint['type'] == "sparse":
+            assert cfg.val_fn_config["val_fn_type"] == "linear", "Sparse constraint only used when the value function is linear"
+            return lambda: Sparse(cfg.vf_constraint['weight'], cfg.sparse_level)
+        elif cfg.vf_constraint['type'] == "diverse":
+            return lambda: Diverse(cfg.vf_constraint['weight'], cfg.vf_constraint['group_size'])
         else:
             raise NotImplementedError

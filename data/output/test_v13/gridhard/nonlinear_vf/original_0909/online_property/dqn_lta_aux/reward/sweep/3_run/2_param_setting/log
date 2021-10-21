@@ -1,0 +1,297 @@
+2021-10-15 12:19:10,227 | exp_name: test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/reward/sweep
+2021-10-15 12:19:10,229 | data_root: /project/6010404/erfan/new_proj/LTA-Representation-Properties/data/output
+2021-10-15 12:19:10,229 | device: cpu
+2021-10-15 12:19:10,229 | run: 3
+2021-10-15 12:19:10,229 | param_setting: 2
+2021-10-15 12:19:10,229 | env_name: GridHardRGBGoalAll
+2021-10-15 12:19:10,229 | state_dim: (15, 15, 3)
+2021-10-15 12:19:10,229 | action_dim: 4
+2021-10-15 12:19:10,229 | max_steps: 300000
+2021-10-15 12:19:10,229 | log_interval: 10000
+2021-10-15 12:19:10,229 | save_interval: 0
+2021-10-15 12:19:10,229 | eval_interval: 10000
+2021-10-15 12:19:10,230 | num_eval_episodes: 5
+2021-10-15 12:19:10,230 | timeout: 100
+2021-10-15 12:19:10,230 | stats_queue_size: 100
+2021-10-15 12:19:10,230 | tensorboard_logs: False
+2021-10-15 12:19:10,230 | tensorboard_interval: 100
+2021-10-15 12:19:10,230 | converge_window: 10
+2021-10-15 12:19:10,230 | converge_threshold: 0.0001
+2021-10-15 12:19:10,230 | linear_hidden_units: []
+2021-10-15 12:19:10,230 | coord_dim: 2
+2021-10-15 12:19:10,230 | state_norm_coef: 255.0
+2021-10-15 12:19:10,230 | reward_norm_coef: 1.0
+2021-10-15 12:19:10,230 | rewarding_color: green
+2021-10-15 12:19:10,230 | replay_with_len: False
+2021-10-15 12:19:10,230 | fruit_num: 6
+2021-10-15 12:19:10,230 | log_observations: False
+2021-10-15 12:19:10,231 | single_channel_color: True
+2021-10-15 12:19:10,231 | record_video: False
+2021-10-15 12:19:10,231 | update_network: True
+2021-10-15 12:19:10,231 | train_test_split: False
+2021-10-15 12:19:10,231 | task_data_path: 
+2021-10-15 12:19:10,231 | checkpoints: False
+2021-10-15 12:19:10,231 | agent: DQNAuxAgent
+2021-10-15 12:19:10,231 | learning_rate: 0.0001
+2021-10-15 12:19:10,231 | decay_epsilon: False
+2021-10-15 12:19:10,231 | epsilon: 0.1
+2021-10-15 12:19:10,231 | epsilon_start: None
+2021-10-15 12:19:10,231 | epsilon_end: None
+2021-10-15 12:19:10,231 | epsilon_schedule_steps: None
+2021-10-15 12:19:10,231 | random_action_prob: None
+2021-10-15 12:19:10,231 | discount: 0.99
+2021-10-15 12:19:10,231 | network_type: flat
+2021-10-15 12:19:10,232 | batch_size: 32
+2021-10-15 12:19:10,232 | use_target_network: True
+2021-10-15 12:19:10,232 | memory_size: 100000
+2021-10-15 12:19:10,232 | optimizer_type: Adam
+2021-10-15 12:19:10,232 | val_net: None
+2021-10-15 12:19:10,232 | target_network_update_freq: 64
+2021-10-15 12:19:10,232 | evaluation_criteria: return
+2021-10-15 12:19:10,232 | vf_loss: mse
+2021-10-15 12:19:10,232 | vf_constraint: None
+2021-10-15 12:19:10,232 | constr_weight: 0
+2021-10-15 12:19:10,232 | rep_type: default
+2021-10-15 12:19:10,232 | evaluate_lipschitz: True
+2021-10-15 12:19:10,232 | evaluate_distance: True
+2021-10-15 12:19:10,232 | evaluate_orthogonality: True
+2021-10-15 12:19:10,233 | evaluate_interference: True
+2021-10-15 12:19:10,233 | evaluate_diversity: True
+2021-10-15 12:19:10,233 | evaluate_sparsity: True
+2021-10-15 12:19:10,233 | evaluate_regression: False
+2021-10-15 12:19:10,233 | save_params: True
+2021-10-15 12:19:10,233 | save_early: {'mean': 1.0, 'min': 1.0}
+2021-10-15 12:19:10,233 | visualize: False
+2021-10-15 12:19:10,233 | activation_config: {'name': 'LTA', 'input': 32, 'tile': 20, 'eta': 0.2, 'bound_high': 2, 'bound_low': -2}
+2021-10-15 12:19:10,233 | online_property: True
+2021-10-15 12:19:10,233 | visualize_aux_distance: False
+2021-10-15 12:19:10,233 | rep_config: {'rep_type': 'modular', 'network_type': 'conv', 'conv_architecture': {'conv_layers': [{'in': 3, 'out': 32, 'kernel': 4, 'stride': 1, 'pad': 1}, {'in': 32, 'out': 16, 'kernel': 4, 'stride': 2, 'pad': 2}]}, 'in_dim': [15, 15, 3], 'out_dim': 32, 'load_params': False, 'train_rep': True}
+2021-10-15 12:19:10,233 | val_fn_config: {'val_fn_type': 'fc', 'hidden_units': [64, 64], 'init_type': 'xavier'}
+2021-10-15 12:19:10,233 | aux_config: [{'aux_fn_type': 'fc', 'aux_in_dim': 640, 'hidden_units': [64, 64], 'aux_out_dim': 1, 'aux_task': 'reward_predictor', 'aux_weight': 1}]
+2021-10-15 12:19:10,233 | replay: True
+2021-10-15 12:19:10,233 | eval_episodes: 5
+2021-10-15 12:19:10,234 | distance_paths: [{'current': '../dataset/gridhard/random_dqn/distance_current_states.npy', 'action': '../dataset/gridhard/random_dqn/distance_actions.npy', 'next': '../dataset/gridhard/random_dqn/distance_next_states.npy', 'reward': '../dataset/gridhard/random_dqn/distance_rewards.npy', 'terminal': '../dataset/gridhard/random_dqn/distance_terminals.npy'}]
+2021-10-15 12:19:10,234 | goal_id: 106
+2021-10-15 12:19:10,234 | cumulative: 5
+2021-10-15 12:19:10,234 | id: 17
+2021-10-15 12:19:10,234 | seed: 3
+2021-10-15 12:19:10,234 | aux_weights: [1]
+2021-10-15 12:19:31,384 | Save eval_dataset buffer
+2021-10-15 12:19:31,398 | TRAIN LOG: steps 0, episodes   0, returns 0.03/0.00/0.00/1.00/100 (mean/median/min/max/num), 472.99 steps/s
+2021-10-15 12:19:31,443 | total steps 0, total episodes   0, Interference: nan/
+2021-10-15 12:19:34,611 | total steps 0, total episodes   0, Lipschitz: 5.162/0.05506/0.05372/0.00000/0.13605 (upper/mean/median/min/max)
+2021-10-15 12:19:34,612 | total steps 0, total episodes   0, Diversity: 0.63631/
+2021-10-15 12:19:34,822 | total steps 0, total episodes   0, Distance: 0.21314301/
+2021-10-15 12:19:34,898 | total steps 0, total episodes   0, Orthogonality: 0.02277144/
+2021-10-15 12:19:34,990 | total steps 0, total episodes   0, Instance Sparsity: 0.85000000, Lifetime Sparsity: 0.85000000
+2021-10-15 12:21:54,424 | TRAIN LOG: steps 10000, episodes 107, returns 0.11/0.00/0.00/1.00/100 (mean/median/min/max/num), 71.72 steps/s
+2021-10-15 12:21:55,942 | total steps 10000, total episodes 107, Interference: 0.00151878/
+2021-10-15 12:21:58,682 | total steps 10000, total episodes 107, Lipschitz: 5.030/0.02064/0.01340/0.00000/0.09475 (upper/mean/median/min/max)
+2021-10-15 12:21:58,682 | total steps 10000, total episodes 107, Diversity: 0.75535/
+2021-10-15 12:21:58,801 | total steps 10000, total episodes 107, Distance: 0.35551032/
+2021-10-15 12:21:58,857 | total steps 10000, total episodes 107, Orthogonality: 0.04489234/
+2021-10-15 12:21:58,914 | total steps 10000, total episodes 107, Instance Sparsity: 0.85000000, Lifetime Sparsity: 0.85000000
+2021-10-15 12:24:18,343 | TRAIN LOG: steps 20000, episodes 210, returns 0.04/0.00/0.00/1.00/100 (mean/median/min/max/num), 71.72 steps/s
+2021-10-15 12:24:20,514 | total steps 20000, total episodes 210, Interference: 0.00721450/
+2021-10-15 12:24:23,271 | total steps 20000, total episodes 210, Lipschitz: 6.436/0.02489/0.01874/0.00000/0.26762 (upper/mean/median/min/max)
+2021-10-15 12:24:23,271 | total steps 20000, total episodes 210, Diversity: 0.51613/
+2021-10-15 12:24:23,401 | total steps 20000, total episodes 210, Distance: 0.58056891/
+2021-10-15 12:24:23,466 | total steps 20000, total episodes 210, Orthogonality: 0.42482305/
+2021-10-15 12:24:23,526 | total steps 20000, total episodes 210, Instance Sparsity: 0.85000000, Lifetime Sparsity: 0.85000000
+2021-10-15 12:26:45,403 | TRAIN LOG: steps 30000, episodes 317, returns 0.18/0.00/0.00/1.00/100 (mean/median/min/max/num), 70.48 steps/s
+2021-10-15 12:26:46,914 | total steps 30000, total episodes 317, Interference: 0.00134490/
+2021-10-15 12:26:49,701 | total steps 30000, total episodes 317, Lipschitz: 5.918/0.01342/0.00738/0.00000/0.15496 (upper/mean/median/min/max)
+2021-10-15 12:26:49,702 | total steps 30000, total episodes 317, Diversity: 0.64170/
+2021-10-15 12:26:49,829 | total steps 30000, total episodes 317, Distance: 0.59326434/
+2021-10-15 12:26:49,889 | total steps 30000, total episodes 317, Orthogonality: 0.38449834/
+2021-10-15 12:26:49,947 | total steps 30000, total episodes 317, Instance Sparsity: 0.85000000, Lifetime Sparsity: 0.85000000
+2021-10-15 12:29:13,458 | TRAIN LOG: steps 40000, episodes 429, returns 0.27/0.00/0.00/1.00/100 (mean/median/min/max/num), 69.68 steps/s
+2021-10-15 12:29:14,645 | total steps 40000, total episodes 429, Interference: 0.00056405/
+2021-10-15 12:29:17,459 | total steps 40000, total episodes 429, Lipschitz: 5.623/0.00523/0.00409/0.00000/0.01503 (upper/mean/median/min/max)
+2021-10-15 12:29:17,459 | total steps 40000, total episodes 429, Diversity: 0.60020/
+2021-10-15 12:29:17,588 | total steps 40000, total episodes 429, Distance: 0.60108423/
+2021-10-15 12:29:17,653 | total steps 40000, total episodes 429, Orthogonality: 0.26892952/
+2021-10-15 12:29:17,713 | total steps 40000, total episodes 429, Instance Sparsity: 0.85012123, Lifetime Sparsity: 0.85012123
+2021-10-15 12:31:42,320 | TRAIN LOG: steps 50000, episodes 749, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 69.15 steps/s
+2021-10-15 12:31:42,354 | Save early-stopping model
+2021-10-15 12:31:44,309 | total steps 50000, total episodes 749, Interference: 0.00003457/
+2021-10-15 12:31:47,042 | total steps 50000, total episodes 749, Lipschitz: 5.590/0.01058/0.00978/0.00000/0.02797 (upper/mean/median/min/max)
+2021-10-15 12:31:47,042 | total steps 50000, total episodes 749, Diversity: 0.62197/
+2021-10-15 12:31:47,162 | total steps 50000, total episodes 749, Distance: 0.61277127/
+2021-10-15 12:31:47,224 | total steps 50000, total episodes 749, Orthogonality: 0.37309306/
+2021-10-15 12:31:47,283 | total steps 50000, total episodes 749, Instance Sparsity: 0.85353059, Lifetime Sparsity: 0.85353059
+2021-10-15 12:34:15,538 | TRAIN LOG: steps 60000, episodes 1179, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 67.45 steps/s
+2021-10-15 12:34:18,080 | total steps 60000, total episodes 1179, Interference: 0.00001422/
+2021-10-15 12:34:20,939 | total steps 60000, total episodes 1179, Lipschitz: 5.591/0.00996/0.00846/0.00000/0.02769 (upper/mean/median/min/max)
+2021-10-15 12:34:20,939 | total steps 60000, total episodes 1179, Diversity: 0.61710/
+2021-10-15 12:34:21,063 | total steps 60000, total episodes 1179, Distance: 0.60160136/
+2021-10-15 12:34:21,129 | total steps 60000, total episodes 1179, Orthogonality: 0.36939758/
+2021-10-15 12:34:21,189 | total steps 60000, total episodes 1179, Instance Sparsity: 0.85334351, Lifetime Sparsity: 0.85334351
+2021-10-15 12:36:51,326 | TRAIN LOG: steps 70000, episodes 1621, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 66.61 steps/s
+2021-10-15 12:36:52,655 | total steps 70000, total episodes 1621, Interference: 0.00001117/
+2021-10-15 12:36:55,487 | total steps 70000, total episodes 1621, Lipschitz: 5.587/0.00997/0.00819/0.00000/0.02697 (upper/mean/median/min/max)
+2021-10-15 12:36:55,487 | total steps 70000, total episodes 1621, Diversity: 0.61840/
+2021-10-15 12:36:55,615 | total steps 70000, total episodes 1621, Distance: 0.60206676/
+2021-10-15 12:36:55,677 | total steps 70000, total episodes 1621, Orthogonality: 0.37688365/
+2021-10-15 12:36:55,737 | total steps 70000, total episodes 1621, Instance Sparsity: 0.85357250, Lifetime Sparsity: 0.85357250
+2021-10-15 12:39:29,009 | TRAIN LOG: steps 80000, episodes 2030, returns 0.98/1.00/0.00/1.00/100 (mean/median/min/max/num), 65.24 steps/s
+2021-10-15 12:39:30,270 | total steps 80000, total episodes 2030, Interference: 0.00001527/
+2021-10-15 12:39:33,129 | total steps 80000, total episodes 2030, Lipschitz: 5.638/0.00955/0.00773/0.00000/0.02488 (upper/mean/median/min/max)
+2021-10-15 12:39:33,129 | total steps 80000, total episodes 2030, Diversity: 0.58553/
+2021-10-15 12:39:33,258 | total steps 80000, total episodes 2030, Distance: 0.59503376/
+2021-10-15 12:39:33,324 | total steps 80000, total episodes 2030, Orthogonality: 0.37418738/
+2021-10-15 12:39:33,384 | total steps 80000, total episodes 2030, Instance Sparsity: 0.85671695, Lifetime Sparsity: 0.85671695
+2021-10-15 12:42:13,817 | TRAIN LOG: steps 90000, episodes 2481, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 62.33 steps/s
+2021-10-15 12:42:15,281 | total steps 90000, total episodes 2481, Interference: 0.00000946/
+2021-10-15 12:42:18,124 | total steps 90000, total episodes 2481, Lipschitz: 5.647/0.01022/0.00845/0.00000/0.02859 (upper/mean/median/min/max)
+2021-10-15 12:42:18,124 | total steps 90000, total episodes 2481, Diversity: 0.62728/
+2021-10-15 12:42:18,247 | total steps 90000, total episodes 2481, Distance: 0.58232856/
+2021-10-15 12:42:18,313 | total steps 90000, total episodes 2481, Orthogonality: 0.37431532/
+2021-10-15 12:42:18,372 | total steps 90000, total episodes 2481, Instance Sparsity: 0.85794271, Lifetime Sparsity: 0.85794271
+2021-10-15 12:45:02,605 | TRAIN LOG: steps 100000, episodes 2919, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 60.89 steps/s
+2021-10-15 12:45:03,825 | total steps 100000, total episodes 2919, Interference: 0.00001004/
+2021-10-15 12:45:06,636 | total steps 100000, total episodes 2919, Lipschitz: 5.657/0.01049/0.00859/0.00000/0.02947 (upper/mean/median/min/max)
+2021-10-15 12:45:06,637 | total steps 100000, total episodes 2919, Diversity: 0.61689/
+2021-10-15 12:45:06,769 | total steps 100000, total episodes 2919, Distance: 0.58197337/
+2021-10-15 12:45:06,835 | total steps 100000, total episodes 2919, Orthogonality: 0.40229195/
+2021-10-15 12:45:06,895 | total steps 100000, total episodes 2919, Instance Sparsity: 0.85823605, Lifetime Sparsity: 0.85823605
+2021-10-15 12:47:51,515 | TRAIN LOG: steps 110000, episodes 3364, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 60.75 steps/s
+2021-10-15 12:47:52,859 | total steps 110000, total episodes 3364, Interference: 0.00000863/
+2021-10-15 12:47:55,634 | total steps 110000, total episodes 3364, Lipschitz: 5.673/0.01028/0.00884/0.00000/0.02968 (upper/mean/median/min/max)
+2021-10-15 12:47:55,634 | total steps 110000, total episodes 3364, Diversity: 0.63353/
+2021-10-15 12:47:55,756 | total steps 110000, total episodes 3364, Distance: 0.57873374/
+2021-10-15 12:47:55,819 | total steps 110000, total episodes 3364, Orthogonality: 0.40546555/
+2021-10-15 12:47:55,880 | total steps 110000, total episodes 3364, Instance Sparsity: 0.85819115, Lifetime Sparsity: 0.85819115
+2021-10-15 12:50:40,946 | TRAIN LOG: steps 120000, episodes 3808, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 60.58 steps/s
+2021-10-15 12:50:42,250 | total steps 120000, total episodes 3808, Interference: 0.00000767/
+2021-10-15 12:50:45,016 | total steps 120000, total episodes 3808, Lipschitz: 5.671/0.01019/0.00850/0.00000/0.02823 (upper/mean/median/min/max)
+2021-10-15 12:50:45,016 | total steps 120000, total episodes 3808, Diversity: 0.62507/
+2021-10-15 12:50:45,138 | total steps 120000, total episodes 3808, Distance: 0.58626628/
+2021-10-15 12:50:45,202 | total steps 120000, total episodes 3808, Orthogonality: 0.40203102/
+2021-10-15 12:50:45,262 | total steps 120000, total episodes 3808, Instance Sparsity: 0.85794271, Lifetime Sparsity: 0.85794271
+2021-10-15 12:53:30,940 | TRAIN LOG: steps 130000, episodes 4248, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 60.36 steps/s
+2021-10-15 12:53:32,307 | total steps 130000, total episodes 4248, Interference: 0.00000668/
+2021-10-15 12:53:35,116 | total steps 130000, total episodes 4248, Lipschitz: 5.679/0.01073/0.00885/0.00000/0.03049 (upper/mean/median/min/max)
+2021-10-15 12:53:35,116 | total steps 130000, total episodes 4248, Diversity: 0.61361/
+2021-10-15 12:53:35,248 | total steps 130000, total episodes 4248, Distance: 0.57965130/
+2021-10-15 12:53:35,312 | total steps 130000, total episodes 4248, Orthogonality: 0.40129376/
+2021-10-15 12:53:35,371 | total steps 130000, total episodes 4248, Instance Sparsity: 0.85818068, Lifetime Sparsity: 0.85818068
+2021-10-15 12:56:21,035 | TRAIN LOG: steps 140000, episodes 4696, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 60.36 steps/s
+2021-10-15 12:56:22,407 | total steps 140000, total episodes 4696, Interference: 0.00000679/
+2021-10-15 12:56:25,269 | total steps 140000, total episodes 4696, Lipschitz: 5.680/0.01013/0.00790/0.00000/0.02891 (upper/mean/median/min/max)
+2021-10-15 12:56:25,270 | total steps 140000, total episodes 4696, Diversity: 0.62992/
+2021-10-15 12:56:25,406 | total steps 140000, total episodes 4696, Distance: 0.57153988/
+2021-10-15 12:56:25,473 | total steps 140000, total episodes 4696, Orthogonality: 0.40164249/
+2021-10-15 12:56:25,533 | total steps 140000, total episodes 4696, Instance Sparsity: 0.85818816, Lifetime Sparsity: 0.85818816
+2021-10-15 12:59:11,863 | TRAIN LOG: steps 150000, episodes 5142, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 60.12 steps/s
+2021-10-15 12:59:13,725 | total steps 150000, total episodes 5142, Interference: 0.00000548/
+2021-10-15 12:59:16,577 | total steps 150000, total episodes 5142, Lipschitz: 5.680/0.01014/0.00823/0.00000/0.02824 (upper/mean/median/min/max)
+2021-10-15 12:59:16,577 | total steps 150000, total episodes 5142, Diversity: 0.63488/
+2021-10-15 12:59:16,709 | total steps 150000, total episodes 5142, Distance: 0.57276046/
+2021-10-15 12:59:16,777 | total steps 150000, total episodes 5142, Orthogonality: 0.39124924/
+2021-10-15 12:59:16,838 | total steps 150000, total episodes 5142, Instance Sparsity: 0.85809537, Lifetime Sparsity: 0.85809537
+2021-10-15 13:02:04,323 | TRAIN LOG: steps 160000, episodes 5590, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 59.71 steps/s
+2021-10-15 13:02:05,764 | total steps 160000, total episodes 5590, Interference: 0.00000696/
+2021-10-15 13:02:08,561 | total steps 160000, total episodes 5590, Lipschitz: 5.682/0.01058/0.00880/0.00000/0.02904 (upper/mean/median/min/max)
+2021-10-15 13:02:08,561 | total steps 160000, total episodes 5590, Diversity: 0.62314/
+2021-10-15 13:02:08,687 | total steps 160000, total episodes 5590, Distance: 0.56675315/
+2021-10-15 13:02:08,752 | total steps 160000, total episodes 5590, Orthogonality: 0.39289964/
+2021-10-15 13:02:08,813 | total steps 160000, total episodes 5590, Instance Sparsity: 0.85819564, Lifetime Sparsity: 0.85819564
+2021-10-15 13:04:57,051 | TRAIN LOG: steps 170000, episodes 6046, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 59.44 steps/s
+2021-10-15 13:04:59,167 | total steps 170000, total episodes 6046, Interference: 0.00000600/
+2021-10-15 13:05:02,006 | total steps 170000, total episodes 6046, Lipschitz: 5.696/0.01008/0.00821/0.00000/0.02877 (upper/mean/median/min/max)
+2021-10-15 13:05:02,007 | total steps 170000, total episodes 6046, Diversity: 0.62939/
+2021-10-15 13:05:02,134 | total steps 170000, total episodes 6046, Distance: 0.56114697/
+2021-10-15 13:05:02,196 | total steps 170000, total episodes 6046, Orthogonality: 0.37872581/
+2021-10-15 13:05:02,255 | total steps 170000, total episodes 6046, Instance Sparsity: 0.85802203, Lifetime Sparsity: 0.85802203
+2021-10-15 13:07:51,682 | TRAIN LOG: steps 180000, episodes 6482, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 59.02 steps/s
+2021-10-15 13:07:53,136 | total steps 180000, total episodes 6482, Interference: 0.00000554/
+2021-10-15 13:07:55,947 | total steps 180000, total episodes 6482, Lipschitz: 5.708/0.01053/0.00851/0.00000/0.02787 (upper/mean/median/min/max)
+2021-10-15 13:07:55,947 | total steps 180000, total episodes 6482, Diversity: 0.62196/
+2021-10-15 13:07:56,078 | total steps 180000, total episodes 6482, Distance: 0.55428010/
+2021-10-15 13:07:56,141 | total steps 180000, total episodes 6482, Orthogonality: 0.35906603/
+2021-10-15 13:07:56,202 | total steps 180000, total episodes 6482, Instance Sparsity: 0.85766134, Lifetime Sparsity: 0.85766134
+2021-10-15 13:10:45,935 | TRAIN LOG: steps 190000, episodes 6935, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 58.92 steps/s
+2021-10-15 13:10:47,363 | total steps 190000, total episodes 6935, Interference: 0.00000771/
+2021-10-15 13:10:50,195 | total steps 190000, total episodes 6935, Lipschitz: 5.711/0.01016/0.00827/0.00000/0.02863 (upper/mean/median/min/max)
+2021-10-15 13:10:50,195 | total steps 190000, total episodes 6935, Diversity: 0.63488/
+2021-10-15 13:10:50,324 | total steps 190000, total episodes 6935, Distance: 0.55376917/
+2021-10-15 13:10:50,388 | total steps 190000, total episodes 6935, Orthogonality: 0.37627109/
+2021-10-15 13:10:50,449 | total steps 190000, total episodes 6935, Instance Sparsity: 0.85806843, Lifetime Sparsity: 0.85806843
+2021-10-15 13:13:40,475 | TRAIN LOG: steps 200000, episodes 7370, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 58.81 steps/s
+2021-10-15 13:13:42,541 | total steps 200000, total episodes 7370, Interference: 0.00000491/
+2021-10-15 13:13:45,413 | total steps 200000, total episodes 7370, Lipschitz: 5.723/0.00994/0.00774/0.00000/0.02836 (upper/mean/median/min/max)
+2021-10-15 13:13:45,414 | total steps 200000, total episodes 7370, Diversity: 0.64120/
+2021-10-15 13:13:45,542 | total steps 200000, total episodes 7370, Distance: 0.55496693/
+2021-10-15 13:13:45,604 | total steps 200000, total episodes 7370, Orthogonality: 0.36433571/
+2021-10-15 13:13:45,665 | total steps 200000, total episodes 7370, Instance Sparsity: 0.85806992, Lifetime Sparsity: 0.85806992
+2021-10-15 13:16:36,111 | TRAIN LOG: steps 210000, episodes 7820, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 58.67 steps/s
+2021-10-15 13:16:37,350 | total steps 210000, total episodes 7820, Interference: 0.00000546/
+2021-10-15 13:16:40,140 | total steps 210000, total episodes 7820, Lipschitz: 5.721/0.01025/0.00829/0.00000/0.02905 (upper/mean/median/min/max)
+2021-10-15 13:16:40,140 | total steps 210000, total episodes 7820, Diversity: 0.64108/
+2021-10-15 13:16:40,268 | total steps 210000, total episodes 7820, Distance: 0.55465096/
+2021-10-15 13:16:40,330 | total steps 210000, total episodes 7820, Orthogonality: 0.37787731/
+2021-10-15 13:16:40,390 | total steps 210000, total episodes 7820, Instance Sparsity: 0.85821809, Lifetime Sparsity: 0.85821809
+2021-10-15 13:19:31,139 | TRAIN LOG: steps 220000, episodes 8254, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 58.57 steps/s
+2021-10-15 13:19:32,532 | total steps 220000, total episodes 8254, Interference: 0.00000398/
+2021-10-15 13:19:35,385 | total steps 220000, total episodes 8254, Lipschitz: 5.729/0.01020/0.00833/0.00000/0.02801 (upper/mean/median/min/max)
+2021-10-15 13:19:35,385 | total steps 220000, total episodes 8254, Diversity: 0.62486/
+2021-10-15 13:19:35,506 | total steps 220000, total episodes 8254, Distance: 0.55169666/
+2021-10-15 13:19:35,568 | total steps 220000, total episodes 8254, Orthogonality: 0.37038594/
+2021-10-15 13:19:35,627 | total steps 220000, total episodes 8254, Instance Sparsity: 0.85816571, Lifetime Sparsity: 0.85816571
+2021-10-15 13:22:26,606 | TRAIN LOG: steps 230000, episodes 8702, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 58.49 steps/s
+2021-10-15 13:22:27,951 | total steps 230000, total episodes 8702, Interference: 0.00000567/
+2021-10-15 13:22:30,731 | total steps 230000, total episodes 8702, Lipschitz: 5.727/0.01045/0.00858/0.00000/0.03015 (upper/mean/median/min/max)
+2021-10-15 13:22:30,731 | total steps 230000, total episodes 8702, Diversity: 0.63259/
+2021-10-15 13:22:30,859 | total steps 230000, total episodes 8702, Distance: 0.54039025/
+2021-10-15 13:22:30,922 | total steps 230000, total episodes 8702, Orthogonality: 0.36554386/
+2021-10-15 13:22:30,981 | total steps 230000, total episodes 8702, Instance Sparsity: 0.85801155, Lifetime Sparsity: 0.85801155
+2021-10-15 13:25:21,834 | TRAIN LOG: steps 240000, episodes 9145, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 58.53 steps/s
+2021-10-15 13:25:23,822 | total steps 240000, total episodes 9145, Interference: 0.00000351/
+2021-10-15 13:25:26,633 | total steps 240000, total episodes 9145, Lipschitz: 5.733/0.01061/0.00857/0.00000/0.02974 (upper/mean/median/min/max)
+2021-10-15 13:25:26,633 | total steps 240000, total episodes 9145, Diversity: 0.62091/
+2021-10-15 13:25:26,763 | total steps 240000, total episodes 9145, Distance: 0.54278946/
+2021-10-15 13:25:26,826 | total steps 240000, total episodes 9145, Orthogonality: 0.36966875/
+2021-10-15 13:25:26,886 | total steps 240000, total episodes 9145, Instance Sparsity: 0.85804747, Lifetime Sparsity: 0.85804747
+2021-10-15 13:28:17,818 | TRAIN LOG: steps 250000, episodes 9594, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 58.50 steps/s
+2021-10-15 13:28:19,284 | total steps 250000, total episodes 9594, Interference: 0.00000448/
+2021-10-15 13:28:22,105 | total steps 250000, total episodes 9594, Lipschitz: 5.722/0.01030/0.00827/0.00000/0.02967 (upper/mean/median/min/max)
+2021-10-15 13:28:22,105 | total steps 250000, total episodes 9594, Diversity: 0.62153/
+2021-10-15 13:28:22,234 | total steps 250000, total episodes 9594, Distance: 0.54650670/
+2021-10-15 13:28:22,297 | total steps 250000, total episodes 9594, Orthogonality: 0.36335300/
+2021-10-15 13:28:22,356 | total steps 250000, total episodes 9594, Instance Sparsity: 0.85774814, Lifetime Sparsity: 0.85774814
+2021-10-15 13:31:13,422 | TRAIN LOG: steps 260000, episodes 10029, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 58.46 steps/s
+2021-10-15 13:31:14,630 | total steps 260000, total episodes 10029, Interference: 0.00000398/
+2021-10-15 13:31:17,388 | total steps 260000, total episodes 10029, Lipschitz: 5.723/0.01039/0.00861/0.00000/0.03011 (upper/mean/median/min/max)
+2021-10-15 13:31:17,388 | total steps 260000, total episodes 10029, Diversity: 0.62905/
+2021-10-15 13:31:17,516 | total steps 260000, total episodes 10029, Distance: 0.54372811/
+2021-10-15 13:31:17,582 | total steps 260000, total episodes 10029, Orthogonality: 0.36030289/
+2021-10-15 13:31:17,641 | total steps 260000, total episodes 10029, Instance Sparsity: 0.85816571, Lifetime Sparsity: 0.85816571
+2021-10-15 13:34:08,683 | TRAIN LOG: steps 270000, episodes 10459, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 58.47 steps/s
+2021-10-15 13:34:10,567 | total steps 270000, total episodes 10459, Interference: 0.00000355/
+2021-10-15 13:34:13,411 | total steps 270000, total episodes 10459, Lipschitz: 5.717/0.01009/0.00793/0.00000/0.02903 (upper/mean/median/min/max)
+2021-10-15 13:34:13,411 | total steps 270000, total episodes 10459, Diversity: 0.63354/
+2021-10-15 13:34:13,532 | total steps 270000, total episodes 10459, Distance: 0.54385471/
+2021-10-15 13:34:13,596 | total steps 270000, total episodes 10459, Orthogonality: 0.36868933/
+2021-10-15 13:34:13,656 | total steps 270000, total episodes 10459, Instance Sparsity: 0.85824353, Lifetime Sparsity: 0.85824353
+2021-10-15 13:37:04,837 | TRAIN LOG: steps 280000, episodes 10903, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 58.42 steps/s
+2021-10-15 13:37:06,132 | total steps 280000, total episodes 10903, Interference: 0.00000298/
+2021-10-15 13:37:08,913 | total steps 280000, total episodes 10903, Lipschitz: 5.712/0.01109/0.00936/0.00000/0.02991 (upper/mean/median/min/max)
+2021-10-15 13:37:08,913 | total steps 280000, total episodes 10903, Diversity: 0.59660/
+2021-10-15 13:37:09,041 | total steps 280000, total episodes 10903, Distance: 0.54742748/
+2021-10-15 13:37:09,103 | total steps 280000, total episodes 10903, Orthogonality: 0.36921995/
+2021-10-15 13:37:09,162 | total steps 280000, total episodes 10903, Instance Sparsity: 0.85803400, Lifetime Sparsity: 0.85803400
+2021-10-15 13:39:58,650 | TRAIN LOG: steps 290000, episodes 11334, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 59.00 steps/s
+2021-10-15 13:40:00,419 | total steps 290000, total episodes 11334, Interference: 0.00000312/
+2021-10-15 13:40:03,173 | total steps 290000, total episodes 11334, Lipschitz: 5.707/0.01045/0.00878/0.00000/0.02993 (upper/mean/median/min/max)
+2021-10-15 13:40:03,174 | total steps 290000, total episodes 11334, Diversity: 0.62215/
+2021-10-15 13:40:03,294 | total steps 290000, total episodes 11334, Distance: 0.54574978/
+2021-10-15 13:40:03,353 | total steps 290000, total episodes 11334, Orthogonality: 0.37850493/
+2021-10-15 13:40:03,411 | total steps 290000, total episodes 11334, Instance Sparsity: 0.85813877, Lifetime Sparsity: 0.85813877
+2021-10-15 13:42:46,993 | TRAIN LOG: steps 300000, episodes 11783, returns 1.00/1.00/1.00/1.00/100 (mean/median/min/max/num), 61.13 steps/s
+2021-10-15 13:42:48,412 | total steps 300000, total episodes 11783, Interference: 0.00000386/
+2021-10-15 13:42:51,167 | total steps 300000, total episodes 11783, Lipschitz: 5.710/0.01069/0.00895/0.00000/0.03226 (upper/mean/median/min/max)
+2021-10-15 13:42:51,167 | total steps 300000, total episodes 11783, Diversity: 0.60336/
+2021-10-15 13:42:51,284 | total steps 300000, total episodes 11783, Distance: 0.54472053/
+2021-10-15 13:42:51,340 | total steps 300000, total episodes 11783, Orthogonality: 0.36911875/
+2021-10-15 13:42:51,397 | total steps 300000, total episodes 11783, Instance Sparsity: 0.85810734, Lifetime Sparsity: 0.85810734

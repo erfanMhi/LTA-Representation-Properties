@@ -102,7 +102,8 @@ def separate_task(task_lst):
             raise IOError
     return all
 
-def write_script(start_script, num_script, start_task=None, total_tasks=None, tasks_list=None, hours=1, min_node=1, parallel=30, account="rrg-whitem", virt_env="torch1env"):
+def write_script(start_script, num_script, start_task=None, total_tasks=None, tasks_list=None, hours=1,
+                    min_node=1, parallel=30, account="rrg-whitem", virt_env="torch1env"):
     if start_task is not None and total_tasks is not None:
         CONDITION = 1
         assert tasks_list is None

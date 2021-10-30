@@ -135,7 +135,8 @@ def learning_curve(all_paths_dict, title, total_param=None,
     # plt.clf()
 
 
-def performance_change(all_paths_dict, goal_ids, ranks, title, total_param=None, xlim=[], smooth=1.0, top_runs=[0, 1.0]):
+def performance_change(all_paths_dict, goal_ids, ranks, title, total_param=None, xlim=[], smooth=1.0, top_runs=[0, 1.0],
+                       xy_label=True, data_label=True, linewidth=1, figsize=(8, 6)):
     labels = [i["label"] for i in all_paths_dict]
     all_ranks = []
     for goal in goal_ids:
@@ -156,22 +157,27 @@ def performance_change(all_paths_dict, goal_ids, ranks, title, total_param=None,
         ranked_auc = exp_smooth(ranked_auc, smooth)
         curves[label] = ranked_auc
 
-    plt.figure(figsize=(12, 9))
+    plt.figure(figsize=figsize)
     for label in labels:
-        plt.plot(curves[label], color=violin_colors[label], linestyle=curve_styles[label], label=label)
+        # draw_curve(curves[label], plt, label, violin_colors[label], style=curve_styles[label], linewidth=linewidth)
+        plt.plot(curves[label], color=violin_colors[label], linestyle=curve_styles[label], label=label, linewidth=linewidth)
 
     xticks_pos = list(range(0, all_ranks.max()+1, 25))
     xticks_labels = list(range(0, all_ranks.max()+1, 25))
-    plt.xticks(xticks_pos, xticks_labels, rotation=60)
-    # plt.xticks(list(range(all_ranks.max()+1)), all_ranks, rotation=90)
+    plt.xticks(xticks_pos, xticks_labels, rotation=60, fontsize=14)
+    plt.yticks(fontsize=14)
+    plt.gca().spines['right'].set_visible(False)
+    plt.gca().spines['top'].set_visible(False)
 
-    plt.legend()
+    if data_label:
+        plt.legend()
     # plt.show()
     # plt.xlabel('goal index\nOrdered by the similarity')
-    plt.xlabel('Goal Ranks')
-    plt.ylabel('AUC')
-    plt.savefig("plot/img/{}.png".format(title), dpi=300, bbox_inches='tight')
-    print("Save in plot/img/{}.png".format(title))
+    if xy_label:
+        plt.xlabel('Goal Ranks')
+        plt.ylabel('AUC')
+    plt.savefig("plot/img/{}.pdf".format(title), dpi=300, bbox_inches='tight')
+    print("Save in plot/img/{}".format(title))
     # plt.show()
     plt.close()
 
@@ -304,8 +310,9 @@ def mountain_car():
 def simple_maze():
     # print("\nRep learning")
     # targets = ["ReLU+divConstr w0.01", "ReLU+divConstr w0.001", "ReLU+divConstr w0.0001", "ReLU+divConstr w0.00001"]
-    # learning_curve(label_filter(targets, gh_original_sweep_v13), "maze rep sweep result")
-    # learning_curve(gh_nonlinear_original_sweep_v13, "maze rep sweep nonlinear vf")
+    # learning_curve(label_filter(targets, gh_original_sweep_v13), "linear/maze rep sweep result")
+    # learning_curve(gh_original_sweep_v13, "linear/maze rep sweep")
+    # learning_curve(gh_nonlinear_original_sweep_v13, "nonlinear/maze rep sweep")
 
     ranks = np.load("data/dataset/gridhard/srs/goal(9, 9)_simrank.npy", allow_pickle=True).item()
     for i in ranks:
@@ -325,51 +332,62 @@ def simple_maze():
                 54, 55, 56, 57, 58, 59, 64, 51, 38, 60, 39, 40, 46, 41, 42, 43, 44, 45, 32, 31, 37, 30, 22, 21, 23, 20, 24, 19, 25, 18, 26, 17, 16, 27, 15, 28, 29, 7, 8, 6, 9, 5, 10, 4, 11, 3, 12, 2,
                 13, 1, 14, 0,
                 ]
-    # performance_change(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "maze transfer change (smooth 0.2)", xlim=[0, 11], smooth=0.2)
-    # performance_change(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "maze transfer change (smooth 0.2) top0.1", xlim=[0, 11], smooth=0.2, top_runs=[0.9, 1.0])
-    # performance_change(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "maze transfer change (smooth 0.2) top0.3-0.2", xlim=[0, 11], smooth=0.2, top_runs=[0.7, 0.8])
-    # performance_change(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "maze transfer change (smooth 0.2) top0.5-0.6", xlim=[0, 11], smooth=0.2, top_runs=[0.5, 0.6])
-    # performance_change(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "maze transfer change (smooth 0.2) top0.3-0.4", xlim=[0, 11], smooth=0.2, top_runs=[0.3, 0.4])
-    # performance_change(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "maze transfer change (smooth 0.2) top0-0.2", xlim=[0, 11], smooth=0.2, top_runs=[0., 0.2])
+    # performance_change(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/maze transfer auc (smooth 0.1)", xlim=[0, 11], smooth=0.1,
+    #                    xy_label=False, data_label=False, linewidth=1, figsize=(8, 6))
+    # performance_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/maze transfer auc (smooth 0.1)", xlim=[0, 11], smooth=0.1,
+    #                    xy_label=False, data_label=False, linewidth=1, figsize=(8, 6))
+    draw_label(targets, "auc all label", ncol=5)
 
-    performance_change(gh_nonlinear_transfer_sweep_v13, goal_ids, ranks, "maze nonlinear transfer change (smooth 0.2)", xlim=[0, 11], smooth=0.2)
+    # targets = [
+    #     "ReLU+Control5g", "ReLU+SF",
+    #     "FTA+NAS",
+    #     "Scratch", "Random", "Input",
+    # ]
+    # performance_change(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/maze transfer chosen (smooth 0.1)", xlim=[0, 11], smooth=0.1,
+    #                    xy_label=False, data_label=False, linewidth=3, figsize=(8, 6))
+    # targets = [
+    #     "ReLU+Control5g", "ReLU+SF",
+    #     "FTA eta=0.8",
+    #     "Scratch", "Random", "Input",
+    # ]
+    # performance_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/maze transfer chosen (smooth 0.1)", xlim=[0, 11], smooth=0.1,
+    #                    xy_label=False, data_label=False, linewidth=3, figsize=(8, 6))
+    draw_label(["ReLU+Control5g", "ReLU+SF", "FTA eta=0.8", "FTA+NAS", "Scratch", "Random", "Input"],
+               "auc chosen label", ncol=4)
 
-    targets = [
-        "ReLU", "ReLU+Control5g",
-        "FTA eta=0.2", "FTA+NAS",
-        "Scratch"
-    ]
-    # performance_change(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "maze transfer change (smooth 0.2) chosen", xlim=[0, 11], smooth=0.2)
 
-    targets = [
-        "ReLU",
-        "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
-        "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
-        "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
-    ]
-    # correlation_change(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "maze correlation change (smooth 0.2)", xlim=[0, 11], smooth=0.2)
-
-    targets = [
-        "ReLU",
-        "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
-    ]
-    # correlation_change(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "maze correlation change (smooth 0.2, relu)", xlim=[0, 11], smooth=0.2)
-    targets = [
-        "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
-        "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
-    ]
-    # correlation_change(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "maze correlation change (smooth 0.2, fta)", xlim=[0, 11], smooth=0.2)
-
-    # print(ranks)
-    # exit()
-    goal_ids = [106, 107, 109, 155, 98, 147]
-    targets = [
-        "ReLU",
-        "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
-        "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
-        "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
-    ]
-    # transfer_curve_choose(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "transfer", total_param=None, xlim=[0, 11])
+    # targets = [
+    #     "ReLU",
+    #     "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+    #     "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
+    #     "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+    # ]
+    # # correlation_change(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/maze correlation change (smooth 0.2)", xlim=[0, 11], smooth=0.2)
+    # correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/maze correlation change (smooth 0.2)", xlim=[0, 11], smooth=0.2)
+    #
+    # targets = [
+    #     "ReLU",
+    #     "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+    # ]
+    # # correlation_change(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/maze correlation change (smooth 0.2, relu)", xlim=[0, 11], smooth=0.2)
+    # correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/maze correlation change (smooth 0.2, relu)", xlim=[0, 11], smooth=0.2)
+    # targets = [
+    #     "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
+    #     "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+    # ]
+    # # correlation_change(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/maze correlation change (smooth 0.2, fta)", xlim=[0, 11], smooth=0.2)
+    # correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/maze correlation change (smooth 0.2, fta)", xlim=[0, 11], smooth=0.2)
+    #
+    # # # goal_ids = [106, 107, 109, 155, 98, 147]
+    # # goal_ids = [106, 155, 98, 58, 18]  # 0 25 50 100 125 150
+    # # targets = [
+    # #     "ReLU",
+    # #     "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+    # #     "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
+    # #     "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+    # # ]
+    # # # transfer_curve_choose(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/transfer", total_param=None, xlim=[0, 11])
+    # # # transfer_curve_choose(label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/transfer", total_param=None, xlim=[0, 11])
 
 
 def maze_multigoals():

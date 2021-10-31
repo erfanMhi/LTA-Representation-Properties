@@ -7543,3 +7543,37 @@ ghmg_transfer_last_sweep_v13 = [
      "control": "data/output/test_v13/gridhard/linear_vf/learning_scratch/goal_id_{}/input/sweep/",
      },
 ]
+gh_nonlinear_fta_original_sweep_v13 = [
+    {"label": "FTA eta=0.8",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.8_sweep/",
+     "best": '2'
+    },
+    {"label": "FTA+Control1g",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/aux_control/sweep_1g/",
+     "best": '1'
+     },
+    {"label": "FTA+Control5g",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/aux_control/sweep_5g/",
+     "best": '1'
+     },
+    {"label": "FTA+XY",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/info/sweep/",
+     "best": '1'
+     },
+    {"label": "FTA+Decoder",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/input_decoder/sweep/",
+     "best": '1'
+     },
+    {"label": "FTA+NAS",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/nas_v2_delta/sweep/",
+     "best": '2'
+     },
+    {"label": "FTA+Reward",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/reward/sweep/",
+     "best": '2'
+     },
+    {"label": "FTA+SF",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/successor_as/sweep/",
+     "best": '2'
+     },
+]

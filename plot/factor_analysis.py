@@ -54,7 +54,7 @@ def correlation_bar(all_paths_dict, goal_ids, ranks, title, total_param=None, xl
     plt.close()
     plt.clf()
 
-def xgboost_analysis(property_keys, all_paths_dict, goal_ids, ranks, title, total_param=None, xlim=[], smooth=1.0, top_runs=1.0):
+def xgboost_analysis(property_keys, all_paths_dict, goal_ids, ranks, title, total_param=None, xlim=[], smooth=1.0, top_runs=[0, 1.0]):
     ordered_goal_ids = []
     ordered_goal_ranks = []
     rank2goal = dict((v, k) for k, v in ranks.items())
@@ -317,24 +317,31 @@ def main():
     for i in ranks:
         ranks[i] += 1
 
-    goal_ids = [106, 109, 155, 98, 147]
-    # targets = [
-    #     "ReLU",
-    #     "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
-    #     "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
-    #     "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
-    # ]
-    # correlation_bar(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "maze correlation bar", xlim=[0, 11])
-    # targets = [
-    #     "ReLU",
-    #     "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
-    # ]
-    # correlation_bar(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "maze correlation bar (relu)", xlim=[0, 11])
-    # targets = [
-    #     "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
-    #     "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
-    # ]
-    # correlation_bar(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "maze correlation bar (fta)", xlim=[0, 11])
+    goal_ids = [106,155, 98,101, 147,58, 18] # 0 25 50 75 100 125 150
+    # goal_ids = [106, 117, 65, 159, 6,] # 0 40 80 120 160
+    # goal_ids = [106, 154, 115, 52, 159, 18,] # 0 30 60 90 120 150
+
+    targets = [
+        "ReLU",
+        "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+        "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
+        "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+    ]
+    # correlation_bar(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/maze correlation bar", xlim=[0, 11])
+    # correlation_bar(label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/maze correlation bar", xlim=[0, 11])
+    targets = [
+        "ReLU",
+        "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+    ]
+    # correlation_bar(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/maze correlation bar (relu)", xlim=[0, 11])
+    # correlation_bar(label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/maze correlation bar (relu)", xlim=[0, 11])
+    targets = [
+        "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
+        "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+    ]
+    # correlation_bar(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/maze correlation bar (fta)", xlim=[0, 11])
+    # correlation_bar(label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/maze correlation bar (fta)", xlim=[0, 11])
+
 
     targets = [
         "ReLU",
@@ -355,41 +362,66 @@ def main():
         pair = {}
         pair[key_pair[0]] = property_keys[key_pair[0]]
         pair[key_pair[1]] = property_keys[key_pair[1]]
-        pair_property(pair, label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, xlim=[0, 11])
-    # groups = {
-    #     "ReLU": ["ReLU", "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",],
-    #     "FTA": ["FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8", "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",],
-    # }
-    # for key in property_keys.keys():
-    #     property_auc_scatter({key: property_keys[key]}, label_filter(targets, gh_transfer_sweep_v13), groups, goal_ids, ranks, "auc-grouped", xlim=[0, 11])
-    #
-    # groups = {
-    #     "All": ["ReLU", "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
-    #             "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8", "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",],
-    # }
-    # for key in property_keys.keys():
-    #     property_auc_scatter({key: property_keys[key]}, label_filter(targets, gh_transfer_sweep_v13), groups, goal_ids, ranks, "auc-all", xlim=[0, 11])
+        # pair_property(pair, label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, xlim=[0, 11])
+        # pair_property(pair, label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, xlim=[0, 11])
 
-    # goal_ids = [106,
-    #             107, 108, 118, 119, 109, 120, 121, 128, 110, 111, 122, 123, 129, 130, 142, 143, 144, 141, 140, 139, 138, 156, 157, 158, 155, 170, 171, 172, 169, 154, 168, 153, 167, 152, 166, 137, 151,
-    #             165, 127, 117, 105, 99, 136, 126, 150, 164, 116, 104, 86, 98, 85, 84, 87, 83, 88, 89, 97, 90, 103, 115, 91, 92, 93, 82, 96, 102, 114, 81, 80, 71, 95, 70, 69, 68, 101, 67, 66, 113, 62,
-    #             65, 125, 61, 132, 47, 133, 79, 48, 72, 94, 52, 146, 73, 49, 33, 100, 134, 34, 74, 50, 147, 35, 112, 75, 135, 160, 36, 148, 76, 161, 63, 77, 124, 149, 78, 162, 163, 131, 53, 145, 159,
-    #             54, 55, 56, 57, 58, 59, 64, 51, 38, 60, 39, 40, 46, 41, 42, 43, 44, 45, 32, 31, 37, 30, 22, 21, 23, 20, 24, 19, 25, 18, 26, 17, 16, 27, 15, 28, 29, 7, 8, 6, 9, 5, 10, 4, 11, 3, 12, 2,
-    #             13, 1, 14, 0,
-    #             ]
-    # xgboost_analysis(property_keys, label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "xgboost", xlim=[0, 11], smooth=0.2, , top_runs=[0.9, 1.0])
-    # xgboost_analysis(property_keys, label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "xgboost top0.1", xlim=[0, 11], smooth=0.2, , top_runs=[0.9, 1.0])
-    # targets = [
-    #     "ReLU",
-    #     "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
-    # ]
-    # xgboost_analysis(property_keys, label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "xgboost_relu", xlim=[0, 11], smooth=0.2)
-    # xgboost_analysis(property_keys, label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "xgboost_relu top0.1", xlim=[0, 11], smooth=0.2, top_runs=[0.9, 1.0])
-    # targets = [
-    #     "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
-    #     "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
-    # ]
-    # xgboost_analysis(property_keys, label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "xgboost_fta", xlim=[0, 11], smooth=0.2)
-    # xgboost_analysis(property_keys, label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "xgboost_fta top0.1", xlim=[0, 11], smooth=0.2, top_runs=[0.9, 1.0])
+    groups = {
+        "ReLU": ["ReLU", "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",],
+        "FTA": ["FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8", "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",],
+    }
+    # for key in property_keys.keys():
+        # property_auc_scatter({key: property_keys[key]}, label_filter(targets, gh_transfer_sweep_v13), groups, goal_ids, ranks, "auc-grouped", xlim=[0, 11])
+        # property_auc_scatter({key: property_keys[key]}, label_filter(targets, gh_nonlinear_transfer_sweep_v13), groups, goal_ids, ranks, "nonlinear/group/auc-group-activation", xlim=[0, 11])
+
+    groups = {
+        "Worse": ['ReLU', "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",],
+        "Better": ["ReLU+Control1g", "ReLU+Control5g", "ReLU+XY",
+                   "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8", "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", ],
+    }
+    # for key in property_keys.keys():
+        # property_auc_scatter({key: property_keys[key]}, label_filter(targets, gh_nonlinear_transfer_sweep_v13), groups, goal_ids, ranks, "nonlinear/group/auc-group-CompareScratch", xlim=[0, 11])
+
+    groups = {
+        "Worse-ReLU": ["ReLU", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",],
+        "Better-ReLU": ["ReLU+Control1g", "ReLU+Control5g", "ReLU+XY"],
+    }
+    # for key in property_keys.keys():
+        # property_auc_scatter({key: property_keys[key]}, label_filter(targets, gh_transfer_sweep_v13), groups, goal_ids, ranks, "auc-grouped", xlim=[0, 11])
+        # property_auc_scatter({key: property_keys[key]}, label_filter(targets, gh_nonlinear_transfer_sweep_v13), groups, goal_ids, ranks, "nonlinear/group/auc-group-relu", xlim=[0, 11])
+
+    groups = {
+        "All": ["ReLU", "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+                "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8", "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",],
+    }
+    # for key in property_keys.keys():
+        # property_auc_scatter({key: property_keys[key]}, label_filter(targets, gh_transfer_sweep_v13), groups, goal_ids, ranks, "auc-all", xlim=[0, 11])
+        # property_auc_scatter({key: property_keys[key]}, label_filter(targets, gh_nonlinear_transfer_sweep_v13), groups, goal_ids, ranks, "auc-all", xlim=[0, 11])
+
+    goal_ids = [106,
+                107, 108, 118, 119, 109, 120, 121, 128, 110, 111, 122, 123, 129, 130, 142, 143, 144, 141, 140, 139, 138, 156, 157, 158, 155, 170, 171, 172, 169, 154, 168, 153, 167, 152, 166, 137, 151,
+                165, 127, 117, 105, 99, 136, 126, 150, 164, 116, 104, 86, 98, 85, 84, 87, 83, 88, 89, 97, 90, 103, 115, 91, 92, 93, 82, 96, 102, 114, 81, 80, 71, 95, 70, 69, 68, 101, 67, 66, 113, 62,
+                65, 125, 61, 132, 47, 133, 79, 48, 72, 94, 52, 146, 73, 49, 33, 100, 134, 34, 74, 50, 147, 35, 112, 75, 135, 160, 36, 148, 76, 161, 63, 77, 124, 149, 78, 162, 163, 131, 53, 145, 159,
+                54, 55, 56, 57, 58, 59, 64, 51, 38, 60, 39, 40, 46, 41, 42, 43, 44, 45, 32, 31, 37, 30, 22, 21, 23, 20, 24, 19, 25, 18, 26, 17, 16, 27, 15, 28, 29, 7, 8, 6, 9, 5, 10, 4, 11, 3, 12, 2,
+                13, 1, 14, 0,
+                ]
+    # xgboost_analysis(property_keys, label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/xgboost", xlim=[0, 11], smooth=0.2)
+    # xgboost_analysis(property_keys, label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/xgboost top0.1", xlim=[0, 11], smooth=0.2, top_runs=[0.9, 1.0])
+    # xgboost_analysis(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/xgboost", xlim=[0, 11], smooth=0.2)
+    xgboost_analysis(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/xgboost(0.05)", xlim=[0, 11], smooth=0.05)
+
+    targets = [
+        "ReLU",
+        "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+    ]
+    # xgboost_analysis(property_keys, label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/xgboost_relu", xlim=[0, 11], smooth=0.2)
+    # xgboost_analysis(property_keys, label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/xgboost_relu top0.1", xlim=[0, 11], smooth=0.2, top_runs=[0.9, 1.0])
+    # xgboost_analysis(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/xgboost_relu", xlim=[0, 11], smooth=0.2)
+    targets = [
+        "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
+        "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+    ]
+    # xgboost_analysis(property_keys, label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/xgboost_fta", xlim=[0, 11], smooth=0.2)
+    # xgboost_analysis(property_keys, label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/xgboost_fta top0.1", xlim=[0, 11], smooth=0.2, top_runs=[0.9, 1.0])
+    # xgboost_analysis(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/xgboost_fta", xlim=[0, 11], smooth=0.2)
 
 main()

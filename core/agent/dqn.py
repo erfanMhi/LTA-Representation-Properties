@@ -17,7 +17,6 @@ from core.utils.lipschitz import compute_lipschitz
 class DQNAgent(base.Agent):
     def __init__(self, cfg):
         super().__init__(cfg)
-
         rep_net = cfg.rep_fn()
         if cfg.rep_config['load_params']:
             path = os.path.join(cfg.data_root, cfg.rep_config['path'])
@@ -63,6 +62,8 @@ class DQNAgent(base.Agent):
             self.update_interfs = []
             self.itera_interfs = []
 
+        self.device = cfg.device
+
     def step(self):
         if self.reset is True:
             self.state = self.env.reset()
@@ -85,6 +86,9 @@ class DQNAgent(base.Agent):
         action = self.policy(self.state, self.cfg.eps_schedule())
 
         next_state, reward, done, _ = self.env.step([action])
+#        print('state: ', next_state.shape)
+#        print('action: ', action)
+#        raise ValueError('Here')
         self.replay.feed([self.state, action, reward, next_state, int(done)])
         self.state = next_state
         # print('action: ', action)
@@ -110,6 +114,8 @@ class DQNAgent(base.Agent):
 
     def update(self):
         states, actions, rewards, next_states, terminals = self.replay.sample()
+#        print('states shape: ', states.shape)
+#        raise ValueError('No')
         states = self.cfg.state_normalizer(states)
         next_states = self.cfg.state_normalizer(next_states)
 

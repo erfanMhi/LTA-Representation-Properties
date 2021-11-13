@@ -1,6 +1,7 @@
 
 import torch
 
+from core.utils import torch_utils
 from core.network import network_utils, network_bodies
 
 class MlpModel(torch.nn.Module):
@@ -20,14 +21,15 @@ class MlpModel(torch.nn.Module):
             hidden_sizes,  # Can be empty list or None for none.
             output_size=None,  # if None, last layer has nonlinearity applied.
             nonlinearity=torch.nn.ReLU,  # Module, not Functional.
-            init_type='default'
+            init_type='default',
+            device = 'cpu'
             ):
         super().__init__()
 
         
         if init_type == 'xavier':
             init_func = lambda layer: network_utils.layer_init_xavier(layer)
-        elif init_func == 'default':
+        elif init_type == 'default':
             init_func = lambda layer: layer
         else:
             raise ValueError('Init cannot be recognized')
@@ -49,9 +51,14 @@ class MlpModel(torch.nn.Module):
         self.model = torch.nn.Sequential(*sequence)
         self._output_size = (hidden_sizes[-1] if output_size is None
             else output_size)
+        
+        self.to(device)
+        self.device = device
     
     def forward(self, input):
         """Compute the model on the input, assuming input shape [B,input_size]."""
+        if not isinstance(input, torch.Tensor):
+            input = torch_utils.tensor(input, self.device)
         return self.model(input)
 
     @property
@@ -61,10 +68,13 @@ class MlpModel(torch.nn.Module):
 
 class UlEncoderModel(torch.nn.Module):
 
-    def __init__(self, conv, latent_size, conv_out_size):
+    def __init__(self, conv, latent_size, conv_out_size, device='cpu'):
         super().__init__()
         self.conv = conv  # Get from RL agent's model.
         self.head = torch.nn.Linear(conv_out_size, latent_size)
+
+        self.to(device)
+        self.device = device
 
     def forward(self, observation):
 #        if observation.dtype == torch.uint8:
@@ -72,14 +82,17 @@ class UlEncoderModel(torch.nn.Module):
 #            img = img.mul_(1. / 255)
 #        else:
 #            img = observation
+        if not isinstance(observation, torch.Tensor):
+            observation = torch_utils.tensor(observation, self.device)
         conv = self.conv(observation)
         c = self.head(conv)
+
         return c
 
 
 class ContrastModel(torch.nn.Module):
 
-    def __init__(self, latent_size, anchor_hidden_sizes):
+    def __init__(self, latent_size, anchor_hidden_sizes, device='cpu'):
         super().__init__()
         if anchor_hidden_sizes is not None:
             self.anchor_mlp = MlpModel(
@@ -90,8 +103,17 @@ class ContrastModel(torch.nn.Module):
         else:
             self.anchor_mlp = None
         self.W = (torch.nn.Linear(latent_size, latent_size, bias=False))
+
+        self.to(device)
+        self.device = device
     
     def forward(self, anchor, positive):
+        if not isinstance(anchor, torch.Tensor):
+            anchor = torch_utils.tensor(anchor, self.device)
+         
+        if not isinstance(positive, torch.Tensor):
+            anchor = torch_utils.tensor(positive, self.device)
+ 
         if self.anchor_mlp is not None:
             anchor = anchor + self.anchor_mlp(anchor)  # skip probably helps
         pred = self.W(anchor)

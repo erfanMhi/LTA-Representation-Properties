@@ -268,6 +268,20 @@ class DQNAuxAgentConfig(DQNAgentConfig):
             del attrs[k]
         return attrs
 
+class DQNAuxCLConfig(DQNAgentConfig):
+    def __init__(self):
+        super().__init__()
+        self.agent = 'DQNAuxCLAgent'
+        self.visualize_aux_distance = False
+        self.ul_delta_T = 3
+        self.ul_latent_size = 32
+        self.ul_anchor_hidden_sizes = 64
+        self.ul_random_shift_pad = 4
+        self.ul_random_shift_prob = 0.1
+        self.ul_weight = 1.0
+        self.ul_batch_size = 32
+        self.ul_learning_rate = 0.001
+
 # class DQNAuxAgentKnowUsefulAreaConfig(DQNAuxAgentConfig):
 #     def __init__(self):
 #         super().__init__()

@@ -26,7 +26,7 @@ class OnlineRepresentation(DefaultRepresentation):
             return network_architectures.FCBody(cfg.device, np.prod(cfg.rep_config['in_dim']),
                                                    cfg.rep_config['hidden_units'], cfg.rep_config['out_dim'])
 
-        elif cfg.rep_config['network_type'] == 'conv':
+        elif cfg.rep_config['network_type'] == 'conv': 
             return network_architectures.ConvBody(cfg.device, cfg.rep_config['in_dim'],
                                                      cfg.rep_config['out_dim'], cfg.rep_config['conv_architecture'])
         elif cfg.rep_config['network_type'] is None:

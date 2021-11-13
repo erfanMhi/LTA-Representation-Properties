@@ -13,6 +13,17 @@ class OptFactory:
             return lambda params: torch.optim.RMSprop(params, cfg.learning_rate)
         else:
             raise NotImplementedError
+    
+    @classmethod
+    def get_ul_optimizer_fn(cls, cfg):
+        if cfg.optimizer_type == 'SGD':
+            return lambda params: torch.optim.SGD(params, cfg.ul_learning_rate)
+        elif cfg.optimizer_type == 'Adam':
+            return lambda params: torch.optim.Adam(params, cfg.ul_learning_rate)
+        elif cfg.optimizer_type == 'RMSProp':
+            return lambda params: torch.optim.RMSprop(params, cfg.ul_learning_rate)
+        else:
+            raise NotImplementedError
 
     @classmethod
     def get_vf_loss_fn(cls, cfg):

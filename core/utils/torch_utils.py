@@ -87,3 +87,38 @@ class EarlyStopping:
 def ensure_dir(d):
     if not os.path.exists(d):
         os.makedirs(d)
+
+def valid_from_done(done):
+    """Returns a float mask which is zero for all time-steps after a
+    `done=True` is signaled.  This function operates on the leading dimension
+    of `done`, assumed to correspond to time [T,...], other dimensions are
+    preserved."""
+    done = done.type(torch.float)
+    valid = torch.ones_like(done)
+    valid[1:] = 1 - torch.clamp(torch.cumsum(done[:-1], dim=0), max=1)
+    return valid
+
+def strip_ddp_state_dict(state_dict):
+    """ Workaround the fact that DistributedDataParallel prepends 'module.' to
+    every key, but the sampler models will not be wrapped in
+    DistributedDataParallel. (Solution from PyTorch forums.)"""
+    clean_state_dict = type(state_dict)()
+    for k, v in state_dict.items():
+        key = k[7:] if k[:7] == "module." else k
+        clean_state_dict[key] = v
+    return clean_state_dict
+
+def update_state_dict(model, state_dict, tau=1, strip_ddp=True):
+    """Update the state dict of ``model`` using the input ``state_dict``, which
+    must match format.  ``tau==1`` applies hard update, copying the values, ``0<tau<1``
+    applies soft update: ``tau * new + (1 - tau) * old``.
+    """
+    if strip_ddp:
+        state_dict = strip_ddp_state_dict(state_dict)
+    if tau == 1:
+        model.load_state_dict(state_dict)
+    elif tau > 0:
+        update_sd = {k: tau * state_dict[k] + (1 - tau) * v
+            for k, v in model.state_dict().items()}
+        model.load_state_dict(update_sd)
+

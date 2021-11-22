@@ -9,7 +9,8 @@ c_default = ["#332288","#88CCEE", "#4A7BB7", #"#0077BB", # purple, blue
              "#44AA99","#117733","#999933", #"#D9F0D3", # green
              "#DDCC77","#EE7733", # yellow
              "#CC6677","#882255", "#AA4499","#FEDA8B",#"#F4A582",#red
-             "#BBBBBB",  # grey
+             "#BBBBBB", # grey
+             "#F4A582"
              ]
 s_default = ["-", "--"]
 m_default = ["o", "^"]
@@ -59,6 +60,7 @@ violin_colors = {
     "ReLU+SF": c_default[10],
 
     "ReLU+divConstr": c_default[11],
+    "ReLU+ATC": c_default[13],
 
     "FTA": c_default[0],
     "FTA(no target)": c_default[0],
@@ -83,6 +85,7 @@ violin_colors = {
     "FTA+NAS": c_default[8],
     "FTA+Reward": c_default[9],
     "FTA+SF": c_default[10],
+    "FTA+ATC": c_default[13],
 
     "Random": 'red',
     "Input": 'brown',
@@ -111,6 +114,7 @@ curve_styles = {
     "ReLU+Color": s_default[1],
     "ReLU+Control+XY+Color": s_default[1],
     "ReLU+divConstr": s_default[1],
+    "ReLU+ATC": s_default[1],
 
     "FTA": s_default[0],
     "FTA(no target)": s_default[0],
@@ -134,6 +138,7 @@ curve_styles = {
     "FTA+SF": s_default[0],
     "FTA+Color": s_default[0],
     "FTA+Control+XY+Color": s_default[0],
+    "FTA+ATC": s_default[0],
 
     "Random": s_default[0],
     "Input": s_default[0],
@@ -162,6 +167,7 @@ marker_styles = {
         "ReLU+Reward": m_default[1],
         "ReLU+SF": m_default[1],
         "ReLU+divConstr": m_default[1],
+    "ReLU+ATC": m_default[1],
 
     "FTA": m_default[0],
     "FTA(no target)": m_default[0],
@@ -184,6 +190,7 @@ marker_styles = {
     "FTA+NAS": m_default[0],
     "FTA+Reward": m_default[0],
     "FTA+SF": m_default[0],
+    "FTA+ATC": m_default[0],
 
     "Random": m_default[0],
     "Input": m_default[0],
@@ -7667,5 +7674,127 @@ gh_nonlinear_fta_original_sweep_v13 = [
     {"label": "FTA+SF",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/successor_as/sweep/",
      "best": '2'
+     },
+]
+
+dqn_cl_maze_sweep = [
+#    {"label": "ReLU",
+#     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best"
+#     },
+    {"label": "FTA eta=0.8",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_cl/sweep",
+     "best": "4"
+     },
+
+    ]
+
+dqn_cl_linear_maze_sweep = [
+    {"label": "ReLU",
+     "control": "data/output/test_cl/gridhard/linear_vf/online_property/dqn_cl/sweep",
+     "best": "7"
+     },
+    {"label": "FTA eta=0.8",
+     "control": "data/output/test_cl/gridhard/linear_vf/online_property/dqn_fta_cl/sweep",
+     "best": "10"
+     },
+
+    ]
+
+dqn_cl_linear_maze_best = [
+    {"label": "ReLU",
+     "control": "data/output/test_cl/gridhard/linear_vf/online_property/dqn_cl/best",
+     "best": "7"
+     },
+    {"label": "FTA eta=0.8",
+     "control": "data/output/test_cl/gridhard/linear_vf/online_property/dqn_fta_cl/best",
+     "best": "10"
+     },
+
+    ]
+
+dqn_cl_maze_best = [
+#    {"label": "ReLU",
+#     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best"
+#     },
+    {"label": "FTA eta=0.8",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_cl/best",
+     "best": "4"
+     },
+    ]
+dqn_cl_extra_maze_sweep = [
+    {"label": "ReLU",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl_extra/sweep",
+     },
+    ]
+dqn_cl_extra_maze_best = [
+    {"label": "ReLU",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/dqn_cl_extra/best",
+     },
+    ]
+
+
+dqn_maze_sweep = [
+    {"label": "ReLU",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn/sweep",
+     },
+    ]
+
+dqn_cl_transfer_maze_sweep = [
+    {"label": "ReLU_0",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_0/dqn_cl/sweep",
+    },
+    {"label": "ReLU_27",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_27/dqn_cl/sweep",
+    },
+    {"label": "ReLU_61",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_61/dqn_cl/sweep",
+    },
+    {"label": "ReLU_64",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_64/dqn_cl/sweep",
+    },
+    {"label": "ReLU_106",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_106/dqn_cl/sweep",
+    },
+    ]
+
+
+
+dqn_transfer_maze_sweep = [
+    {"label": "ReLU_0",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_0/dqn/sweep",
+    },
+    {"label": "ReLU_27",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_27/dqn/sweep",
+    },
+    {"label": "ReLU_61",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_61/dqn/sweep",
+    },
+    {"label": "ReLU_64",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_64/dqn/sweep",
+    },
+    {"label": "ReLU_106",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_106/dqn/sweep",
+    },
+    ]
+
+nonlinear_maze_atc_transfer_sweep = [
+    {"label": "ReLU+ATC",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep",
+#     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/", 3]
+     },
+    {"label": "FTA+ATC",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_cl/sweep",
+#     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/", 3]
+     },
+]
+
+linear_maze_atc_transfer_sweep = [
+    {"label": "ReLU+ATC",
+     "control": "data/output/test_cl/gridhard/linear_vf/transfer_new/goal_id_{}/dqn_cl/sweep",
+#     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/", 3]
+     },
+    {"label": "FTA+ATC",
+     "control": "data/output/test_cl/gridhard/linear_vf/transfer_new/goal_id_{}/dqn_fta_cl/sweep",
+#     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/", 3]
      },
 ]

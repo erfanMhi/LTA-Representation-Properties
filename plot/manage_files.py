@@ -45,7 +45,7 @@ from distutils.dir_util import copy_tree
 from plot_paths import *
 
 def walk_through():
-    for sweep in maze_target_diff_sweep_v12_30g:
+    for sweep in dqn_cl_linear_maze_sweep:
         # root = "../data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/aux_control/sweep_5g/" 
         root = "../" + sweep['control']
         print(root)
@@ -275,9 +275,9 @@ def check_json():
         os.system("cat {} | grep eta".format(f))
         print()
 
-for i in range(173):
-    walk_through_h("../data/output/result/gridhard/nonlinear_vf/leraning_scratch/goal_id_{}/input/sweep2/", 3, "sweep")
-    walk_through_h("../data/output/result/gridhard/nonlinear_vf/leraning_scratch/goal_id_{}/random/sweep2/", 3, "sweep")
-# walk_through()
+#for i in range(173):
+#    walk_through_h("../data/output/result/gridhard/nonlinear_vf/leraning_scratch/goal_id_{}/input/sweep2/", 3, "sweep")
+#    walk_through_h("../data/output/result/gridhard/nonlinear_vf/leraning_scratch/goal_id_{}/random/sweep2/", 3, "sweep")
+walk_through()
 # check_log()
 # check_json()

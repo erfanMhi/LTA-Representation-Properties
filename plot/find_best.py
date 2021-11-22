@@ -28,6 +28,7 @@ def get_best_run_and_params(all_paths_dict, title, total_param=None,
         start_param=0, label_keys = None, config_paths=None, last_evals_num=1):
 
     labels = [i["label"] for i in all_paths_dict]
+    print('loading')
     control = load_return(all_paths_dict, total_param, start_param)
 
     best_param_label = 'None'
@@ -35,8 +36,10 @@ def get_best_run_and_params(all_paths_dict, title, total_param=None,
     best_param_val = float('-inf')
     best_label = -1
     best_run = -1
+    print('here')
     for idx, label in enumerate(labels):
         all_params = control[label]
+        print(idx, '/', len(labels))
         for param, returns in all_params.items():
 
             if label_keys is not None:
@@ -69,9 +72,13 @@ def picky_eater():
     get_best_run_and_params(dqn_learn_sweep, "picky eater learning curve",
             label_keys = [['target_network_update_freq', 'learning_rate']], config_paths = ['experiment/config/test/picky_eater/online_property/dqn/sweep.json'])
     
-   
-
+def simple_maze():
+#    get_best_run_and_params(dqn_cl_maze_sweep, "picky eater learning curve",
+#            label_keys = [['ul_learning_rate', 'learning_rate', 'ul_batch_size', 'ul_anchor_hidden_sizes', 'ul_delta_T']], config_paths = ['experiment/config//test_cl/maze/nonlinear_vf/dqn_cl/sweep.json'])
+    get_best_run_and_params(dqn_cl_maze_sweep, "picky eater learning curve",
+            label_keys = [['ul_learning_rate', 'learning_rate']], config_paths = ['experiment/config//test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_cl/sweep.json'])
+ 
 if __name__ == '__main__':
     # mountain_car()
-    # simple_maze()
-    picky_eater()
+    simple_maze()
+#    picky_eater()

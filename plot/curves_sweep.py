@@ -116,6 +116,7 @@ def learning_curve(all_paths_dict, title, total_param=None,
         param_rec = []
         for param, returns in all_params.items():
             returns = arrange_order(returns)
+            print(param)
             mu = draw_curve(returns, axs[idx], param.split("_")[1], cmap(list(all_params.keys()).index(param), len(list(all_params.keys()))))
             auc_rec.append(np.sum(mu))
             param_rec.append(param)
@@ -136,31 +137,44 @@ def learning_curve(all_paths_dict, title, total_param=None,
 
 
 def performance_change(all_paths_dict, goal_ids, ranks, title, total_param=None, xlim=[], smooth=1.0, top_runs=[0, 1.0],
-                       xy_label=True, data_label=True, linewidth=1, figsize=(8, 6)):
+                       xy_label=True, data_label=True, linewidth=1, figsize=(8, 6), save_data_name=None):
     labels = [i["label"] for i in all_paths_dict]
     all_ranks = []
     for goal in goal_ids:
         all_ranks.append(ranks[goal])
     all_ranks = np.array(all_ranks)
+    inv_ranks = {v: k for k, v in ranks.items()}
 
+    all_ranks.sort()
+    #print(all_ranks)
     all_goals_auc = pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels, top_runs=top_runs)
-
+    print(all_goals_auc)
     curves = {}
     for label in labels:
-        ranked_auc = np.zeros(all_ranks.max() + 1) * np.inf
-        ranked_goal = np.zeros(all_ranks.max() + 1) * np.inf
-        for goal in goal_ids:
-            rank = ranks[goal]
+        #ranked_auc = np.zeros(all_ranks.max() + 1) * np.inf
+        #ranked_goal = np.zeros(all_ranks.max() + 1) * np.inf
+        ranked_auc = np.zeros_like(all_ranks).astype(np.float)
+        ranked_goal = np.zeros_like(all_ranks).astype(np.float)
+        for idx, rank in enumerate(all_ranks):
+            #rank = ranks[goal]
+            goal = inv_ranks[rank]
             # print(rank, goal, label, all_goals_auc[goal][label][0])
-            ranked_auc[rank] = all_goals_auc[goal][label][0]
-            ranked_goal[rank] = goal
-        ranked_auc = exp_smooth(ranked_auc, smooth)
+            ranked_auc[idx] = all_goals_auc[goal][label][0]
+            ranked_goal[idx] = rank
+            #ranked_auc[rank] = all_goals_auc[goal][label][0]
+            #ranked_goal[rank] = goal
+        print(ranked_goal, ranked_auc)
+        #ranked_auc = exp_smooth(ranked_auc, smooth)
         curves[label] = ranked_auc
-
+    import pickle
+    if save_data_name is not None:
+        with open(save_data_name, 'wb') as f:
+            pickle.dump(curves, f)
+    print(curves)
     plt.figure(figsize=figsize)
     for label in labels:
         # draw_curve(curves[label], plt, label, violin_colors[label], style=curve_styles[label], linewidth=linewidth)
-        plt.plot(curves[label], color=violin_colors[label], linestyle=curve_styles[label], label=label, linewidth=linewidth)
+        plt.plot(all_ranks, curves[label], color=violin_colors[label], linestyle=curve_styles[label], label=label, linewidth=linewidth)
 
     xticks_pos = list(range(0, all_ranks.max()+1, 25))
     xticks_labels = list(range(0, all_ranks.max()+1, 25))
@@ -176,7 +190,7 @@ def performance_change(all_paths_dict, goal_ids, ranks, title, total_param=None,
     if xy_label:
         plt.xlabel('Goal Ranks')
         plt.ylabel('AUC')
-    plt.savefig("plot/img/{}.pdf".format(title), dpi=300, bbox_inches='tight')
+    plt.savefig("plot/img/{}.png".format(title), dpi=300, bbox_inches='tight')
     print("Save in plot/img/{}".format(title))
     # plt.show()
     plt.close()
@@ -307,6 +321,11 @@ def transfer_curve_choose(all_paths_dict, goal_ids, ranks, title, total_param=No
 def mountain_car():
     learning_curve(mc_learn_sweep, "mountain car learning sweep")
 
+def simple_maze_cl():
+    print("\nRep learning")
+    targets = ["ReLU", "ReLU_27", "ReLU_61", "ReLU_64", "ReLU_106","FTA eta=0.8"]
+    learning_curve(label_filter(targets,dqn_cl_linear_maze_best), "dqn_maze_cl_final_sweep/ rep sweep dqn")
+ 
 def simple_maze():
     # print("\nRep learning")
     # targets = ["ReLU+divConstr w0.01", "ReLU+divConstr w0.001", "ReLU+divConstr w0.0001", "ReLU+divConstr w0.00001"]
@@ -319,12 +338,13 @@ def simple_maze():
         ranks[i] += 1
 
     targets = [
-        "ReLU",
+        "ReLU", "ReLU+ATC", "FTA+ATC",
         "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
         "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
         "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
-        "Scratch", "Random", "Input",
+        "Scratch", "Random", "Input", 
     ]
+    targets = ["ReLU+ATC", "FTA+ATC"]
     goal_ids = [106,
                 107, 108, 118, 119, 109, 120, 121, 128, 110, 111, 122, 123, 129, 130, 142, 143, 144, 141, 140, 139, 138, 156, 157, 158, 155, 170, 171, 172, 169, 154, 168, 153, 167, 152, 166, 137, 151,
                 165, 127, 117, 105, 99, 136, 126, 150, 164, 116, 104, 86, 98, 85, 84, 87, 83, 88, 89, 97, 90, 103, 115, 91, 92, 93, 82, 96, 102, 114, 81, 80, 71, 95, 70, 69, 68, 101, 67, 66, 113, 62,
@@ -332,6 +352,8 @@ def simple_maze():
                 54, 55, 56, 57, 58, 59, 64, 51, 38, 60, 39, 40, 46, 41, 42, 43, 44, 45, 32, 31, 37, 30, 22, 21, 23, 20, 24, 19, 25, 18, 26, 17, 16, 27, 15, 28, 29, 7, 8, 6, 9, 5, 10, 4, 11, 3, 12, 2,
                 13, 1, 14, 0,
                 ]
+    goal_ids = [106, 111, 139, 154, 117, 98, 115, 71, 65, 52, 147, 63, 159, 60, 31, 18, 6, 1]
+
     # performance_change(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/maze transfer auc (smooth 0.1)", xlim=[0, 11], smooth=0.1,
     #                    xy_label=False, data_label=False, linewidth=1, figsize=(8, 6))
     # performance_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/maze transfer auc (smooth 0.1)", xlim=[0, 11], smooth=0.1,
@@ -350,10 +372,28 @@ def simple_maze():
     #     "FTA eta=0.8",
     #     "Scratch", "Random", "Input",
     # ]
-    # performance_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/maze transfer chosen (smooth 0.1)", xlim=[0, 11], smooth=0.1,
-    #                    xy_label=False, data_label=False, linewidth=3, figsize=(8, 6))
-    draw_label(["ReLU+Control5g", "ReLU+SF", "FTA eta=0.8", "FTA+NAS", "Scratch", "Random", "Input"],
-               "auc chosen label", ncol=4)
+    performance_change(label_filter(targets, linear_maze_atc_transfer_sweep), goal_ids, ranks, "linear/maze atc transfer chosen (smooth 0.1)", xlim=[0, 11], smooth=0.1,
+                        xy_label=False, data_label=False, linewidth=3, figsize=(8, 6), save_data_name='atc_results_100000.pkl')
+    performance_change(label_filter(targets, linear_maze_atc_transfer_sweep), goal_ids, ranks, "linear/maze atc transfer 50000 (smooth 0.1)", xlim=[0, 6], smooth=0.1,
+                        xy_label=False, data_label=False, linewidth=3, figsize=(8, 6), save_data_name='atc_results_50000.pkl')
+    performance_change(label_filter(targets, linear_maze_atc_transfer_sweep), goal_ids, ranks, "linear/maze atc transfer 20000 (smooth 0.1)", xlim=[0, 3], smooth=0.1,
+                        xy_label=False, data_label=False, linewidth=3, figsize=(8, 6), save_data_name='atc_results_20000.pkl')
+    performance_change(label_filter(targets, linear_maze_atc_transfer_sweep), goal_ids, ranks, "linear/maze atc transfer 10000 (smooth 0.1)", xlim=[0, 2], smooth=0.1,
+                        xy_label=False, data_label=False, linewidth=3, figsize=(8, 6), save_data_name='atc_results_10000.pkl') 
+ 
+#    performance_change(label_filter(targets, nonlinear_maze_atc_transfer_sweep), goal_ids, ranks, "nonlinear/maze atc transfer chosen (smooth 0.1)", xlim=[0, 11], smooth=0.1,
+#                        xy_label=False, data_label=False, linewidth=3, figsize=(8, 6), save_data_name='atc_results_100000.pkl')
+#    performance_change(label_filter(targets, nonlinear_maze_atc_transfer_sweep), goal_ids, ranks, "nonlinear/maze atc transfer 50000 (smooth 0.1)", xlim=[0, 6], smooth=0.1,
+#                        xy_label=False, data_label=False, linewidth=3, figsize=(8, 6), save_data_name='atc_results_50000.pkl')
+#    performance_change(label_filter(targets, nonlinear_maze_atc_transfer_sweep), goal_ids, ranks, "nonlinear/maze atc transfer 20000 (smooth 0.1)", xlim=[0, 3], smooth=0.1,
+#                        xy_label=False, data_label=False, linewidth=3, figsize=(8, 6), save_data_name='atc_results_20000.pkl')
+#    performance_change(label_filter(targets, nonlinear_maze_atc_transfer_sweep), goal_ids, ranks, "nonlinear/maze atc transfer 10000 (smooth 0.1)", xlim=[0, 2], smooth=0.1,
+#                        xy_label=False, data_label=False, linewidth=3, figsize=(8, 6), save_data_name='atc_results_10000.pkl') 
+ 
+ #   performance_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/maze transfer chosen (smooth 0.1)", xlim=[0, 11], smooth=0.1,
+ #                       xy_label=False, data_label=False, linewidth=3, figsize=(8, 6))
+ #   draw_label(["ReLU+Control5g", "ReLU+SF", "FTA eta=0.8", "FTA+NAS", "Scratch", "Random", "Input"],
+ #              "auc chosen label", ncol=4)
 
 
     # targets = [
@@ -410,6 +450,7 @@ def maze_multigoals():
     performance_change(ghmg_transfer_last_sweep_v13, goal_ids, ranks, "multigoal lastrep transfer change", xlim=[0, 11], smooth=1)
 
 if __name__ == '__main__':
+    #simple_maze_cl()
     simple_maze()
     # maze_multigoals()
 

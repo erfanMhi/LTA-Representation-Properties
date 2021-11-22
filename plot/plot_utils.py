@@ -2,6 +2,7 @@ import os
 import re
 import copy
 import numpy as np
+from operator import itemgetter
 import matplotlib.pyplot as plt
 from plot.plot_paths import violin_colors, curve_styles
 
@@ -32,6 +33,50 @@ def perform_filter(controls, properties, perc):
     target = idx_sort[int(perc[0] * len(idx_sort)): int(perc[1] * len(idx_sort))]
     ctarget, ptarget = controls[target], properties[target]
     return ctarget, ptarget
+
+def property_filter(allg_transf_perf, allp_properties, perc):
+    """
+    allg_transf_perf = {goal: {rep : {run: x}}}
+    allp_properties = {property: {rep : {run: x}}}
+    perc = {property: [low, high]}
+    """
+    def filter(properties, perc):
+        concate = []
+        keys = []
+        for rep in properties.keys():
+            for run in properties[rep].keys():
+                concate.append(properties[rep][run])
+                keys.append((rep, run))
+        concate = np.array(concate)
+        low = np.percentile(concate, perc[0])
+        high = np.percentile(concate, perc[1])
+        idx = np.where((concate>=low) & (concate<=high))[0]
+        getkeys = [keys[i] for i in idx]
+        print("\nProperty threshold {} - {}\n".format(low, high))
+        return getkeys
+
+    if perc is None:
+        return allg_transf_perf, allp_properties
+    for pk in perc:
+        new_trans = {}
+        new_prop = {}
+        reprun_keys = filter(allp_properties[pk], perc[pk])
+        for goal in allg_transf_perf.keys():
+            new_trans[goal] = {}
+        for prop in allp_properties.keys():
+            new_prop[prop] = {}
+        for k in reprun_keys:
+            rep, run = k
+            for goal in allg_transf_perf.keys():
+                if rep not in new_trans[goal].keys():
+                    new_trans[goal][rep] = {}
+                new_trans[goal][rep][run] = allg_transf_perf[goal][rep][run]
+            for prop in allp_properties.keys():
+                if rep not in new_prop[prop].keys():
+                    new_prop[prop][rep] = {}
+                new_prop[prop][rep][run] = allp_properties[prop][rep][run]
+        allg_transf_perf, allp_properties = new_trans, new_prop
+    return allg_transf_perf, allp_properties
 
 def perform_transformer(controls, properties, relationship):
     if relationship is None:
@@ -87,7 +132,6 @@ def arrange_order_2(dict1, dict2):
         for k in dk2:
             if k not in dict1.keys():
                 print("Pop", k, dict2.pop(k))
-
     for i in dict1.keys():
         # assert not np.isnan(dict1[i]), print(i, dict1[i])
         # assert not np.isnan(dict2[i]), print(i, dict2[i])
@@ -135,7 +179,7 @@ def get_avg(all_res):
     ste = std / np.sqrt(all_res.shape[0])
     return mu, ste
 
-def draw_curve(all_res, ax, label, color=None, style="-", alpha=1, linewidth=1.5):
+def draw_curve(all_res, ax, label, color=None, style="-", alpha=1, linewidth=1.5, draw_ste=True):
     if len(all_res) == 0:
         return None
     mu, ste = get_avg(all_res)
@@ -144,7 +188,8 @@ def draw_curve(all_res, ax, label, color=None, style="-", alpha=1, linewidth=1.5
         # color = p.get_color()
     else:
         ax.plot(mu, label=label, color=color, alpha=alpha, linestyle=style, linewidth=linewidth)
-    ax.fill_between(list(range(len(mu))), mu - ste * 2, mu + ste * 2, color=color, alpha=0.1, linewidth=0.)
+    if draw_ste:
+        ax.fill_between(list(range(len(mu))), mu - ste * 2, mu + ste * 2, color=color, alpha=0.1, linewidth=0.)
     print(label, "auc =", np.sum(mu))
     return mu
 
@@ -152,7 +197,7 @@ def draw_cut(cuts, all_res, ax, color, ymin):
     mu = all_res.mean(axis=0)
     x_mean = cuts.mean()
     x_max = cuts.max()
-    ax.vlines(x_max, ymin, np.interp(x_max, list(range(len(mu))), mu), ls=":", colors=color, alpha=0.8, linewidth=3)
+    ax.vlines(x_max, ymin, np.interp(x_max, list(range(len(mu))), mu), ls=":", colors=color, alpha=0.5, linewidth=1)
 
 def extract_from_single_run(file, key, label=None, before_step=None):
     with open(file, "r") as f:
@@ -527,10 +572,18 @@ def box_plot(ax1, color, data, xpos, width):
     bp = ax1.boxplot(data, positions=xpos, widths=width, patch_artist=True)
     set_box_color(bp, color=color)
 
-def draw_label(targets, save_path, ncol):
+def draw_label(targets, save_path, ncol, emphasize=None):
     plt.figure(figsize=(0.1, 2))
+    if emphasize:
+        for label in emphasize:
+            plt.plot([], color=violin_colors[label], linestyle=curve_styles[label], label=label, alpha=1, linewidth=2)
     for label in targets:
-        plt.plot([], color=violin_colors[label], linestyle=curve_styles[label], label=label)
+        if emphasize and label not in emphasize:
+            plt.plot([], color=violin_colors[label], linestyle=curve_styles[label], label=label, alpha=0.4)
+        elif emphasize and label in emphasize:
+            pass
+        else:
+            plt.plot([], color=violin_colors[label], linestyle=curve_styles[label], label=label)
     plt.axis('off')
     plt.legend(ncol=ncol)
     plt.savefig("plot/img/{}.pdf".format(save_path), dpi=300, bbox_inches='tight')
@@ -560,7 +613,6 @@ def load_property(all_groups, property_key=None, perc=None, relationship=None, t
                     t.append(i)
             temp.append(t)
         all_groups = temp
-
     all_groups, all_group_dict = merge_groups(all_groups)
     # print(all_groups, "\n\n", all_group_dict, "\n")
     reverse = True if property_key in ["lipschitz", "interf"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
@@ -569,7 +621,7 @@ def load_property(all_groups, property_key=None, perc=None, relationship=None, t
 
     return properties, all_group_dict
 
-def correlation_calc(all_group_dict, control, properties, property_key, perc=None, relationship=None):
+def correlation_calc(all_group_dict, control, properties, perc=None, relationship=None):
     labels = [i["label"] for i in all_group_dict]
 
     # all reps:
@@ -590,10 +642,11 @@ def correlation_calc(all_group_dict, control, properties, property_key, perc=Non
     all_control, all_property = perform_filter(all_control, all_property, perc=perc)
     all_control, all_property = perform_transformer(all_control, all_property, relationship=relationship)
     cor = np.corrcoef(all_control, all_property)[0][1]
-    # print("All reps: {} correlation = {:.4f}".format(property_key, cor))
     return cor
 
-def correlation_load(all_paths_dict, goal_ids, total_param=None, xlim=[]):
+def correlation_load(all_paths_dict, goal_ids, total_param=None, xlim=[],
+                     property_keys = {"lipschitz": "Complexity Reduction", "distance": "Dynamics Awareness", "ortho": "Orthogonality", "interf":"Noninterference", "diversity":"Diversity", "sparsity":"Sparsity"},
+                     property_perc = None):
     labels = [i["label"] for i in all_paths_dict]
 
     all_goals_auc = pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels)
@@ -608,15 +661,26 @@ def correlation_load(all_paths_dict, goal_ids, total_param=None, xlim=[]):
             g_path[i]["control"] = [g_path[i]["control"].format(goal), best]
         formated_path[goal] = g_path
 
-    property_keys = {"lipschitz": "complexity reduction", "distance": "dynamics awareness", "ortho": "orthogonality", "interf":"noninterference", "diversity":"diversity", "sparsity":"sparsity"}
+    allp_properties = {}
+    for pk in property_keys.keys():
+        properties, _ = load_property([formated_path[goal]], property_key=pk, early_stopped=True)
+        allp_properties[pk] = copy.deepcopy(properties)
+    allg_transf_perf = {}
+    for goal in goal_ids:
+        transf_perf, temp_lables = load_property([formated_path[goal]], property_key="return", early_stopped=True)
+        allg_transf_perf[goal] = copy.deepcopy(transf_perf)
+
+    allg_transf_perf, allp_properties = property_filter(allg_transf_perf, allp_properties, property_perc)
+    filtered_lables = []
+    for obj in temp_lables:
+        if obj["label"] in allg_transf_perf[106].keys():
+            filtered_lables.append(obj)
 
     all_goals_cor = {}
     for pk in property_keys.keys():
-        properties, _ = load_property([formated_path[goal]], property_key=pk, early_stopped=True)
         all_goals_cor[pk] = {}
         for goal in goal_ids:
-            transf_perf, temp_labels = load_property([formated_path[goal]], property_key="return", early_stopped=True)
-            cor = correlation_calc(temp_labels, transf_perf, properties, pk, perc=None, relationship=None)
+            cor = correlation_calc(filtered_lables, allg_transf_perf[goal], allp_properties[pk], perc=None, relationship=None)
             all_goals_cor[pk][goal] = cor
 
     return all_goals_cor, property_keys

@@ -3,9 +3,10 @@ import shutil
 
 from distutils.dir_util import copy_tree, remove_tree
 
-def walk_through_h(root, target_param, new_folder):
+def walk_through_h(root, target_param, new_folder, new_root=None):
 
-    assert os.path.isdir(root)
+    if not os.path.isdir(root):
+        return False
     for path, subdirs, files in os.walk(root):
 
         # for f in files:
@@ -19,27 +20,29 @@ def walk_through_h(root, target_param, new_folder):
             # if "{}_param_setting".format(target_param) in name:
             if "_param_setting" in name:
                 set = int(name.split("_param_setting")[0])
-                set += 5
+                # set += 5
 
                 file1 = os.path.join(path, name)
-                print(file1)
-                # file2 = root+"/../{}/".format(new_folder)+file1.split("/")[-2] + "/{}_param_setting".format(0)
-                file2 = root+"/../{}/".format(new_folder)+file1.split("/")[-2] + "/{}_param_setting".format(set)
-                print(file2, "\n")
+                # print(file1)
+                r = root if new_root is None else new_root
+                # file2 = r+"/../{}/".format(new_folder)+file1.split("/")[-2] + "/{}_param_setting".format(0)
+                file2 = r+"/../{}/".format(new_folder)+file1.split("/")[-2] + "/{}_param_setting".format(set)
+                # print(file2, "\n")
                 # shutil.rmtree(file1)
 
                 # shutil.copy(file1+"/linear_probing_count.txt", file2+"/linear_probing_count.txt")
                 # shutil.copy(file1+"/parameters/linear_probing_count", file2+"/parameters/linear_probing_count")
 
-                # if not os.path.isdir(file2):
-                #     os.makedirs(file2)
-                # copy_tree(file1, file2)
+                if not os.path.isdir(file2):
+                    os.makedirs(file2)
+                copy_tree(file1, file2)
 
             # if name == "0_run":
             #     file1 = os.path.join(path, name)
             #     if "best" in file1:
             #         print(file1)
             #         print(os.system("cat {}/0_param_setting/log | grep learning_rate".format(file1)))
+    return True
 
 from distutils.dir_util import copy_tree
 from plot_paths import *
@@ -275,9 +278,14 @@ def check_json():
         os.system("cat {} | grep eta".format(f))
         print()
 
-#for i in range(173):
-#    walk_through_h("../data/output/result/gridhard/nonlinear_vf/leraning_scratch/goal_id_{}/input/sweep2/", 3, "sweep")
-#    walk_through_h("../data/output/result/gridhard/nonlinear_vf/leraning_scratch/goal_id_{}/random/sweep2/", 3, "sweep")
-walk_through()
+# for i in range(173):
+#     walk_through_h("../data/output/test_v13/gridhard/nonlinear_vf/learning_scratch/goal_id_{}/input/sweep2/".format(i), 3, "sweep")
+#     walk_through_h("../data/output/test_v13/gridhard/nonlinear_vf/learning_scratch/goal_id_{}/random/sweep2/".format(i), 3, "sweep")
+for i in range(173):
+    check = walk_through_h("../data/output/test_v13/gridhard/linear_vf (decreasing eps)/learning_scratch/goal_id_{}/dqn/fix_eps_sweep/".format(i), 3, "sweep",
+                           new_root="../data/output/test_v13/gridhard/linear_vf/learning_scratch/goal_id_{}/dqn/sweep/".format(i))
+    if check == False:
+        print("{},".format(i), end=" ")
+# walk_through()
 # check_log()
 # check_json()

@@ -378,7 +378,7 @@ def simple_maze():
                         xy_label=False, data_label=False, linewidth=3, figsize=(8, 6), save_data_name='atc_results_50000.pkl')
     performance_change(label_filter(targets, linear_maze_atc_transfer_sweep), goal_ids, ranks, "linear/maze atc transfer 20000 (smooth 0.1)", xlim=[0, 3], smooth=0.1,
                         xy_label=False, data_label=False, linewidth=3, figsize=(8, 6), save_data_name='atc_results_20000.pkl')
-    performance_change(label_filter(targets, linear_maze_atc_transfer_sweep), goal_ids, ranks, "linear/maze atc transfer 10000 (smooth 0.1)", xlim=[0, 2], smooth=0.1,
+    performance_change(label_filter(targets, nonlinear_maze_atc_transfer_sweep), goal_ids, ranks, "linear/maze atc transfer 10000 (smooth 0.1)", xlim=[0, 2], smooth=0.1,
                         xy_label=False, data_label=False, linewidth=3, figsize=(8, 6), save_data_name='atc_results_10000.pkl') 
  
 #    performance_change(label_filter(targets, nonlinear_maze_atc_transfer_sweep), goal_ids, ranks, "nonlinear/maze atc transfer chosen (smooth 0.1)", xlim=[0, 11], smooth=0.1,

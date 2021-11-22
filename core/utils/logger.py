@@ -27,5 +27,3 @@ class Logger:
 
     def info(self, log_msg):
         self._logger.info(log_msg)
-
-

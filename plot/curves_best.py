@@ -91,7 +91,7 @@ def simple_maze():
                # "Random", "Input",
                "Scratch"]
 
-    # learning_curve(gh_online, "maze online measure", targets, xlim=[0, 30])
+    learning_curve(gh_online, "maze online measure", targets, xlim=[0, 30])
 
     # learning_curve(gh_same_early, "maze same early", targets, xlim=[0, 11])
     # learning_curve(gh_similar_early, "maze similar early", targets, xlim=[0, 30])

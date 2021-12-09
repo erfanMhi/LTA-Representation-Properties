@@ -291,13 +291,13 @@ def simple_picky_eater_check_aux(targets, title, early_stopped):
 def simple_maze():
     targets_relu = [
         "ReLU",
-        "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+        "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
         ]
     for key in targets_relu:
         violin_colors[key] = c_default[0]
     targets_fta = [
         "FTA eta=0.2",# "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
-        "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+        "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
         ]
     for key in targets_fta:
         violin_colors[key] = c_default[7]
@@ -307,8 +307,8 @@ def simple_maze():
     for key in targets_eta:
         violin_colors[key] = c_default[2]
     targets = ["ReLU","FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
-               "ReLU+Control1g", "FTA+Control1g",
-               "ReLU+Control5g", "FTA+Control5g",
+               "ReLU+VirtualVF1", "FTA+VirtualVF1",
+               "ReLU+VirtualVF5", "FTA+VirtualVF5",
                "ReLU+XY", "FTA+XY",
                "ReLU+Decoder", "FTA+Decoder",
                "ReLU+NAS", "FTA+NAS",

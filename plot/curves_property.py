@@ -194,33 +194,33 @@ def preprocess_path(paths):
 def simple_maze():
     targets = [
         "ReLU",
-        "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+        "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC",
         "ReLU(L)",
-        "ReLU(L)+Control1g", "ReLU(L)+Control5g", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF",
+        "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF",
         "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
-        "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+        "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC",
     ]
-    learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_lipschitz", key="lipschitz", targets=targets, xlim=[0, 31], ylim=[0.1, 1], show_avg=False, show_model=True, data_label=None)
-    learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_distance", key="distance", targets=targets, xlim=[0, 31], ylim=[0.2, 0.9], show_avg=False, show_model=True)
-    learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_orthogonal", key="ortho", targets=targets, xlim=[0, 31], ylim=[0, 0.8], show_avg=False, show_model=True)
-    learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_interf", key="interf", targets=targets, xlim=[1, 31], ylim=[0.3, 1], show_avg=False, show_model=True)
-    learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_diversity", key="diversity", targets=targets, xlim=[0, 31], ylim=[0, 0.9], show_avg=False, show_model=True)
-    learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_sparsity", key="sparsity", targets=targets, xlim=[0, 31], ylim=[0.4, 1], show_avg=False, show_model=True)
-    learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_return", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1], show_avg=False, show_model=True)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_lipschitz", key="lipschitz", targets=targets, xlim=[0, 31], ylim=[0.1, 1], show_avg=False, show_model=True, data_label=None)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_distance", key="distance", targets=targets, xlim=[0, 31], ylim=[0.2, 0.9], show_avg=False, show_model=True)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_orthogonal", key="ortho", targets=targets, xlim=[0, 31], ylim=[0, 0.8], show_avg=False, show_model=True)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_interf", key="interf", targets=targets, xlim=[1, 31], ylim=[0.3, 1], show_avg=False, show_model=True)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_diversity", key="diversity", targets=targets, xlim=[0, 31], ylim=[0, 0.9], show_avg=False, show_model=True)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_sparsity", key="sparsity", targets=targets, xlim=[0, 31], ylim=[0.4, 1], show_avg=False, show_model=True)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_return", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1], show_avg=False, show_model=True)
 
     targets = [
         "ReLU",
-        "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+        "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC",
         "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
-        "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+        "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC",
     ]
-    # learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_lipschitz", key="lipschitz", targets=targets, xlim=[0, 31], ylim=[0.1, 1], show_avg=False, show_model=True, data_label=None)
-    # learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_distance", key="distance", targets=targets, xlim=[0, 31], ylim=[0.2, 0.9], show_avg=False, show_model=True)
-    # learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_orthogonal", key="ortho", targets=targets, xlim=[0, 31], ylim=[0, 0.8], show_avg=False, show_model=True)
-    # learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_interf", key="interf", targets=targets, xlim=[1, 31], ylim=[0.3, 1], show_avg=False, show_model=True)
-    # learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_diversity", key="diversity", targets=targets, xlim=[0, 31], ylim=[0, 0.9], show_avg=False, show_model=True)
-    # learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_sparsity", key="sparsity", targets=targets, xlim=[0, 31], ylim=[0.4, 1], show_avg=False, show_model=True)
-    # learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_return", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1], show_avg=False, show_model=True)
+    learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_lipschitz", key="lipschitz", targets=targets, xlim=[0, 31], ylim=[0.1, 1], show_avg=False, show_model=True, data_label=None)
+    learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_distance", key="distance", targets=targets, xlim=[0, 31], ylim=[0.2, 0.9], show_avg=False, show_model=True)
+    learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_orthogonal", key="ortho", targets=targets, xlim=[0, 31], ylim=[0, 0.8], show_avg=False, show_model=True)
+    learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_interf", key="interf", targets=targets, xlim=[1, 31], ylim=[0.3, 1], show_avg=False, show_model=True)
+    learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_diversity", key="diversity", targets=targets, xlim=[0, 31], ylim=[0, 0.9], show_avg=False, show_model=True)
+    learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_sparsity", key="sparsity", targets=targets, xlim=[0, 31], ylim=[0.4, 1], show_avg=False, show_model=True)
+    learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_return", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1], show_avg=False, show_model=True)
 
 if __name__ == '__main__':
     simple_maze()

@@ -34,13 +34,13 @@ def perform_filter(controls, properties, perc):
     ctarget, ptarget = controls[target], properties[target]
     return ctarget, ptarget
 
-def property_filter(allg_transf_perf, allp_properties, perc):
+def property_filter(allg_transf_perf, allp_properties, perc, rank):
     """
     allg_transf_perf = {goal: {rep : {run: x}}}
     allp_properties = {property: {rep : {run: x}}}
     perc = {property: [low, high]}
     """
-    def filter(properties, perc):
+    def filter_perc(properties, perc):
         concate = []
         keys = []
         for rep in properties.keys():
@@ -55,12 +55,40 @@ def property_filter(allg_transf_perf, allp_properties, perc):
         print("\nProperty threshold {} - {}\n".format(low, high))
         return getkeys
 
-    if perc is None:
+    def filter_rank(properties, rank):
+        concate = []
+        keys = []
+        for rep in properties.keys():
+            for run in properties[rep].keys():
+                concate.append(properties[rep][run])
+                keys.append((rep, run))
+        sorted_conc = np.array(concate)
+        sorted_conc.sort()
+        concate = np.array(concate)
+        low = sorted_conc[rank[0]]
+        high = sorted_conc[min(len(concate)-1, rank[1])]
+        idx = np.where((concate>=low) & (concate<=high))[0]
+        # print(concate)
+        # print(idx)
+        # input()
+        getkeys = [keys[i] for i in idx]
+        print("\nProperty threshold {} - {}\n".format(low, high))
+        return getkeys
+
+    if perc is None and rank is None:
         return allg_transf_perf, allp_properties
-    for pk in perc:
+    assert not ((perc is not None) and (rank is not None))
+    notnone = perc if perc is not None else rank
+    for pk in notnone:
         new_trans = {}
         new_prop = {}
-        reprun_keys = filter(allp_properties[pk], perc[pk])
+        if rank is not None and perc is None:
+            reprun_keys = filter_rank(allp_properties[pk], rank[pk])
+        elif rank is None and perc is not None:
+            reprun_keys = filter_perc(allp_properties[pk], perc[pk])
+        else:
+            raise NotImplementedError
+
         for goal in allg_transf_perf.keys():
             new_trans[goal] = {}
         for prop in allp_properties.keys():
@@ -454,7 +482,6 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
     temp = []
     for i in group:
         cas = cut_at_step[i["label"]] if cut_at_step else None
-
         if target_key in ["return"]:
             path = i["control"]
             if type(path) == list:
@@ -572,18 +599,26 @@ def box_plot(ax1, color, data, xpos, width):
     bp = ax1.boxplot(data, positions=xpos, widths=width, patch_artist=True)
     set_box_color(bp, color=color)
 
-def draw_label(targets, save_path, ncol, emphasize=None):
+def draw_label(targets, save_path, ncol, emphasize=None, with_style=True):
+    def get_linestyle(label):
+        linestyle = curve_styles[label] if with_style else s_default[0]
+        return linestyle
+
     plt.figure(figsize=(0.1, 2))
     if emphasize:
         for label in emphasize:
-            plt.plot([], color=violin_colors[label], linestyle=curve_styles[label], label=label, alpha=1, linewidth=2)
+            plt.plot([], color=violin_colors[label], linestyle=get_linestyle(label), label=label, alpha=1, linewidth=2)
     for label in targets:
-        if emphasize and label not in emphasize:
-            plt.plot([], color=violin_colors[label], linestyle=curve_styles[label], label=label, alpha=0.4)
-        elif emphasize and label in emphasize:
-            pass
+        if type(label) == dict:
+            key = list(label.keys())[0]
+            plt.plot([], color=label[key][0], linestyle=label[key][1], label=key)
         else:
-            plt.plot([], color=violin_colors[label], linestyle=curve_styles[label], label=label)
+            if emphasize and label not in emphasize:
+                plt.plot([], color=violin_colors[label], linestyle=get_linestyle(label), label=label, alpha=0.4)
+            elif emphasize and label in emphasize:
+                pass
+            else:
+                plt.plot([], color=violin_colors[label], linestyle=get_linestyle(label), label=label)
     plt.axis('off')
     plt.legend(ncol=ncol)
     plt.savefig("plot/img/{}.pdf".format(save_path), dpi=300, bbox_inches='tight')
@@ -646,7 +681,7 @@ def correlation_calc(all_group_dict, control, properties, perc=None, relationshi
 
 def correlation_load(all_paths_dict, goal_ids, total_param=None, xlim=[],
                      property_keys = {"lipschitz": "Complexity Reduction", "distance": "Dynamics Awareness", "ortho": "Orthogonality", "interf":"Noninterference", "diversity":"Diversity", "sparsity":"Sparsity"},
-                     property_perc = None):
+                     property_perc = None, property_rank = None):
     labels = [i["label"] for i in all_paths_dict]
 
     all_goals_auc = pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels)
@@ -670,7 +705,7 @@ def correlation_load(all_paths_dict, goal_ids, total_param=None, xlim=[],
         transf_perf, temp_lables = load_property([formated_path[goal]], property_key="return", early_stopped=True)
         allg_transf_perf[goal] = copy.deepcopy(transf_perf)
 
-    allg_transf_perf, allp_properties = property_filter(allg_transf_perf, allp_properties, property_perc)
+    allg_transf_perf, allp_properties = property_filter(allg_transf_perf, allp_properties, property_perc, property_rank)
     filtered_lables = []
     for obj in temp_lables:
         if obj["label"] in allg_transf_perf[106].keys():
@@ -685,9 +720,10 @@ def correlation_load(all_paths_dict, goal_ids, total_param=None, xlim=[],
 
     return all_goals_cor, property_keys
 
-def pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels, top_runs=[0, 1.0]):
+def pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels, top_runs=[0, 1.0], get_each_run=False):
 
     all_goals_auc = {}
+    all_goals_independent = {}
     for goal in goal_ids:
         print("Loading auc from goal id {}".format(goal))
         single_goal_paths_dict = copy.deepcopy(all_paths_dict)
@@ -696,6 +732,7 @@ def pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels, top_run
         control = load_return(single_goal_paths_dict, total_param, search_lr=True)  # , start_param)
 
         rep_auc = {}
+        independent_run = {}
         for idx, label in enumerate(labels):
             print("\n", idx, label)
             all_params = control[label]
@@ -735,9 +772,12 @@ def pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels, top_run
             best_auc = np.average(take_runs, axis=0).sum()
 
             rep_auc[label] = [best_auc, best_param_folder, best_param]
+            independent_run[label] = take_runs
             print("{}, best param {}".format(label, best_param))
         all_goals_auc[goal] = rep_auc
-
+        all_goals_independent[goal] = independent_run
+    if get_each_run:
+        return all_goals_auc, all_goals_independent
     return all_goals_auc
 
 def label_filter(targets, all_paths):

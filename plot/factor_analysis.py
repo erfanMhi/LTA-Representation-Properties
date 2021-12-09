@@ -4,6 +4,7 @@ import numpy as np
 import itertools
 from sklearn import ensemble, metrics
 # from sklearn.inspection import permutation_importance
+# from sklearn.linear_model import BayesianRidge
 
 import matplotlib.pyplot as plt
 
@@ -201,7 +202,7 @@ def pair_property(property_keys, all_paths_dict, goal_ids, ranks, total_param=No
         if with_auc:
             im = axes[gi].scatter(prop1_g, prop2_g, c=auc_g, cmap="Blues", vmin=0, vmax=11)
         else:
-            c="C1" if cor > 0.65 else "C0"
+            c="C1" if cor > 0.6 else "C0"
             im = axes[gi].scatter(prop1_g, prop2_g, c=c)
         xlabel = "\n"+property_keys[p1] if len(property_keys[p1].split(" "))==1 else "\n".join(property_keys[p1].split(" "))
         ylabel = "\n"+property_keys[p2] if len(property_keys[p2].split(" "))==1 else "\n".join(property_keys[p2].split(" "))
@@ -281,12 +282,15 @@ def property_scatter(property_keys, all_paths_dict, groups, title):
         properties, _ = load_property([all_paths_dict], property_key=pk, early_stopped=True)
         all_goals_prop[pk] = properties
 
-    nr = 2
     nc = 3
+    nr = int(np.ceil(len(property_keys.keys()) // nc))
     group_name = list(groups.keys())
-    fig, axes = plt.subplots(nrows=nr, ncols=nc, figsize=(8, 6))
+    fig, axes = plt.subplots(nrows=nr, ncols=nc, figsize=(8, 3*nr))
+    if nr == 1:
+        axes = [axes]
     for pi, pk in enumerate(list(property_keys.keys())):
         allp = []
+        allprop = []
         for ni, name in enumerate(group_name):
             same_color = groups[name]
             prop1 = []
@@ -295,14 +299,17 @@ def property_scatter(property_keys, all_paths_dict, groups, title):
                     for run in all_goals_prop[pk][rep].keys():
                         prop1.append(all_goals_prop[pk][rep][run])
                         allp.append(all_goals_prop[pk][rep][run])
-            axes[pi//nc][pi%nc].scatter(np.random.uniform(ni, ni+0.5, size=len(prop1)), prop1, s=6)
+            # axes[pi//nc][pi%nc].scatter(np.random.uniform(ni, ni+0.1, size=len(prop1)), prop1, s=6)
+            allprop.append(prop1)
+        axes[pi//nc][pi%nc].boxplot(allprop)
+        
         axes[pi // nc][pi % nc].set_title(property_keys[pk])
         allp = np.array(allp)
         axes[pi // nc][pi % nc].set_yticks([allp.min(), allp.max()])
         axes[pi // nc][pi % nc].set_yticklabels(["{:.2f}".format(allp.min()), "{:.2f}".format(allp.max())])
-        if pi // nc == 1:
-            axes[pi // nc][pi % nc].set_xticks([ni+0.25 for ni in range(len(group_name))])
-            axes[pi // nc][pi % nc].set_xticklabels(group_name, fontsize=12)
+        if pi // nc == (nr - 1):
+            # axes[pi // nc][pi % nc].set_xticks([ni+0.25 for ni in range(len(group_name))])
+            axes[pi // nc][pi % nc].set_xticklabels(group_name, fontsize=12, rotation=90)
         else:
             axes[pi // nc][pi % nc].get_xaxis().set_visible(False)
     fig.tight_layout()
@@ -407,7 +414,7 @@ def property_auc_goal(property_key, all_paths_dict, goal_ids, ranks, title,
 
 def property_accumulate(property_key, all_paths_dict, goal_ids, title,
                         total_param=None, xlim=[], figsize=(8, 6), xy_label=True, legend=True,
-                        pair_prop=None):
+                        pair_prop=None, highlight=None):
     labels = [i["label"] for i in all_paths_dict]
     all_goals_auc = pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels)
     formated_path = {}
@@ -449,7 +456,17 @@ def property_accumulate(property_key, all_paths_dict, goal_ids, title,
 
     fig, ax = plt.subplots(figsize=figsize)
 
-    ax.plot(ranked_prop, ranked_perf, c="C0")
+    smoothed = exp_smooth(ranked_perf, 0.4)
+    ax.plot(ranked_prop, smoothed, c="C0")
+    # ax.text(0,0, "{}-{}".format(np.argmax(smoothed), np.max(smoothed)))
+
+    # reg = BayesianRidge(tol=1e-6, fit_intercept=False, compute_score=True)
+    # init = [1.0, 1e-3]
+    # reg.set_params(alpha_init=init[0], lambda_init=init[1])
+    # reg.fit(ranked_prop.reshape(-1, 1), ranked_perf.reshape(-1, 1))
+    # ymean, ystd = reg.predict(ranked_prop.reshape(-1, 1), return_std=True)
+    # ax.plot(ranked_prop, ymean.reshape(-1), c="C0")
+
     # z = np.polynomial.polynomial.polyfit(ranked_prop, ranked_perf, 2)
     # p = np.poly1d(z)
     # ax.plot(ranked_prop,p(ranked_prop), c="C0")
@@ -462,6 +479,12 @@ def property_accumulate(property_key, all_paths_dict, goal_ids, title,
     plt.setp(ax.get_xticklabels(), fontsize=14)
     plt.setp(ax.get_yticklabels(), fontsize=30)
     
+    if highlight is not None:
+        ax.scatter([ranked_prop[highlight]], [ranked_perf[highlight]], c="C1")
+        ax.vlines([ranked_prop[highlight]], 2, [ranked_perf[highlight]], ls=":", colors="C1", alpha=1, linewidth=3)
+    
+    ax.set_ylim(4, 10)
+    
     if pair_prop:
         pair_properties, _ = load_property([formated_path[goal_ids[0]]], property_key=pair_prop, early_stopped=True)
         pair_prop_log = np.zeros(len(rep_idx))
@@ -472,6 +495,7 @@ def property_accumulate(property_key, all_paths_dict, goal_ids, title,
 
         ax2 = ax.twinx()
         ax2.plot(ranked_prop, ranked_pairp, c="C1")
+    
     plt.title(property_keys[property_key], fontsize=30)
     plt.savefig("plot/img/{}.pdf".format(title), dpi=300, bbox_inches='tight')
     # plt.show()
@@ -513,7 +537,7 @@ def pair_prop_corr(property_keys, all_paths_dict):
 
     plt.savefig("plot/img/prop-cor.png", dpi=300, bbox_inches='tight')
 
-def main():
+def main_old():
     ranks = np.load("data/dataset/gridhard/srs/goal(9, 9)_simrank.npy", allow_pickle=True).item()
     for i in ranks:
         ranks[i] += 1
@@ -525,21 +549,21 @@ def main():
 
     targets = [
         "ReLU",
-        "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+        "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
         "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
-        "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+        "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
     ]
     # correlation_bar(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/maze correlation bar", xlim=[0, 11])
     # correlation_bar(label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/maze correlation bar", xlim=[0, 11])
     targets = [
         "ReLU",
-        "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+        "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
     ]
     # correlation_bar(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/maze correlation bar (relu)", xlim=[0, 11])
     # correlation_bar(label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/maze correlation bar (relu)", xlim=[0, 11])
     targets = [
         "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
-        "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+        "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
     ]
     # correlation_bar(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/maze correlation bar (fta)", xlim=[0, 11])
     # correlation_bar(label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/maze correlation bar (fta)", xlim=[0, 11])
@@ -547,33 +571,34 @@ def main():
 
     targets = [
         "ReLU",
-        "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+        "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
         "ReLU(L)",
-        "ReLU(L)+Control1g", "ReLU(L)+Control5g", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF",
+        "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF",
         "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
-        "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+        "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
     ]
     # pair_prop_corr(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU))
-    for key_pair in itertools.combinations(property_keys.keys(), 2):
-        pair = {}
-        pair[key_pair[0]] = property_keys[key_pair[0]]
-        pair[key_pair[1]] = property_keys[key_pair[1]]
-        # pair_property(pair, label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, xlim=[0, 11])
-        pair_property(pair, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), [106], ranks, xlim=[0, 11], with_auc=False)
+    # for key_pair in itertools.combinations(property_keys.keys(), 2):
+    #     pair = {}
+    #     pair[key_pair[0]] = property_keys[key_pair[0]]
+    #     pair[key_pair[1]] = property_keys[key_pair[1]]
+    #     # pair_property(pair, label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, xlim=[0, 11])
+    #     pair_property(pair, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), [106], ranks, xlim=[0, 11], with_auc=False)
 
     groups = {
-        "ReLU": ["ReLU", "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",],
-        "ReLU(L)": ["ReLU(L)", "ReLU(L)+Control1g", "ReLU(L)+Control5g", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF",],
-        "FTA": ["FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8", "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",],
+        "ReLU": ["ReLU", "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",],
+        "ReLU(L)": ["ReLU(L)", "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF",],
+        "FTA": ["FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8", "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",],
     }
+    property_keys.pop("return")
     # for key in property_keys.keys():
     #     property_auc_scatter({key: property_keys[key]}, label_filter(targets, gh_transfer_sweep_v13), groups, goal_ids, ranks, "auc-grouped", xlim=[0, 11])
     #     property_auc_scatter({key: property_keys[key]}, label_filter(targets, gh_nonlinear_transfer_sweep_v13), groups, goal_ids, ranks, "nonlinear/group/auc-group-activation", xlim=[0, 11])
-    property_scatter(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, "nonlinear/group-activation")
+    # property_scatter(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, "nonlinear/group-activation")
 
     groups = {
         "No Aux": ["ReLU", "ReLU(L)", "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8"],
-        "Control": ["ReLU+Control1g", "ReLU+Control5g", "ReLU(L)+Control1g", "ReLU(L)+Control5g", "FTA+Control1g", "FTA+Control5g"],
+        "Control": ["ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "FTA+VirtualVF1", "FTA+VirtualVF5"],
         "Info": ["ReLU+XY", "ReLU(L)+XY", "FTA+XY"],
         "Decoder":["ReLU+Decoder", "ReLU(L)+Decoder", "FTA+Decoder"],
         "NAS": ["ReLU+NAS", "ReLU(L)+NAS", "FTA+NAS"],
@@ -584,23 +609,23 @@ def main():
 
     # groups = {
     #     "Worse": ['ReLU', "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",],
-    #     "Better": ["ReLU+Control1g", "ReLU+Control5g", "ReLU+XY",
-    #                "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8", "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", ],
+    #     "Better": ["ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY",
+    #                "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8", "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", ],
     # }
     # # for key in property_keys.keys():
     #     # property_auc_scatter({key: property_keys[key]}, label_filter(targets, gh_nonlinear_transfer_sweep_v13), groups, goal_ids, ranks, "nonlinear/group/auc-group-CompareScratch", xlim=[0, 11])
 
     groups = {
         "Worse-ReLU": ["ReLU", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",],
-        "Better-ReLU": ["ReLU+Control1g", "ReLU+Control5g", "ReLU+XY"],
+        "Better-ReLU": ["ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY"],
     }
     # for key in property_keys.keys():
         # property_auc_scatter({key: property_keys[key]}, label_filter(targets, gh_transfer_sweep_v13), groups, goal_ids, ranks, "auc-grouped", xlim=[0, 11])
         # property_auc_scatter({key: property_keys[key]}, label_filter(targets, gh_nonlinear_transfer_sweep_v13), groups, goal_ids, ranks, "nonlinear/group/auc-group-relu", xlim=[0, 11])
 
     groups = {
-        "All": ["ReLU", "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
-                "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8", "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",],
+        "All": ["ReLU", "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+                "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8", "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",],
     }
     # for key in property_keys.keys():
         # property_auc_scatter({key: property_keys[key]}, label_filter(targets, gh_transfer_sweep_v13), groups, goal_ids, ranks, "auc-all", xlim=[0, 11])
@@ -617,11 +642,11 @@ def main():
     #     property_auc_goal(key, label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/scatter/slice",
     #                               xlim=[0, 11], classify=[50, 50])
     # key = "ortho"
-    for key in property_keys.keys():
-        # property_accumulate(key, label_filter(targets, gh_transfer_sweep_v13), goal_ids, "linear/accumAUC/accum_{}".format(key),
-        #                     xlim=[0, 11])
-        property_accumulate(key, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, "nonlinear/accumAUC/accum_{}".format(key),
-                            xlim=[0, 11])
+    # for key in property_keys.keys():
+    #     # property_accumulate(key, label_filter(targets, gh_transfer_sweep_v13), goal_ids, "linear/accumAUC/accum_{}".format(key),
+    #     #                     xlim=[0, 11])
+    #     property_accumulate(key, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, "nonlinear/accumAUC/accum_{}".format(key),
+    #                         xlim=[0, 11])
 
     # xgboost_analysis(property_keys, label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/xgboost", xlim=[0, 11], smooth=0.2)
     # xgboost_analysis(property_keys, label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/xgboost top0.1", xlim=[0, 11], smooth=0.2, top_runs=[0.9, 1.0])
@@ -630,17 +655,114 @@ def main():
 
     targets = [
         "ReLU",
-        "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+        "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
     ]
     # xgboost_analysis(property_keys, label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/xgboost_relu", xlim=[0, 11], smooth=0.2)
     # xgboost_analysis(property_keys, label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/xgboost_relu top0.1", xlim=[0, 11], smooth=0.2, top_runs=[0.9, 1.0])
     # xgboost_analysis(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/xgboost_relu", xlim=[0, 11], smooth=0.2)
     targets = [
         "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
-        "FTA+Control1g", "FTA+Control5g", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
+        "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
     ]
     # xgboost_analysis(property_keys, label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/xgboost_fta", xlim=[0, 11], smooth=0.2)
     # xgboost_analysis(property_keys, label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/xgboost_fta top0.1", xlim=[0, 11], smooth=0.2, top_runs=[0.9, 1.0])
     # xgboost_analysis(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/xgboost_fta", xlim=[0, 11], smooth=0.2)
+
+def main():
+    ranks = np.load("data/dataset/gridhard/srs/goal(9, 9)_simrank.npy", allow_pickle=True).item()
+    for i in ranks:
+        ranks[i] += 1
+
+    targets = [
+        "ReLU",
+        "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC",
+        "ReLU(L)",
+        "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF",
+        "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
+        "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC",
+    ]
+    # property_keys.pop("return")
+    # for key_pair in itertools.combinations(property_keys.keys(), 2):
+    #     pair = {}
+    #     pair[key_pair[0]] = property_keys[key_pair[0]]
+    #     pair[key_pair[1]] = property_keys[key_pair[1]]
+    #     pair_property(pair, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), [106], ranks, xlim=[0, 11], with_auc=False)
+
+    groups = {
+        "ReLU": ["ReLU", "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC"],
+        "ReLU(L)": ["ReLU(L)", "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF",],
+        "FTA": ["FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8", "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC"],
+    }
+    property_keys.pop("return")
+    property_keys.pop("sparsity")
+    property_keys.pop("interf")
+    property_keys.pop("distance")
+    property_scatter(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, "nonlinear/group-activation")
+    groups = {
+        "No Aux": ["ReLU"],
+        "XY": ["ReLU+XY"],
+        "Decoder": ["ReLU+Decoder"],
+        "NAS": ["ReLU+NAS"],
+        "Reward": ["ReLU+Reward"],
+        "SF": ["ReLU+SF"],
+        "VirtualVF1": ["ReLU+VirtualVF1"],
+        "VirtualVF5": ["ReLU+VirtualVF5"],
+        "ATC": ["ReLU+ATC"],
+    }
+    property_scatter(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, "nonlinear/group-aux-relu")
+    groups = {
+        "No Aux": ["ReLU(L)"],
+        "XY": ["ReLU(L)+XY"],
+        "Decoder": ["ReLU(L)+Decoder"],
+        "NAS": ["ReLU(L)+NAS"],
+        "Reward": ["ReLU(L)+Reward"],
+        "SF": ["ReLU(L)+SF"],
+        "VirtualVF1": ["ReLU(L)+VirtualVF1"],
+        "VirtualVF5": ["ReLU(L)+VirtualVF5"],
+        # "ATC": ["ReLU(L)+ATC"],
+    }
+    property_scatter(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, "nonlinear/group-aux-relu(l)")
+    groups = {
+        "No Aux": ["FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8"],
+        "XY": ["FTA+XY"],
+        "Decoder": ["FTA+Decoder"],
+        "NAS": ["FTA+NAS"],
+        "Reward": ["FTA+Reward"],
+        "SF": ["FTA+SF"],
+        "VirtualVF1": ["FTA+VirtualVF1"],
+        "VirtualVF5": ["FTA+VirtualVF5"],
+        "ATC": ["FTA+ATC"],
+    }
+    property_scatter(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, "nonlinear/group-aux-fta")
+    
+    goal_ids = [
+        106,
+        107, 108, 118, 119, 109, 120, 121, 128, 110, 111, 122, 123, 129, 130, 142, 143, 144, 141, 140,
+        139, 138, 156, 157, 158, 155, 170, 171, 172, 169, 154, 168, 153, 167, 152, 166, 137, 151, 165,
+        127, 117, 105, 99, 136, 126, 150, 164, 116, 104, 86, 98, 85, 84, 87, 83, 88, 89, 97, 90, 103,
+        115, 91, 92, 93, 82, 96, 102, 114, 81, 80, 71, 95, 70, 69, 68, 101, 67, 66, 113, 62, 65, 125,
+        61, 132, 47, 133, 79, 48, 72, 94, 52, 146, 73, 49, 33, 100, 134, 34, 74, 50, 147, 35, 112, 75,
+        135, 160, 36, 148, 76, 161, 63, 77, 124, 149, 78, 162, 163, 131, 53, 145, 159, 54, 55, 56, 57,
+        58, 59, 64, 51, 38, 60, 39, 40, 46, 41, 42, 43, 44, 45, 32, 31, 37, 30, 22, 21, 23, 20, 24, 19,
+        25, 18, 26, 17, 16, 27, 15, 28, 29, 7, 8, 6, 9, 5, 10, 4, 11, 3, 12, 2, 13, 1, 14, 0,
+    ]
+    property_keys.pop("return", None)
+    # property_keys.pop("sparsity")
+    # property_keys.pop("interf")
+    # property_keys.pop("distance")
+    highlight_idxs = {"lipschitz": 95, #72,
+                      "distance": 144,
+                      "ortho": 89, #96,
+                      "interf": 1,
+                      "diversity": 105,#90,
+                      "sparsity": 130,}
+    # # for key in property_keys.keys():
+    # #     property_auc_goal(key, label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/scatter/slice",
+    # #                               xlim=[0, 11], classify=[50, 50])
+    # for key in property_keys.keys():
+    #     # property_accumulate(key, label_filter(targets, gh_transfer_sweep_v13), goal_ids, "linear/accumAUC/accum_{}".format(key),
+    #     #                     xlim=[0, 11])
+    #     property_accumulate(key, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, "nonlinear/accumAUC/accum_{}".format(key),
+    #                         xlim=[0, 11], highlight=highlight_idxs[key])
 
 main()

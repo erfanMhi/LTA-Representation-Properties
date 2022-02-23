@@ -1,8 +1,11 @@
+import os
+import pickle
 import sys
 import copy
 import numpy as np
 import itertools
 from sklearn import ensemble, metrics
+import seaborn as sns
 # from sklearn.inspection import permutation_importance
 # from sklearn.linear_model import BayesianRidge
 
@@ -202,7 +205,7 @@ def pair_property(property_keys, all_paths_dict, goal_ids, ranks, total_param=No
         if with_auc:
             im = axes[gi].scatter(prop1_g, prop2_g, c=auc_g, cmap="Blues", vmin=0, vmax=11)
         else:
-            c="C1" if cor > 0.6 else "C0"
+            c="C1" if cor > 0.58 else "C0"
             im = axes[gi].scatter(prop1_g, prop2_g, c=c)
         xlabel = "\n"+property_keys[p1] if len(property_keys[p1].split(" "))==1 else "\n".join(property_keys[p1].split(" "))
         ylabel = "\n"+property_keys[p2] if len(property_keys[p2].split(" "))==1 else "\n".join(property_keys[p2].split(" "))
@@ -316,6 +319,53 @@ def property_scatter(property_keys, all_paths_dict, groups, title):
     plt.savefig("plot/img/{}.pdf".format(title), dpi=300, bbox_inches='tight')
     print("Save in {}".format(title))
 
+
+def performance_scatter(all_paths_dict, groups, title, goal_ids, xlim=[], ylim=[]):
+    labels = [i["label"] for i in all_paths_dict]
+
+    _, all_goals_independent = pick_best_perfs(all_paths_dict, goal_ids, None, xlim, labels, get_each_run=True)
+    
+    overall_trans = []
+    groups_keys = list(groups.keys())
+    for gp in groups_keys:
+        targets = groups[gp]
+        temp = []
+        for rep in targets:
+            overall = []
+            for g in all_goals_independent.keys():
+                overall.append(all_goals_independent[g][rep].sum(axis=1))
+            temp.append(np.array(overall).mean(axis=0))
+        overall_trans.append(np.array(temp).flatten())
+    
+    fig = plt.figure(1)
+    ax = fig.add_subplot(111)
+    ax.boxplot(overall_trans)
+    ax.set_ylim(ylim[0], ylim[1])
+    ax.set_yticks(ylim, labels=ylim, fontsize=28)
+    ax.set_xticklabels(groups_keys, fontsize=28, rotation=90)
+
+    plt.savefig("plot/img/{}.pdf".format(title), dpi=300, bbox_inches='tight')
+    print("Save in plot/img/{}".format(title))
+    plt.close()
+
+    # xticks_pos = list(range(0, all_ranks.max() + 1, 25))
+    # xticks_labels = list(range(0, all_ranks.max() + 1, 25))
+    # plt.xticks(xticks_pos, xticks_labels, rotation=60, fontsize=14)
+    # plt.yticks(fontsize=14)
+    # plt.gca().spines['right'].set_visible(False)
+    # plt.gca().spines['top'].set_visible(False)
+    #
+    # if data_label:
+    #     plt.legend()
+    # if xy_label:
+    #     plt.xlabel('Goal Ranks')
+    #     plt.ylabel('Percent of run that higher than the baseline')
+    # plt.savefig("plot/img/{}.pdf".format(title), dpi=300, bbox_inches='tight')
+    # print("Save in plot/img/{}".format(title))
+    # # plt.show()
+    # plt.close()
+
+
 def property_auc_goal(property_key, all_paths_dict, goal_ids, ranks, title,
                               total_param=None, xlim=[], classify=[50,50], figsize=(8, 6), xy_label=True, legend=True):
     ordered_goal_ids = []
@@ -413,10 +463,21 @@ def property_auc_goal(property_key, all_paths_dict, goal_ids, ranks, title,
     # plt.show()
 
 def property_accumulate(property_key, all_paths_dict, goal_ids, title,
-                        total_param=None, xlim=[], figsize=(8, 6), xy_label=True, legend=True,
-                        pair_prop=None, highlight=None):
+                        total_param=None, xlim=[], figsize=(8, 6), xy_label=True, legend=True, yticks=[], xticks=[],
+                        pair_prop=None, highlight=None, group_color=False, given_ax=None,
+                        show_only=None):
     labels = [i["label"] for i in all_paths_dict]
-    all_goals_auc = pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels)
+    
+    pklfile = "plot/temp_data/all_goals_auc_{}.pkl".format(property_key)
+    if os.path.isfile(pklfile):
+        with open(pklfile, "rb") as f:
+            all_goals_auc = pickle.load(f)
+        print("Load from {}".format(pklfile))
+    else:
+        all_goals_auc = pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels)
+        with open(pklfile, "wb") as f:
+            pickle.dump(all_goals_auc, f)
+        
     formated_path = {}
     for goal in goal_ids:
         g_path = copy.deepcopy(all_paths_dict)
@@ -439,14 +500,16 @@ def property_accumulate(property_key, all_paths_dict, goal_ids, title,
     for goal in goal_ids:
         transf_perf, _ = load_property([formated_path[goal]], property_key="return", early_stopped=True)
         all_goals_perf[goal] = transf_perf
-
+    
     accumulate_perf = np.zeros(len(rep_idx))
+    accumulate_label = []
     for i, idx in enumerate(rep_idx):
         temp = []
         rep, run = idx
         for goal in goal_ids:
             temp.append(all_goals_perf[goal][rep][run])
         accumulate_perf[i] = np.array(temp).mean()
+        accumulate_label.append(rep.split("_0")[0])
 
 
     prop_log = np.array(prop_log)
@@ -454,10 +517,13 @@ def property_accumulate(property_key, all_paths_dict, goal_ids, title,
     ranked_prop = prop_log[ranks]
     ranked_perf = accumulate_perf[ranks]
 
-    fig, ax = plt.subplots(figsize=figsize)
+    if given_ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+    else:
+        ax = given_ax
 
-    smoothed = exp_smooth(ranked_perf, 0.4)
-    ax.plot(ranked_prop, smoothed, c="C0")
+    # smoothed = exp_smooth(ranked_perf, 0.4)
+    # ax.plot(ranked_prop, smoothed, c="C0")
     # ax.text(0,0, "{}-{}".format(np.argmax(smoothed), np.max(smoothed)))
 
     # reg = BayesianRidge(tol=1e-6, fit_intercept=False, compute_score=True)
@@ -470,21 +536,69 @@ def property_accumulate(property_key, all_paths_dict, goal_ids, title,
     # z = np.polynomial.polynomial.polyfit(ranked_prop, ranked_perf, 2)
     # p = np.poly1d(z)
     # ax.plot(ranked_prop,p(ranked_prop), c="C0")
+    
+    if not group_color:
+        ax.scatter(ranked_prop, ranked_perf, c="C0")
+    else:
+        plotted_y = []
+        plotted_x = []
+        for i, p in enumerate(ranked_perf):
+            lb = accumulate_label[ranks[i]]
+            if lb == "ReLU" or lb.split("+")[0] == "ReLU":
+                c = "#2980b9"
+                if show_only is not None and show_only == "ReLU":
+                    ax.scatter([ranked_prop[i]], [p], c=c)
+                    plotted_x.append(ranked_prop[i])
+                    plotted_y.append(p)
+            elif lb == "ReLU(L)" or lb.split("+")[0] == "ReLU(L)":
+                c = "#9b59b6"
+                if show_only is not None and show_only == "ReLU(L)":
+                    ax.scatter([ranked_prop[i]], [p], c=c)
+                    plotted_x.append(ranked_prop[i])
+                    plotted_y.append(p)
+            elif lb == "FTA" or lb.split("+")[0] == "FTA" or lb.split(" ")[0] == "FTA":
+                c = "#e74c3c"
+                if show_only is not None and show_only == "FTA":
+                    ax.scatter([ranked_prop[i]], [p], c=c)
+                    plotted_x.append(ranked_prop[i])
+                    plotted_y.append(p)
+            # ax.scatter([ranked_prop[i]], [p], c=c)
+    # smoothed = exp_smooth(np.array(plotted_y), 0.4)
+    # ax.plot(plotted_x, smoothed, c="C0")
 
-    ax.scatter(ranked_prop, ranked_perf, c="C0")
-    xticks_pos = [ranked_prop[i] for i in range(0, len(ranked_prop), 50)] + [ranked_prop[-1]]
-    xticks_labels = ["{}({:.2f})".format(i, ranked_prop[i]) for i in range(0, len(ranked_prop), 50)]+["{}({:.2f})".format(len(ranked_prop)-1, ranked_prop[-1])]
-    # ax.set_xticks(xticks_pos, xticks_labels, rotation=90, fontsize=14)
-    plt.xticks(xticks_pos, xticks_labels, rotation=90)
-    plt.setp(ax.get_xticklabels(), fontsize=14)
+    # xticks_pos = [ranked_prop[i] for i in range(0, len(ranked_prop), 50)] + [ranked_prop[-1]]
+    # xticks_labels = ["{}({:.2f})".format(i, ranked_prop[i]) for i in range(0, len(ranked_prop), 50)]+["{}({:.2f})".format(len(ranked_prop)-1, ranked_prop[-1])]
+    # plt.xticks(xticks_pos, xticks_labels, rotation=90)
+    
+    # if highlight is not None:
+        # ax.scatter([ranked_prop[highlight]], [ranked_perf[highlight]], c="C1")
+        # ax.vlines([ranked_prop[highlight]], 2, [ranked_perf[highlight]], ls=":", colors="C1", alpha=1, linewidth=3)
+        # xticks_pos = [ranked_prop[0], ranked_prop[highlight]]
+        # xticks_labels = ["{}({:.2f})".format(0, ranked_prop[0]), "{}({:.2f})".format(highlight, ranked_prop[highlight])]
+        # ax.set_xticks(xticks_pos, xticks_labels, rotation=60)
+    
+    plotted_x = np.array(plotted_x)
+    plotted_y = np.array(plotted_y)
+    # sns.kdeplot(x=plotted_x, y=plotted_y, linewidth=2, ax=ax)
+
+    idx = np.argsort(plotted_y)[-3:]
+    top3_x = plotted_x[idx]
+    top3_y = plotted_y[idx]
+    ax.scatter(top3_x, top3_y, marker="*", c="#27ae60", s=100)
+    ax.set_xticks([], [])
+    if xticks != []:
+        if xticks == "min-max":
+            # ax.set_xticks([np.min(plotted_x), np.max(plotted_x)], ["{:.2f}".format(np.min(plotted_x)), "{:.2f}".format(np.max(plotted_x))])
+            ax.set_xticks([np.min(ranked_prop), np.max(ranked_prop)], ["{:.2f}".format(np.min(ranked_prop)), "{:.2f}".format(np.max(ranked_prop))],
+                          rotation=60)
+            
+    ax.set_ylim(5, 10)
+    ax.set_xlim(ranked_prop.min()-0.01, ranked_prop.max()+0.01)
+    ax.set_yticks(yticks)
+    
+    plt.setp(ax.get_xticklabels(), fontsize=30)
     plt.setp(ax.get_yticklabels(), fontsize=30)
-    
-    if highlight is not None:
-        ax.scatter([ranked_prop[highlight]], [ranked_perf[highlight]], c="C1")
-        ax.vlines([ranked_prop[highlight]], 2, [ranked_perf[highlight]], ls=":", colors="C1", alpha=1, linewidth=3)
-    
-    ax.set_ylim(4, 10)
-    
+
     if pair_prop:
         pair_properties, _ = load_property([formated_path[goal_ids[0]]], property_key=pair_prop, early_stopped=True)
         pair_prop_log = np.zeros(len(rep_idx))
@@ -495,10 +609,11 @@ def property_accumulate(property_key, all_paths_dict, goal_ids, title,
 
         ax2 = ax.twinx()
         ax2.plot(ranked_prop, ranked_pairp, c="C1")
-    
-    plt.title(property_keys[property_key], fontsize=30)
-    plt.savefig("plot/img/{}.pdf".format(title), dpi=300, bbox_inches='tight')
-    # plt.show()
+
+    if given_ax is None:
+        # plt.title(property_keys[property_key], fontsize=30)
+        plt.savefig("plot/img/{}.pdf".format(title), dpi=300, bbox_inches='tight')
+        # plt.show()
 
 
 def pair_prop_corr(property_keys, all_paths_dict):
@@ -672,12 +787,23 @@ def main():
     ranks = np.load("data/dataset/gridhard/srs/goal(9, 9)_simrank.npy", allow_pickle=True).item()
     for i in ranks:
         ranks[i] += 1
+    goal_ids = [
+        106,
+        107, 108, 118, 119, 109, 120, 121, 128, 110, 111, 122, 123, 129, 130, 142, 143, 144, 141, 140,
+        139, 138, 156, 157, 158, 155, 170, 171, 172, 169, 154, 168, 153, 167, 152, 166, 137, 151, 165,
+        127, 117, 105, 99, 136, 126, 150, 164, 116, 104, 86, 98, 85, 84, 87, 83, 88, 89, 97, 90, 103,
+        115, 91, 92, 93, 82, 96, 102, 114, 81, 80, 71, 95, 70, 69, 68, 101, 67, 66, 113, 62, 65, 125,
+        61, 132, 47, 133, 79, 48, 72, 94, 52, 146, 73, 49, 33, 100, 134, 34, 74, 50, 147, 35, 112, 75,
+        135, 160, 36, 148, 76, 161, 63, 77, 124, 149, 78, 162, 163, 131, 53, 145, 159, 54, 55, 56, 57,
+        58, 59, 64, 51, 38, 60, 39, 40, 46, 41, 42, 43, 44, 45, 32, 31, 37, 30, 22, 21, 23, 20, 24, 19,
+        25, 18, 26, 17, 16, 27, 15, 28, 29, 7, 8, 6, 9, 5, 10, 4, 11, 3, 12, 2, 13, 1, 14, 0,
+    ]
 
     targets = [
         "ReLU",
         "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC",
         "ReLU(L)",
-        "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF",
+        "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF", "ReLU(L)+ATC",
         "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
         "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC",
     ]
@@ -690,14 +816,16 @@ def main():
 
     groups = {
         "ReLU": ["ReLU", "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC"],
-        "ReLU(L)": ["ReLU(L)", "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF",],
+        "ReLU(L)": ["ReLU(L)", "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF", "ReLU(L)+ATC"],
         "FTA": ["FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8", "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC"],
     }
-    property_keys.pop("return")
-    property_keys.pop("sparsity")
-    property_keys.pop("interf")
-    property_keys.pop("distance")
-    property_scatter(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, "nonlinear/group-activation")
+    # property_keys.pop("return")
+    # property_keys.pop("sparsity")
+    # property_keys.pop("interf")
+    # property_keys.pop("distance")
+    # property_scatter(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, "nonlinear/group-activation")
+    # performance_scatter(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, "nonlinear/group-auc-activation",
+    #                     goal_ids, xlim=[0, 11], ylim=[4, 10])
     groups = {
         "No Aux": ["ReLU"],
         "XY": ["ReLU+XY"],
@@ -709,7 +837,9 @@ def main():
         "VirtualVF5": ["ReLU+VirtualVF5"],
         "ATC": ["ReLU+ATC"],
     }
-    property_scatter(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, "nonlinear/group-aux-relu")
+    # property_scatter(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, "nonlinear/group-aux-relu")
+    # performance_scatter(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, "nonlinear/group-auc-aux-relu",
+    #                     goal_ids, xlim=[0, 11], ylim=[4, 10])
     groups = {
         "No Aux": ["ReLU(L)"],
         "XY": ["ReLU(L)+XY"],
@@ -719,9 +849,11 @@ def main():
         "SF": ["ReLU(L)+SF"],
         "VirtualVF1": ["ReLU(L)+VirtualVF1"],
         "VirtualVF5": ["ReLU(L)+VirtualVF5"],
-        # "ATC": ["ReLU(L)+ATC"],
+        "ATC": ["ReLU(L)+ATC"],
     }
-    property_scatter(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, "nonlinear/group-aux-relu(l)")
+    # property_scatter(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, "nonlinear/group-aux-relu(l)")
+    # performance_scatter(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, "nonlinear/group-auc-aux-relu(l)",
+    #                     goal_ids, xlim=[0, 11], ylim=[4, 10])
     groups = {
         "No Aux": ["FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8"],
         "XY": ["FTA+XY"],
@@ -733,36 +865,75 @@ def main():
         "VirtualVF5": ["FTA+VirtualVF5"],
         "ATC": ["FTA+ATC"],
     }
-    property_scatter(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, "nonlinear/group-aux-fta")
-    
-    goal_ids = [
-        106,
-        107, 108, 118, 119, 109, 120, 121, 128, 110, 111, 122, 123, 129, 130, 142, 143, 144, 141, 140,
-        139, 138, 156, 157, 158, 155, 170, 171, 172, 169, 154, 168, 153, 167, 152, 166, 137, 151, 165,
-        127, 117, 105, 99, 136, 126, 150, 164, 116, 104, 86, 98, 85, 84, 87, 83, 88, 89, 97, 90, 103,
-        115, 91, 92, 93, 82, 96, 102, 114, 81, 80, 71, 95, 70, 69, 68, 101, 67, 66, 113, 62, 65, 125,
-        61, 132, 47, 133, 79, 48, 72, 94, 52, 146, 73, 49, 33, 100, 134, 34, 74, 50, 147, 35, 112, 75,
-        135, 160, 36, 148, 76, 161, 63, 77, 124, 149, 78, 162, 163, 131, 53, 145, 159, 54, 55, 56, 57,
-        58, 59, 64, 51, 38, 60, 39, 40, 46, 41, 42, 43, 44, 45, 32, 31, 37, 30, 22, 21, 23, 20, 24, 19,
-        25, 18, 26, 17, 16, 27, 15, 28, 29, 7, 8, 6, 9, 5, 10, 4, 11, 3, 12, 2, 13, 1, 14, 0,
-    ]
+    # property_scatter(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, "nonlinear/group-aux-fta")
+    # performance_scatter(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, "nonlinear/group-auc-aux-fta",
+    #                     goal_ids, xlim=[0, 11], ylim=[4, 10])
+
     property_keys.pop("return", None)
     # property_keys.pop("sparsity")
     # property_keys.pop("interf")
     # property_keys.pop("distance")
     highlight_idxs = {"lipschitz": 95, #72,
-                      "distance": 144,
+                      "distance": 149,
                       "ortho": 89, #96,
                       "interf": 1,
-                      "diversity": 105,#90,
-                      "sparsity": 130,}
+                      "diversity": 102,#90,
+                      "sparsity": 134,}
     # # for key in property_keys.keys():
     # #     property_auc_goal(key, label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/scatter/slice",
     # #                               xlim=[0, 11], classify=[50, 50])
-    # for key in property_keys.keys():
-    #     # property_accumulate(key, label_filter(targets, gh_transfer_sweep_v13), goal_ids, "linear/accumAUC/accum_{}".format(key),
-    #     #                     xlim=[0, 11])
-    #     property_accumulate(key, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, "nonlinear/accumAUC/accum_{}".format(key),
-    #                         xlim=[0, 11], highlight=highlight_idxs[key])
+    # targets = [
+    #     "ReLU",
+    #     "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC",
+    # ]
+    # targets = [
+    #     "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
+    #     "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC",
+    # ]
+    # highlight_idxs = {"lipschitz": 10,
+    #                   "distance": 59,
+    #                   "ortho": 4,
+    #                   "interf": 0,
+    #                   "diversity": 5,
+    #                   "sparsity": 13,}
+    titles = {
+        "lipschitz": "Complexity\nReduction",
+        "distance": "Dynamic\nAwareness",
+        "ortho": "Orthogonality",
+        "interf": "Non-\ninterference",
+        "diversity": "Diversity",
+        "sparsity": "Sparsity",
+    }
+    fig, axs = plt.subplots(1, 6, figsize=(28, 4))
+    for i, key in enumerate(["interf"]):#["lipschitz", "diversity", "ortho", "distance", "interf", "sparsity"]):
+        # property_accumulate(key, label_filter(targets, gh_transfer_sweep_v13), goal_ids, "linear/accumAUC/accum_{}".format(key),
+        #                     xlim=[0, 11])
+
+        yticks = [5, 7.5, 10] if i == 0 else []
+
+        # xticks = []
+        # property_accumulate(key, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, "nonlinear/accumAUC/accum_fta_{}".format(key),
+        #                     xlim=[0, 11], group_color=True,
+        #                     yticks=yticks,
+        #                     xticks=xticks,
+        #                     highlight=highlight_idxs[key],
+        #                     given_ax = axs[i],
+        #                     show_only = "FTA"
+        #                     )
+
+        xticks = "min-max"#[]#
+        property_accumulate(key, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, "nonlinear/accumAUC/accum_relu_{}".format(key),
+                            xlim=[0, 11], group_color=True,
+                            yticks=yticks,
+                            xticks=xticks,
+                            highlight=highlight_idxs[key],
+                            given_ax = axs[i],
+                            show_only = "ReLU"#"FTA"#
+                            )
+
+        axs[i].set_title(titles[key], fontsize=30)
+
+    # plt.savefig("plot/img/nonlinear/accum_fta.pdf", dpi=300, bbox_inches='tight')
+    plt.savefig("plot/img/nonlinear/accum_relu.pdf", dpi=300, bbox_inches='tight')
 
 main()

@@ -83,6 +83,7 @@ violin_colors = {
     "ReLU(L)+NAS": c_default[8],
     "ReLU(L)+Reward": c_default[9],
     "ReLU(L)+SF": c_default[10],
+    "ReLU(L)+ATC": c_default[11],
 
     "FTA": c_default[0],
     "FTA(no target)": c_default[0],
@@ -159,7 +160,8 @@ curve_styles = {
     "ReLU(L)+NAS": s_default[2],
     "ReLU(L)+Reward": s_default[2],
     "ReLU(L)+SF": s_default[2],
-
+    "ReLU(L)+ATC": s_default[2],
+    
     "FTA": s_default[0],
     "FTA(no target)": s_default[0],
 
@@ -7765,6 +7767,10 @@ gh_nonlinear_transfer_sweep_v13_largeReLU = [
     {"label": "ReLU+ATC",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_cl/sweep/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_cl/best/", 0],
+     },
+    {"label": "ReLU(L)+ATC",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_cl/sweep_large/",
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_cl/best_large/", 0],
      },
     {"label": "FTA+ATC",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_fta_cl/sweep/",

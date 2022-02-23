@@ -207,15 +207,17 @@ def get_avg(all_res):
     ste = std / np.sqrt(all_res.shape[0])
     return mu, ste
 
-def draw_curve(all_res, ax, label, color=None, style="-", alpha=1, linewidth=1.5, draw_ste=True):
+def draw_curve(all_res, ax, label, color=None, style="-", alpha=1, linewidth=1.5, draw_ste=True, xcoord=None):
     if len(all_res) == 0:
         return None
     mu, ste = get_avg(all_res)
+    if xcoord is None:
+        xcoord = list(range(1, len(mu)+1))
     if color is None:
-        p = ax.plot(mu, label=label, alpha=alpha, linestyle=style, linewidth=linewidth)
+        p = ax.plot(xcoord, mu, label=label, alpha=alpha, linestyle=style, linewidth=linewidth)
         # color = p.get_color()
     else:
-        ax.plot(mu, label=label, color=color, alpha=alpha, linestyle=style, linewidth=linewidth)
+        ax.plot(xcoord, mu, label=label, color=color, alpha=alpha, linestyle=style, linewidth=linewidth)
     if draw_ste:
         ax.fill_between(list(range(len(mu))), mu - ste * 2, mu + ste * 2, color=color, alpha=0.1, linewidth=0.)
     print(label, "auc =", np.sum(mu))
@@ -529,10 +531,14 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
         for i in group:
             for run in all_property[i["label"]]:
                 ori = all_property[i["label"]][run]
-                if reverse:
-                    all_property[i["label"]][run] = 1.0 - (ori - mn) / (mx - mn)
                 if normalize:
                     all_property[i["label"]][run] = (ori - mn) / (mx - mn)
+                if reverse:
+                    all_property[i["label"]][run] = 1.0 - ori#(ori - mn) / (mx - mn)
+                # print(target_key, ori, mn, mx, all_property[i["label"]][run])
+                # if all_property[i["label"]][run] == 0:
+                #     base = [i["label"], run]
+        # del all_property[base[0]][base[1]]
 
     return all_property
 
@@ -599,26 +605,30 @@ def box_plot(ax1, color, data, xpos, width):
     bp = ax1.boxplot(data, positions=xpos, widths=width, patch_artist=True)
     set_box_color(bp, color=color)
 
-def draw_label(targets, save_path, ncol, emphasize=None, with_style=True):
+def draw_label(targets, save_path, ncol, emphasize=None, with_style=True, with_color=True):
     def get_linestyle(label):
         linestyle = curve_styles[label] if with_style else s_default[0]
         return linestyle
 
+    def get_color(label):
+        color = violin_colors[label] if with_color else "C0"
+        return color
+
     plt.figure(figsize=(0.1, 2))
     if emphasize:
         for label in emphasize:
-            plt.plot([], color=violin_colors[label], linestyle=get_linestyle(label), label=label, alpha=1, linewidth=2)
+            plt.plot([], color=get_color(label), linestyle=get_linestyle(label), label=label, alpha=1, linewidth=2)
     for label in targets:
         if type(label) == dict:
             key = list(label.keys())[0]
             plt.plot([], color=label[key][0], linestyle=label[key][1], label=key)
         else:
             if emphasize and label not in emphasize:
-                plt.plot([], color=violin_colors[label], linestyle=get_linestyle(label), label=label, alpha=0.4)
+                plt.plot([], color=get_color(label), linestyle=get_linestyle(label), label=label, alpha=0.4)
             elif emphasize and label in emphasize:
                 pass
             else:
-                plt.plot([], color=violin_colors[label], linestyle=get_linestyle(label), label=label)
+                plt.plot([], color=get_color(label), linestyle=get_linestyle(label), label=label)
     plt.axis('off')
     plt.legend(ncol=ncol)
     plt.savefig("plot/img/{}.pdf".format(save_path), dpi=300, bbox_inches='tight')
@@ -651,8 +661,9 @@ def load_property(all_groups, property_key=None, perc=None, relationship=None, t
     all_groups, all_group_dict = merge_groups(all_groups)
     # print(all_groups, "\n\n", all_group_dict, "\n")
     reverse = True if property_key in ["lipschitz", "interf"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
+    normalize = True if property_key in ["lipschitz"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
     model_saving = load_info(all_group_dict, 0, "model", path_key="online_measure") if early_stopped else None
-    properties = load_online_property(all_group_dict, property_key, reverse=reverse, cut_at_step=model_saving, p_label=p_label)
+    properties = load_online_property(all_group_dict, property_key, reverse=reverse, normalize=normalize, cut_at_step=model_saving, p_label=p_label)
 
     return properties, all_group_dict
 

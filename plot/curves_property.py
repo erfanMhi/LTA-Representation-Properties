@@ -14,7 +14,10 @@ os.chdir("..")
 print("Change dir to", os.getcwd())
 
 
-def learning_curve_mean(all_paths_dict, title, key, targets=[], xlim=None, ylim=None, show_avg=False, show_model=True, data_label=None, save_path='unknown', legend=False, independent_runs=False):
+def learning_curve_mean(all_paths_dict, title, key,
+                        targets=[], xlim=None, ylim=None, show_avg=False, show_model=True, data_label=None, save_path='unknown', legend=False, independent_runs=False,
+                        xscale="linear", xticks=None,
+                        given_ax=None, given_color="black"):
 
     labels = [i["label"] for i in all_paths_dict] if targets == [] else targets
     control = load_info(all_paths_dict, None, key, label=data_label)
@@ -36,7 +39,10 @@ def learning_curve_mean(all_paths_dict, title, key, targets=[], xlim=None, ylim=
             returns = np.concatenate([np.zeros((len(returns), 1))+np.nan, returns], axis=1)
         arranged[label] = returns
 
-    fig, ax = plt.subplots()
+    if given_ax is None:
+        fig, ax = plt.subplots()
+    else:
+        ax = given_ax
     labels = targets
     for k, label in enumerate(labels):
         print('----------------------draw_curve---------------------')
@@ -44,19 +50,19 @@ def learning_curve_mean(all_paths_dict, title, key, targets=[], xlim=None, ylim=
         # print('min returns: ', returns[:,-1:].min())
         # print('max returns: ', returns[:,-1:].max())
         # draw_curve(returns, ax, label, violin_colors[label], curve_styles[label], alpha=alpha, linewidth=linewidth)
-        draw_curve(returns, ax, label, "black", "-", alpha=alpha, linewidth=linewidth, draw_ste=False)
+        draw_curve(returns, ax, label, given_color, "-", alpha=alpha, linewidth=linewidth, draw_ste=False)
         if independent_runs:
             for i, r in enumerate(returns):
                 # draw_curve(r.reshape((1, -1)), ax, None, violin_colors[label], curve_styles[label], alpha=alpha, linewidth=linewidth)
-                draw_curve(r.reshape((1, -1)), ax, None, "black", "-", alpha=alpha, linewidth=linewidth)
-            plt.plot([], color=violin_colors[label], linestyle=curve_styles[label], label=label)
+                draw_curve(r.reshape((1, -1)), ax, None, given_color, "-", alpha=alpha, linewidth=linewidth)
+            ax.plot([], color=violin_colors[label], linestyle=curve_styles[label], label=label)
         else:
             if show_avg:
                 total = returns if type(total) == int else total + returns
     if show_avg:
         draw_curve(total/len(labels), plt, "Avg", "black", linewidth=3)
 
-    plt.title(property_keys[key], fontsize=30)
+    # plt.title(property_keys[key], fontsize=30)
     if legend:
         # fontP = FontProperties()
         # fontP.set_size('xx-small')
@@ -74,6 +80,9 @@ def learning_curve_mean(all_paths_dict, title, key, targets=[], xlim=None, ylim=
     else:
         ax.set_yticks([ylim[0], ylim[1]])
     ax.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
+    ax.set_xscale(xscale)
+    if xticks is not None:
+        ax.set_xticks(xticks, xticks)
     plt.setp(ax.get_xticklabels(), fontsize=30)
     plt.setp(ax.get_yticklabels(), fontsize=30)
 
@@ -83,10 +92,10 @@ def learning_curve_mean(all_paths_dict, title, key, targets=[], xlim=None, ylim=
             if independent_runs:
                 for i in range(len(vline)):
                     # draw_cut(vline[i].reshape((1, -1)), arranged[label][i].reshape((1, -1)), ax, violin_colors[label], ylim[0])
-                    draw_cut(vline[i].reshape((1, -1)), arranged[label][i].reshape((1, -1)), ax, "black", ylim[0])
+                    draw_cut(vline[i].reshape((1, -1)), arranged[label][i].reshape((1, -1)), ax, given_color, ylim[0])
             else:
                 # draw_cut(vline, arranged[label], ax, violin_colors[label], ylim[0])
-                draw_cut(vline, arranged[label], ax, "black", ylim[0])
+                draw_cut(vline, arranged[label], ax, given_color, ylim[0])
 
     # plt.xlabel('step ($10^4$)')
     # plt.ylabel(key)
@@ -94,15 +103,16 @@ def learning_curve_mean(all_paths_dict, title, key, targets=[], xlim=None, ylim=
     ax.spines['top'].set_visible(False)
     save_path = save_path if save_path!='unknown' else title
     
-    if data_label is None:
-        plt.savefig("plot/img/{}.pdf".format(save_path), dpi=300, bbox_inches='tight')
-    else:    
-        plt.savefig("plot/img/{}_{}.pdf".format(data_label, save_path), dpi=300, bbox_inches='tight')
-    
-    # plt.savefig("plot/img/{}.png".format(save_path), dpi=300, bbox_inches='tight')
-    # plt.show()
-    plt.close()
-    plt.clf()
+    if given_ax is None:
+        if data_label is None:
+            plt.savefig("plot/img/{}.pdf".format(save_path), dpi=300, bbox_inches='tight')
+        else:
+            plt.savefig("plot/img/{}_{}.pdf".format(data_label, save_path), dpi=300, bbox_inches='tight')
+        
+        # plt.savefig("plot/img/{}.png".format(save_path), dpi=300, bbox_inches='tight')
+        # plt.show()
+        plt.close()
+        plt.clf()
 
 def learning_curve_mean_label(all_paths_dict, title, key, targets=[], xlim=None, ylim=None, show_avg=False, show_model=True, data_labels=['return'], save_path='unknown', legend=False, independent_runs=False):
 
@@ -195,32 +205,46 @@ def simple_maze():
     targets = [
         "ReLU",
         "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC",
-        "ReLU(L)",
-        "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF",
         "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
         "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC",
     ]
-    # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_lipschitz", key="lipschitz", targets=targets, xlim=[0, 31], ylim=[0.1, 1], show_avg=False, show_model=True, data_label=None)
-    # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_distance", key="distance", targets=targets, xlim=[0, 31], ylim=[0.2, 0.9], show_avg=False, show_model=True)
-    # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_orthogonal", key="ortho", targets=targets, xlim=[0, 31], ylim=[0, 0.8], show_avg=False, show_model=True)
-    # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_interf", key="interf", targets=targets, xlim=[1, 31], ylim=[0.3, 1], show_avg=False, show_model=True)
-    # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_diversity", key="diversity", targets=targets, xlim=[0, 31], ylim=[0, 0.9], show_avg=False, show_model=True)
-    # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_sparsity", key="sparsity", targets=targets, xlim=[0, 31], ylim=[0.4, 1], show_avg=False, show_model=True)
-    # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_return", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1], show_avg=False, show_model=True)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_lipschitz", key="lipschitz", targets=targets, xlim=[0, 31], ylim=[0.1, 1], show_avg=False, show_model=True, data_label=None)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_distance", key="distance", targets=targets, xlim=[0, 31], ylim=[0.2, 0.9], show_avg=False, show_model=True)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_orthogonal", key="ortho", targets=targets, xlim=[0, 31], ylim=[0, 0.8], show_avg=False, show_model=True)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_interf", key="interf", targets=targets, xlim=[1, 31], ylim=[0.3, 1], show_avg=False, show_model=True)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_diversity", key="diversity", targets=targets, xlim=[0, 31], ylim=[0, 0.9], show_avg=False, show_model=True)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_sparsity", key="sparsity", targets=targets, xlim=[0, 31], ylim=[0.4, 1], show_avg=False, show_model=True)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_return", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1], show_avg=False, show_model=True)
 
     targets = [
         "ReLU",
         "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC",
+        "ReLU(L)",
+        "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF", "ReLU(L)+ATC",
         "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
         "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC",
     ]
-    learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_lipschitz", key="lipschitz", targets=targets, xlim=[0, 31], ylim=[0.1, 1], show_avg=False, show_model=True, data_label=None)
-    learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_distance", key="distance", targets=targets, xlim=[0, 31], ylim=[0.2, 0.9], show_avg=False, show_model=True)
-    learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_orthogonal", key="ortho", targets=targets, xlim=[0, 31], ylim=[0, 0.8], show_avg=False, show_model=True)
-    learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_interf", key="interf", targets=targets, xlim=[1, 31], ylim=[0.3, 1], show_avg=False, show_model=True)
-    learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_diversity", key="diversity", targets=targets, xlim=[0, 31], ylim=[0, 0.9], show_avg=False, show_model=True)
-    learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_sparsity", key="sparsity", targets=targets, xlim=[0, 31], ylim=[0.4, 1], show_avg=False, show_model=True)
-    learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_return", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1], show_avg=False, show_model=True)
+    fig, axs = plt.subplots(1, 6, figsize=(32, 4))
+    learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_lipschitz", key="lipschitz", targets=targets, xlim=[0, 31],
+                        ylim=[0.1, 1], show_avg=False, show_model=True, data_label=None, xscale="log", xticks=[10], given_ax=axs[0], given_color="#3498db")
+    axs[0].set_title("Complexity\nReduction", fontsize=30)
+    learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_distance", key="distance", targets=targets, xlim=[0, 31],
+                        ylim=[0.2, 0.9], show_avg=False, show_model=True, xscale="log", xticks=[10], given_ax=axs[3], given_color="#c0392b")
+    axs[3].set_title("Dynamic\nAwareness", fontsize=30)
+    learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_orthogonal", key="ortho", targets=targets, xlim=[0, 31],
+                        ylim=[0, 0.8], show_avg=False, show_model=True, xscale="log", xticks=[10], given_ax=axs[2], given_color="#9b59b6")
+    axs[2].set_title("Orthogonality", fontsize=30)
+    learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_interf", key="interf", targets=targets, xlim=[1, 31],
+                        ylim=[0.3, 1], show_avg=False, show_model=True, xscale="log", xticks=[10], given_ax=axs[4], given_color="#1abc9c")
+    axs[4].set_title("Non-\ninterference", fontsize=30)
+    learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_diversity", key="diversity", targets=targets, xlim=[0, 31],
+                        ylim=[0, 0.9], show_avg=False, show_model=True, xscale="log", xticks=[10], given_ax=axs[1], given_color="#e67e22")
+    axs[1].set_title("Diversity", fontsize=30)
+    learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_sparsity", key="sparsity", targets=targets, xlim=[0, 31],
+                        ylim=[0.4, 1], show_avg=False, show_model=True, xscale="log", xticks=[10], given_ax=axs[5], given_color="#34495e")
+    axs[5].set_title("Sparsity", fontsize=30)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_return", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1], show_avg=False, show_model=True, xscale="log")
+    plt.savefig("plot/img/nonlinear/properties.pdf", dpi=300, bbox_inches='tight')
 
 if __name__ == '__main__':
     simple_maze()

@@ -790,44 +790,44 @@ def simple_maze():
     #                    "nonlinear/maze correlation change (smooth 0.1)", xlim=[0, 11], ylim=[-0.85, 0.85], smooth=0.1, label=False, plot_origin=False)
 
 
-    # correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
-    #                    "nonlinear/maze correlation change (low otho)", xlim=[0, 11], ylim=[-0.4, 0.7], smooth=0.1, label=False, plot_origin=False,
-    #                    property_rank={"ortho": [0, 89]})
-    # correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
-    #                    "nonlinear/maze correlation change (high otho)", xlim=[0, 11], ylim=[-0.85, 0.85], smooth=0.1, label=False, plot_origin=False,
-    #                    property_rank={"ortho": [90, np.inf]})
-    # correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
-    #                    "nonlinear/maze correlation change (low otho) (no smooth)", xlim=[0, 11], ylim=[-0.4, 0.7], smooth=1, label=False, plot_origin=False,
-    #                    property_rank={"ortho": [0, 89]})
-    # correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
-    #                    "nonlinear/maze correlation change (high otho) (no smooth)", xlim=[0, 11], ylim=[-0.85, 0.85], smooth=1, label=False, plot_origin=False,
-    #                    property_rank={"ortho": [90, np.inf]})
-    #
-    # correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
-    #                    "nonlinear/maze correlation change (low div)", xlim=[0, 11], ylim=[-0.4, 0.7], smooth=0.1, label=False, plot_origin=False,
-    #                    property_rank={"diversity": [0, 105]})
-    # correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
-    #                    "nonlinear/maze correlation change (high div)", xlim=[0, 11], ylim=[-0.85, 0.85], smooth=0.1, label=False, plot_origin=False,
-    #                    property_rank={"diversity": [106, np.inf]})
-    # correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
-    #                    "nonlinear/maze correlation change (low div) (no smooth)", xlim=[0, 11], ylim=[-0.4, 0.7], smooth=1, label=False, plot_origin=False,
-    #                    property_rank={"diversity": [0, 105]})
-    # correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
-    #                    "nonlinear/maze correlation change (high div) (no smooth)", xlim=[0, 11], ylim=[-0.85, 0.85], smooth=1, label=False, plot_origin=False,
-    #                    property_rank={"diversity": [106, np.inf]})
-    #
-    # correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
-    #                    "nonlinear/maze correlation change (low comp reduc)", xlim=[0, 11], ylim=[-0.4, 0.7], smooth=0.1, label=False, plot_origin=False,
-    #                    property_rank={"lipschitz": [0, 95]})
-    # correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
-    #                    "nonlinear/maze correlation change (high comp reduc)", xlim=[0, 11], ylim=[-0.85, 0.85], smooth=0.1, label=False, plot_origin=False,
-    #                    property_rank={"lipschitz": [96, np.inf]})
-    # correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
-    #                    "nonlinear/maze correlation change (low comp reduc) (no smooth)", xlim=[0, 11], ylim=[-0.4, 0.7], smooth=1, label=False, plot_origin=False,
-    #                    property_rank={"lipschitz": [0, 95]})
-    # correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
-    #                    "nonlinear/maze correlation change (high comp reduc) (no smooth)", xlim=[0, 11], ylim=[-0.85, 0.85], smooth=1, label=False, plot_origin=False,
-    #                    property_rank={"lipschitz": [96, np.inf]})
+    correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
+                       "nonlinear/maze correlation change (low otho)", xlim=[0, 11], ylim=[-0.4, 0.7], smooth=0.1, label=False, plot_origin=False,
+                       property_rank={"ortho": [0, 89]})
+    correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
+                       "nonlinear/maze correlation change (high otho)", xlim=[0, 11], ylim=[-0.85, 0.85], smooth=0.1, label=False, plot_origin=False,
+                       property_rank={"ortho": [90, np.inf]})
+    correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
+                       "nonlinear/maze correlation change (low otho) (no smooth)", xlim=[0, 11], ylim=[-0.4, 0.7], smooth=1, label=False, plot_origin=False,
+                       property_rank={"ortho": [0, 89]})
+    correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
+                       "nonlinear/maze correlation change (high otho) (no smooth)", xlim=[0, 11], ylim=[-0.85, 0.85], smooth=1, label=False, plot_origin=False,
+                       property_rank={"ortho": [90, np.inf]})
+    
+    correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
+                       "nonlinear/maze correlation change (low div)", xlim=[0, 11], ylim=[-0.4, 0.7], smooth=0.1, label=False, plot_origin=False,
+                       property_rank={"diversity": [0, 105]})
+    correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
+                       "nonlinear/maze correlation change (high div)", xlim=[0, 11], ylim=[-0.85, 0.85], smooth=0.1, label=False, plot_origin=False,
+                       property_rank={"diversity": [106, np.inf]})
+    correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
+                       "nonlinear/maze correlation change (low div) (no smooth)", xlim=[0, 11], ylim=[-0.4, 0.7], smooth=1, label=False, plot_origin=False,
+                       property_rank={"diversity": [0, 105]})
+    correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
+                       "nonlinear/maze correlation change (high div) (no smooth)", xlim=[0, 11], ylim=[-0.85, 0.85], smooth=1, label=False, plot_origin=False,
+                       property_rank={"diversity": [106, np.inf]})
+    
+    correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
+                       "nonlinear/maze correlation change (low comp reduc)", xlim=[0, 11], ylim=[-0.4, 0.7], smooth=0.1, label=False, plot_origin=False,
+                       property_rank={"lipschitz": [0, 95]})
+    correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
+                       "nonlinear/maze correlation change (high comp reduc)", xlim=[0, 11], ylim=[-0.85, 0.85], smooth=0.1, label=False, plot_origin=False,
+                       property_rank={"lipschitz": [96, np.inf]})
+    correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
+                       "nonlinear/maze correlation change (low comp reduc) (no smooth)", xlim=[0, 11], ylim=[-0.4, 0.7], smooth=1, label=False, plot_origin=False,
+                       property_rank={"lipschitz": [0, 95]})
+    correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
+                       "nonlinear/maze correlation change (high comp reduc) (no smooth)", xlim=[0, 11], ylim=[-0.85, 0.85], smooth=1, label=False, plot_origin=False,
+                        property_rank={"lipschitz": [96, np.inf]})
     #
     # correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
     #                    "nonlinear/maze correlation change (low dist)", xlim=[0, 11], ylim=[-0.85, 0.85], smooth=0.1, label=False, plot_origin=False,

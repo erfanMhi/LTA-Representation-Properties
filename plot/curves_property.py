@@ -44,13 +44,39 @@ def learning_curve_mean(all_paths_dict, title, key,
     else:
         ax = given_ax
     labels = targets
+    conv_counter = 0
+
+    conv_counter = 0
+    max_intensity = 0
+    min_intensity = float('+inf')
+    for k, label in enumerate(labels):
+        vline = arrange_order(model_saving[label], cut_length=False, scale=10000)
+        intensity = convergence_intensity(vline, arranged[label])
+        if max_intensity <= intensity:
+            max_intensity = intensity
+        if min_intensity >= min_intensity:
+            min_intensity = intensity
+
     for k, label in enumerate(labels):
         print('----------------------draw_curve---------------------')
         returns = arranged[label]
         # print('min returns: ', returns[:,-1:].min())
         # print('max returns: ', returns[:,-1:].max())
         # draw_curve(returns, ax, label, violin_colors[label], curve_styles[label], alpha=alpha, linewidth=linewidth)
-        draw_curve(returns, ax, label, given_color, "-", alpha=alpha, linewidth=linewidth, draw_ste=False)
+        vline = arrange_order(model_saving[label], cut_length=False, scale=10000)
+        intensity = convergence_intensity(vline, arranged[label])
+
+        
+        # curve_alpha = 0.2 + (1 - (intensity - min_intensity)/(max_intensity - min_intensity) * 0.8)
+
+        if is_converged(vline, arranged[label]):
+            curve_alpha = 1.0
+            conv_counter += 1
+        else:
+            curve_alpha = 0.3
+        
+        draw_curve(returns, ax, label, given_color, "-", alpha=curve_alpha, linewidth=linewidth, draw_ste=False, break_point=int(vline.max()))
+
         if independent_runs:
             for i, r in enumerate(returns):
                 # draw_curve(r.reshape((1, -1)), ax, None, violin_colors[label], curve_styles[label], alpha=alpha, linewidth=linewidth)
@@ -59,6 +85,8 @@ def learning_curve_mean(all_paths_dict, title, key,
         else:
             if show_avg:
                 total = returns if type(total) == int else total + returns
+        
+    print('{}_key: '.format(key), conv_counter, '/', len(labels))
     if show_avg:
         draw_curve(total/len(labels), plt, "Avg", "black", linewidth=3)
 
@@ -86,16 +114,16 @@ def learning_curve_mean(all_paths_dict, title, key,
     plt.setp(ax.get_xticklabels(), fontsize=30)
     plt.setp(ax.get_yticklabels(), fontsize=30)
 
-    if show_model:
-        for label in labels:
-            vline = arrange_order(model_saving[label], cut_length=False, scale=10000)
-            if independent_runs:
-                for i in range(len(vline)):
-                    # draw_cut(vline[i].reshape((1, -1)), arranged[label][i].reshape((1, -1)), ax, violin_colors[label], ylim[0])
-                    draw_cut(vline[i].reshape((1, -1)), arranged[label][i].reshape((1, -1)), ax, given_color, ylim[0])
-            else:
-                # draw_cut(vline, arranged[label], ax, violin_colors[label], ylim[0])
-                draw_cut(vline, arranged[label], ax, given_color, ylim[0])
+    # if show_model:
+    #     for label in labels:
+    #         vline = arrange_order(model_saving[label], cut_length=False, scale=10000)
+    #         if independent_runs:
+    #             for i in range(len(vline)):
+    #                 # draw_cut(vline[i].reshape((1, -1)), arranged[label][i].reshape((1, -1)), ax, violin_colors[label], ylim[0])
+    #                 draw_cut(vline[i].reshape((1, -1)), arranged[label][i].reshape((1, -1)), ax, given_color, ylim[0])
+    #         else:
+    #             # draw_cut(vline, arranged[label], ax, violin_colors[label], ylim[0])
+    #             draw_cut(vline, arranged[label], ax, given_color, ylim[0])
 
     # plt.xlabel('step ($10^4$)')
     # plt.ylabel(key)
@@ -241,7 +269,7 @@ def simple_maze():
                         ylim=[0, 0.9], show_avg=False, show_model=True, xscale="log", xticks=[10], given_ax=axs[1], given_color="#e67e22")
     axs[1].set_title("Diversity", fontsize=30)
     learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_sparsity", key="sparsity", targets=targets, xlim=[0, 31],
-                        ylim=[0.4, 1], show_avg=False, show_model=True, xscale="log", xticks=[10], given_ax=axs[5], given_color="#34495e")
+                        ylim=[0.4, 1], show_avg=False, show_model=True, xscale="log", xticks=[10], given_ax=axs[5], given_color='#f1c40f') #given_color="#34495e")
     axs[5].set_title("Sparsity", fontsize=30)
     # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_return", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1], show_avg=False, show_model=True, xscale="log")
     plt.savefig("plot/img/nonlinear/properties.pdf", dpi=300, bbox_inches='tight')

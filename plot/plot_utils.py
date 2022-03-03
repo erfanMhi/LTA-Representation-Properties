@@ -207,17 +207,28 @@ def get_avg(all_res):
     ste = std / np.sqrt(all_res.shape[0])
     return mu, ste
 
-def draw_curve(all_res, ax, label, color=None, style="-", alpha=1, linewidth=1.5, draw_ste=True, xcoord=None):
+def draw_curve(all_res, ax, label, color=None, style="-", alpha=1, linewidth=1.5, draw_ste=True, xcoord=None, break_point=None):
     if len(all_res) == 0:
         return None
     mu, ste = get_avg(all_res)
     if xcoord is None:
         xcoord = list(range(1, len(mu)+1))
-    if color is None:
-        p = ax.plot(xcoord, mu, label=label, alpha=alpha, linestyle=style, linewidth=linewidth)
-        # color = p.get_color()
+    if break_point is None:
+        if color is None:
+            p = ax.plot(xcoord, mu, label=label, alpha=alpha, linestyle=style, linewidth=linewidth)
+            # color = p.get_color()
+        else:
+            ax.plot(xcoord, mu, label=label, color=color, alpha=alpha, linestyle=style, linewidth=linewidth)
     else:
-        ax.plot(xcoord, mu, label=label, color=color, alpha=alpha, linestyle=style, linewidth=linewidth)
+        if color is None:
+            p = ax.plot(xcoord[:break_point], mu[:break_point], label=label, alpha=alpha, linestyle=style, linewidth=linewidth)
+            p = ax.plot(xcoord[break_point:], mu[break_point:], label=label, alpha=alpha, linestyle=style, linewidth=linewidth)
+            # color = p.get_color()
+        else:
+            ax.plot(xcoord[:break_point], mu[:break_point], label=label, color=color, alpha=alpha, linestyle=style, linewidth=linewidth)
+            ax.plot(xcoord[break_point-1:], mu[break_point-1:], label=label, color='#353839', alpha=alpha, linestyle=style, linewidth=linewidth)
+            ax.plot(xcoord[break_point-1:break_point], mu[break_point-1:break_point], marker="o", markersize=1.5, markeredgecolor=color, markerfacecolor=color)
+            print(xcoord[break_point:break_point+1], mu[break_point:break_point+1])
     if draw_ste:
         ax.fill_between(list(range(len(mu))), mu - ste * 2, mu + ste * 2, color=color, alpha=0.1, linewidth=0.)
     print(label, "auc =", np.sum(mu))
@@ -227,7 +238,55 @@ def draw_cut(cuts, all_res, ax, color, ymin):
     mu = all_res.mean(axis=0)
     x_mean = cuts.mean()
     x_max = cuts.max()
+    # print('x_max: ', x_max)
+    # print('mu: ', mu)
+    # print(len(mu))
+    # print('x_max_onward: ', mu[int(x_max):])
     ax.vlines(x_max, ymin, np.interp(x_max, list(range(len(mu))), mu), ls=":", colors=color, alpha=0.5, linewidth=1)
+
+def is_converged(cuts, all_res, err_interval=0.04):
+    """
+    Checks whether the property line converged after the cut (early-stopping moment)
+    """
+    mu = all_res.mean(axis=0)
+    x_max = cuts.max()
+    # print('x_max: ', x_max)
+    # print('mu: ', mu)
+    # print(len(mu))
+    # print('x_max_onward: ', mu[int(x_max):])
+    conv_point = mu[int(x_max)]
+    if x_max > 10:
+        print('x_max: ', x_max)
+    
+    # print(mu)
+    for point in mu[int(x_max):]:
+        if conv_point - err_interval <= point <= conv_point + err_interval:
+            continue
+        else:
+            return False
+    return True
+
+def convergence_intensity(cuts, all_res):
+    """
+    Checks whether the property line converged after the cut (early-stopping moment)
+    """
+    mu = all_res.mean(axis=0)
+    x_max = cuts.max()
+    # print('x_max: ', x_max)
+    # print('mu: ', mu)
+    # print(len(mu))
+    # print('x_max_onward: ', mu[int(x_max):])
+    conv_point = mu[int(x_max)]
+    if x_max > 10:
+        print('x_max: ', x_max)
+    
+    # print(mu)
+    intensity = 0
+    for point in mu[int(x_max):]:
+        intensity += np.abs(conv_point-point)
+    return intensity 
+
+
 
 def extract_from_single_run(file, key, label=None, before_step=None):
     with open(file, "r") as f:

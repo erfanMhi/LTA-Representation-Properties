@@ -102,7 +102,7 @@ def learning_curve(all_paths_dict, title, total_param=None,
 
     labels = [i["label"] for i in all_paths_dict]
     # control = load_return(all_paths_dict, total_param, start_param)
-    control = load_return(all_paths_dict, total_param, search_lr=True)#, start_param)
+    control = load_return(all_paths_dict, total_param, search_lr=True, path_key="online_measure")#, start_param)
     # control = load_return(all_paths_dict, total_param, search_lr=True, key="diversity")#, start_param)
 
     fig, axs = plt.subplots(nrows=1, ncols=len(labels), figsize=(6*len(labels), 4))
@@ -672,13 +672,15 @@ def simple_maze():
     targets = [
         "ReLU",
         "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC",
-        # "ReLU(L)",
-        # "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF",
-        # "ReLU(L)+ATC",
+        "ReLU(L)",
+        "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF",
+        "ReLU(L)+ATC",
         "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
         "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC",
         "Scratch", "Input", "Random", #"Scratch(L)", "Random(L)",
     ]
+    learning_curve(gh_nonlinear_transfer_sweep_v13_largeReLU, "maze learning sweep")
+
     goal_ids = [106,
                 107, 108, 118, 119, 109, 120, 121, 128, 110, 111, 122, 123, 129, 130, 142, 143, 144, 141, 140, 139, 138, 156, 157, 158, 155, 170, 171, 172, 169, 154, 168, 153, 167, 152, 166, 137, 151,
                 165, 127, 117, 105, 99, 136, 126, 150, 164, 116, 104, 86, 98, 85, 84, 87, 83, 88, 89, 97, 90, 103, 115, 91, 92, 93, 82, 96, 102, 114, 81, 80, 71, 95, 70, 69, 68, 101, 67, 66, 113, 62,

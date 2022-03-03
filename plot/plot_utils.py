@@ -190,11 +190,13 @@ def load_info(paths, param, key, label=None, path_key="control"):
     return all_rt
 
 # def load_return(paths, total_param, start_param):
-def load_return(paths, setting_list, search_lr=False, key="return"):
+def load_return(paths, setting_list, search_lr=False, key="return", path_key="control"):
     all_rt = {}
     for i in paths:
-        path = i["control"]
+        path = i[path_key]
         # print("Loading returns from", path)
+        if search_lr and type(path) == list:
+            path = path[0]
         returns = extract_return_all(path, setting_list, search_lr=search_lr, key=key)#total_param, start_param)
         all_rt[i["label"]] = returns
     return all_rt
@@ -538,7 +540,7 @@ def extract_property_setting(path, setting, file_name, keyword):
                 all_runs[int(file.split("_run")[0].split("/")[-1])] = value
     return all_runs
 
-def load_online_property(group, target_key, reverse=False, normalize=False, cut_at_step=None, p_label=None):
+def load_online_property(group, target_key, reverse=False, normalize=False, cut_at_step=None, p_label=None, fixed_rep=False):
     all_property = {}
     temp = []
     for i in group:
@@ -556,19 +558,28 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
                 values[run] = np.array(returns[run]).sum()
 
         elif target_key in ["interf"]:
-            path = i["online_measure"]
-            if type(path) == list:
-                setting = path[1]
-                path = path[0]
+            if fixed_rep:
+                path = i["fixrep_measure"]
+                if type(path) == list:
+                    setting = path[1]
+                    path = path[0]
+                else:
+                    setting = 0
+                values, _ = extract_from_setting(path, setting, target_key, final_only=True)
             else:
-                setting = 0
-            returns, _ = extract_from_setting(path, setting, target_key, final_only=False, cut_at_step=cas)
-            values = {}
-            for run in returns:
-                t = np.array(returns[run])[1:] # remove the first measure, which is always nan
-                pct = np.percentile(t, 90)
-                target_idx = np.where(t >= pct)[0]
-                values[run] = np.mean(t[target_idx]) # average over the top x percentiles only
+                path = i["online_measure"]
+                if type(path) == list:
+                    setting = path[1]
+                    path = path[0]
+                else:
+                    setting = 0
+                returns, _ = extract_from_setting(path, setting, target_key, final_only=False, cut_at_step=cas)
+                values = {}
+                for run in returns:
+                    t = np.array(returns[run])[1:] # remove the first measure, which is always nan
+                    pct = np.percentile(t, 90)
+                    target_idx = np.where(t >= pct)[0]
+                    values[run] = np.mean(t[target_idx]) # average over the top x percentiles only
 
         else:
             path = i["online_measure"]
@@ -585,19 +596,27 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
             temp.append(values[run])
 
     if reverse or normalize:
+        outlier_remove = False
         mx = np.max(np.array(temp))
         mn = np.min(np.array(temp))
+        # if target_key == "interf":
+        #     srt = np.array(temp).argsort()
+        #     mx = np.array(temp)[srt[-2]]
         for i in group:
             for run in all_property[i["label"]]:
                 ori = all_property[i["label"]][run]
-                if normalize:
+                if normalize and reverse:
+                    all_property[i["label"]][run] = 1.0 - (ori - mn) / (mx - mn)
+                elif normalize:
                     all_property[i["label"]][run] = (ori - mn) / (mx - mn)
-                if reverse:
+                elif reverse:
                     all_property[i["label"]][run] = 1.0 - ori#(ori - mn) / (mx - mn)
-                # print(target_key, ori, mn, mx, all_property[i["label"]][run])
-                # if all_property[i["label"]][run] == 0:
+                # # print(target_key, ori, mn, mx, all_property[i["label"]][run])
+                # if target_key == "interf" and all_property[i["label"]][run] <= 0:
                 #     base = [i["label"], run]
-        # del all_property[base[0]][base[1]]
+                #     outlier_remove = True
+        # if outlier_remove:
+        #     del all_property[base[0]][base[1]]
 
     return all_property
 
@@ -707,7 +726,7 @@ def exp_smooth(ary, alpha):
         # print(alpha, new[i-1:i+1], ary[i])
     return new
 
-def load_property(all_groups, property_key=None, perc=None, relationship=None, targets=[], early_stopped=False, p_label=None):
+def load_property(all_groups, property_key=None, perc=None, relationship=None, targets=[], early_stopped=False, p_label=None, fix_rep=False):
     if len(targets) > 0:
         temp = []
         for g in all_groups:
@@ -720,9 +739,10 @@ def load_property(all_groups, property_key=None, perc=None, relationship=None, t
     all_groups, all_group_dict = merge_groups(all_groups)
     # print(all_groups, "\n\n", all_group_dict, "\n")
     reverse = True if property_key in ["lipschitz", "interf"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
+    # normalize = True if property_key in ["lipschitz", "interf"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
     normalize = True if property_key in ["lipschitz"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
     model_saving = load_info(all_group_dict, 0, "model", path_key="online_measure") if early_stopped else None
-    properties = load_online_property(all_group_dict, property_key, reverse=reverse, normalize=normalize, cut_at_step=model_saving, p_label=p_label)
+    properties = load_online_property(all_group_dict, property_key, reverse=reverse, normalize=normalize, cut_at_step=model_saving, p_label=p_label, fixed_rep=fix_rep)
 
     return properties, all_group_dict
 

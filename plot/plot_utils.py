@@ -566,6 +566,7 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
                 else:
                     setting = 0
                 values, _ = extract_from_setting(path, setting, target_key, final_only=True)
+                print(values, path)
             else:
                 path = i["online_measure"]
                 if type(path) == list:
@@ -599,6 +600,7 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
         outlier_remove = False
         mx = np.max(np.array(temp))
         mn = np.min(np.array(temp))
+        print(mx, mn)
         # if target_key == "interf":
         #     srt = np.array(temp).argsort()
         #     mx = np.array(temp)[srt[-2]]
@@ -739,8 +741,8 @@ def load_property(all_groups, property_key=None, perc=None, relationship=None, t
     all_groups, all_group_dict = merge_groups(all_groups)
     # print(all_groups, "\n\n", all_group_dict, "\n")
     reverse = True if property_key in ["lipschitz", "interf"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
-    # normalize = True if property_key in ["lipschitz", "interf"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
-    normalize = True if property_key in ["lipschitz"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
+    normalize = True if property_key in ["lipschitz", "interf"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
+    # normalize = True if property_key in ["lipschitz"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
     model_saving = load_info(all_group_dict, 0, "model", path_key="online_measure") if early_stopped else None
     properties = load_online_property(all_group_dict, property_key, reverse=reverse, normalize=normalize, cut_at_step=model_saving, p_label=p_label, fixed_rep=fix_rep)
 
@@ -877,3 +879,19 @@ def label_filter(targets, all_paths):
             filtered.append(item)
     return filtered
 
+def align_yaxis(ax1, v1, ax2, v2):
+    """adjust ax2 ylimit so that v2 in ax2 is aligned to v1 in ax1"""
+    # _, y1 = ax1.transData.transform((0, v1))
+    # _, y2 = ax2.transData.transform((0, v2))
+    # inv = ax2.transData.inverted()
+    # _, dy = inv.transform((0, 0)) - inv.transform((0, y1-y2))
+    # miny, maxy = ax2.get_ylim()
+    # ax2.set_ylim(miny+dy, maxy+dy)
+    ax1_ylim = ax1.get_ylim()
+    ax2_ylim = ax2.get_ylim()
+    prop = (v1 - ax1_ylim[0]) / (ax1_ylim[1] - ax1_ylim[0])
+    # new_y_low = v2 - (ax2_ylim[1] - ax2_ylim[0]) * prop
+    # new_y_high = new_y_low + (ax2_ylim[1] - ax2_ylim[0])
+    # ax2.set_ylim(new_y_low, new_y_high)
+    new_y_high = ax2_ylim[0] + (v2 - ax2_ylim[0]) / prop
+    ax2.set_ylim(ax2_ylim[0], new_y_high)

@@ -244,6 +244,67 @@ def simple_maze():
     # learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_sparsity", key="sparsity", targets=targets, xlim=[0, 31], ylim=[0.4, 1], show_avg=False, show_model=True)
     # learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_return", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1], show_avg=False, show_model=True)
 
+    # targets = [
+    #     "ReLU",
+    #     "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC",
+    #     "ReLU(L)",
+    #     "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF", "ReLU(L)+ATC",
+    #     "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
+    #     "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC",
+    # ]
+    # fig, axs = plt.subplots(1, 6, figsize=(32, 4))
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_lipschitz", key="lipschitz", targets=targets, xlim=[0, 31],
+    #                     ylim=[0.1, 1], show_avg=False, show_model=True, data_label=None, xscale="log", xticks=[10], given_ax=axs[0], given_color="#3498db")
+    # axs[0].set_title("Complexity\nReduction", fontsize=30)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_distance", key="distance", targets=targets, xlim=[0, 31],
+    #                     ylim=[0.2, 0.9], show_avg=False, show_model=True, xscale="log", xticks=[10], given_ax=axs[1], given_color="#c0392b")
+    # axs[1].set_title("Dynamic\nAwareness", fontsize=30)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_diversity", key="diversity", targets=targets, xlim=[0, 31],
+    #                     ylim=[0, 0.9], show_avg=False, show_model=True, xscale="log", xticks=[10], given_ax=axs[2], given_color="#e67e22")
+    # axs[2].set_title("Diversity", fontsize=30)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_orthogonal", key="ortho", targets=targets, xlim=[0, 31],
+    #                     ylim=[0, 0.8], show_avg=False, show_model=True, xscale="log", xticks=[10], given_ax=axs[3], given_color="#9b59b6")
+    # axs[3].set_title("Orthogonality", fontsize=30)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_sparsity", key="sparsity", targets=targets, xlim=[0, 31],
+    #                     ylim=[0.4, 1], show_avg=False, show_model=True, xscale="log", xticks=[10], given_ax=axs[4], given_color='#f1c40f') #given_color="#34495e")
+    # axs[4].set_title("Sparsity", fontsize=30)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_interf", key="interf", targets=targets, xlim=[1, 31],
+    #                     ylim=[0.3, 1], show_avg=False, show_model=True, xscale="log", xticks=[10], given_ax=axs[5], given_color="#1abc9c")
+    # axs[5].set_title("Non-\ninterference", fontsize=30)
+    # # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_return", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1], show_avg=False, show_model=True, xscale="log")
+    # plt.savefig("plot/img/nonlinear/properties.pdf", dpi=300, bbox_inches='tight')
+    #
+    #
+    # targets = [
+    #     "ReLU",
+    #     "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC",
+    #     "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
+    #     "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC",
+    # ]
+    # fig, axs = plt.subplots(1, 6, figsize=(32, 4))
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_lipschitz", key="lipschitz", targets=targets, xlim=[0, 31],
+    #                     ylim=[0.1, 1], show_avg=False, show_model=True, data_label=None, xscale="log", xticks=[10], given_ax=axs[0], given_color="#3498db")
+    # axs[0].set_title("Complexity\nReduction", fontsize=30)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_distance", key="distance", targets=targets, xlim=[0, 31],
+    #                     ylim=[0.2, 0.9], show_avg=False, show_model=True, xscale="log", xticks=[10], given_ax=axs[1], given_color="#c0392b")
+    # axs[1].set_title("Dynamic\nAwareness", fontsize=30)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_diversity", key="diversity", targets=targets, xlim=[0, 31],
+    #                     ylim=[0, 0.9], show_avg=False, show_model=True, xscale="log", xticks=[10], given_ax=axs[2], given_color="#e67e22")
+    # axs[2].set_title("Diversity", fontsize=30)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_orthogonal", key="ortho", targets=targets, xlim=[0, 31],
+    #                     ylim=[0, 0.8], show_avg=False, show_model=True, xscale="log", xticks=[10], given_ax=axs[3], given_color="#9b59b6")
+    # axs[3].set_title("Orthogonality", fontsize=30)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_sparsity", key="sparsity", targets=targets, xlim=[0, 31],
+    #                     ylim=[0.4, 1], show_avg=False, show_model=True, xscale="log", xticks=[10], given_ax=axs[4], given_color='#f1c40f') #given_color="#34495e")
+    # axs[4].set_title("Sparsity", fontsize=30)
+    # learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_online_interf", key="interf", targets=targets, xlim=[1, 31],
+    #                     ylim=[0.3, 1], show_avg=False, show_model=True, xscale="log", xticks=[10], given_ax=axs[5], given_color="#1abc9c")
+    # axs[5].set_title("Non-\ninterference", fontsize=30)
+    # # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_return", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1], show_avg=False, show_model=True, xscale="log")
+    # plt.savefig("plot/img/linear/properties.pdf", dpi=300, bbox_inches='tight')
+    
+
+    fig, axs = plt.subplots(1, 2, figsize=(12, 4))
     targets = [
         "ReLU",
         "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC",
@@ -252,27 +313,18 @@ def simple_maze():
         "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
         "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC",
     ]
-    fig, axs = plt.subplots(1, 6, figsize=(32, 4))
-    learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_lipschitz", key="lipschitz", targets=targets, xlim=[0, 31],
-                        ylim=[0.1, 1], show_avg=False, show_model=True, data_label=None, xscale="log", xticks=[10], given_ax=axs[0], given_color="#3498db")
-    axs[0].set_title("Complexity\nReduction", fontsize=30)
-    learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_distance", key="distance", targets=targets, xlim=[0, 31],
-                        ylim=[0.2, 0.9], show_avg=False, show_model=True, xscale="log", xticks=[10], given_ax=axs[3], given_color="#c0392b")
-    axs[3].set_title("Dynamic\nAwareness", fontsize=30)
-    learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_orthogonal", key="ortho", targets=targets, xlim=[0, 31],
-                        ylim=[0, 0.8], show_avg=False, show_model=True, xscale="log", xticks=[10], given_ax=axs[2], given_color="#9b59b6")
-    axs[2].set_title("Orthogonality", fontsize=30)
-    learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_interf", key="interf", targets=targets, xlim=[1, 31],
-                        ylim=[0.3, 1], show_avg=False, show_model=True, xscale="log", xticks=[10], given_ax=axs[4], given_color="#1abc9c")
-    axs[4].set_title("Non-\ninterference", fontsize=30)
-    learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_diversity", key="diversity", targets=targets, xlim=[0, 31],
-                        ylim=[0, 0.9], show_avg=False, show_model=True, xscale="log", xticks=[10], given_ax=axs[1], given_color="#e67e22")
-    axs[1].set_title("Diversity", fontsize=30)
-    learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_sparsity", key="sparsity", targets=targets, xlim=[0, 31],
-                        ylim=[0.4, 1], show_avg=False, show_model=True, xscale="log", xticks=[10], given_ax=axs[5], given_color='#f1c40f') #given_color="#34495e")
-    axs[5].set_title("Sparsity", fontsize=30)
-    # learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_online_return", key="return", targets=targets, xlim=[0, 31], ylim=[0, 1], show_avg=False, show_model=True, xscale="log")
-    plt.savefig("plot/img/nonlinear/properties.pdf", dpi=300, bbox_inches='tight')
-
+    learning_curve_mean(preprocess_path(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)), "nonlinear/properties/maze_all_return", key="return", targets=targets, xlim=[0, 31],
+                        ylim=[0, 1], show_avg=False, show_model=True, data_label=None, xscale="log", xticks=[10], given_ax=axs[0], given_color="#27ae60")
+    axs[0].set_title("Non-linear VF", fontsize=30)
+    targets = [
+        "ReLU",
+        "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC",
+        "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
+        "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC",
+    ]
+    learning_curve_mean(preprocess_path(label_filter(targets, gh_transfer_sweep_v13)), "linear/properties/maze_all_return", key="return", targets=targets, xlim=[0, 31],
+                        ylim=[0, 1], show_avg=False, show_model=True, xscale="log", xticks=[10], given_ax=axs[1], given_color="#27ae60")
+    axs[1].set_title("Linear VF", fontsize=30)
+    plt.savefig("plot/img/returns.pdf", dpi=300, bbox_inches='tight')
 if __name__ == '__main__':
     simple_maze()

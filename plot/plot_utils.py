@@ -566,7 +566,6 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
                 else:
                     setting = 0
                 values, _ = extract_from_setting(path, setting, target_key, final_only=True)
-                print(values, path)
             else:
                 path = i["online_measure"]
                 if type(path) == list:
@@ -598,15 +597,18 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
 
     if reverse or normalize:
         outlier_remove = False
-        mx = np.max(np.array(temp))
-        mn = np.min(np.array(temp))
-        print(mx, mn)
+        # mx = np.max(np.array(temp))
+        # mn = np.min(np.array(temp))
+        # print(target_key, mn, mx)
         # if target_key == "interf":
         #     srt = np.array(temp).argsort()
         #     mx = np.array(temp)[srt[-2]]
         for i in group:
             for run in all_property[i["label"]]:
                 ori = all_property[i["label"]][run]
+                if normalize:
+                    mn, mx = normalize_prop[target_key]
+                    
                 if normalize and reverse:
                     all_property[i["label"]][run] = 1.0 - (ori - mn) / (mx - mn)
                 elif normalize:
@@ -773,10 +775,19 @@ def correlation_calc(all_group_dict, control, properties, perc=None, relationshi
 
 def correlation_load(all_paths_dict, goal_ids, total_param=None, xlim=[],
                      property_keys = {"lipschitz": "Complexity Reduction", "distance": "Dynamics Awareness", "ortho": "Orthogonality", "interf":"Noninterference", "diversity":"Diversity", "sparsity":"Sparsity"},
-                     property_perc = None, property_rank = None):
+                     property_perc = None, property_rank = None, get_overall=False):
     labels = [i["label"] for i in all_paths_dict]
 
-    all_goals_auc = pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels)
+    # all_goals_auc = pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels)
+    pklfile = "plot/temp_data/all_goals_auc_{}.pkl".format(property_key)
+    if os.path.isfile(pklfile):
+        with open(pklfile, "rb") as f:
+            all_goals_auc = pickle.load(f)
+        print("Load from {}".format(pklfile))
+    else:
+        all_goals_auc = pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels)
+        with open(pklfile, "wb") as f:
+            pickle.dump(all_goals_auc, f)
 
     formated_path = {}
     for goal in goal_ids:
@@ -804,12 +815,31 @@ def correlation_load(all_paths_dict, goal_ids, total_param=None, xlim=[],
             filtered_lables.append(obj)
 
     all_goals_cor = {}
+    overall_cor = {}
     for pk in property_keys.keys():
         all_goals_cor[pk] = {}
+
+        avg_transf_perf = {}
+        for rep in allg_transf_perf[106].keys():
+            avg_transf_perf[rep] = {}
+            for run in allg_transf_perf[106][rep].keys():
+                avg_transf_perf[rep][run] = []
+
         for goal in goal_ids:
             cor = correlation_calc(filtered_lables, allg_transf_perf[goal], allp_properties[pk], perc=None, relationship=None)
             all_goals_cor[pk][goal] = cor
-
+            for rep in allg_transf_perf[goal].keys():
+                for run in allg_transf_perf[goal][rep].keys():
+                    avg_transf_perf[rep][run].append(allg_transf_perf[goal][rep][run])
+        
+        for rep in allg_transf_perf[106].keys():
+            for run in allg_transf_perf[106][rep].keys():
+                ary = np.array(avg_transf_perf[rep][run])
+                avg_transf_perf[rep][run] = np.mean(ary)
+        overall_cor[pk] = correlation_calc(filtered_lables, avg_transf_perf, allp_properties[pk], perc=None, relationship=None)
+        
+    if get_overall:
+        return all_goals_cor, overall_cor, property_keys
     return all_goals_cor, property_keys
 
 def pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels, top_runs=[0, 1.0], get_each_run=False):

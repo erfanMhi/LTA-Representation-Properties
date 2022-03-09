@@ -21,6 +21,11 @@ property_keys = {"lipschitz": "Complexity Reduction",
                  "sparsity":"Sparsity",
                  "return": ""}
 
+normalize_prop = {
+    "lipschitz": [0.00727, 0.35973],
+    "interf": [0.0, 0.07027447]
+}
+
 def cmap(idx, total):
     if idx < len(c_default):
         return c_default[idx]

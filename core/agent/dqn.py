@@ -241,7 +241,7 @@ class DQNAgent(base.Agent):
                   'Lipschitz: %.3f/%.5f/%.5f/%.5f/%.5f (upper/mean/median/min/max)'
         self.cfg.logger.info(log_str % (self.total_steps, len(self.episode_rewards), lipschitz_upper, mean, median, min, max))
 
-    def update_interference(self):
+    def update_interference(self, calc_accuracy_change=True):
         def td_square(rep_net, val_net, rep_target, val_target, samples):
             states, actions, next_states, rewards, terminals = samples
             with torch.no_grad():
@@ -265,7 +265,7 @@ class DQNAgent(base.Agent):
                                   self.ac_last_sample)
             return delta2 - self.ac_last_td2
 
-        if self.ac_last_sample is not None:
+        if self.ac_last_sample is not None and calc_accuracy_change:
             ac = accuracy_change()
             ui = np.clip(ac.mean(), 0, np.inf) # average over samples
             self.update_interfs.append(ui)

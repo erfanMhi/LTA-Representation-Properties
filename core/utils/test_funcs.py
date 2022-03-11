@@ -1064,8 +1064,9 @@ def run_steps_onlineProperty(agent):
             state_all, next_s_all, _, action_all, reward_all, terminal_all, _, _ = dataset
             for i in range(len(state_all)):
                 agent.cfg.eval_dataset.feed([state_all[i], action_all[i], next_s_all[i], reward_all[i], int(terminal_all[i])])
+
         agent.cfg.logger.info('Save eval_dataset buffer')
-        agent.update_interference()
+        agent.update_interference(calc_accuracy_change=True)
         agent.iteration_interference()
 
     early_model_saved = False
@@ -1157,13 +1158,19 @@ def run_steps_onlineProperty(agent):
                 early_model_saved = True
                 agent.cfg.logger.info('Save the last learned model as the early-stopping model')
             break
-        
+
+        if agent.cfg.evaluate_interference:
+            if (not agent.cfg.use_target_network or agent.total_steps % agent.cfg.target_network_update_freq==0):
+                # target net changes, calculate interference for the beginning and ending of iteration
+                agent.update_interference(calc_accuracy_change=True)
+                agent.iteration_interference()
+
         agent.step()
         if agent.cfg.evaluate_interference:
             if (not agent.cfg.use_target_network or agent.total_steps % agent.cfg.target_network_update_freq==0):
                 # target net changes, calculate interference for the beginning and ending of iteration
-                agent.update_interference()
-                agent.iteration_interference()
+                agent.update_interference(calc_accuracy_change=False)
+                #agent.iteration_interference()
 def draw(state):
     import matplotlib.pyplot as plt
     frame = state.astype(np.uint8)

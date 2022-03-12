@@ -1160,7 +1160,8 @@ def run_steps_onlineProperty(agent):
             break
 
         if agent.cfg.evaluate_interference:
-            if (not agent.cfg.use_target_network or agent.total_steps % agent.cfg.target_network_update_freq==0):
+            
+            if (not agent.cfg.use_target_network or (agent.total_steps+1) % agent.cfg.target_network_update_freq==0):
                 # target net changes, calculate interference for the beginning and ending of iteration
                 agent.update_interference(calc_accuracy_change=True)
                 agent.iteration_interference()
@@ -1171,6 +1172,7 @@ def run_steps_onlineProperty(agent):
                 # target net changes, calculate interference for the beginning and ending of iteration
                 agent.update_interference(calc_accuracy_change=False)
                 #agent.iteration_interference()
+
 def draw(state):
     import matplotlib.pyplot as plt
     frame = state.astype(np.uint8)

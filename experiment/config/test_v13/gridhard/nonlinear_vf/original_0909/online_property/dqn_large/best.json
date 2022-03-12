@@ -1,7 +1,7 @@
 {
     "config_class": "DQNAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/temp",
+        "exp_name": "test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large/best",
         "env_name": "GridHardRGBGoalAll",
         "agent": "DQNAgent",
         "discount": 0.99,
@@ -20,7 +20,7 @@
                 ]
             },
             "in_dim": [15, 15, 3],
-            "out_dim": 32,
+            "out_dim": 640,
             "load_params": false,
             "train_rep": true
         },
@@ -57,13 +57,12 @@
         "evaluate_distance": true,
         "evaluate_orthogonality": true,
         "evaluate_interference": true,
-        "evaluate_fixinterference": false,
         "evaluate_diversity": true,
         "evaluate_sparsity": true,
         "distance_paths": [{"current": "../dataset/gridhard/random_dqn/distance_current_states.npy", "action": "../dataset/gridhard/random_dqn/distance_actions.npy", "next": "../dataset/gridhard/random_dqn/distance_next_states.npy", "reward": "../dataset/gridhard/random_dqn/distance_rewards.npy", "terminal": "../dataset/gridhard/random_dqn/distance_terminals.npy"}]
     },
     "sweep_parameters": {
-        "learning_rate": [0.001, 0.0003, 0.0001, 0.00003, 0.00001],
+        "learning_rate": [0.00003],
         "goal_id": [106]
     }
 }

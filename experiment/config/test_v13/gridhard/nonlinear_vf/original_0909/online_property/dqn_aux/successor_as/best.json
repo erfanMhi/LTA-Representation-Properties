@@ -1,9 +1,9 @@
 {
-    "config_class": "DQNAgentConfig",
+    "config_class": "DQNAuxAgentConfig",
     "fixed_parameters": {
-        "exp_name": "test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/temp",
+        "exp_name": "test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/successor_as/best",
         "env_name": "GridHardRGBGoalAll",
-        "agent": "DQNAgent",
+        "agent": "DQNAuxSuccessorAgent",
         "discount": 0.99,
         "state_norm_coef": 255.0,
 
@@ -31,6 +31,25 @@
             "init_type": "xavier"
         },
 
+        "aux_config": [
+            {
+            "aux_fn_type":  "fc",
+            "aux_in_dim": 32,
+            "hidden_units": [64, 64],
+            "aux_out_dim": 32,
+            "aux_task": "successor_as",
+            "successor_lmbda":  0.99,
+            "aux_weight": 1
+            },
+            {
+            "aux_fn_type":  "linear",
+            "aux_in_dim": 32,
+            "aux_out_dim": 1,
+            "aux_task": "reward_predictor",
+            "aux_weight": 1
+            }
+        ],
+
         "replay": true,
         "memory_size": 100000,
         "batch_size": 32,
@@ -57,13 +76,12 @@
         "evaluate_distance": true,
         "evaluate_orthogonality": true,
         "evaluate_interference": true,
-        "evaluate_fixinterference": false,
         "evaluate_diversity": true,
         "evaluate_sparsity": true,
         "distance_paths": [{"current": "../dataset/gridhard/random_dqn/distance_current_states.npy", "action": "../dataset/gridhard/random_dqn/distance_actions.npy", "next": "../dataset/gridhard/random_dqn/distance_next_states.npy", "reward": "../dataset/gridhard/random_dqn/distance_rewards.npy", "terminal": "../dataset/gridhard/random_dqn/distance_terminals.npy"}]
     },
     "sweep_parameters": {
-        "learning_rate": [0.001, 0.0003, 0.0001, 0.00003, 0.00001],
+        "learning_rate": [0.00003],
         "goal_id": [106]
     }
 }

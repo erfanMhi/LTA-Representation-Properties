@@ -16,10 +16,12 @@ sys.path.insert(0, '..')
 print(sys.path)
 from plot.plot_paths import *
 from plot.plot_utils import *
+
 print("Change dir to", os.getcwd())
 
 os.chdir("..")
 print(os.getcwd())
+
 
 def correlation_bar(all_paths_dict, goal_ids, ranks, title, total_param=None, xlim=[], smooth=1.0):
     all_ranks = []
@@ -43,11 +45,12 @@ def correlation_bar(all_paths_dict, goal_ids, ranks, title, total_param=None, xl
         ordered_corr = []
         for pk in ordered_prop:
             ordered_corr.append(all_goals_cor[pk][goal])
-        ax.bar(x-0.45+width*(j+1), ordered_corr, width, label="Rank={}".format(all_ranks[j]), color=cmap(j, 4))
+        ax.bar(x - 0.45 + width * (j + 1), ordered_corr, width, label="Rank={}".format(all_ranks[j]), color=cmap(j, 4))
         for i in range(len(x)):
-            ax.text(x[i]-0.45+width*(0.6+j), max(0, ordered_corr[i])+label_pos, "{:.4f}".format(ordered_corr[i]), color=cmap(j, 4), fontsize=fontsize, rotation=rotation)
+            ax.text(x[i] - 0.45 + width * (0.6 + j), max(0, ordered_corr[i]) + label_pos,
+                    "{:.4f}".format(ordered_corr[i]), color=cmap(j, 4), fontsize=fontsize, rotation=rotation)
 
-    ax.plot([x[0]-0.45, x[-1]+0.45], [0, 0], "--", color="grey")
+    ax.plot([x[0] - 0.45, x[-1] + 0.45], [0, 0], "--", color="grey")
 
     ax.legend(loc=4)
     ax.set_ylabel('Correlation')
@@ -59,7 +62,9 @@ def correlation_bar(all_paths_dict, goal_ids, ranks, title, total_param=None, xl
     plt.close()
     plt.clf()
 
-def xgboost_analysis(property_keys, all_paths_dict, goal_ids, ranks, title, total_param=None, xlim=[], smooth=1.0, top_runs=[0, 1.0]):
+
+def xgboost_analysis(property_keys, all_paths_dict, goal_ids, ranks, title, total_param=None, xlim=[], smooth=1.0,
+                     top_runs=[0, 1.0]):
     ordered_goal_ids = []
     ordered_goal_ranks = []
     rank2goal = dict((v, k) for k, v in ranks.items())
@@ -100,7 +105,7 @@ def xgboost_analysis(property_keys, all_paths_dict, goal_ids, ranks, title, tota
             for k, run in enumerate(list(all_goals_prop[prop][rep].keys())):
                 col.append(all_goals_prop[prop][rep][run])
         features.append(col)
-    features = np.array(features).transpose() # [n_samples, m_features]
+    features = np.array(features).transpose()  # [n_samples, m_features]
 
     importance_change = np.zeros((len(prop_lst), len(ordered_goal_ids)))
     for g_idx, goal in enumerate(ordered_goal_ids):
@@ -143,14 +148,14 @@ def xgboost_analysis(property_keys, all_paths_dict, goal_ids, ranks, title, tota
     plt.subplot(1, 1, 1)
     for pi, p in enumerate(prop_lst):
         plt.plot(exp_smooth(importance_change[pi], smooth), label=property_keys[p])
-    plt.xticks(list(range(0, len(ordered_goal_ids), 25)), [ordered_goal_ranks[i] for i in list(range(0, len(ordered_goal_ids), 25))], rotation=60)
+    plt.xticks(list(range(0, len(ordered_goal_ids), 25)),
+               [ordered_goal_ranks[i] for i in list(range(0, len(ordered_goal_ids), 25))], rotation=60)
     plt.title('Feature Importance')
     plt.legend()
     plt.savefig("plot/img/{}.png".format(title), dpi=300, bbox_inches='tight')
 
 
 def pair_property(property_keys, all_paths_dict, goal_ids, ranks, total_param=None, xlim=[], with_auc=True):
-
     labels = [i["label"] for i in all_paths_dict]
 
     all_goals_auc = pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels)
@@ -192,7 +197,7 @@ def pair_property(property_keys, all_paths_dict, goal_ids, ranks, total_param=No
                 auc.append(all_goals_perf[p1][g][rep][run])
                 assert all_goals_perf[p1][g][rep][run] == all_goals_perf[p2][g][rep][run]
 
-    fig, axes = plt.subplots(nrows=1, ncols=len(goal_ids), figsize=(4*len(goal_ids), 4))
+    fig, axes = plt.subplots(nrows=1, ncols=len(goal_ids), figsize=(4 * len(goal_ids), 4))
     if len(goal_ids) == 1:
         axes = [axes]
     for gi, g in enumerate(goal_ids):
@@ -206,10 +211,12 @@ def pair_property(property_keys, all_paths_dict, goal_ids, ranks, total_param=No
         if with_auc:
             im = axes[gi].scatter(prop1_g, prop2_g, c=auc_g, cmap="Blues", vmin=0, vmax=11)
         else:
-            c="C1" if cor > 0.58 else "C0"
+            c = "C1" if cor > 0.58 else "C0"
             im = axes[gi].scatter(prop1_g, prop2_g, c=c)
-        xlabel = "\n"+property_keys[p1] if len(property_keys[p1].split(" "))==1 else "\n".join(property_keys[p1].split(" "))
-        ylabel = "\n"+property_keys[p2] if len(property_keys[p2].split(" "))==1 else "\n".join(property_keys[p2].split(" "))
+        xlabel = "\n" + property_keys[p1] if len(property_keys[p1].split(" ")) == 1 else "\n".join(
+            property_keys[p1].split(" "))
+        ylabel = "\n" + property_keys[p2] if len(property_keys[p2].split(" ")) == 1 else "\n".join(
+            property_keys[p2].split(" "))
         axes[gi].set_xlabel(xlabel, fontsize=30)
         axes[gi].set_ylabel(ylabel, fontsize=30)
         plt.xticks(fontsize=15)
@@ -222,8 +229,8 @@ def pair_property(property_keys, all_paths_dict, goal_ids, ranks, total_param=No
     else:
         plt.savefig("plot/img/{}-{}.pdf".format(p1, p2), dpi=300, bbox_inches='tight')
 
-def property_auc_scatter(property_keys, all_paths_dict, groups, goal_ids, ranks, title, total_param=None, xlim=[]):
 
+def property_auc_scatter(property_keys, all_paths_dict, groups, goal_ids, ranks, title, total_param=None, xlim=[]):
     labels = [i["label"] for i in all_paths_dict]
 
     all_goals_auc = pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels)
@@ -276,9 +283,10 @@ def property_auc_scatter(property_keys, all_paths_dict, groups, goal_ids, ranks,
         axes[gi].set_xlabel(property_keys[p1])
         axes[gi].set_ylabel("AUC")
         axes[gi].set_title("Goal {} Rank {}".format(g, ranks[g]))
-    if len(groups)>1:
+    if len(groups) > 1:
         plt.legend()
     plt.savefig("plot/img/{}-{}.png".format(title, p1), dpi=300, bbox_inches='tight')
+
 
 def property_scatter(property_keys, all_paths_dict, groups, title):
     all_goals_prop = {}
@@ -289,7 +297,7 @@ def property_scatter(property_keys, all_paths_dict, groups, title):
     nc = 3
     nr = int(np.ceil(len(property_keys.keys()) // nc))
     group_name = list(groups.keys())
-    fig, axes = plt.subplots(nrows=nr, ncols=nc, figsize=(8, 3*nr))
+    fig, axes = plt.subplots(nrows=nr, ncols=nc, figsize=(8, 3 * nr))
     if nr == 1:
         axes = [axes]
     for pi, pk in enumerate(list(property_keys.keys())):
@@ -305,8 +313,8 @@ def property_scatter(property_keys, all_paths_dict, groups, title):
                         allp.append(all_goals_prop[pk][rep][run])
             # axes[pi//nc][pi%nc].scatter(np.random.uniform(ni, ni+0.1, size=len(prop1)), prop1, s=6)
             allprop.append(prop1)
-        axes[pi//nc][pi%nc].boxplot(allprop)
-        
+        axes[pi // nc][pi % nc].boxplot(allprop)
+
         axes[pi // nc][pi % nc].set_title(property_keys[pk])
         allp = np.array(allp)
         axes[pi // nc][pi % nc].set_yticks([allp.min(), allp.max()])
@@ -325,7 +333,7 @@ def performance_scatter(all_paths_dict, groups, title, goal_ids, xlim=[], ylim=[
     labels = [i["label"] for i in all_paths_dict]
 
     _, all_goals_independent = pick_best_perfs(all_paths_dict, goal_ids, None, xlim, labels, get_each_run=True)
-    
+
     overall_trans = []
     groups_keys = list(groups.keys())
     for gp in groups_keys:
@@ -337,7 +345,7 @@ def performance_scatter(all_paths_dict, groups, title, goal_ids, xlim=[], ylim=[
                 overall.append(all_goals_independent[g][rep].sum(axis=1))
             temp.append(np.array(overall).mean(axis=0))
         overall_trans.append(np.array(temp).flatten())
-    
+
     fig = plt.figure(1)
     ax = fig.add_subplot(111)
     ax.boxplot(overall_trans)
@@ -365,6 +373,7 @@ def performance_scatter(all_paths_dict, groups, title, goal_ids, xlim=[], ylim=[
     # print("Save in plot/img/{}".format(title))
     # # plt.show()
     # plt.close()
+
 
 def performance_scatter_ste(all_paths_dict, groups, title, goal_ids, xlim=[], ylim=[]):
     labels = [i["label"] for i in all_paths_dict]
@@ -397,8 +406,8 @@ def performance_scatter_ste(all_paths_dict, groups, title, goal_ids, xlim=[], yl
         temp = np.array(temp).flatten()
         overall_trans.append(temp)
         overall_means.append(np.mean(temp))
-        overall_stes.append(np.std(temp)/np.sqrt(count_ov)*1.96)
-    
+        overall_stes.append(np.std(temp) / np.sqrt(count_ov) * 1.96)
+
     fig = plt.figure(1)
     ax = fig.add_subplot(111)
     # plt.errorbar(np.arange(len(overall_means)), overall_means, overall_stes, fmt='ok', ecolor="grey", elinewidth=5, markersize=5)
@@ -414,7 +423,7 @@ def performance_scatter_ste(all_paths_dict, groups, title, goal_ids, xlim=[], yl
 
 
 def property_auc_goal(property_key, all_paths_dict, goal_ids, ranks, title,
-                              total_param=None, xlim=[], classify=[50,50], figsize=(8, 6), xy_label=True, legend=True):
+                      total_param=None, xlim=[], classify=[50, 50], figsize=(8, 6), xy_label=True, legend=True):
     ordered_goal_ids = []
     ordered_goal_ranks = []
     rank2goal = dict((v, k) for k, v in ranks.items())
@@ -461,10 +470,10 @@ def property_auc_goal(property_key, all_paths_dict, goal_ids, ranks, title,
                 gidx = ordered_goal_ids.index(g)
                 run_prop = all_goals_prop[rep][run]
                 run_auc = all_goals_perf[g][rep][run]
-                if run_prop <= lim1: # below
+                if run_prop <= lim1:  # below
                     prop1[gidx].append(run_prop)
                     auc1[gidx].append(run_auc)
-                if run_prop >= lim2: # above
+                if run_prop >= lim2:  # above
                     prop2[gidx].append(run_prop)
                     auc2[gidx].append(run_auc)
     prop1 = np.array(prop1)
@@ -480,21 +489,21 @@ def property_auc_goal(property_key, all_paths_dict, goal_ids, ranks, title,
 
     plt.figure(figsize=figsize)
     # for gidx in range(len(auc2)):
-        # plt.scatter([gidx]*len(auc2[gidx]), auc2[gidx], c=prop2[gidx], cmap="Oranges", alpha=0.3, s=1, vmin=-1, vmax=3) #set a larger vmax, this colormap assigns too dark color for large values
-        # plt.scatter([gidx]*len(auc2[gidx]), auc2[gidx], c="C1", alpha=0.2, s=3)
+    # plt.scatter([gidx]*len(auc2[gidx]), auc2[gidx], c=prop2[gidx], cmap="Oranges", alpha=0.3, s=1, vmin=-1, vmax=3) #set a larger vmax, this colormap assigns too dark color for large values
+    # plt.scatter([gidx]*len(auc2[gidx]), auc2[gidx], c="C1", alpha=0.2, s=3)
     # plt.fill_between(range(len(avg2)), avg2-ste2, avg2+ste2, alpha=0.3, color="C1")
-    plt.fill_between(range(len(avg2)), avg2-std2, avg2+std2, alpha=0.3, color="C1")
+    plt.fill_between(range(len(avg2)), avg2 - std2, avg2 + std2, alpha=0.3, color="C1")
     # for gidx in range(len(auc1)):
-        # plt.scatter([gidx]*len(auc1[gidx]), auc1[gidx], c=prop1[gidx], cmap="Blues", alpha=0.6, s=1, vmin=-1, vmax=1)
-        # plt.scatter([gidx]*len(auc1[gidx]), auc1[gidx], c="C0", alpha=0.2, s=3)
+    # plt.scatter([gidx]*len(auc1[gidx]), auc1[gidx], c=prop1[gidx], cmap="Blues", alpha=0.6, s=1, vmin=-1, vmax=1)
+    # plt.scatter([gidx]*len(auc1[gidx]), auc1[gidx], c="C0", alpha=0.2, s=3)
     # plt.fill_between(range(len(avg1)), avg1-ste1, avg1+ste1, alpha=0.3, color="C0")
-    plt.fill_between(range(len(avg1)), avg1-std1, avg1+std1, alpha=0.3, color="C0")
+    plt.fill_between(range(len(avg1)), avg1 - std1, avg1 + std1, alpha=0.3, color="C0")
 
     plt.plot(avg1, color="C0", label="Below {}th perc".format(classify[0]))
     plt.plot(avg2, color="C1", label="Above {}th perc".format(classify[1]))
 
-    xticks_pos = list(range(0, ordered_goal_ranks[-1]+1, 25))
-    xticks_labels = list(range(0, ordered_goal_ranks[-1]+1, 25))
+    xticks_pos = list(range(0, ordered_goal_ranks[-1] + 1, 25))
+    xticks_labels = list(range(0, ordered_goal_ranks[-1] + 1, 25))
     plt.xticks(xticks_pos, xticks_labels, rotation=60, fontsize=14)
     plt.yticks(fontsize=14)
     plt.gca().spines['right'].set_visible(False)
@@ -509,8 +518,10 @@ def property_auc_goal(property_key, all_paths_dict, goal_ids, ranks, title,
     print("Save in plot/img/{}_{}".format(title, property_key))
     # plt.show()
 
+
 def property_accumulate(property_key, all_paths_dict, goal_ids, title,
-                        total_param=None, xlim=[], prop_lim=None, ylim=[], figsize=(8, 6), xy_label=True, legend=True, yticks=[], xticks=[],
+                        total_param=None, xlim=[], prop_lim=None, ylim=[], figsize=(8, 6), xy_label=True, legend=True,
+                        yticks=[], xticks=[],
                         pair_prop=None, highlight=None, group_color=False, given_ax=None, ax_below=None,
                         show_only=None,
                         rank_filter=None, ranks=None):
@@ -524,7 +535,7 @@ def property_accumulate(property_key, all_paths_dict, goal_ids, title,
         all_goals_auc = pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels)
         with open(pklfile, "wb") as f:
             pickle.dump(all_goals_auc, f)
-        
+
     formated_path = {}
     for goal in goal_ids:
         if (rank_filter is None) or (rank_filter is not None and ranks[goal] in rank_filter):
@@ -538,7 +549,8 @@ def property_accumulate(property_key, all_paths_dict, goal_ids, title,
 
     prop_log = []
     rep_idx = []
-    properties, _ = load_property([formated_path[list(formated_path.keys())[0]]], property_key=property_key, early_stopped=True, fix_rep=True)
+    properties, _ = load_property([formated_path[list(formated_path.keys())[0]]], property_key=property_key,
+                                  early_stopped=True, fix_rep=True)
 
     all_goals_perf = {}
     for rep in properties:
@@ -549,7 +561,7 @@ def property_accumulate(property_key, all_paths_dict, goal_ids, title,
         if (rank_filter is None) or (rank_filter is not None and ranks[goal] in rank_filter):
             transf_perf, _ = load_property([formated_path[goal]], property_key="return", early_stopped=True)
             all_goals_perf[goal] = transf_perf
-    
+
     accumulate_perf = np.zeros(len(rep_idx))
     accumulate_label = []
     for i, idx in enumerate(rep_idx):
@@ -560,7 +572,6 @@ def property_accumulate(property_key, all_paths_dict, goal_ids, title,
                 temp.append(all_goals_perf[goal][rep][run])
         accumulate_perf[i] = np.array(temp).mean()
         accumulate_label.append(rep.split("_0")[0])
-
 
     prop_log = np.array(prop_log)
     ranks = prop_log.argsort()
@@ -586,7 +597,7 @@ def property_accumulate(property_key, all_paths_dict, goal_ids, title,
     # z = np.polynomial.polynomial.polyfit(ranked_prop, ranked_perf, 2)
     # p = np.poly1d(z)
     # ax.plot(ranked_prop,p(ranked_prop), c="C0")
-    
+
     if not group_color:
         ax.scatter(ranked_prop, ranked_perf, c="C0")
     else:
@@ -623,17 +634,17 @@ def property_accumulate(property_key, all_paths_dict, goal_ids, title,
     # xticks_pos = [ranked_prop[i] for i in range(0, len(ranked_prop), 50)] + [ranked_prop[-1]]
     # xticks_labels = ["{}({:.2f})".format(i, ranked_prop[i]) for i in range(0, len(ranked_prop), 50)]+["{}({:.2f})".format(len(ranked_prop)-1, ranked_prop[-1])]
     # plt.xticks(xticks_pos, xticks_labels, rotation=90)
-    
+
     # if highlight is not None:
-        # ax.scatter([ranked_prop[highlight]], [ranked_perf[highlight]], c="C1")
-        # ax.vlines([ranked_prop[highlight]], 2, [ranked_perf[highlight]], ls=":", colors="C1", alpha=1, linewidth=3)
-        # xticks_pos = [ranked_prop[0], ranked_prop[highlight]]
-        # xticks_labels = ["{}({:.2f})".format(0, ranked_prop[0]), "{}({:.2f})".format(highlight, ranked_prop[highlight])]
-        # ax.set_xticks(xticks_pos, xticks_labels, rotation=60)
-    
+    # ax.scatter([ranked_prop[highlight]], [ranked_perf[highlight]], c="C1")
+    # ax.vlines([ranked_prop[highlight]], 2, [ranked_perf[highlight]], ls=":", colors="C1", alpha=1, linewidth=3)
+    # xticks_pos = [ranked_prop[0], ranked_prop[highlight]]
+    # xticks_labels = ["{}({:.2f})".format(0, ranked_prop[0]), "{}({:.2f})".format(highlight, ranked_prop[highlight])]
+    # ax.set_xticks(xticks_pos, xticks_labels, rotation=60)
+
     plotted_x = np.array(plotted_x)
     plotted_y = np.array(plotted_y)
-    
+
     idx = np.argsort(plotted_y)[-3:]
     top3_x = plotted_x[idx]
     top3_y = plotted_y[idx]
@@ -642,8 +653,9 @@ def property_accumulate(property_key, all_paths_dict, goal_ids, title,
     ax_below.set_xticks([], [])
     if xticks != []:
         if xticks == "min-max":
-            ax_below.set_xticks([np.min(ranked_prop), np.max(ranked_prop)], ["{:.2f}".format(np.min(ranked_prop)), "{:.2f}".format(np.max(ranked_prop))],
-                          rotation=60)
+            ax_below.set_xticks([np.min(ranked_prop), np.max(ranked_prop)],
+                                ["{:.2f}".format(np.min(ranked_prop)), "{:.2f}".format(np.max(ranked_prop))],
+                                rotation=60)
 
     # kernel = scipy.stats.gaussian_kde(plotted_x.reshape(1, -1))
     # dens_x = np.linspace(plotted_x.min(), plotted_x.max(), num=100)
@@ -662,22 +674,23 @@ def property_accumulate(property_key, all_paths_dict, goal_ids, title,
                     stars.append(idx)
         density[idx] = count
     bin_w = (ranked_prop.max() - ranked_prop.min()) / len(density)
-    ax_below.bar(dens_x[:-1]+0.5*bin_w, density, color=plotted_c[-1], width=bin_w)
-    ax_below.bar(dens_x[stars]+0.5*bin_w, density[stars], color="#27ae60", width=bin_w)
+    ax_below.bar(dens_x[:-1] + 0.5 * bin_w, density, color=plotted_c[-1], width=bin_w)
+    ax_below.bar(dens_x[stars] + 0.5 * bin_w, density[stars], color="#27ae60", width=bin_w)
 
     ax_below.spines['top'].set_visible(False)
     ax_below.spines['right'].set_visible(False)
     ax_below.spines['left'].set_visible(False)
     ax_below.set_yticks([], [])
 
-    ax.set_xlim(ranked_prop.min()-0.01, ranked_prop.max()+0.01)
-    ax_below.set_xlim(ranked_prop.min()-0.01, ranked_prop.max()+0.01)
+    ax.set_xlim(ranked_prop.min() - 0.01, ranked_prop.max() + 0.01)
+    ax_below.set_xlim(ranked_prop.min() - 0.01, ranked_prop.max() + 0.01)
     if prop_lim:
         ax.set_xlim(prop_lim[0], prop_lim[1])
         ax_below.set_xlim(prop_lim[0], prop_lim[1])
         if xticks == "min-max":
-            ax_below.set_xticks([prop_lim[0], prop_lim[1]], ["{:.2f}".format(prop_lim[0]), "{:.2f}".format(prop_lim[1])],
-                          rotation=60)
+            ax_below.set_xticks([prop_lim[0], prop_lim[1]],
+                                ["{:.2f}".format(prop_lim[0]), "{:.2f}".format(prop_lim[1])],
+                                rotation=60)
     if ylim != []:
         ax.set_ylim(ylim[0], ylim[1])
     ax.set_yticks(yticks)
@@ -725,19 +738,21 @@ def pair_prop_corr(property_keys, all_paths_dict):
     labels = [i["label"] for i in all_paths_dict]
 
     all_pairs = list(itertools.combinations(property_keys.keys(), 2))
-    ncol = 3#int(np.sqrt(len(all_pairs)))+1
-    nrow = int(np.ceil(len(all_pairs)))#int(np.sqrt(len(all_pairs)))+1
-    fig, axes = plt.subplots(nrows=nrow, ncols=ncol, figsize=(4*ncol, 4*nrow))
+    ncol = 3  # int(np.sqrt(len(all_pairs)))+1
+    nrow = int(np.ceil(len(all_pairs)))  # int(np.sqrt(len(all_pairs)))+1
+    fig, axes = plt.subplots(nrows=nrow, ncols=ncol, figsize=(4 * ncol, 4 * nrow))
     fig.tight_layout(h_pad=6, w_pad=2)
     for i, key_pair in enumerate(all_pairs):
         prop1, prop2 = load_prop_pair(key_pair, all_paths_dict)
         cor = np.corrcoef(prop1, prop2)[0][1]
-        axes[i//ncol][i%ncol].scatter(prop1, prop2)
-        axes[i//ncol][i%ncol].set_xlabel(property_keys[key_pair[0]], fontsize=30)
-        axes[i//ncol][i%ncol].set_ylabel(property_keys[key_pair[1]], fontsize=30)
-        axes[i//ncol][i%ncol].set_title("y={}\nx={}\ncor={:.3f}".format(property_keys[key_pair[0]], property_keys[key_pair[1]], cor), fontsize=30)
+        axes[i // ncol][i % ncol].scatter(prop1, prop2)
+        axes[i // ncol][i % ncol].set_xlabel(property_keys[key_pair[0]], fontsize=30)
+        axes[i // ncol][i % ncol].set_ylabel(property_keys[key_pair[1]], fontsize=30)
+        axes[i // ncol][i % ncol].set_title(
+            "y={}\nx={}\ncor={:.3f}".format(property_keys[key_pair[0]], property_keys[key_pair[1]], cor), fontsize=30)
 
     plt.savefig("plot/img/prop-cor.png", dpi=300, bbox_inches='tight')
+
 
 def main():
     ranks = np.load("data/dataset/gridhard/srs/goal(9, 9)_simrank.npy", allow_pickle=True).item()
@@ -757,9 +772,11 @@ def main():
 
     targets = [
         "ReLU",
-        "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC",
+        "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+        "ReLU+ATC",
         "ReLU(L)",
-        "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF", "ReLU(L)+ATC",
+        "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward",
+        "ReLU(L)+SF", "ReLU(L)+ATC",
         "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
         "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC",
     ]
@@ -771,9 +788,12 @@ def main():
     #     pair_property(pair, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), [106], ranks, xlim=[0, 11], with_auc=False)
 
     groups = {
-        "ReLU": ["ReLU", "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC"],
-        "ReLU(L)": ["ReLU(L)", "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF", "ReLU(L)+ATC"],
-        "FTA": ["FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8", "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC"],
+        "ReLU": ["ReLU", "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward",
+                 "ReLU+SF", "ReLU+ATC"],
+        "ReLU(L)": ["ReLU(L)", "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder",
+                    "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF", "ReLU(L)+ATC"],
+        "FTA": ["FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8", "FTA+VirtualVF1", "FTA+VirtualVF5",
+                "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC"],
     }
     # property_keys.pop("return")
     # property_keys.pop("sparsity")
@@ -835,12 +855,12 @@ def main():
     # property_keys.pop("sparsity")
     # property_keys.pop("interf")
     # property_keys.pop("distance")
-    highlight_idxs = {"lipschitz": 95, #72,
+    highlight_idxs = {"lipschitz": 95,  # 72,
                       "distance": 149,
-                      "ortho": 89, #96,
+                      "ortho": 89,  # 96,
                       "interf": 1,
-                      "diversity": 102,#90,
-                      "sparsity": 134,}
+                      "diversity": 102,  # 90,
+                      "sparsity": 134, }
     # # for key in property_keys.keys():
     # #     property_auc_goal(key, label_filter(targets, gh_nonlinear_transfer_sweep_v13), goal_ids, ranks, "nonlinear/scatter/slice",
     # #                               xlim=[0, 11], classify=[50, 50])
@@ -973,43 +993,44 @@ def main():
     # fig.tight_layout()
     # plt.savefig("plot/img/nonlinear/accum_all.pdf", dpi=300, bbox_inches='tight')
 
-
     fig, axs = plt.subplots(2, 6, figsize=(28, 4), gridspec_kw={'height_ratios': [4, 1]})
     for i, key in enumerate(["lipschitz", "distance", "diversity", "ortho", "sparsity", "interf"]):
         # property_accumulate(key, label_filter(targets, gh_transfer_sweep_v13), goal_ids, "linear/accumAUC/accum_{}".format(key),
         #                     xlim=[0, 11])
         yticks = [5, 7.5, 10] if i == 0 else []
         xticks = []
-        property_accumulate(key, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, "nonlinear/accumAUC/accum_fta_{}".format(key),
+        property_accumulate(key, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids,
+                            "nonlinear/accumAUC/accum_fta_{}".format(key),
                             xlim=[0, 11],
                             ylim=[5, 10],
                             group_color=True,
                             yticks=yticks,
                             xticks=xticks,
                             highlight=highlight_idxs[key],
-                            given_ax = axs[0,i], ax_below=axs[1,i],
-                            show_only = "FTA"
+                            given_ax=axs[0, i], ax_below=axs[1, i],
+                            show_only="FTA"
                             )
-        axs[0,i].set_title(titles[key], fontsize=30)
+        axs[0, i].set_title(titles[key], fontsize=30)
     plt.savefig("plot/img/nonlinear/accum_fta.pdf", dpi=300, bbox_inches='tight')
 
     fig, axs = plt.subplots(2, 6, figsize=(28, 4), gridspec_kw={'height_ratios': [4, 1]})
     for i, key in enumerate(["lipschitz", "distance", "diversity", "ortho", "sparsity", "interf"]):
         yticks = [5, 7.5, 10] if i == 0 else []
-        xticks = "min-max"#[]#
-        property_accumulate(key, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, "nonlinear/accumAUC/accum_relu_{}".format(key),
+        xticks = "min-max"  # []#
+        property_accumulate(key, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids,
+                            "nonlinear/accumAUC/accum_relu_{}".format(key),
                             xlim=[0, 11],
                             ylim=[5, 10],
                             group_color=True,
                             yticks=yticks,
                             xticks=xticks,
                             highlight=highlight_idxs[key],
-                            given_ax = axs[0,i], ax_below=axs[1,i],
-                            show_only = "ReLU"#"FTA"#
+                            given_ax=axs[0, i], ax_below=axs[1, i],
+                            show_only="ReLU"  # "FTA"#
                             )
-        axs[0,i].set_title(titles[key], fontsize=30)
+        axs[0, i].set_title(titles[key], fontsize=30)
     plt.savefig("plot/img/nonlinear/accum_relu.pdf", dpi=300, bbox_inches='tight')
-    
+
     # fig, axs = plt.subplots(1, 6, figsize=(28, 4))
     # for i, key in enumerate(["lipschitz", "diversity", "ortho", "distance", "interf", "sparsity"]):
     #     # print(ranks)
@@ -1087,6 +1108,7 @@ def main():
     #                         )
     #     axs[i].set_title(titles[key], fontsize=30)
     # plt.savefig("plot/img/nonlinear/accum_relu_dissimilar.pdf", dpi=300, bbox_inches='tight')
+
 
 if __name__ == '__main__':
     main()

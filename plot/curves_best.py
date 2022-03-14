@@ -185,9 +185,30 @@ def maze_multigoals():
     learning_curve(maze_checkpoint150000_dissimilar_best_v12, "maze checkpoint150000 dissimilar", xlim=[0, 31], ylim=[0, 1.1])
 
 
+def simple_maze_cl():
+    print("\nRep learning")
+    targets = ["ReLU"]
+
+    # learning_curve(gh_online, "maze online measure", targets, xlim=[0, 30])
+
+    # learning_curve(gh_same_early, "maze same early", targets, xlim=[0, 11])
+    # learning_curve(gh_similar_early, "maze similar early", targets, xlim=[0, 30])
+    # learning_curve(gh_diff_early, "maze different (fix) early", targets, xlim=[0, 10], data_label=False)
+#    draw_label(targets, "maze_label", ncol=2)
+
+    # learning_curve(gh_diff_tune_early, "maze different (fine tune) early", targets, xlim=[0, 10])
+
+    # learning_curve(gh_same_last, "maze same last", targets, xlim=[0, 10])
+    # learning_curve(gh_similar_last, "maze similar last", targets, xlim=[0, 10])
+    # learning_curve(gh_diff_last, "maze different (fix) last", targets, xlim=[0, 10])
+    # learning_curve(gh_diff_tune_last, "maze different (fine tune) last", targets, xlim=[0, 10])
+    #
+    learning_curve(dqn_cl_extra_maze_sweep, "maze online measure", targets, xlim=[0, 30])
+
+
 if __name__ == '__main__':
     # mountain_car()
-    simple_maze()
+    simple_maze_cl()
     #picky_eater()
     # pe_temp()
     # pe_linear()

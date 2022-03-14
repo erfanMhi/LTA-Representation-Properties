@@ -43,17 +43,19 @@ def generate_and_write(parent_configs, gener_key, prev_file=0, line_per_file=1, 
     return
 
 if __name__ == '__main__':
-    generate_and_write([
+   generate_and_write([
         # ["run_dqn", "config/test_v13/gridhard/linear_vf/learning_scratch/dqn_lta/eta_study_0.2_sweep.json",
         #  "config/test_v13/gridhard/linear_vf/learning_scratch_generated/goal_id_{}/dqn_lta/eta_study_0.2_sweep.json"],
-
+        #
         # ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/learning_scratch/dqn/sweep.json", "config/test_v13/gridhard/nonlinear_vf/learning_scratch_generated/goal_id_{}/dqn/sweep.json"],
         # ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/learning_scratch/dqn_lta/eta_study_0.2_sweep.json", "config/test_v13/gridhard/nonlinear_vf/learning_scratch_generated/goal_id_{}/dqn_lta/eta_study_0.2_sweep.json"],
         # ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/learning_scratch/random/sweep.json", "config/test_v13/gridhard/nonlinear_vf/learning_scratch_generated/goal_id_{}/random/sweep.json"],
         # ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/learning_scratch/input/sweep.json", "config/test_v13/gridhard/nonlinear_vf/learning_scratch_generated/goal_id_{}/input/sweep.json"],
         # ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/learning_scratch/dqn_large/sweep.json", "config/test_v13/gridhard/nonlinear_vf/learning_scratch_generated/goal_id_{}/dqn_large/sweep.json"],
         # ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/learning_scratch/random_large/sweep.json", "config/test_v13/gridhard/nonlinear_vf/learning_scratch_generated/goal_id_{}/random_large/sweep.json"],
-
+        #
+        #
+        #
         # ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer/dqn_large/sweep.json", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer_generated/goal_id_{}/dqn_large/sweep.json"],
         # ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer/dqn_large_aux/aux_control/sweep_1g.json", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer_generated/goal_id_{}/dqn_large_aux/aux_control/sweep_1g.json"],
         # ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer/dqn_large_aux/aux_control/sweep_5g.json", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer_generated/goal_id_{}/dqn_large_aux/aux_control/sweep_5g.json"],
@@ -63,7 +65,7 @@ if __name__ == '__main__':
         # ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer/dqn_large_aux/reward/sweep.json", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer_generated/goal_id_{}/dqn_large_aux/reward/sweep.json"],
         # ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer/dqn_large_aux/successor_as/sweep.json", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer_generated/goal_id_{}/dqn_large_aux/successor_as/sweep.json"],
         # ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer/dqn_large_cl/sweep.json", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer_generated/goal_id_{}/dqn_large_cl/sweep.json"],
-
+        #
         # ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer/dqn/sweep.json", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer_generated/goal_id_{}/dqn/sweep.json"],
         # ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer/dqn_aux/aux_control/sweep_1g.json", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer_generated/goal_id_{}/dqn_aux/aux_control/sweep_1g.json"],
         # ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer/dqn_aux/aux_control/sweep_5g.json", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer_generated/goal_id_{}/dqn_aux/aux_control/sweep_5g.json"],
@@ -93,3 +95,18 @@ if __name__ == '__main__':
                  hours=12, min_node=1, parallel=48, account="rrg-whitem", virt_env="torch1env") #start_script, num_script, start_task, total_tasks, hours, min_node
     # write_script(start_script=0, num_script=10, start_task=0, total_tasks=4325,
     #              hours=24, min_node=1, parallel=40, account="def-amw8", virt_env="gpu_env") #start_script, num_script, start_task, total_tasks, hours, min_node
+#    generate_and_write([
+#        ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer/dqn_lta/eta_study_0.8_sweep.json", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer_generated/goal_id_{}/dqn_lta/eta_study_0.8_sweep.json"],
+#        ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer/dqn_lta_aux/aux_control/sweep_1g.json", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer_generated/goal_id_{}/dqn_lta_aux/aux_control/sweep_1g.json"],
+#        ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer/dqn_lta_aux/aux_control/sweep_5g.json", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer_generated/goal_id_{}/dqn_lta_aux/aux_control/sweep_5g.json"],
+#        ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer/dqn_lta_aux/info/sweep.json", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer_generated/goal_id_{}/dqn_lta_aux/info/sweep.json"],
+#        ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer/dqn_lta_aux/reward/sweep.json", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer_generated/goal_id_{}/dqn_lta_aux/reward/sweep.json"],
+#        ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer/dqn_lta_aux/input_decoder/sweep.json", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer_generated/goal_id_{}/dqn_lta_aux/input_decoder/sweep.json"],
+#        ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer/dqn_lta_aux/nas_v2_delta/sweep.json", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer_generated/goal_id_{}/dqn_lta_aux/nas_v2_delta/sweep.json"],
+#        ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer/dqn_lta_aux/successor_as/sweep.json", "config/test_v13/gridhard/nonlinear_vf/original_0909/transfer_generated/goal_id_{}/dqn_lta_aux/successor_as/sweep.json"],
+#    ], "goal_id", prev_file=500, line_per_file=1, num_run=5, device=0)
+#     generate_and_write([
+    #    ["run_dqn", "config/test_cl/gridhard/nonlinear_vf/transfer/dqn_cl/sweep.json", "config/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep.json"],
+    #     ["run_dqn", "config/test_cl/gridhard/nonlinear_vf/transfer/dqn_cl/sweep_sp_0.json", "config/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep_sp_0.json"],
+    #     ["run_dqn", "config/test_cl/gridhard/linear_vf/transfer/dqn_cl/sweep_large.json", "config/test_cl/gridhard/linear_vf/transfer_new/goal_id_{}/dqn_cl/best_large.json"],
+    # ], "goal_id", prev_file=0, line_per_file=1, num_run=5, device=0)

@@ -17,6 +17,8 @@ print("Change dir to", os.getcwd())
 
 os.chdir("..")
 print(os.getcwd())
+
+
 # def arrange_order(dict1):
 #     lst = []
 #     min_l = np.inf
@@ -30,16 +32,15 @@ print(os.getcwd())
 #     return np.array(lst)
 
 def compare_learning_curve(all_paths_dict, title, total_param=None,
-        start_param=0, label_keys = None, key='return'):
-
+                           start_param=0, label_keys=None, key='return'):
     labels = [i["label"] for i in all_paths_dict]
-    control = load_return(all_paths_dict, total_param)#, start_param)
-    #control = load_info(all_paths_dict, total_param, key)#, start_param)
+    control = load_return(all_paths_dict, total_param)  # , start_param)
+    # control = load_info(all_paths_dict, total_param, key)#, start_param)
     fig, axs = plt.subplots(nrows=1, ncols=len(labels), figsize=(8, 8))
-    
+
     if len(labels) == 1:
         axs = [axs]
- 
+
     for idx, label in enumerate(labels):
         print("------", label, "------")
         all_params = control[label]
@@ -47,46 +48,45 @@ def compare_learning_curve(all_paths_dict, title, total_param=None,
         for i, (param, returns) in enumerate(all_params.items()):
             l = i
             # if l not in [3, 4, 5, 6, 7]:
-                # continue
+            # continue
             if label_keys is not None:
                 print(all_paths_dict[idx]['control'])
                 root_idx = len('data/output/') + all_paths_dict[idx]['control'].rindex('data/output/')
                 print(all_paths_dict[idx]['control'][root_idx:])
                 config_path = 'experiment/config/' + all_paths_dict[idx]['control'][root_idx:]
-                config_path = config_path[:-1]  + '.json'
+                config_path = config_path[:-1] + '.json'
                 project_root = os.path.abspath(os.path.dirname(__file__))
                 cfg = Sweeper(project_root, config_path).parse(param)
                 l = ''
                 for label_key in label_keys:
                     l += str(getattr(cfg, label_key)) + ' '
                 print(l)
-            
+
             returns = arrange_order(returns)
             aucs.append(returns.mean(axis=0).sum())
             # print('max: ', np.max(returns))
             print('dimensions: ', returns.shape)
             draw_curve(returns, axs[idx], l, cmap(list(all_params.keys()).index(param), len(list(all_params.keys()))))
-        
+
         axs[idx].set_title(label)
         axs[idx].legend()
 
-
-#     print('-------------------------------------------------')
+    #     print('-------------------------------------------------')
     # for idx, label in enumerate(labels):
-        # param = np.argmax(aucs)
-        # print('argmax: ', param)
-        # for arg_idx in np.argsort(aucs)[-10:][::-1]:
-            # root_idx = len('data/output/') + all_paths_dict[idx]['control'].rindex('data/output/')
-            # config_path = 'experiment/config/' + all_paths_dict[idx]['control'][root_idx:]
-            # config_path = config_path[:-1]  + '.json'
-            # project_root = os.path.abspath(os.path.dirname(__file__))
-            # print('id: ', arg_idx)
-            # cfg = Sweeper(project_root, config_path).parse(arg_idx)
-            # print('learning-rate: ', str(getattr(cfg, 'learning_rate')))
-            # print('rep_config: ', str(getattr(cfg, 'rep_config')))
-            # print('activation_config: ', str(getattr(cfg, 'activation_config')))
-            # print('-------------------------------------------------')
-    
+    # param = np.argmax(aucs)
+    # print('argmax: ', param)
+    # for arg_idx in np.argsort(aucs)[-10:][::-1]:
+    # root_idx = len('data/output/') + all_paths_dict[idx]['control'].rindex('data/output/')
+    # config_path = 'experiment/config/' + all_paths_dict[idx]['control'][root_idx:]
+    # config_path = config_path[:-1]  + '.json'
+    # project_root = os.path.abspath(os.path.dirname(__file__))
+    # print('id: ', arg_idx)
+    # cfg = Sweeper(project_root, config_path).parse(arg_idx)
+    # print('learning-rate: ', str(getattr(cfg, 'learning_rate')))
+    # print('rep_config: ', str(getattr(cfg, 'rep_config')))
+    # print('activation_config: ', str(getattr(cfg, 'activation_config')))
+    # print('-------------------------------------------------')
+
     fig.suptitle(label)
     # plt.xlim(0, 30)
     plt.xlabel('step ($10^4$)')
@@ -98,18 +98,16 @@ def compare_learning_curve(all_paths_dict, title, total_param=None,
 
 
 def learning_curve(all_paths_dict, title, total_param=None,
-        start_param=0, labels_map=None, xlim=[]):
-
+                   start_param=0, labels_map=None, xlim=[]):
     labels = [i["label"] for i in all_paths_dict]
     # control = load_return(all_paths_dict, total_param, start_param)
-    control = load_return(all_paths_dict, total_param, search_lr=True, path_key="online_measure")#, start_param)
+    control = load_return(all_paths_dict, total_param, search_lr=True, path_key="online_measure")  # , start_param)
     # control = load_return(all_paths_dict, total_param, search_lr=True, key="diversity")#, start_param)
 
-    fig, axs = plt.subplots(nrows=1, ncols=len(labels), figsize=(6*len(labels), 4))
+    fig, axs = plt.subplots(nrows=1, ncols=len(labels), figsize=(6 * len(labels), 4))
 
     if len(labels) == 1:
         axs = [axs]
-
 
     for idx, label in enumerate(labels):
         print("\n", idx, label)
@@ -118,10 +116,12 @@ def learning_curve(all_paths_dict, title, total_param=None,
         param_rec = []
         for param, returns in all_params.items():
             returns = arrange_order(returns)
-            mu = draw_curve(returns, axs[idx], param.split("_")[1], cmap(list(all_params.keys()).index(param), len(list(all_params.keys()))))
+            mu = draw_curve(returns, axs[idx], param.split("_")[1],
+                            cmap(list(all_params.keys()).index(param), len(list(all_params.keys()))))
             auc_rec.append(np.sum(mu))
             param_rec.append(param)
-        print("best index {} (param {})".format(param_rec[np.argmax(auc_rec)].split("_")[0], param_rec[np.argmax(auc_rec)].split("_")[1]))
+        print("best index {} (param {})".format(param_rec[np.argmax(auc_rec)].split("_")[0],
+                                                param_rec[np.argmax(auc_rec)].split("_")[1]))
         if xlim != []:
             axs[idx].set_xlim(xlim[0], xlim[1])
         axs[idx].set_title(label)
@@ -137,7 +137,8 @@ def learning_curve(all_paths_dict, title, total_param=None,
     # plt.clf()
 
 
-def performance_change(all_paths_dict, goal_ids, ranks, title, total_param=None, xlim=[], ylim=[], smooth=1.0, top_runs=[0, 1.0],
+def performance_change(all_paths_dict, goal_ids, ranks, title, total_param=None, xlim=[], ylim=[], smooth=1.0,
+                       top_runs=[0, 1.0],
                        xy_label=True, data_label=True, linewidth=1, figsize=(8, 6), emphasize=None,
                        property_perc=None, color_by_activation=False, in_plot_label=None):
     labels = [i["label"] for i in all_paths_dict]
@@ -173,7 +174,8 @@ def performance_change(all_paths_dict, goal_ids, ranks, title, total_param=None,
         for goal in goal_ids:
             rep_auc = {}
             for label in filtered_merged_labels:
-                best_auc = np.mean(np.array([allg_transf_perf[goal][label][run] for run in allg_transf_perf[goal][label]]))
+                best_auc = np.mean(
+                    np.array([allg_transf_perf[goal][label][run] for run in allg_transf_perf[goal][label]]))
                 rep_auc[label.split("_")[0]] = [best_auc]
             all_goals_auc[goal] = rep_auc
         filtered_labels = [k.split("_")[0] for k in allg_transf_perf[goal_ids[0]].keys()]
@@ -196,11 +198,12 @@ def performance_change(all_paths_dict, goal_ids, ranks, title, total_param=None,
     #     pickle.dump(curves, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     plt.figure(figsize=figsize)
-    avg_decrease = {"FTA":[], "ReLU":[], "ReLU(L)":[]}
+    avg_decrease = {"FTA": [], "ReLU": [], "ReLU(L)": []}
     for label in filtered_labels:
         if emphasize and (label not in emphasize):
             # plt.plot(curves[label], color=violin_colors[label], linestyle=curve_styles[label], label=label, linewidth=1, alpha=0.3)
-            plt.plot(curves[label], color=violin_colors["Other rep"], linestyle=curve_styles[label], label=label, linewidth=1, alpha=0.3)
+            plt.plot(curves[label], color=violin_colors["Other rep"], linestyle=curve_styles[label], label=label,
+                     linewidth=1, alpha=0.3)
         elif color_by_activation:
             # if label == "ReLU+ATC":
             #     color = "purple"
@@ -215,25 +218,27 @@ def performance_change(all_paths_dict, goal_ids, ranks, title, total_param=None,
                 color = "#3498db"
                 alpha = 0.5
             elif label in ["Scratch", "Scratch(FTA)", "Scratch(L)"]:
-                color="#34495e"#violin_colors[label]
+                color = "#34495e"  # violin_colors[label]
                 alpha = 1
             else:
-                color="#bdc3c7"#violin_colors[label]
+                color = "#bdc3c7"  # violin_colors[label]
                 alpha = 0.5
             plt.plot(curves[label], color=color, alpha=alpha)
         else:
-            plt.plot(curves[label], color=violin_colors[label], linestyle=curve_styles[label], label=label, linewidth=linewidth, zorder=100)
-        print("Label, first point {}, last point {}, decrease {}".format(label, curves[label][0], curves[label][-1], curves[label][-1] - curves[label][0]))
+            plt.plot(curves[label], color=violin_colors[label], linestyle=curve_styles[label], label=label,
+                     linewidth=linewidth, zorder=100)
+        print("Label, first point {}, last point {}, decrease {}".format(label, curves[label][0], curves[label][-1],
+                                                                         curves[label][-1] - curves[label][0]))
         if label.split("+")[0] in avg_decrease.keys():
             avg_decrease[label.split("+")[0]].append(curves[label][0] - curves[label][-1])
     print("\nAverage decreases:")
     for label in avg_decrease:
         print(label, np.array(avg_decrease[label]).mean())
-    
+
     if ylim != []:
         plt.ylim(ylim[0], ylim[1])
-    xticks_pos = list(range(0, all_ranks.max()+1, 25))
-    xticks_labels = list(range(0, all_ranks.max()+1, 25))
+    xticks_pos = list(range(0, all_ranks.max() + 1, 25))
+    xticks_labels = list(range(0, all_ranks.max() + 1, 25))
     plt.xticks(xticks_pos, xticks_labels, rotation=60, fontsize=14)
     plt.yticks(fontsize=14)
     plt.gca().spines['right'].set_visible(False)
@@ -258,19 +263,21 @@ def performance_change(all_paths_dict, goal_ids, ranks, title, total_param=None,
     plt.close()
 
 
-def performance_change_by_percent_onegroup(all_paths_dict, goal_ids, ranks, total_param=None, xlim=[], ylim=[], smooth=1.0,
+def performance_change_by_percent_onegroup(all_paths_dict, goal_ids, ranks, total_param=None, xlim=[], ylim=[],
+                                           smooth=1.0,
                                            baselines=[], group_label=None, x_shift=0, width=0.8):
     labels = [i["label"] for i in all_paths_dict]
     all_ranks = []
     for goal in goal_ids:
         all_ranks.append(ranks[goal])
     all_ranks = np.array(all_ranks)
-    
-    all_goals_auc, all_goals_independent = pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels, get_each_run=True)
+
+    all_goals_auc, all_goals_independent = pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels,
+                                                           get_each_run=True)
     filtered_labels = labels
     for bs in baselines:
         filtered_labels.remove(bs)
-    
+
     ranked_perc = np.zeros((len(baselines), all_ranks.max() + 1))
     ranked_goal = np.zeros(all_ranks.max() + 1)
     for goal in goal_ids:
@@ -293,14 +300,19 @@ def performance_change_by_percent_onegroup(all_paths_dict, goal_ids, ranks, tota
         ranked_goal[rank] = goal
     return ranked_perc, all_ranks
 
-def performance_change_vf_difference(targets, paths_dicts, goal_ids, ranks, title, total_param=None, xlim=[], ylim=[], smooth=1.0,
-                                  xy_label=True, data_label=True, figsize=(8, 6), baselines=[]):
+
+def performance_change_vf_difference(targets, paths_dicts, goal_ids, ranks, title, total_param=None, xlim=[], ylim=[],
+                                     smooth=1.0,
+                                     xy_label=True, data_label=True, figsize=(8, 6), baselines=[]):
     plt.figure(figsize=figsize)
     width = 0.3
     ranked_perc_dic = {}
     for idx, paths_dict in enumerate(list(paths_dicts.keys())):
-        ranked_perc, all_ranks = performance_change_by_percent_onegroup(label_filter(targets, paths_dicts[paths_dict]), goal_ids, ranks, total_param=total_param,
-                                               xlim=xlim, ylim=ylim, smooth=smooth, baselines=baselines, group_label=paths_dict, x_shift=width*idx, width=width)
+        ranked_perc, all_ranks = performance_change_by_percent_onegroup(label_filter(targets, paths_dicts[paths_dict]),
+                                                                        goal_ids, ranks, total_param=total_param,
+                                                                        xlim=xlim, ylim=ylim, smooth=smooth,
+                                                                        baselines=baselines, group_label=paths_dict,
+                                                                        x_shift=width * idx, width=width)
         # for bidx, bl in enumerate(baselines):
         #     # plt.plot(exp_smooth(ranked_perc[bidx], smooth), label="{}-{}".format(group_label, bl), color=violin_colors[bl], linestyle=curve_styles[group_label])
         #     plt.bar(np.arange(0, len(ranked_perc[bidx]), 1) + width*idx, ranked_perc[bidx], label="{}-{}".format(paths_dict, bl), width=width)
@@ -312,11 +324,12 @@ def performance_change_vf_difference(targets, paths_dicts, goal_ids, ranks, titl
         # plt.yticks(fontsize=14)
         # plt.gca().spines['right'].set_visible(False)
         # plt.gca().spines['top'].set_visible(False)
-        
+
         ranked_perc_dic[paths_dict] = ranked_perc
 
     for bidx, bl in enumerate(baselines):
-        plt.bar(np.arange(0, len(ranked_perc_dic["Nonlinear"][bidx]), 1), ranked_perc_dic["Nonlinear"][bidx]-ranked_perc_dic["Linear"][bidx],
+        plt.bar(np.arange(0, len(ranked_perc_dic["Nonlinear"][bidx]), 1),
+                ranked_perc_dic["Nonlinear"][bidx] - ranked_perc_dic["Linear"][bidx],
                 label="{}-{}".format(paths_dict, bl), width=width)
     if ylim != []:
         plt.ylim(ylim[0], ylim[1])
@@ -338,8 +351,11 @@ def performance_change_vf_difference(targets, paths_dicts, goal_ids, ranks, titl
     plt.close()
 
 
-def correlation_change(all_paths_dict, goal_ids, ranks, title, total_param=None, xlim=[], ylim=[], smooth=1.0, classify=[None, 50,50], label=True,
-                       property_keys = {"lipschitz": "Complexity Reduction", "distance": "Dynamics Awareness", "ortho": "Orthogonality", "interf":"Noninterference", "diversity":"Diversity", "sparsity":"Sparsity"},
+def correlation_change(all_paths_dict, goal_ids, ranks, title, total_param=None, xlim=[], ylim=[], smooth=1.0,
+                       classify=[None, 50, 50], label=True,
+                       property_keys={"lipschitz": "Complexity Reduction", "distance": "Dynamics Awareness",
+                                      "ortho": "Orthogonality", "interf": "Noninterference", "diversity": "Diversity",
+                                      "sparsity": "Sparsity"},
                        property_perc=None, property_rank=None, plot_origin=True):
     all_ranks = []
     for goal in goal_ids:
@@ -365,15 +381,15 @@ def correlation_change(all_paths_dict, goal_ids, ranks, title, total_param=None,
 
     plt.figure(figsize=(6, 6))
     pk_all = list(property_keys.keys())
-    plt.plot([0]*len(curves[pk_all[0]]), "--", color="black")
+    plt.plot([0] * len(curves[pk_all[0]]), "--", color="black")
     # tpk = len(pk_all)
     for pk in pk_all:
         plt.plot(curves[pk], label=property_keys[pk], linewidth=2, color=violin_colors[property_keys[pk]])
         if plot_origin:
             plt.plot(unsmooth_curves[pk], alpha=0.4, color=violin_colors[property_keys[pk]])
 
-    xticks_pos = list(range(0, all_ranks.max()+1, 50))
-    xticks_labels = list(range(0, all_ranks.max()+1, 50))
+    xticks_pos = list(range(0, all_ranks.max() + 1, 50))
+    xticks_labels = list(range(0, all_ranks.max() + 1, 50))
     plt.xticks(xticks_pos, xticks_labels, rotation=60)
     # plt.xticks(list(range(all_ranks.max()+1))[1:], all_ranks, rotation=90)
 
@@ -400,41 +416,46 @@ def correlation_change(all_paths_dict, goal_ids, ranks, title, total_param=None,
     # plt.show()
     plt.close()
 
+
 def correlation_overall(all_paths_dict, goal_ids, ax, total_param=None, xlim=[],
-                       property_keys = {"lipschitz": "Complexity Reduction", "distance": "Dynamics Awareness", "ortho": "Orthogonality", "interf":"Noninterference", "diversity":"Diversity", "sparsity":"Sparsity"},
-                       property_perc=None, property_rank=None):
+                        property_keys={"lipschitz": "Complexity Reduction", "distance": "Dynamics Awareness",
+                                       "ortho": "Orthogonality", "interf": "Noninterference", "diversity": "Diversity",
+                                       "sparsity": "Sparsity"},
+                        property_perc=None, property_rank=None):
     # all_ranks = []
     # for goal in goal_ids:
     #     all_ranks.append(ranks[goal])
     # all_ranks = np.array(all_ranks)
 
     file_path = "plot/temp_data/"
-    if os.path.isfile(file_path+"overall_cor.pkl") and os.path.isfile(file_path+"property_keys.pkl"):
-        with open(file_path+"overall_cor_{}.pkl".format(property_rank), "rb") as f:
+    if os.path.isfile(file_path + "overall_cor.pkl") and os.path.isfile(file_path + "property_keys.pkl"):
+        with open(file_path + "overall_cor_{}.pkl".format(property_rank), "rb") as f:
             overall_cor = pickle.load(f)
-        with open(file_path+"property_keys.pkl", "rb") as f:
+        with open(file_path + "property_keys.pkl", "rb") as f:
             property_keys = pickle.load(f)
     else:
         _, overall_cor, property_keys = correlation_load(all_paths_dict, goal_ids,
-                                                        total_param=total_param, xlim=xlim, property_keys=property_keys,
-                                                        property_perc=property_perc, property_rank=property_rank, get_overall=True)
-        with open(file_path+"overall_cor_{}.pkl".format(property_rank), "wb") as f:
+                                                         total_param=total_param, xlim=xlim,
+                                                         property_keys=property_keys,
+                                                         property_perc=property_perc, property_rank=property_rank,
+                                                         get_overall=True)
+        with open(file_path + "overall_cor_{}.pkl".format(property_rank), "wb") as f:
             pickle.dump(overall_cor, f)
-        with open(file_path+"property_keys.pkl", "wb") as f:
+        with open(file_path + "property_keys.pkl", "wb") as f:
             pickle.dump(property_keys, f)
 
     ordered_cor = []
     ordered_prop = ["lipschitz", "distance", "diversity", "ortho", "sparsity", "interf"]
     for pk in ordered_prop:
         ordered_cor.append(overall_cor[pk])
-    
+
     xticks_pos = np.arange(len(ordered_cor))
     ax.bar(xticks_pos, ordered_cor, color="#3498db", capsize=10)
-    ax.axhline(y=0,c="black", ls="--")
+    ax.axhline(y=0, c="black", ls="--")
     xticks_labels = [property_keys[pk] for pk in ordered_prop]
     ax.set_xticks(xticks_pos, xticks_labels, rotation=90, fontsize=14)
     for i, c in enumerate(ordered_cor):
-        ax.text(xticks_pos[i]-0.4, 0.1, "{:.2f}".format(c), color='black', fontweight='bold')
+        ax.text(xticks_pos[i] - 0.4, 0.1, "{:.2f}".format(c), color='black', fontweight='bold')
 
 
 def transfer_curve_choose(all_paths_dict, goal_ids, ranks, title, total_param=None, xlim=[]):
@@ -524,7 +545,6 @@ def transfer_curve_choose(all_paths_dict, goal_ids, ranks, title, total_param=No
 
 def figure3(paths_dicts_all, subtitles, baselines, groups, goal_ids, ranks, title, total_param=None, xlim=[],
             xy_label=True, data_label=True, figsize=(8, 6), ax=None):
-    
     ready_plot = []
     ready_plot_error = []
     ready_label = []
@@ -535,8 +555,9 @@ def figure3(paths_dicts_all, subtitles, baselines, groups, goal_ids, ranks, titl
         for goal in goal_ids:
             all_ranks.append(ranks[goal])
         all_ranks = np.array(all_ranks)
-        
-        all_goals_auc, all_goals_independent = pick_best_perfs(paths_dicts, goal_ids, total_param, xlim, labels, get_each_run=True)
+
+        all_goals_auc, all_goals_independent = pick_best_perfs(paths_dicts, goal_ids, total_param, xlim, labels,
+                                                               get_each_run=True)
 
         subp_data = np.zeros((len(baselines), len(groups)))
         subp_error = np.zeros((len(baselines), len(groups)))
@@ -548,7 +569,7 @@ def figure3(paths_dicts_all, subtitles, baselines, groups, goal_ids, ranks, titl
             # filtered_labels = labels
             # for bs in baselines:
             #     filtered_labels.remove(bs)
-            
+
             # ranked_improve = np.zeros((len(baselines), all_ranks.max() + 1))
             ranked_improve = np.zeros((1, all_ranks.max() + 1))
             for goal in goal_ids:
@@ -622,6 +643,7 @@ def figure3(paths_dicts_all, subtitles, baselines, groups, goal_ids, ranks, titl
         [-0.5, 0.9, 0.6, 0.8],
         [-0.8, -0.4, -0.4, -0.4]
     ]
+
     # for idx, subp_data in enumerate(ready_plot):
     #     xticks_pos = np.array(list(range(0, len(subp_data[0]))))
     #     for bs_idx, improv in enumerate(subp_data):
@@ -659,12 +681,12 @@ def figure3(paths_dicts_all, subtitles, baselines, groups, goal_ids, ranks, titl
     #         ax2.plot([0, 1], [1, 1], transform=ax2.transAxes, **kwargs)
     #
     # plt.savefig("plot/img/{}.png".format(title), dpi=300, bbox_inches='tight')
-    
+
     def v_pos(v, yrange):
         p = 0.05
         h = (yrange[1] - yrange[0]) * p + yrange[0]
         return h
-        
+
     ylims = [
         [0, 1.6],
         [0, 1.6]
@@ -678,7 +700,7 @@ def figure3(paths_dicts_all, subtitles, baselines, groups, goal_ids, ranks, titl
     #     axs = [axs]
     all_bases = np.array(all_bases)
     assert len(ready_plot) == 1
-    
+
     for idx, subp_data in enumerate(ready_plot):
         subp_error = ready_plot_error[idx]
         xticks_pos = np.array(list(range(0, len(subp_data[0]))))
@@ -695,7 +717,7 @@ def figure3(paths_dicts_all, subtitles, baselines, groups, goal_ids, ranks, titl
                 # xtck = xtck_lst[1]
                 xtck = "With-aux"
             xtcks.append(xtck)
-            
+
             if xtck_lst[0] == "ReLU":
                 color = "#e74c3c"
             else:
@@ -704,22 +726,24 @@ def figure3(paths_dicts_all, subtitles, baselines, groups, goal_ids, ranks, titl
 
         # axs[idx].bar(xticks_pos+0.1*bs_idx, improv, color=colors, yerr=subp_error[bs_idx], capsize=10, edgecolor=None)
         rhs_axs = ax.twinx()
-        ax.bar(xticks_pos[:2]+0.1*bs_idx, improv[:2], color=colors[:2], yerr=subp_error[bs_idx][:2], capsize=10, edgecolor=None)
-        rhs_axs.bar(xticks_pos[2:]+0.1*bs_idx, improv[2:], color=colors[2:], yerr=subp_error[bs_idx][2:], capsize=10, edgecolor=None)
+        ax.bar(xticks_pos[:2] + 0.1 * bs_idx, improv[:2], color=colors[:2], yerr=subp_error[bs_idx][:2], capsize=10,
+               edgecolor=None)
+        rhs_axs.bar(xticks_pos[2:] + 0.1 * bs_idx, improv[2:], color=colors[2:], yerr=subp_error[bs_idx][2:],
+                    capsize=10, edgecolor=None)
 
         # if xtck_lst[0] in ["ReLU", "FTA"] and len(xtck_lst) == 0:
         #     axs[idx].text(xticks_pos[i], v_pos(v, ylims[idx][1]-0.2), xtck_lst[0], color=colors, fontsize=12)
         ax.text(xticks_pos[0], ylims[idx][0] + 1.4, "ReLU", color="#c0392b", fontsize=14)
-        ax.text(xticks_pos[2]+0.2, ylims[idx][0] + 1.4, "FTA", color="#2980b9", fontsize=14)
+        ax.text(xticks_pos[2] + 0.2, ylims[idx][0] + 1.4, "FTA", color="#2980b9", fontsize=14)
         ax.set_xticks(xticks_pos, xtcks, rotation=30, fontsize=14, ha='right', rotation_mode='anchor')
         rhs_axs.set_xticks(xticks_pos, xtcks, rotation=30, fontsize=14, ha='right', rotation_mode='anchor')
 
         # axs[idx].axhline(y=1,c="black", ls="--")
         xlim = ax.get_xlim()
-        ax.plot([xlim[0], xlim[0]+(xlim[-1]-xlim[0])/2],[1, 1], c="#912E23", ls="--")
-        rhs_axs.plot([xlim[0]+(xlim[-1]-xlim[0])/2, xlim[-1]],[1, 1], c="#236591", ls="--")
+        ax.plot([xlim[0], xlim[0] + (xlim[-1] - xlim[0]) / 2], [1, 1], c="#912E23", ls="--")
+        rhs_axs.plot([xlim[0] + (xlim[-1] - xlim[0]) / 2, xlim[-1]], [1, 1], c="#236591", ls="--")
         ax.set_xlim(xlim)
-        
+
         ax.set_title(subtitles[idx], fontsize=14)
         ax.set_ylim(ylims[idx])
         rhs_axs.set_ylim(ylims[idx])
@@ -728,13 +752,14 @@ def figure3(paths_dicts_all, subtitles, baselines, groups, goal_ids, ranks, titl
         align_yaxis(ax, 1, rhs_axs, all_bases[idx][:, 0].sum() / all_bases[idx][:, 1].sum())
         rhs_axs.set_yticks([1], [1], fontsize=12, color="#236591")
 
-        for i,v in enumerate(improv):
-            rhs_axs.text(xticks_pos[i]-0.4, v_pos(v, rhs_axs.get_ylim()), "{:.2f}".format(v), color='black', fontsize=12)
-
+        for i, v in enumerate(improv):
+            rhs_axs.text(xticks_pos[i] - 0.4, v_pos(v, rhs_axs.get_ylim()), "{:.2f}".format(v), color='black',
+                         fontsize=12)
 
 
 def mountain_car():
     learning_curve(mc_learn_sweep, "mountain car learning sweep")
+
 
 def simple_maze():
     ranks = np.load("data/dataset/gridhard/srs/goal(9, 9)_simrank.npy", allow_pickle=True).item()
@@ -743,21 +768,26 @@ def simple_maze():
 
     targets = [
         "ReLU",
-        "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC",
+        "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+        "ReLU+ATC",
         # "ReLU(L)",
         # "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF",
         # "ReLU(L)+ATC",
         "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
         "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC",
-        "Scratch", "Scratch(FTA)", "Input", "Random", #"Scratch(L)", "Random(L)",
+        "Scratch", "Scratch(FTA)", "Input", "Random",  # "Scratch(L)", "Random(L)",
     ]
     # learning_curve(gh_nonlinear_transfer_sweep_v13_largeReLU, "maze learning sweep")
 
     goal_ids = [106,
-                107, 108, 118, 119, 109, 120, 121, 128, 110, 111, 122, 123, 129, 130, 142, 143, 144, 141, 140, 139, 138, 156, 157, 158, 155, 170, 171, 172, 169, 154, 168, 153, 167, 152, 166, 137, 151,
-                165, 127, 117, 105, 99, 136, 126, 150, 164, 116, 104, 86, 98, 85, 84, 87, 83, 88, 89, 97, 90, 103, 115, 91, 92, 93, 82, 96, 102, 114, 81, 80, 71, 95, 70, 69, 68, 101, 67, 66, 113, 62,
-                65, 125, 61, 132, 47, 133, 79, 48, 72, 94, 52, 146, 73, 49, 33, 100, 134, 34, 74, 50, 147, 35, 112, 75, 135, 160, 36, 148, 76, 161, 63, 77, 124, 149, 78, 162, 163, 131, 53, 145, 159,
-                54, 55, 56, 57, 58, 59, 64, 51, 38, 60, 39, 40, 46, 41, 42, 43, 44, 45, 32, 31, 37, 30, 22, 21, 23, 20, 24, 19, 25, 18, 26, 17, 16, 27, 15, 28, 29, 7, 8, 6, 9, 5, 10, 4, 11, 3, 12, 2,
+                107, 108, 118, 119, 109, 120, 121, 128, 110, 111, 122, 123, 129, 130, 142, 143, 144, 141, 140, 139, 138,
+                156, 157, 158, 155, 170, 171, 172, 169, 154, 168, 153, 167, 152, 166, 137, 151,
+                165, 127, 117, 105, 99, 136, 126, 150, 164, 116, 104, 86, 98, 85, 84, 87, 83, 88, 89, 97, 90, 103, 115,
+                91, 92, 93, 82, 96, 102, 114, 81, 80, 71, 95, 70, 69, 68, 101, 67, 66, 113, 62,
+                65, 125, 61, 132, 47, 133, 79, 48, 72, 94, 52, 146, 73, 49, 33, 100, 134, 34, 74, 50, 147, 35, 112, 75,
+                135, 160, 36, 148, 76, 161, 63, 77, 124, 149, 78, 162, 163, 131, 53, 145, 159,
+                54, 55, 56, 57, 58, 59, 64, 51, 38, 60, 39, 40, 46, 41, 42, 43, 44, 45, 32, 31, 37, 30, 22, 21, 23, 20,
+                24, 19, 25, 18, 26, 17, 16, 27, 15, 28, 29, 7, 8, 6, 9, 5, 10, 4, 11, 3, 12, 2,
                 13, 1, 14, 0,
                 ]
 
@@ -776,10 +806,11 @@ def simple_maze():
     ]
     targets = [
         "ReLU",
-        "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC",
+        "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+        "ReLU+ATC",
         "FTA eta=0.6", "FTA eta=0.8", "FTA eta=0.2", "FTA eta=0.4",
         "FTA+ATC", "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+XY", "FTA+Decoder",
-        "Scratch", "Input", "Random", "Scratch(FTA)" #"Scratch(L)", "Random(L)",
+        "Scratch", "Input", "Random", "Scratch(FTA)"  # "Scratch(L)", "Random(L)",
     ]
     # performance_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks, "nonlinear/maze_transfer_chosen_(smooth0.1)", xlim=[0, 11], ylim=[0, 11], smooth=0.1,
     #                    xy_label=False, data_label=False, linewidth=3, figsize=(8, 6), color_by_activation=True)
@@ -790,7 +821,8 @@ def simple_maze():
 
     targets = [
         "ReLU(L)",
-        "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF",
+        "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward",
+        "ReLU(L)+SF",
         "ReLU(L)+ATC",
         "Input", "Scratch(L)", "Random(L)",
     ]
@@ -812,9 +844,11 @@ def simple_maze():
 
     targets = [
         "ReLU",
-        "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC",
+        "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+        "ReLU+ATC",
         "ReLU(L)",
-        "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF", "ReLU(L)+ATC",
+        "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward",
+        "ReLU(L)+SF", "ReLU(L)+ATC",
         "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
         "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC",
         "Scratch", "Scratch(FTA)",
@@ -829,9 +863,10 @@ def simple_maze():
     #            "auc bar label", ncol=2, with_style=False)
     targets = [
         "ReLU",
-        "ReLU+VirtualVF5",# "ReLU+VirtualVF1", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC",
-        "FTA eta=0.2", #"FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
-        "FTA+SF", #"FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+ATC",
+        "ReLU+VirtualVF5",
+        # "ReLU+VirtualVF1", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC",
+        "FTA eta=0.2",  # "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
+        "FTA+SF",  # "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+ATC",
         "Scratch",
         "Scratch(FTA)",
     ]
@@ -839,35 +874,38 @@ def simple_maze():
         "ReLU": ["ReLU"],
         # "ReLU+Aux": ["ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC"],
         "ReLU+VirtualVF5": ["ReLU+VirtualVF5"],
-        "FTA": ["FTA eta=0.2"],#, "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",],
+        "FTA": ["FTA eta=0.2"],  # , "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",],
         # "FTA+Aux": ["FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC"],
         "FTA+SF": ["FTA+SF"],
     }
-    # fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(6, 2))
-    # plt.subplots_adjust(wspace=0.3, hspace=None)
-    # figure3([label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)], ["Non-linear"],
-    #         baselines, groups, goal_ids, ranks, "result1",
-    #         xlim=[], xy_label=True, data_label=True, figsize=(8, 6), ax=axs[0])
-    # targets = [
-    #     "ReLU",
-    #     "ReLU+VirtualVF5",# "ReLU+VirtualVF1", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC",
-    #     "FTA eta=0.2", #"FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
-    #     "FTA+NAS", #"FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+ATC",
-    #     "Scratch",
-    #     "Scratch(FTA)",
-    # ]
-    # groups = {
-    #     "ReLU": ["ReLU"],
-    #     # "ReLU+Aux": ["ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC"],
-    #     "ReLU+VirtualVF5": ["ReLU+VirtualVF5"],
-    #     "FTA": ["FTA eta=0.2"],#, "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",],
-    #     # "FTA+Aux": ["FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC"],
-    #     "FTA+NAS": ["FTA+NAS"],
-    # }
+    fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(6, 2))
+    plt.subplots_adjust(wspace=0.3, hspace=None)
+    figure3([label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)], ["Non-linear"],
+            baselines, groups, goal_ids, ranks, "result1",
+            xlim=[], xy_label=True, data_label=True, figsize=(8, 6), ax=axs[0])
+    targets = [
+        "ReLU",
+        "ReLU+VirtualVF5",
+        # "ReLU+VirtualVF1", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC",
+        "FTA eta=0.2",  # "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
+        "FTA+NAS",  # "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+ATC",
+        "Scratch",
+        "Scratch(FTA)",
+    ]
+    groups = {
+        "ReLU": ["ReLU"],
+        # "ReLU+Aux": ["ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC"],
+        "ReLU+VirtualVF5": ["ReLU+VirtualVF5"],
+        "FTA": ["FTA eta=0.2"],  # , "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",],
+        # "FTA+Aux": ["FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC"],
+        "FTA+NAS": ["FTA+NAS"],
+    }
+
     # figure3([label_filter(targets, gh_transfer_sweep_v13)], ["Linear"],
     #         baselines, groups, goal_ids, ranks, "result1",
     #         xlim=[], xy_label=True, data_label=True, figsize=(8, 6), ax=axs[1])
-    # plt.savefig("plot/img/result1.pdf", dpi=300, bbox_inches='tight')
+
+    plt.savefig("plot/img/result1.pdf", dpi=300, bbox_inches='tight')
 
     targets = [
         "ReLU",
@@ -882,13 +920,13 @@ def simple_maze():
     #                    xy_label=False, data_label=False, linewidth=3, figsize=(8, 6), emphasize=emphasize)
     # draw_label(emphasize+[{"Other ReLU reps": ["grey", s_default[1]]}], "auc relu label", ncol=3)
 
-
     targets = [
         "ReLU",
         "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
         "ReLU+ATC",
         "ReLU(L)",
-        "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF",
+        "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward",
+        "ReLU(L)+SF",
         "ReLU(L)+ATC",
         "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
         "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
@@ -902,7 +940,6 @@ def simple_maze():
     #                    "linear/maze correlation change (smooth 0.1)", xlim=[0, 11], smooth=0.1, label=False)
     # correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
     #                    "nonlinear/maze correlation change (smooth 0.1)", xlim=[0, 11], ylim=[-0.85, 0.85], smooth=0.1, label=False, plot_origin=False)
-
 
     # correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
     #                    "nonlinear/maze correlation change (low otho)", xlim=[0, 11], ylim=[-0.4, 0.7], smooth=0.1, label=False, plot_origin=False,
@@ -942,7 +979,7 @@ def simple_maze():
     # correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
     #                    "nonlinear/maze correlation change (high comp reduc) (no smooth)", xlim=[0, 11], ylim=[-0.85, 0.85], smooth=1, label=False, plot_origin=False,
     #                     property_rank={"lipschitz": [96, np.inf]})
-    
+
     # correlation_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks,
     #                    "nonlinear/maze correlation change (low dist)", xlim=[0, 11], ylim=[-0.85, 0.85], smooth=0.1, label=False, plot_origin=False,
     #                    property_perc={"distance": [0, 70]})
@@ -982,7 +1019,8 @@ def simple_maze():
         "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
         "ReLU+ATC",
         "ReLU(L)",
-        "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF",
+        "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward",
+        "ReLU(L)+SF",
         "ReLU(L)+ATC",
         "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
         "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
@@ -1042,6 +1080,11 @@ def simple_maze():
     # plt.savefig("plot/img/nonlinear/all_prop.pdf", dpi=300, bbox_inches='tight')
     # plt.close()
 
+    # fig, ax = plt.subplots(1, 1, figsize=(12, 6))
+    # correlation_overall(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ax, xlim=[0, 11])
+    # plt.tight_layout()
+    # plt.savefig("plot/img/nonlinear/all_prop.pdf", dpi=300, bbox_inches='tight')
+    # plt.close()
 
 
 def maze_multigoals():
@@ -1051,17 +1094,23 @@ def maze_multigoals():
     for i in ranks:
         ranks[i] += 1
     goal_ids = [106,
-                107, 108, 118, 119, 109, 120, 121, 128, 110, 111, 122, 123, 129, 130, 142, 143, 144, 141, 140, 139, 138, 156, 157, 158, 155, 170, 171, 172, 169, 154, 168, 153, 167, 152, 166, 137, 151,
-                165, 127, 117, 105, 99, 136, 126, 150, 164, 116, 104, 86, 98, 85, 84, 87, 83, 88, 89, 97, 90, 103, 115, 91, 92, 93, 82, 96, 102, 114, 81, 80, 71, 95, 70, 69, 68, 101, 67, 66, 113, 62,
-                65, 125, 61, 132, 47, 133, 79, 48, 72, 94, 52, 146, 73, 49, 33, 100, 134, 34, 74, 50, 147, 35, 112, 75, 135, 160, 36, 148, 76, 161, 63, 77, 124, 149, 78, 162, 163, 131, 53, 145, 159,
-                54, 55, 56, 57, 58, 59, 64, 51, 38, 60, 39, 40, 46, 41, 42, 43, 44, 45, 32, 31, 37, 30, 22, 21, 23, 20, 24, 19, 25, 18, 26, 17, 16, 27, 15, 28, 29, 7, 8, 6, 9, 5, 10, 4, 11, 3, 12, 2,
+                107, 108, 118, 119, 109, 120, 121, 128, 110, 111, 122, 123, 129, 130, 142, 143, 144, 141, 140, 139, 138,
+                156, 157, 158, 155, 170, 171, 172, 169, 154, 168, 153, 167, 152, 166, 137, 151,
+                165, 127, 117, 105, 99, 136, 126, 150, 164, 116, 104, 86, 98, 85, 84, 87, 83, 88, 89, 97, 90, 103, 115,
+                91, 92, 93, 82, 96, 102, 114, 81, 80, 71, 95, 70, 69, 68, 101, 67, 66, 113, 62,
+                65, 125, 61, 132, 47, 133, 79, 48, 72, 94, 52, 146, 73, 49, 33, 100, 134, 34, 74, 50, 147, 35, 112, 75,
+                135, 160, 36, 148, 76, 161, 63, 77, 124, 149, 78, 162, 163, 131, 53, 145, 159,
+                54, 55, 56, 57, 58, 59, 64, 51, 38, 60, 39, 40, 46, 41, 42, 43, 44, 45, 32, 31, 37, 30, 22, 21, 23, 20,
+                24, 19, 25, 18, 26, 17, 16, 27, 15, 28, 29, 7, 8, 6, 9, 5, 10, 4, 11, 3, 12, 2,
                 13, 1, 14, 0,
                 ]
     # performance_change(ghmg_transfer_sweep_v13, goal_ids, ranks, "multigoal transfer change (smooth 0.2)", xlim=[0, 11], smooth=0.2)
     # performance_change(ghmg_transfer_last_sweep_v13, goal_ids, ranks, "multigoal lastrep transfer change (smooth 0.2)", xlim=[0, 11], smooth=0.2)
 
     performance_change(ghmg_transfer_sweep_v13, goal_ids, ranks, "multigoal transfer change", xlim=[0, 11], smooth=1)
-    performance_change(ghmg_transfer_last_sweep_v13, goal_ids, ranks, "multigoal lastrep transfer change", xlim=[0, 11], smooth=1)
+    performance_change(ghmg_transfer_last_sweep_v13, goal_ids, ranks, "multigoal lastrep transfer change", xlim=[0, 11],
+                       smooth=1)
+
 
 if __name__ == '__main__':
     simple_maze()

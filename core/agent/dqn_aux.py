@@ -9,7 +9,7 @@ from inspect import signature
 from core.agent import dqn
 from core.utils import torch_utils
 from core.utils.lipschitz import compute_dynamics_awareness, compute_decorrelation
-
+from core.utils.data_augs import random_shift
 
 class DQNAuxAgent(dqn.DQNAgent):
     def __init__(self, cfg):
@@ -39,6 +39,9 @@ class DQNAuxAgent(dqn.DQNAgent):
         self.aux_nets = aux_tasks
         self.aux_weights = cfg.aux_weights
 
+        self.aux_random_shift_prob = cfg.aux_random_shift_prob
+        self.aux_random_shift_pad = cfg.aux_random_shift_pad
+
         # TODO: Remove this patchwork
         self.cfg.agent = self
 
@@ -49,11 +52,28 @@ class DQNAuxAgent(dqn.DQNAgent):
         next_states = self.cfg.state_normalizer(next_states)
         actions = torch_utils.tensor(actions, self.cfg.device).long()
 
-        phi = self.rep_net(states)
+        ######### Random shift for the value function ######### 
+        vf_states = states
+        vf_next_states = next_states
+        if self.random_shift_prob > 0.:
+            vf_states = random_shift(
+                imgs=states,
+                pad=self.random_shift_pad,
+                prob=self.random_shift_prob,
+            )
+
+            vf_next_states = random_shift(
+                imgs=next_states,
+                pad=self.random_shift_pad,
+                prob=self.random_shift_prob,
+            )
+        ###################################################### 
+
+        phi = self.rep_net(vf_states)
 
         # Computing Loss for Value Function
         q = self.val_net(phi)[self.batch_indices, actions]
-        nphi = self.targets.rep_net(next_states)
+        nphi = self.targets.rep_net(vf_next_states)
         q_next = self.targets.val_net(nphi).detach().max(1)[0]
         terminals = torch_utils.tensor(terminals, self.cfg.device)
         rewards = torch_utils.tensor(rewards, self.cfg.device)
@@ -61,11 +81,36 @@ class DQNAuxAgent(dqn.DQNAgent):
         target.add_(rewards.float())
         loss = self.vf_loss(q, target)  # (q_next - q).pow(2).mul(0.5).mean()
 
-        # Computing Loss for Aux Tasks
+        ######### Random shift for the auxilrary task ######### 
+        aux_states = vf_states
+        aux_next_states = vf_next_states
+        aux_phi = phi
+        aux_nphi = nphi
+
+        if self.aux_random_shift_prob > 0. and not (self.random_shift_prob > 0.):
+            print(
+                'aux shift'
+            )
+            aux_states = random_shift(
+                imgs=states,
+                pad=self.aux_random_shift_pad,
+                prob=self.aux_random_shift_prob,
+            )
+ 
+            aux_next_states = random_shift(
+                imgs=next_states,
+                pad=self.aux_random_shift_pad,
+                prob=self.aux_random_shift_prob,
+            )
+
+            aux_phi = self.rep_net(aux_states)
+            aux_nphi = self.targets.rep_net(aux_next_states)
+        ###################################################### 
+
         aux_loss = torch.zeros_like(loss)
         for i, aux_net in enumerate(self.aux_nets):
-            transition = (states, actions, rewards, next_states, terminals)
-            ls = aux_net.compute_loss(transition, phi, nphi)
+            transition = (aux_states, actions, rewards, aux_next_states, terminals)
+            ls = aux_net.compute_loss(transition, aux_phi, aux_nphi)
             # print(loss, ls, self.aux_weights[i] * ls)
             aux_loss += self.aux_weights[i] * ls
 
@@ -110,6 +155,422 @@ class DQNAuxAgent(dqn.DQNAgent):
                 viz_dir = self.cfg.get_visualization_dir()
                 plt.savefig(os.path.join(viz_dir, 'aux_distance_{}.jpg'.format(i)))
                 plt.close()
+
+
+class DQNPropertyAgent(DQNAuxAgent):
+    def update(self):
+        states, actions, rewards, next_states, terminals = self.replay.sample()
+        _, unique_states_idx = np.unique(states, return_index=True, axis=0) # CAREFUL: this doesn't match up with the random shift
+        states = self.cfg.state_normalizer(states)
+        next_states = self.cfg.state_normalizer(next_states)
+        actions = torch_utils.tensor(actions, self.cfg.device).long()
+
+        ######### Random shift for the value function ######### 
+        vf_states = states
+        vf_next_states = next_states
+        if self.random_shift_prob > 0.:
+            vf_states = random_shift(
+                imgs=states,
+                pad=self.random_shift_pad,
+                prob=self.random_shift_prob,
+            )
+
+            vf_next_states = random_shift(
+                imgs=next_states,
+                pad=self.random_shift_pad,
+                prob=self.random_shift_prob,
+            )
+        ###################################################### 
+
+        phi = self.rep_net(vf_states)
+
+        # Computing Loss for Value Function
+        q_vals = self.val_net(phi)
+       # q_next_vals = self.val_net(self.rep_net(vf_next_states))
+        q = q_vals[self.batch_indices, actions]
+        nphi = self.targets.rep_net(vf_next_states)
+        q_next_vals = self.targets.val_net(nphi).detach()
+        q_next = q_next_vals.max(1)[0]
+        terminals = torch_utils.tensor(terminals, self.cfg.device)
+        rewards = torch_utils.tensor(rewards, self.cfg.device)
+        target = self.cfg.discount * q_next * (1 - terminals).float()
+        target.add_(rewards.float())
+        loss = self.vf_loss(q, target)  # (q_next - q).pow(2).mul(0.5).mean()
+
+        ######### Random shift for the auxilrary task ######### 
+        aux_states = vf_states
+        aux_next_states = vf_next_states
+        aux_phi = phi
+        aux_nphi = nphi
+
+        if self.aux_random_shift_prob > 0. and not (self.random_shift_prob > 0.):
+            print(
+                'aux shift'
+            )
+            aux_states = random_shift(
+                imgs=states,
+                pad=self.aux_random_shift_pad,
+                prob=self.aux_random_shift_prob,
+            )
+ 
+            aux_next_states = random_shift(
+                imgs=next_states,
+                pad=self.aux_random_shift_pad,
+                prob=self.aux_random_shift_prob,
+            )
+
+            aux_phi = self.rep_net(aux_states)
+            aux_nphi = self.targets.rep_net(aux_next_states)
+        ###################################################### 
+
+        aux_loss = torch.zeros_like(loss)
+        for i, aux_net in enumerate(self.aux_nets):
+            states, actions, rewards, next_states, terminals = self.replay.sample()
+            _, unique_states_idx = np.unique(states, return_index=True, axis=0) # ALERT: this doesn't match up with the random shift
+            states = self.cfg.state_normalizer(states)
+            states = states[unique_states_idx]
+            
+            ortho_phi = self.rep_net(states)
+
+            states, actions, rewards, next_states, terminals = self.replay.sample()
+            states = self.cfg.state_normalizer(states)
+            next_states = self.cfg.state_normalizer(next_states)
+
+            sim_phi = self.rep_net(states)
+            sim_nphi = self.rep_net(next_states) 
+
+            ls = aux_net.compute_loss(ortho_phi, sim_phi, sim_nphi)
+            # print(loss, ls, self.aux_weights[i] * ls)
+            aux_loss += self.aux_weights[i] * ls
+
+        if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/loss/val_loss', loss.item(), self.total_steps)
+
+        loss += aux_loss
+
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
+
+        if self.cfg.use_target_network and self.total_steps % self.cfg.target_network_update_freq == 0:
+            self.targets.rep_net.load_state_dict(self.rep_net.state_dict())
+            self.targets.val_net.load_state_dict(self.val_net.state_dict())
+            for i, ant in enumerate(self.targets.aux_nets):
+                ant.load_state_dict(self.aux_nets[i].state_dict())
+
+
+class DQNLaplacianAgent(DQNAuxAgent):
+    def update(self):
+        states, actions, rewards, next_states, terminals = self.replay.sample()
+        _, unique_states_idx = np.unique(states, return_index=True,
+                                         axis=0)  # CAREFUL: this doesn't match up with the random shift
+        states = self.cfg.state_normalizer(states)
+        next_states = self.cfg.state_normalizer(next_states)
+        actions = torch_utils.tensor(actions, self.cfg.device).long()
+
+        ######### Random shift for the value function #########
+        vf_states = states
+        vf_next_states = next_states
+        if self.random_shift_prob > 0.:
+            vf_states = random_shift(
+                imgs=states,
+                pad=self.random_shift_pad,
+                prob=self.random_shift_prob,
+            )
+
+            vf_next_states = random_shift(
+                imgs=next_states,
+                pad=self.random_shift_pad,
+                prob=self.random_shift_prob,
+            )
+        ######################################################
+
+        phi = self.rep_net(vf_states)
+
+        # Computing Loss for Value Function
+        q_vals = self.val_net(phi)
+        # q_next_vals = self.val_net(self.rep_net(vf_next_states))
+        q = q_vals[self.batch_indices, actions]
+        nphi = self.targets.rep_net(vf_next_states)
+        q_next_vals = self.targets.val_net(nphi).detach()
+        q_next = q_next_vals.max(1)[0]
+        terminals = torch_utils.tensor(terminals, self.cfg.device)
+        rewards = torch_utils.tensor(rewards, self.cfg.device)
+        target = self.cfg.discount * q_next * (1 - terminals).float()
+        target.add_(rewards.float())
+        loss = self.vf_loss(q, target)  # (q_next - q).pow(2).mul(0.5).mean()
+
+        aux_loss = 0
+        if self.replay.num_episodes():
+            ######### Random shift for the auxilrary task #########
+            aux_states = vf_states
+            aux_next_states = vf_next_states
+            aux_phi = phi
+            aux_nphi = nphi
+
+            if self.aux_random_shift_prob > 0. and not (self.random_shift_prob > 0.):
+                print(
+                    'aux shift'
+                )
+                aux_states = random_shift(
+                    imgs=states,
+                    pad=self.aux_random_shift_pad,
+                    prob=self.aux_random_shift_prob,
+                )
+
+                aux_next_states = random_shift(
+                    imgs=next_states,
+                    pad=self.aux_random_shift_pad,
+                    prob=self.aux_random_shift_prob,
+                )
+
+                aux_phi = self.rep_net(aux_states)
+                aux_nphi = self.targets.rep_net(aux_next_states)
+            ######################################################
+            aux_loss = torch.zeros_like(loss)
+            for i, aux_net in enumerate(self.aux_nets):
+                states, actions, rewards, next_states, terminals = self.replay.sample()
+                _, unique_states_idx = np.unique(states, return_index=True,
+                                                 axis=0)  # ALERT: this doesn't match up with the random shift
+                states = self.cfg.state_normalizer(states)
+                # states = states[unique_states_idx]
+
+                ortho_phi = self.rep_net(states)
+
+                states, sim_states = self.replay.sample_pairs(0.9)
+                states = self.cfg.state_normalizer(states)
+                sim_states = self.cfg.state_normalizer(sim_states)
+
+                sim_phi = self.rep_net(states)
+                sim_nphi = self.rep_net(sim_states)
+
+                ls = aux_net.compute_loss(ortho_phi, sim_phi, sim_nphi)
+                # print(loss, ls, self.aux_weights[i] * ls)
+                aux_loss += self.aux_weights[i] * ls
+
+        if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/loss/val_loss', loss.item(), self.total_steps)
+
+        loss += aux_loss
+
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
+
+        if self.cfg.use_target_network and self.total_steps % self.cfg.target_network_update_freq == 0:
+            self.targets.rep_net.load_state_dict(self.rep_net.state_dict())
+            self.targets.val_net.load_state_dict(self.val_net.state_dict())
+            for i, ant in enumerate(self.targets.aux_nets):
+                ant.load_state_dict(self.aux_nets[i].state_dict())
+
+
+class DQNDynaOrthoAgent(DQNAuxAgent):
+    def update(self):
+        states, actions, rewards, next_states, terminals = self.replay.sample()
+        _, unique_states_idx = np.unique(states, return_index=True,
+                                         axis=0)  # CAREFUL: this doesn't match up with the random shift
+        states = self.cfg.state_normalizer(states)
+        next_states = self.cfg.state_normalizer(next_states)
+        actions = torch_utils.tensor(actions, self.cfg.device).long()
+
+        ######### Random shift for the value function #########
+        vf_states = states
+        vf_next_states = next_states
+        if self.random_shift_prob > 0.:
+            vf_states = random_shift(
+                imgs=states,
+                pad=self.random_shift_pad,
+                prob=self.random_shift_prob,
+            )
+
+            vf_next_states = random_shift(
+                imgs=next_states,
+                pad=self.random_shift_pad,
+                prob=self.random_shift_prob,
+            )
+        ######################################################
+
+        phi = self.rep_net(vf_states)
+
+        # Computing Loss for Value Function
+        q_vals = self.val_net(phi)
+        # q_next_vals = self.val_net(self.rep_net(vf_next_states))
+        q = q_vals[self.batch_indices, actions]
+        nphi = self.targets.rep_net(vf_next_states)
+        q_next_vals = self.targets.val_net(nphi).detach()
+        q_next = q_next_vals.max(1)[0]
+        terminals = torch_utils.tensor(terminals, self.cfg.device)
+        rewards = torch_utils.tensor(rewards, self.cfg.device)
+        target = self.cfg.discount * q_next * (1 - terminals).float()
+        target.add_(rewards.float())
+        loss = self.vf_loss(q, target)  # (q_next - q).pow(2).mul(0.5).mean()
+
+        aux_loss = 0
+        if self.replay.num_episodes():
+            ######### Random shift for the auxilrary task #########
+            aux_states = vf_states
+            aux_next_states = vf_next_states
+            aux_phi = phi
+            aux_nphi = nphi
+
+            if self.aux_random_shift_prob > 0. and not (self.random_shift_prob > 0.):
+                print(
+                    'aux shift'
+                )
+                aux_states = random_shift(
+                    imgs=states,
+                    pad=self.aux_random_shift_pad,
+                    prob=self.aux_random_shift_prob,
+                )
+
+                aux_next_states = random_shift(
+                    imgs=next_states,
+                    pad=self.aux_random_shift_pad,
+                    prob=self.aux_random_shift_prob,
+                )
+
+                aux_phi = self.rep_net(aux_states)
+                aux_nphi = self.targets.rep_net(aux_next_states)
+            ######################################################
+            aux_loss = torch.zeros_like(loss)
+            for i, aux_net in enumerate(self.aux_nets):
+                states, actions, rewards, next_states, terminals = self.replay.sample()
+                _, unique_states_idx = np.unique(states, return_index=True,
+                                                 axis=0)  # ALERT: this doesn't match up with the random shift
+                states = self.cfg.state_normalizer(states)
+                # states = states[unique_states_idx]
+
+                ortho_phi = self.rep_net(states)
+
+                states, actions, rewards, next_states, terminals = self.replay.sample()
+                states = self.cfg.state_normalizer(states)
+                sim_states = self.cfg.state_normalizer(next_states)
+
+                sim_phi = self.rep_net(states)
+                sim_nphi = self.rep_net(sim_states)
+
+                ls = aux_net.compute_loss(ortho_phi, sim_phi, sim_nphi)
+                # print(loss, ls, self.aux_weights[i] * ls)
+                aux_loss += self.aux_weights[i] * ls
+
+        if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/loss/val_loss', loss.item(), self.total_steps)
+
+        loss += aux_loss
+
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
+
+        if self.cfg.use_target_network and self.total_steps % self.cfg.target_network_update_freq == 0:
+            self.targets.rep_net.load_state_dict(self.rep_net.state_dict())
+            self.targets.val_net.load_state_dict(self.val_net.state_dict())
+            for i, ant in enumerate(self.targets.aux_nets):
+                ant.load_state_dict(self.aux_nets[i].state_dict())
+
+
+
+
+class DQNDiversityAgent(DQNAuxAgent):
+    def update(self):
+
+        states, actions, rewards, next_states, terminals = self.replay.sample()
+        _, unique_states_idx = np.unique(states, return_index=True,
+                                         axis=0)  # CAREFUL: this doesn't match up with the random shift
+
+        # if len(unique_states_idx) < 6:
+        #     print(unique_states_idx)
+
+        unique_states_idx = np.arange(32)
+        states = self.cfg.state_normalizer(states)
+        next_states = self.cfg.state_normalizer(next_states)
+        actions = torch_utils.tensor(actions, self.cfg.device).long()
+
+        ######### Random shift for the value function #########
+        vf_states = states
+        vf_next_states = next_states
+        if self.random_shift_prob > 0.:
+            vf_states = random_shift(
+                imgs=states,
+                pad=self.random_shift_pad,
+                prob=self.random_shift_prob,
+            )
+
+            vf_next_states = random_shift(
+                imgs=next_states,
+                pad=self.random_shift_pad,
+                prob=self.random_shift_prob,
+            )
+        ######################################################
+
+        phi = self.rep_net(vf_states)
+
+        # Computing Loss for Value Function
+        q_vals = self.val_net(phi)
+        # q_next_vals = self.val_net(self.rep_net(vf_next_states))
+        q = q_vals[self.batch_indices, actions]
+        nphi = self.targets.rep_net(vf_next_states)
+        q_next_vals = self.targets.val_net(nphi).detach()
+        q_next = q_next_vals.max(1)[0]
+        terminals = torch_utils.tensor(terminals, self.cfg.device)
+        rewards = torch_utils.tensor(rewards, self.cfg.device)
+        target = self.cfg.discount * q_next * (1 - terminals).float()
+        target.add_(rewards.float())
+        loss = self.vf_loss(q, target)  # (q_next - q).pow(2).mul(0.5).mean()
+
+        ######### Random shift for the auxilrary task #########
+        aux_states = vf_states
+        aux_next_states = vf_next_states
+        aux_phi = phi
+        aux_nphi = nphi
+
+        if self.aux_random_shift_prob > 0. and not (self.random_shift_prob > 0.):
+            print(
+                'aux shift'
+            )
+            aux_states = random_shift(
+                imgs=states,
+                pad=self.aux_random_shift_pad,
+                prob=self.aux_random_shift_prob,
+            )
+
+            aux_next_states = random_shift(
+                imgs=next_states,
+                pad=self.aux_random_shift_pad,
+                prob=self.aux_random_shift_prob,
+            )
+
+            aux_phi = self.rep_net(aux_states)
+            aux_nphi = self.targets.rep_net(aux_next_states)
+        ######################################################
+
+        aux_loss = torch.zeros_like(loss)
+        for i, aux_net in enumerate(self.aux_nets):
+            # states, actions, rewards, next_states, terminals = self.replay.sample()
+            # _, unique_states_idx = np.unique(states, return_index=True, axis=0)  # ALERT: this doesn't match up with the random shift
+            # states = self.cfg.state_normalizer(states)
+            # states = states[unique_states_idx]
+            #
+            # phi = self.rep_net(states)
+
+            ls = aux_net.compute_loss(aux_phi[unique_states_idx], q_vals[unique_states_idx])
+            # print(loss, ls, self.aux_weights[i] * ls)
+            aux_loss += self.aux_weights[i] * ls
+
+        if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/loss/val_loss', loss.item(), self.total_steps)
+
+        loss += aux_loss
+
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
+
+        if self.cfg.use_target_network and self.total_steps % self.cfg.target_network_update_freq == 0:
+            self.targets.rep_net.load_state_dict(self.rep_net.state_dict())
+            self.targets.val_net.load_state_dict(self.val_net.state_dict())
+            for i, ant in enumerate(self.targets.aux_nets):
+                ant.load_state_dict(self.aux_nets[i].state_dict())
 
 
 class DQNNasAuxAgent(DQNAuxAgent):
@@ -361,12 +822,30 @@ class DQNAuxSuccessorAgent(DQNAuxAgent):
         states = self.cfg.state_normalizer(states)
         next_states = self.cfg.state_normalizer(next_states)
         actions = torch_utils.tensor(actions, self.cfg.device).long()
+        
+        ######### Random shift for the value function ######### 
+        vf_states = states
+        vf_next_states = next_states
+        if self.random_shift_prob > 0.:
+            vf_states = random_shift(
+                imgs=states,
+                pad=self.random_shift_pad,
+                prob=self.random_shift_prob,
+            )
 
-        phi = self.rep_net(states)
+            vf_next_states = random_shift(
+                imgs=next_states,
+                pad=self.random_shift_pad,
+                prob=self.random_shift_prob,
+            )
+        ###################################################### 
+
+
+        phi = self.rep_net(vf_states)
 
         # Computing Loss for Value Function
         q = self.val_net(phi)[self.batch_indices, actions]
-        nphi = self.targets.rep_net(next_states)
+        nphi = self.targets.rep_net(vf_next_states)
         q_next, action_next = self.targets.val_net(nphi).detach().max(1)
         terminals = torch_utils.tensor(terminals, self.cfg.device)
         rewards = torch_utils.tensor(rewards, self.cfg.device)
@@ -374,11 +853,35 @@ class DQNAuxSuccessorAgent(DQNAuxAgent):
         target.add_(rewards.float())
         loss = self.vf_loss(q, target)  # (q_next - q).pow(2).mul(0.5).mean()
 
+        ######### Random shift for the auxilrary task ######### 
+        aux_states = vf_states
+        aux_next_states = vf_next_states
+        aux_phi = phi
+        aux_nphi = nphi
+
+        if self.aux_random_shift_prob > 0. and not (self.random_shift_prob > 0.):
+            aux_states = random_shift(
+                imgs=states,
+                pad=self.aux_random_shift_pad,
+                prob=self.aux_random_shift_prob,
+            )
+
+            aux_next_states = random_shift(
+                imgs=next_states,
+                pad=self.aux_random_shift_pad,
+                prob=self.aux_random_shift_prob,
+            )
+
+            aux_phi = self.rep_net(aux_states)
+            aux_nphi = self.targets.rep_net(aux_next_states)
+        ###################################################### 
+
+
         # Computing Loss for Aux Tasks
         aux_loss = torch.zeros_like(loss)
         for i, aux_net in enumerate(self.aux_nets):
-            transition = (states, actions, rewards, next_states, terminals)
-            ls = aux_net.compute_loss(transition, phi, nphi, action_next)
+            transition = (aux_states, actions, rewards, aux_next_states, terminals)
+            ls = aux_net.compute_loss(transition, aux_phi, aux_nphi, action_next)
             # print(loss, ls, self.aux_weights[i] * ls)
             aux_loss += self.aux_weights[i] * ls
 

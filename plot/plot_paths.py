@@ -9,7 +9,8 @@ c_default = ["#332288","#88CCEE", "#4A7BB7", #"#0077BB", # purple, blue
              "#44AA99","#117733","#999933", #"#D9F0D3", # green
              "#DDCC77","#EE7733", # yellow
              "#CC6677","#882255", "#AA4499","#FEDA8B",#"#F4A582",#red
-             "#BBBBBB",  # grey
+             "#BBBBBB", # grey
+             "#F4A582"
              ]
 s_default = ["-", "--", ":"]
 m_default = ["o", "^"]
@@ -79,6 +80,24 @@ violin_colors = {
     "ReLU+ATC": c_default[11],
     
     "ReLU+divConstr": c_default[11],
+    "ReLU+ATC": c_default[13],
+    "ReLU+ATC delta=2": c_default[0],
+    "ReLU+ATC delta=3": c_default[1],
+    "ReLU+ATC delta=4": c_default[2],
+    "ReLU+ATC delta=5": c_default[3],
+
+    "ReLU+ATC shift-prob=0": c_default[0],
+    "ReLU+ATC shift-prob=0.01": c_default[1],
+    "ReLU+ATC shift-prob=0.1": c_default[2],
+    "ReLU+ATC shift-prob=0.2": c_default[3],
+    "ReLU+ATC shift-prob=0.3": c_default[4],
+
+    "ReLU+ATC encoder-size=8": c_default[0],
+    "ReLU+ATC encoder-size=16": c_default[1],
+    "ReLU+ATC encoder-size=32": c_default[2],
+    "ReLU+ATC encoder-size=64": c_default[3],
+    "ReLU+ATC encoder-size=128": c_default[4],
+
 
     "ReLU(L)": c_default[0],
     "ReLU(L)+VirtualVF1": c_default[2],
@@ -88,7 +107,7 @@ violin_colors = {
     "ReLU(L)+NAS": c_default[8],
     "ReLU(L)+Reward": c_default[9],
     "ReLU(L)+SF": c_default[10],
-    "ReLU(L)+ATC": c_default[11],
+    "ReLU(L)+ATC": c_default[13],
 
     "FTA": c_default[0],
     "FTA(no target)": c_default[0],
@@ -113,8 +132,9 @@ violin_colors = {
     "FTA+NAS": c_default[8],
     "FTA+Reward": c_default[9],
     "FTA+SF": c_default[10],
-    "FTA+ATC": c_default[11],
-    
+    "FTA+ATC": c_default[13],
+
+
     "Random": 'red',
     "Random(L)": 'red',
     "Input": 'brown',
@@ -157,6 +177,24 @@ curve_styles = {
     "ReLU+divConstr": s_default[1],
     "ReLU+ATC": s_default[1],
 
+    "ReLU+ATC delta=2": s_default[1],
+    "ReLU+ATC delta=3": s_default[1],
+    "ReLU+ATC delta=4": s_default[1],
+    "ReLU+ATC delta=5": s_default[1],
+
+    "ReLU+ATC shift-prob=0": s_default[1],
+    "ReLU+ATC shift-prob=0.01": s_default[1],
+    "ReLU+ATC shift-prob=0.1": s_default[1],
+    "ReLU+ATC shift-prob=0.2": s_default[1],
+    "ReLU+ATC shift-prob=0.3": s_default[1],
+
+    "ReLU+ATC encoder-size=8": s_default[1],
+    "ReLU+ATC encoder-size=16": s_default[1],
+    "ReLU+ATC encoder-size=32": s_default[1],
+    "ReLU+ATC encoder-size=64": s_default[1],
+    "ReLU+ATC encoder-size=128": s_default[1],
+
+
     "ReLU(L)": s_default[2],
     "ReLU(L)+VirtualVF1": s_default[2],
     "ReLU(L)+VirtualVF5": s_default[2],
@@ -166,7 +204,7 @@ curve_styles = {
     "ReLU(L)+Reward": s_default[2],
     "ReLU(L)+SF": s_default[2],
     "ReLU(L)+ATC": s_default[2],
-    
+
     "FTA": s_default[0],
     "FTA(no target)": s_default[0],
 
@@ -190,7 +228,7 @@ curve_styles = {
     "FTA+Color": s_default[0],
     "FTA+Control+XY+Color": s_default[0],
     "FTA+ATC": s_default[0],
-    
+
     "Random": s_default[0],
     "Random(L)": s_default[2],
     "Input": s_default[0],
@@ -221,6 +259,24 @@ marker_styles = {
         "ReLU+Reward": m_default[1],
         "ReLU+SF": m_default[1],
         "ReLU+divConstr": m_default[1],
+    "ReLU+ATC": m_default[1],
+
+    "ReLU+ATC delta=2": m_default[1],
+    "ReLU+ATC delta=3": m_default[1],
+    "ReLU+ATC delta=4": m_default[1],
+    "ReLU+ATC delta=5": m_default[1],
+
+    "ReLU+ATC shift-prob=0": m_default[1],
+    "ReLU+ATC shift-prob=0.01": m_default[1],
+    "ReLU+ATC shift-prob=0.1": m_default[1],
+    "ReLU+ATC shift-prob=0.2": m_default[1],
+    "ReLU+ATC shift-prob=0.3": m_default[1],
+
+    "ReLU+ATC encoder-size=8": m_default[1],
+    "ReLU+ATC encoder-size=16": m_default[1],
+    "ReLU+ATC encoder-size=32": m_default[1],
+    "ReLU+ATC encoder-size=64": m_default[1],
+    "ReLU+ATC encoder-size=128": m_default[1],
 
     "FTA": m_default[0],
     "FTA(no target)": m_default[0],
@@ -243,6 +299,7 @@ marker_styles = {
     "FTA+NAS": m_default[0],
     "FTA+Reward": m_default[0],
     "FTA+SF": m_default[0],
+    "FTA+ATC": m_default[0],
 
     "Random": m_default[0],
     "Input": m_default[0],
@@ -8107,4 +8164,884 @@ ghmg_transfer_last_sweep_v13 = [
     {"label": "Input",
      "control": "data/output/test_v13/gridhard/linear_vf/learning_scratch/goal_id_{}/input/sweep/",
      },
+]
+gh_nonlinear_fta_original_sweep_v13 = [
+    {"label": "FTA eta=0.8",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.8_sweep/",
+     "best": '2'
+    },
+    {"label": "FTA+Control1g",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/aux_control/sweep_1g/",
+     "best": '1'
+     },
+    {"label": "FTA+Control5g",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/aux_control/sweep_5g/",
+     "best": '1'
+     },
+    {"label": "FTA+XY",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/info/sweep/",
+     "best": '1'
+     },
+    {"label": "FTA+Decoder",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/input_decoder/sweep/",
+     "best": '1'
+     },
+    {"label": "FTA+NAS",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/nas_v2_delta/sweep/",
+     "best": '2'
+     },
+    {"label": "FTA+Reward",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/reward/sweep/",
+     "best": '2'
+     },
+    {"label": "FTA+SF",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/successor_as/sweep/",
+     "best": '2'
+     },
+]
+
+dqn_cl_maze_sweep = [
+#    {"label": "ReLU",
+#     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best"
+#     },
+    # {"label": "FTA eta=0.8",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_cl/sweep",
+    #  "best": "4"
+    #  },
+    {"label": "ReLU(L)+ATC",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_large",
+     "best": "28"
+     },
+    ]
+
+dqn_cl_maze_sweep_es_sweep = [
+
+    {"label": "ReLU+ATC encoder-size=8",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/sweep_hs_8",
+          "best": "27"
+
+     },
+    {"label": "ReLU+ATC encoder-size=16",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/sweep_hs_16",
+          "best": "1"
+     },
+    {"label": "ReLU+ATC encoder-size=32",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/sweep_hs_32",
+          "best": "1"
+},
+    # {"label": "ReLU+ATC encoder-size=64",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/sweep",
+    #  },
+    {"label": "ReLU+ATC encoder-size=128",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/sweep_hs_128",
+          "best": "22"
+},     
+]
+
+dqn_cl_maze_best_es_sweep = [
+
+    {"label": "ReLU+ATC encoder-size=8",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_hs_8",
+     "best": "27"
+ 
+     },
+    {"label": "ReLU+ATC encoder-size=16",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_hs_16",
+          "best": "1"
+
+     },
+
+    {"label": "ReLU+ATC encoder-size=32",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_hs_32",
+     "best": "1"
+     },
+     
+
+    {"label": "ReLU+ATC encoder-size=64",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best",
+     },
+    {"label": "ReLU+ATC encoder-size=128",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_hs_128",
+     },     
+]
+
+dqn_cl_maze_sweep_sp_sweep = [
+
+    {"label": "ReLU+ATC shift-prob=0",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/sweep_sp_0",
+     "best": "22"
+
+     },
+    {"label": "ReLU+ATC shift-prob=0.01",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/sweep_sp_0.01",
+    "best": "22"
+
+     },
+    # {"label": "ReLU+ATC shift-prob=0.1",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/sweep",
+    #  },
+    {"label": "ReLU+ATC shift-prob=0.2",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/sweep_sp_0.2",
+                    "best": "22"
+
+     },
+    {"label": "ReLU+ATC shift-prob=0.3",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/sweep_sp_0.3",
+               "best": "22"
+
+     },     
+]
+
+
+dqn_cl_maze_best_sp_sweep = [
+    {"label": "ReLU+ATC shift-prob=0",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_sp_0",
+     },
+    {"label": "ReLU+ATC shift-prob=0.01",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_sp_0.01",
+     },
+    {"label": "ReLU+ATC shift-prob=0.1",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best",
+     },
+    {"label": "ReLU+ATC shift-prob=0.2",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_sp_0.2",
+     },
+    {"label": "ReLU+ATC shift-prob=0.3",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_sp_0.3",
+     },     
+]
+
+
+
+dqn_cl_maze_best = [
+#    {"label": "ReLU",
+#     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best"
+#     },
+    # {"label": "FTA eta=0.8",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_cl/sweep",
+    #  "best": "4"
+    #  },
+    {"label": "FTA eta=0.8",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_delta_2",
+     "best": "2"
+     },
+    {"label": "FTA eta=0.6",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_delta_4",
+     "best": "22"
+     },
+    {"label": "FTA eta=0.4",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_delta_5",
+     "best": "27"
+     },
+    ]
+
+
+dqn_cl_linear_maze_sweep = [
+    {"label": "ReLU",
+     "control": "data/output/test_cl/gridhard/linear_vf/online_property/dqn_cl/sweep",
+     "best": "7"
+     },
+    {"label": "FTA eta=0.8",
+     "control": "data/output/test_cl/gridhard/linear_vf/online_property/dqn_fta_cl/sweep",
+     "best": "10"
+     },
+
+    ]
+
+dqn_cl_linear_maze_best = [
+    {"label": "ReLU",
+     "control": "data/output/test_cl/gridhard/linear_vf/online_property/dqn_cl/best",
+     "best": "7"
+     },
+    {"label": "FTA eta=0.8",
+     "control": "data/output/test_cl/gridhard/linear_vf/online_property/dqn_fta_cl/best",
+     "best": "10"
+     },
+
+    ]
+
+# dqn_cl_maze_best = [
+# #    {"label": "ReLU",
+# #     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best"
+# #     },
+#     {"label": "FTA eta=0.8",
+#      "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_cl/best",
+#      "best": "4"
+#      },
+#     ]
+dqn_cl_extra_maze_sweep = [
+    {"label": "ReLU",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl_extra/sweep",
+     },
+    ]
+dqn_cl_extra_maze_best = [
+    {"label": "ReLU",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/dqn_cl_extra/best",
+     },
+    ]
+
+
+dqn_maze_sweep = [
+    {"label": "ReLU",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn/sweep",
+     },
+    ]
+
+dqn_cl_transfer_maze_sweep = [
+    {"label": "ReLU_0",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_0/dqn_cl/sweep",
+    },
+    {"label": "ReLU_27",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_27/dqn_cl/sweep",
+    },
+    {"label": "ReLU_61",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_61/dqn_cl/sweep",
+    },
+    {"label": "ReLU_64",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_64/dqn_cl/sweep",
+    },
+    {"label": "ReLU_106",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_106/dqn_cl/sweep",
+    },
+    ]
+
+
+
+dqn_transfer_maze_sweep = [
+    {"label": "ReLU_0",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_0/dqn/sweep",
+    },
+    {"label": "ReLU_27",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_27/dqn/sweep",
+    },
+    {"label": "ReLU_61",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_61/dqn/sweep",
+    },
+    {"label": "ReLU_64",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_64/dqn/sweep",
+    },
+    {"label": "ReLU_106",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_106/dqn/sweep",
+    },
+    ]
+
+nonlinear_maze_atc_transfer_sweep = [
+    {"label": "ReLU+ATC",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep",
+#     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/", 3]
+     },
+    {"label": "FTA+ATC",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_cl/sweep",
+#     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/", 3]
+     },
+]
+
+linear_maze_atc_transfer_sweep = [
+    {"label": "ReLU+ATC",
+     "control": "data/output/test_cl/gridhard/linear_vf/transfer_new/goal_id_{}/dqn_cl/sweep",
+#     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/", 3]
+     },
+    {"label": "FTA+ATC",
+     "control": "data/output/test_cl/gridhard/linear_vf/transfer_new/goal_id_{}/dqn_fta_cl/sweep",
+#     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/", 3]
+     },
+]
+
+nonlinear_maze_atc_transfer_sweep_fa = [
+    {"label": "ReLU+ATC",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep",
+     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best", 0]
+     },
+     
+    {"label": "FTA+ATC",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_cl/sweep",
+     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_cl/best", 0]
+     },
+]
+
+
+nonlinear_maze_atc_transfer_sweep_fa_delta_sweep = [
+
+    {"label": "ReLU+ATC delta=2",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep_delta_2",
+     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_delta_2", 0]
+     },
+    {"label": "ReLU+ATC delta=3",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep",
+     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best", 0]
+     },
+    {"label": "ReLU+ATC delta=4",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep_delta_4",
+     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_delta_4", 0]
+     },
+    {"label": "ReLU+ATC delta=5",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep_delta_5",
+     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_delta_5", 0]
+     },
+     
+]
+
+
+nonlinear_maze_atc_transfer_sweep_fa_encode_size_sweep = [
+
+    # {"label": "ReLU+ATC encoder-size=8",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep_hs_8",
+    #  "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_hs_8", 0]
+    #  },
+    # {"label": "ReLU+ATC encoder-size=16",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep_hs_16",
+    #  "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_hs_16", 0]
+    #  },
+    {"label": "ReLU+ATC encoder-size=32",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep_hs_32",
+     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_hs_32", 0]
+     },
+    {"label": "ReLU+ATC encoder-size=64",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep",
+     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best", 0]
+     },
+    # {"label": "ReLU+ATC encoder-size=128",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep_hs_128",
+    #  "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_hs_128", 0]
+    #  },     
+]
+
+
+nonlinear_maze_atc_transfer_sweep_fa_shift_prob_sweep = [
+    {"label": "ReLU+ATC shift-prob=0",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep_sp_0",
+     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_sp_0", 0]
+     },
+    {"label": "ReLU+ATC shift-prob=0.01",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep_sp_0.01",
+     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_sp_0.01", 0]
+     },
+    {"label": "ReLU+ATC shift-prob=0.1",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep",
+     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best", 0]
+     },
+    {"label": "ReLU+ATC shift-prob=0.2",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep_sp_0.2",
+     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_sp_0.2", 0]
+     },
+    {"label": "ReLU+ATC shift-prob=0.3",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep_sp_0.3",
+     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_sp_0.3", 0]
+     },     
+]
+
+nonlinear_maze_atc_transfer_large_sweep = [
+    {"label": "ReLU(L)+ATC",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep_large",
+     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_large", 0]
+     }
+]
+
+
+nonlinear_maze_aug_sweep = [
+    # {"label": "ReLU+Aug",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aug/sweep",
+    #  "best": "2"
+    #  },
+     {"label": "ReLU+SR+Aug",
+      "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/successor_as/sweep_aug",
+          "best": '1'
+      },
+     {"label": "ReLU+SR+VFAug",
+      "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/successor_as/sweep_aug_vf",
+         "best": '2'
+      },
+    # {"label": "ReLU+SR+AuxAug",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/successor_as/sweep_aug_aux",
+    #  "best": "2"
+    #  },
+      {"label": "FTA eta=0.8",
+      "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aug/sweep",
+     "best": '2'
+    },
+]
+
+nonlinear_maze_aug_best = [
+    # {"label": "ReLU+Aug",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aug/best",
+    #  "best": "2"
+    #  },
+     {"label": "ReLU+SR+Aug",
+      "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/successor_as/best_aug",
+      },
+     {"label": "ReLU+SR+VFAug",
+      "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/successor_as/best_aug_vf",
+      },    
+      {"label": "FTA eta=0.8",
+      "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta/sweep",
+     "best": '2'
+    },
+    # {"label": "ReLU+SR+AuxAug",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/successor_as/best_aug_aux",
+    #  "best": "2"
+    #  },
+]
+
+
+nonlinear_maze_aug_transfer_sweep = [
+    {"label": "ReLU+ATC shift-prob=0.1",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aug/sweep",
+     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aug/best" , 0]
+     },  
+    {"label": "ReLU+ATC shift-prob=0.3",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_aux/successor_as/sweep_aug_aux",
+     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/successor_as/best_aug_aux" , 0]
+     },   
+]
+linear_maze_atc_sweep = [
+    {"label": "ReLU(L)+ATC",
+     "control": "data/output/test_cl/gridhard/linear_vf/online_property/dqn_cl/sweep_large",
+     "best": "8"
+#     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/", 3]
+     },
+]
+
+linear_maze_atc_best = [
+    {"label": "ReLU(L)+ATC",
+     "control": "data/output/test_cl/gridhard/linear_vf/online_property/dqn_cl/best_large",
+     "best": "8"
+#     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/", 3]
+     },
+]
+
+nonlinear_maze_ortho_sweep = [
+    {"label": "ReLU+ATC shift-prob=0.1",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_ortho/sweep_large_1",
+     "best": "2"
+     },
+    {"label": "ReLU+ATC shift-prob=0.2",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_ortho/sweep_large_0.1",
+     "best": "3"
+     },
+    {"label": "ReLU+ATC shift-prob=0.3",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_ortho/sweep_large_0.01",
+     "best": "3"
+     },
+    {"label": "ReLU+ATC shift-prob=0",
+      "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_ortho/sweep_large_0.001",
+     "best": '3'
+    },
+    {"label": "FTA eta=0.8",
+      "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_ortho/sweep_0.001",
+     "best": '2'
+    },
+]
+nonlinear_maze_transfer_ortho_sweep = [
+    {"label": "ReLU+ATC shift-prob=0.1",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_ortho/sweep_large_1",
+     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_ortho/best_large_1" , 0]
+     },
+    {"label": "ReLU+ATC shift-prob=0.2",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_ortho/sweep_0.001",
+     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_ortho/best_0.001" , 0]
+     },
+]
+
+nonlinear_maze_transfer_ftaa_sweep = [
+    {"label": "ReLU+ATC",
+     "control": "data/output/test_cl/gridhard/linear_vf/online_property/dqn_fta_cl/sweep",
+     "best": "0"
+     },
+
+]
+nonlinear_maze_laplacian_ortho_sweep = [
+     {"label": "ReLU+ATC",
+      "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best",
+      "best": "6"
+     },
+    #  {"label": "ReLU",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/orthogonality/best_v1",
+    #  "best": "21"
+    #  },
+    #  {"label": "ReLU+ATC",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/orthogonality/best_v2",
+    #  "best": "22"
+    #  },
+    # {"label": "ReLU+ATC shift-prob=0.1",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_ortho/best_large_1",
+    #  "best": "2"
+    #  },
+    # {"label": "ReLU+ATC shift-prob=0.2",
+    #   "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_ortho/best_0.001",
+    #  "best": '2'
+    # },
+    
+]
+
+
+nonlinear_maze_laplacian_ortho_sweep = [
+    {
+        "label": "ReLU+ATC",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_extend",
+        "best": "21"
+     },
+#      {
+#         "label": "ReLU",
+#         "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/sweep_large",
+#  #    "online_property": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best", 0],
+#         "best": "27"
+#     },
+]
+
+nonlinear_maze_diversity_sweep = [
+    # {
+    #     "label": "ReLU+ATC",
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/sweep",
+    #     "best": "21"
+    #  },
+    #  {"label": "ReLU",
+    #   "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aug/best",
+    #   "best": "21"
+    #  },
+    #  {"label": "ReLU",
+    #   "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/sweep_v1",
+    #   "best": "21"
+    #  },
+    #  {"label": "ReLU+ATC shift-prob=0",
+    #   "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/sweep_v2",
+    #   "best": "22"
+    #  },
+    # {"label": "ReLU+ATC shift-prob=0.01",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/sweep_v3",
+    #  "best": "2"
+    #  },
+    # {"label": "ReLU+ATC shift-prob=0.1",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/sweep_v4",
+    #  "best": '2'
+    # },
+    # {"label": "ReLU+ATC shift-prob=0.2",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/sweep_v5",
+    #  "best": '2'
+    #  },
+    # {"label": "ReLU+ATC shift-prob=0",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/sweep_v6",
+    #  "best": "27"
+    #  },
+    # {"label": "ReLU+ATC shift-prob=0.01",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/sweep_v7",
+    #  "best": "27"
+    #  },
+    # {"label": "ReLU+ATC shift-prob=0.1",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/sweep_v8",
+    #  "best": '27'
+    #  },
+    # {"label": "ReLU+ATC shift-prob=0.2",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/sweep_v9",
+    #  "best": '27'
+    #  },
+    {"label": "ReLU+ATC shift-prob=0",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/sweep_v6_small",
+     "best": "25"
+     },
+    {"label": "ReLU+ATC shift-prob=0.01",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/sweep_v7_small",
+     "best": "25"
+     },
+#      {
+#         "label": "ReLU",
+#         "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/sweep_large",
+#  #    "online_property": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best", 0],
+#         "best": "27"
+#     },
+]
+
+nonlinear_maze_diversity_best = [
+    # {
+    #     "label": "ReLU+ATC",
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/sweep",
+    #     "best": "21"
+    #  },
+    #  {"label": "ReLU",
+    #   "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aug/best",
+    #   "best": "21"
+    #  },
+    #  {"label": "ReLU",
+    #   "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/sweep_v1",
+    #   "best": "21"
+    #  },
+    #  {"label": "ReLU+ATC shift-prob=0",
+    #   "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/sweep_v2",
+    #   "best": "22"
+    #  },
+    # {"label": "ReLU+ATC shift-prob=0.01",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/sweep_v3",
+    #  "best": "2"
+    #  },
+    # {"label": "ReLU+ATC shift-prob=0.1",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/sweep_v4",
+    #  "best": '2'
+    # },
+    # {"label": "ReLU+ATC shift-prob=0.2",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/sweep_v5",
+    #  "best": '2'
+    #  },
+    # {"label": "ReLU+ATC shift-prob=0",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/best_v6",
+    #  "best": "27"
+    #  },
+    # {"label": "ReLU+ATC shift-prob=0.01",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/best_v7",
+    #  "best": "27"
+    #  },
+    # {"label": "ReLU+ATC shift-prob=0.1",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/best_v8",
+    #  "best": '27'
+    #  },
+    # {"label": "ReLU+ATC shift-prob=0.2",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/best_v9",
+    #  "best": '27'
+    #  },
+    {"label": "ReLU+ATC shift-prob=0",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/best_v6_small",
+     "best": "22"
+     },
+    {"label": "ReLU+ATC shift-prob=0.01",
+     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/best_v7_small",
+     "best": "2"
+     },
+#      {
+#         "label": "ReLU",
+#         "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/sweep_large",
+#  #    "online_property": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best", 0],
+#         "best": "27"
+#     },
+]
+
+nonlinear_maze_transfer_diversity_sweep = [
+    {
+        "label": "ReLU",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/diversity/sweep_v6_small",
+        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/sweep_v6_small", 0]
+    },
+    {
+        "label": "ReLU+ATC",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/diversity/sweep_v7_small",
+        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/sweep_v7_small",
+                           0]
+    },
+    {
+        "label": "ReLU+ATC shift-prob=0",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/diversity/sweep_v6",
+        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/sweep_v6", 0]
+    },
+    {
+        "label": "ReLU+ATC shift-prob=0.01",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/diversity/sweep_v7",
+        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/sweep_v7", 0]
+    },
+    {
+        "label": "ReLU+ATC shift-prob=0.1",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/diversity/sweep_v8",
+        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/sweep_v8", 0]
+    },
+    {
+        "label": "ReLU+ATC shift-prob=0.2",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/diversity/sweep_v9",
+        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/sweep_v9", 0]
+    },
+]
+
+nonlinear_maze_transfer_laplacian_ortho_sweep = [
+
+    {
+        "label": "ReLU+ATC",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_extend",
+        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_extend", 0]
+     },
+#      {
+#         "label": "ReLU",
+#         "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/sweep_large",
+#  #    "online_property": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best", 0],
+#         "best": "27"
+#     },
+]
+
+
+nonlinear_maze_online_ortho_diversity_sweep = [
+    {
+        "label": "ReLU",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/orthogonality/sweep",
+        "best": "23"
+    },
+    {
+        "label": "ReLU+ATC",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/sweep_extra",
+        "best": "17"
+    },
+]
+
+# best chosen based on the properties and not only the performance
+nonlinear_maze_online_property_ortho_diversity_sweep = [
+     {
+         "label": "ReLU",
+         "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/sweep_final",
+         # "best": "13"
+         "best": "8"
+     },
+    {
+        "label": "FTA+ATC",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/sweep_large_final",
+#        "best": "34",
+        "best": "39"
+    },
+    {
+        "label": "ReLU+ATC",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/orthogonality/sweep_large_final",
+        #"best": "13"
+         "best": "3"
+    },
+]
+
+# best chosen based on the properties and not only the performance
+#nonlinear_maze_online_property_ortho_diversity_best_property = [
+#    {
+#        "label": "ReLU",
+#        "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/orthogonality/best_property_final",
+#        #"best": "13"
+#         "best": "7"
+#    },
+#    {
+#        "label": "ReLU+ATC",
+#        "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_final",
+#        "best": "12"
+#    },
+#]
+nonlinear_maze_online_property_ortho_diversity_best_property = [
+     {
+         "label": "ReLU",
+         "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_final",
+         # "best": "13"
+         "best": "8"
+     },
+    {
+        "label": "FTA+ATC",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_large_final",
+#        "best": "34",
+        "best": "39"
+    },
+    {
+        "label": "ReLU+ATC",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/orthogonality/best_property_large_final",
+        #"best": "13"
+         "best": "3"
+    },
+]
+
+nonlinear_maze_transfer_ortho_diversity_sweep = [
+    {
+        "label": "ReLU",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/orthogonality/sweep",
+        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/orthogonality/best", 0],
+    },
+    {
+        "label": "ReLU+ATC",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_extra",
+        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_extra", 0],
+    },
+]
+
+nonlinear_maze_transfer_property_ortho_diversity_best_property = [
+     {
+         "label": "ReLU",
+         "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_property_final",
+         "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_final",
+                            0],
+         # "best": "13"
+         "best": "8"
+     },
+    {
+        "label": "FTA+ATC",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_property_large_final",
+        "online_measure": [
+            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_large_final",
+            0],
+    },
+    {
+        "label": "ReLU+ATC",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/orthogonality/sweep_property_large_final",
+        "online_measure": [
+            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/orthogonality/best_property_large_final",
+            0],
+    },
+    {
+        "label": "ReLU+ATC shift-prob=0",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/orthogonality/sweep_property_final",
+        "online_measure": [
+            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/orthogonality/best_property_final",
+            0],
+    },
+]
+
+
+nonlinear_maze_online_dynamic = [
+    {
+        "label": "ReLU+ATC",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dynamic_awareness/best_property",
+    },
+    {
+        "label": "FTA+ATC",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dynamic_awareness/best_property_large"
+    },
+  #  {"label": "ReLU",
+  #   "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn/sweep/",
+  #   "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/", 3]
+  #   },
+]
+
+nonlinear_maze_online_dyna_ortho_laplacian = [
+    {
+        "label": "ReLU+ATC",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dyna_ortho/best_property",
+        "best": "1"
+    },
+    {
+        "label": "FTA+ATC",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_finall",
+        "best": "42"
+    },
+  #  {"label": "ReLU",
+  #   "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn/sweep/",
+  #   "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/", 3]
+  #   },
+]
+
+
+nonlinear_maze_transfer_online_dynamic = [
+    # {
+    #     "label": "ReLU+ATC",
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/dynamic_awareness/sweep_property",
+    #     "online_measure": [
+    #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dynamic_awareness/best_property",
+    #         0],
+    # },
+    # {
+    #     "label": "FTA+ATC",
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/dynamic_awareness/sweep_large_property",
+    #     "online_measure": [
+    #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dynamic_awareness/best_large_property",
+    #         0],
+    # },
+    {
+        "label": "ReLU+ATC",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_property_finall",
+        "online_measure": [
+            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_finall",
+            0],
+    },
+    {
+        "label": "FTA+ATC",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/dyna_ortho/sweep_property",
+        "online_measure": [
+            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dyna_ortho/best_property",
+            0],
+    },
+  #  {"label": "ReLU",
+  #   "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn/sweep/",
+  #   "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/", 3]
+  #   },
 ]

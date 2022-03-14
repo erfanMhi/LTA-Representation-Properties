@@ -9,9 +9,11 @@ import seaborn as sns
 import torch
 import copy
 
+
 from core.agent import base
 from core.utils import torch_utils
 from core.utils.lipschitz import compute_lipschitz
+from core.utils.data_augs import random_shift
 
 
 class DQNAgent(base.Agent):
@@ -56,6 +58,11 @@ class DQNAgent(base.Agent):
         self.action = None
         self.next_state = None
 
+        self.random_shift_prob = cfg.random_shift_prob
+        self.random_shift_pad = cfg.random_shift_pad
+
+        self.ortho_loss_weight = cfg.ortho_loss_weight
+
         if self.cfg.evaluate_interference:
             self.ac_last_sample = None
             self.ac_last_td2 = None
@@ -72,7 +79,7 @@ class DQNAgent(base.Agent):
                 self.image_array.append(self.state)
 
             self.reset = False
-        
+         
         # with torch.no_grad():
         #     phi = self.rep_net(self.cfg.state_normalizer(self.state))
         #     q_values = self.val_net(phi)
@@ -89,7 +96,12 @@ class DQNAgent(base.Agent):
 #        print('state: ', next_state.shape)
 #        print('action: ', action)
 #        raise ValueError('Here')
-        self.replay.feed([self.state, action, reward, next_state, int(done)])
+#         print(self.ep_steps)
+#         print(self.timeout)
+#         if done or self.ep_steps+1 == self.timeout:
+#             print(self.ep_steps)
+#             print(done)
+        self.replay.feed([self.state, action, reward, next_state, int(done)], (bool(done) or self.ep_steps+1 == self.timeout))
         self.state = next_state
         # print('action: ', action)
         self.update_stats(reward, done)
@@ -120,7 +132,20 @@ class DQNAgent(base.Agent):
         next_states = self.cfg.state_normalizer(next_states)
 
         actions = torch_utils.tensor(actions, self.cfg.device).long()
+        if self.random_shift_prob > 0.:
 
+            states = random_shift(
+                imgs=states,
+                pad=self.random_shift_pad,
+                prob=self.random_shift_prob,
+            )
+
+            next_states = random_shift(
+                imgs=next_states,
+                pad=self.random_shift_pad,
+                prob=self.random_shift_prob,
+            )
+        
         if not self.cfg.rep_config['train_rep']:
             with torch.no_grad():
                 phi = self.rep_net(states)
@@ -128,6 +153,7 @@ class DQNAgent(base.Agent):
             phi = self.rep_net(states)
 
         q = self.val_net(phi)[self.batch_indices, actions]
+
 
         # Constructing the target
         with torch.no_grad():
@@ -142,6 +168,39 @@ class DQNAgent(base.Agent):
         constr = self.vf_constr(q, target, phi)
         loss += constr
 
+        ######### orthognality loss ##########
+        if self.ortho_loss_weight > 0:
+        #     s = states
+        #     reps = phi
+        #     # with torch.no_grad():
+        #     #     reps = agent.rep_net(s)
+        #     # Vincent's thesis
+        #     # reps = reps.detach().numpy()
+        #     reps_duplicate = reps.clone().detach()
+        #     dot_prod = torch.mm(reps, reps_duplicate.T)
+        #     norm = torch.linalg.norm(reps_duplicate, dim=1).reshape((-1, 1))
+        #     norm_prod = torch.mm(norm, norm.T)
+        #     if len(torch.where(norm_prod==0)[0]) != 0:
+        #         norm_prod[torch.where(norm_prod==0)] += 1e-05
+
+        #     normalized = torch.abs(torch.div(dot_prod, norm_prod))
+        #     normalized[torch.arange(normalized.shape[0]), torch.arange(normalized.shape[1])] = 0
+        #     rho = normalized.sum() / (normalized.shape[0] * (normalized.shape[0]-1))
+
+        #     loss += self.ortho_loss_weight*rho
+        # elif self.ortho_loss_weight < 0:
+            s = states
+            reps = phi
+            # with torch.no_grad():
+            #     reps = agent.rep_net(s)
+            # Vincent's thesis
+            # reps = reps.detach().numpy()
+            #reps_duplicate = reps.clone().detach()
+            dot_prod = torch.mm(reps, reps.T).pow(2)
+            dot_prod[torch.arange(dot_prod.shape[0]), torch.arange(dot_prod.shape[1])] = torch.sqrt(torch.diag(dot_prod)) * -1
+ 
+            loss += self.ortho_loss_weight * dot_prod.sum()
+        
         self.optimizer.zero_grad()
         loss.backward()
         # grad_list = []
@@ -332,7 +391,7 @@ class DQNAgent(base.Agent):
 
             with torch.no_grad():
                 values = self.val_net(self.rep_net(states)).max(dim=1)[0]
-            
+             
             # a plot with rows = num of goal-states and cols = 1
             fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(6, 6))
             max_x = max(state_coords, key=lambda xy: xy[0])[0]

@@ -4,7 +4,6 @@ import numpy as np
 import itertools
 from sklearn import ensemble, metrics
 # from sklearn.inspection import permutation_importance
-
 import matplotlib.pyplot as plt
 
 sys.path.insert(0, '..')
@@ -306,7 +305,7 @@ def property_scatter(property_keys, all_paths_dict, groups, title):
         else:
             axes[pi // nc][pi % nc].get_xaxis().set_visible(False)
     fig.tight_layout()
-    plt.savefig("plot/img/{}.pdf".format(title), dpi=300, bbox_inches='tight')
+    plt.savefig("plot/img/{}.png".format(title), dpi=300, bbox_inches='tight')
     print("Save in {}".format(title))
 
 def property_auc_goal(property_key, all_paths_dict, goal_ids, ranks, title,
@@ -519,13 +518,17 @@ def main():
         ranks[i] += 1
 
     goal_ids = [106, 111, 139, 154, 117, 98, 115, 71, 65, 52, 147, 63, 159, 60, 31, 18, 6, 1]
-    targets = ["ReLU+ATC", "FTA+ATC"]
-    groups = {
-        "ReLU+ATC": ["FTA+ATC",],
-        "FTA+ATC": ["ReLU+ATC",],
-    }
-    property_scatter(property_keys, label_filter(targets, nonlinear_maze_atc_transfer_sweep_fa), groups, "nonlinear/group-auxiliary")
+    targets = ["ReLU", "ReLU+ATC", "FTA+ATC"]
 
+    groups = {
+        "ReLU": ["ReLU",],
+        "ReLU+DynamicC": ["ReLU+ATC",],
+ #       "FTA+ATC": ["ReLU+ATC",],
+    }
+
+    property_keys.pop("return")
+    property_scatter(property_keys, label_filter(targets, nonlinear_maze_transfer_ortho_diversity_sweep), groups, "nonlinear/group-auxiliary")
+    return
     groups = {
         "ReLU": ["ReLU", "ReLU+Control1g", "ReLU+Control5g", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",],
         "ReLU(L)": ["ReLU(L)", "ReLU(L)+Control1g", "ReLU(L)+Control5g", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF",],

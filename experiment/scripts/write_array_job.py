@@ -156,7 +156,7 @@ def write_script(start_script, num_script, start_task=None, total_tasks=None, ta
 
 
 if __name__ == '__main__':
-    rep_learning([
+  rep_learning([
         # ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/fixrep_property/input/best.json"],
         # ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/fixrep_property/random/best.json"],
         # ["run_dqn", "config/test_v13/gridhard/linear_vf/fixrep_property/input/best.json"],

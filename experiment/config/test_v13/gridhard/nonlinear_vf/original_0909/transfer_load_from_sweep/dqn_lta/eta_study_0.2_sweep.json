@@ -1,0 +1,89 @@
+{
+    "config_class": "DQNAgentConfig",
+    "fixed_parameters": {
+        "exp_name": "test_v13/gridhard/nonlinear_vf/original_0909/transfer/dqn_lta/eta_study_0.2_sweep",
+        "env_name": "GridHardRGBGoalAll",
+        "agent": "DQNAgent",
+        "discount": 0.99,
+        "state_norm_coef": 255.0,
+
+        "decay_epsilon": false,
+        "epsilon": 0.1,
+
+        "rep_config": {
+            "rep_type": "modular",
+            "network_type": "conv",
+            "conv_architecture": {
+                "conv_layers": [
+                   {"in": 3,  "out": 32, "kernel": 4, "stride": 1, "pad": 1},
+                   {"in": 32,  "out": 16, "kernel": 4, "stride": 2, "pad": 2}
+                ]
+            },
+            "in_dim": [15, 15, 3],
+            "out_dim": 32,
+            "load_params": true,
+            "train_rep": false,
+            "path": "test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.2_sweep/{}_run/2_param_setting/parameters/rep_net_earlystop"
+        },
+
+        "val_fn_config": {
+            "val_fn_type": "fc",
+            "hidden_units": [64, 64],
+            "init_type": "xavier"
+        },
+
+        "replay": true,
+        "memory_size": 100000,
+        "batch_size": 32,
+
+        "optimizer_type": "Adam",
+        "use_target_network": true,
+        "target_network_update_freq": 64,
+
+        "max_steps": 100000,
+        "log_interval": 10000,
+        "eval_interval": 10000,
+        "eval_episodes": 5,
+        "save_interval": 0,
+        "timeout": 100,
+        "stats_queue_size": 100,
+
+        "save_early": {"mean": 1.0, "min": 1.0},
+
+        "online_property": false,
+        "tensorboard_logs": false,
+        "save_params": false,
+        "visualize": false,
+        "evaluate_lipschitz": false,
+        "evaluate_distance": false,
+        "evaluate_orthogonality": false,
+        "evaluate_interference": false,
+        "evaluate_diversity": false,
+        "evaluate_sparsity": false,
+        "distance_paths": [{"current": "../dataset/gridhard/random_dqn/distance_current_states.npy", "action": "../dataset/gridhard/random_dqn/distance_actions.npy", "next": "../dataset/gridhard/random_dqn/distance_next_states.npy", "reward": "../dataset/gridhard/random_dqn/distance_rewards.npy", "terminal": "../dataset/gridhard/random_dqn/distance_terminals.npy"}]
+    },
+    "sweep_parameters": {
+        "learning_rate": [0.001, 0.0003, 0.0001, 0.00003, 0.00001],
+        "activation_config": [
+            {
+                "name": "LTA",
+                "input": 32,
+                "tile": 20,
+                "eta": 0.2,
+                "bound_high": 2,
+                "bound_low": -2
+            }
+        ]
+    },
+    "generate": {
+        "goal_id": [106, 107, 108, 118, 119, 109, 120, 121, 128, 110, 111, 122, 123, 129, 130, 142, 143,
+            144, 141, 140, 139, 138, 156, 157, 158, 155, 170, 171, 172, 169, 154, 168, 153, 167, 152, 166,
+            137, 151, 165, 127, 117, 105, 99, 136, 126, 150, 164, 116, 104, 86, 98, 85, 84, 87, 83, 88, 89,
+            97, 90, 103, 115, 91, 92, 93, 82, 96, 102, 114, 81, 80, 71, 95, 70, 69, 68, 101, 67, 66, 113,
+            62, 65, 125, 61, 132, 47, 133, 79, 48, 72, 94, 52, 146, 73, 49, 33, 100, 134, 34, 74, 50, 147,
+            35, 112, 75, 135, 160, 36, 148, 76, 161, 63, 77, 124, 149, 78, 162, 163, 131, 53, 145, 159, 54,
+            55, 56, 57, 58, 59, 64, 51, 38, 60, 39, 40, 46, 41, 42, 43, 44, 45, 32, 31, 37, 30, 22, 21, 23,
+            20, 24, 19, 25, 18, 26, 17, 16, 27, 15, 28, 29, 7, 8, 6, 9, 5, 10, 4, 11, 3, 12, 2, 13, 1, 14, 0],
+        "goal_id_exp_name": "test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta/eta_study_0.2_sweep"
+    }
+}

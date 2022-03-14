@@ -300,7 +300,7 @@ class DQNAgent(base.Agent):
                   'Lipschitz: %.3f/%.5f/%.5f/%.5f/%.5f (upper/mean/median/min/max)'
         self.cfg.logger.info(log_str % (self.total_steps, len(self.episode_rewards), lipschitz_upper, mean, median, min, max))
 
-    def update_interference(self):
+    def update_interference(self, calc_accuracy_change=True):
         def td_square(rep_net, val_net, rep_target, val_target, samples):
             states, actions, next_states, rewards, terminals = samples
             with torch.no_grad():
@@ -322,13 +322,19 @@ class DQNAgent(base.Agent):
                                   self.targets.rep_net,
                                   self.targets.val_net,
                                   self.ac_last_sample)
+            
+            # print('delta2: ', delta2)
+            # print('self.ac_last_td2: ', self.ac_last_td2)
+
             return delta2 - self.ac_last_td2
 
-        if self.ac_last_sample is not None:
+        # print('calc_accuracy_change: ', calc_accuracy_change)
+        # print(self.ac_last_sample is not None and calc_accuracy_change)
+        if self.ac_last_sample is not None and calc_accuracy_change:
             ac = accuracy_change()
             ui = np.clip(ac.mean(), 0, np.inf) # average over samples
             self.update_interfs.append(ui)
-
+ 
         states, actions, next_states, rewards, terminals = self.cfg.eval_dataset.sample()
         states = self.cfg.state_normalizer(states)
         next_s = self.cfg.state_normalizer(next_states)
@@ -339,6 +345,10 @@ class DQNAgent(base.Agent):
                                     self.targets.rep_net,
                                     self.targets.val_net,
                                     self.ac_last_sample)
+        # if not calc_accuracy_change:
+        #     print(self.ac_last_td2)
+
+        # print('self.ac_last_td2: ', self.ac_last_td2)
 
     def iteration_interference(self):
         if len(self.update_interfs) > 0:

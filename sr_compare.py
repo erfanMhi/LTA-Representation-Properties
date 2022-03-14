@@ -73,14 +73,17 @@ def dist_between_goals_v0(dist2goal, states2d, goal, size, distance_fn):
 """
 Measure distance based on concatenated SRs
 """
-def dist_between_goals_v1(csrs, states2d, goal, size):
+def dist_between_goals_v1(csrs, states2d, goal, size, distance_fn=None):
     goals_dist = np.zeros(size)
     goal_idx = states2d.index(goal)
     goal_vec = csrs[goal_idx]
     for i in range(len(states2d)):
         s2d = states2d[i]
         # goals_dist[s2d] = cosinsimil(csrs[i], goal_vec)
-        goals_dist[s2d] = dotproddist(csrs[i], goal_vec)
+        if distance_fn is None:
+            goals_dist[s2d] = dotproddist(csrs[i], goal_vec)
+        else:
+            goals_dist[s2d] = distance_fn(csrs[i], goal_vec)
     return goals_dist
 
 def draw_sr_dist(dists, states2d, original_goal, size):
@@ -110,7 +113,7 @@ def draw_goal_dist(goals_dist, original, name):
     for k in range(goals_dist.shape[0]):
         for j in range(goals_dist.shape[1]):
             if goals_dist[k, j] != 0:
-                plt.text(j, k, "{:1.1f}".format(goals_dist[k, j]),
+                plt.text(j, k, "{:1.4f}".format(goals_dist[k, j]),
                          ha="center", va="center", color="orange")
     plt.text(original[1], original[0], "O",
              ha="center", va="center", color="black")
@@ -142,11 +145,19 @@ def rank_goals(goals_dist, original, name, reversed=False, all_goals=None):
 
     if all_goals:
         ranks = {}
+        id2coord = {}
         for i, goal in enumerate(all_goals):
             ranks[i] = rank[goal[0], goal[1]]
+            id2coord[i] = goal
+            print(i, goal, ranks[i])
+
         savepath = "data/dataset/gridhard/srs/goal{}_simrank.npy".format(original)
         np.save(savepath, ranks)
         print("Save rank in {}".format(savepath))
+
+        savepath = "data/dataset/gridhard/srs/goal{}_id2coord.npy".format(original)
+        np.save(savepath, id2coord)
+        print("Save coord in {}".format(savepath))
 
 def concatenate_srs(srs):
     csrs = np.zeros((len(srs), np.prod(srs.shape[1:])))
@@ -207,5 +218,27 @@ def main(metrics = "l2"):
     #     draw_goal_dist(goals_dist, (9, 9), "plot/img/fixstart{}.png".format(states2d[fs]))
     #     rank_goals(goals_dist, (9, 9), "plot/img/fixstartrank{}.png".format(states2d[fs]), reversed=True)
 
+def rank_by_value():
+    vmax = load_file(path='data/dataset/gridhard/srs/gridhard_vmax.npy')
+    states2d, size = all_goals_2d()
+
+    goals_dist = np.zeros(size)
+    goal_idx = states2d.index((9,9))
+    for i in range(len(states2d)):
+        s2d = states2d[i]
+        goals_dist[s2d] = vmax[i]
+    s2d_goal = states2d[goal_idx]
+    goals_dist[s2d_goal] = goals_dist.max()+0.1
+    draw_goal_dist(goals_dist, (9, 9), "plot/img/vmax_simil.png")
+    rank_goals(goals_dist, (9, 9), "plot/img/vmax_similrank.png", reversed=True, all_goals=states2d)
+
+    # vs = load_file(path='data/dataset/gridhard/srs/gridhard_vs.npy')
+    # states2d, size = all_goals_2d()
+    #
+    # goals_dist = dist_between_goals_v1(vs, states2d, (9,9), size, distance_fn=l2dist)
+    # draw_goal_dist(goals_dist, (9, 9), "plot/img/vs_simil.png")
+    # rank_goals(goals_dist, (9, 9), "plot/img/vs_similrank.png", reversed=True, all_goals=states2d)
+
 if __name__ == '__main__':
-    main("l2")
+    main("dot")
+    # rank_by_value()

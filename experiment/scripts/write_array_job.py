@@ -134,15 +134,16 @@ def write_script(start_script, num_script, start_task=None, total_tasks=None, ta
              "#SBATCH --mail-type=ALL\n",
              "#SBATCH --mail-user=han8@ualberta.ca\n",
              "#SBATCH --nodes={}\n".format(min_node),
-             "#SBATCH --ntasks={}\n".format(parallel),
+             "#SBATCH --ntasks-per-node={}\n".format(parallel),
              "#SBATCH --cpus-per-task=1\n",
              "#SBATCH --time={}:55:00\n".format(hours-1),
-             "#SBATCH --mem-per-cpu=4G\n",
+             "#SBATCH --mem-per-cpu=4000M\n",
+             # "#SBATCH --mem={}M\n".format(4000*parallel),
              "#SBATCH --job-name lta{}\n".format(fi),
              "#SBATCH --output=out.txt\n",
              "#SBATCH --error=err.txt\n",
 
-             "chmod +x tasks*\n",
+             # "chmod +x tasks*\n",
              "cd $SLURM_SUBMIT_DIR/../../\n",
              "export OMP_NUM_THREADS=1\n",
              "source $HOME/{}/bin/activate\n".format(virt_env),
@@ -155,6 +156,47 @@ def write_script(start_script, num_script, start_task=None, total_tasks=None, ta
 
 
 if __name__ == '__main__':
+    # rep_learning([
+    #     # ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/fixrep_property/input/best.json"],
+    #     # ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/fixrep_property/random/best.json"],
+    #     # ["run_dqn", "config/test_v13/gridhard/linear_vf/fixrep_property/input/best.json"],
+    #     # ["run_dqn", "config/test_v13/gridhard/linear_vf/fixrep_property/random/best.json"],
+    #
+    #     ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/best.json"],
+    #     ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/aux_control/best_1g.json"],
+    #     ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/aux_control/best_5g.json"],
+    #     ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/info/best.json"],
+    #     ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/reward/best.json"],
+    #     ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/input_decoder/best.json"],
+    #     ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/nas_v2_delta/best.json"],
+    #     ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/successor_as/best.json"],
+    #     ["run_dqn_ul", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_cl/best.json"],
+    #
+    #     ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.2_best.json"],
+    #     ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.4_best.json"],
+    #     ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.6_best.json"],
+    #     ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.8_best.json"],
+    #     ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/aux_control/best_1g.json"],
+    #     ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/aux_control/best_5g.json"],
+    #     ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/info/best.json"],
+    #     ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/reward/best.json"],
+    #     # ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/input_decoder/best.json"],
+    #     # ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/nas_v2_delta/best.json"],
+    #     # ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/successor_as/best.json"],
+    #     # ["run_dqn_ul", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_cl/best.json"],
+    #
+    #     ["run_dqn", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large/best.json"],
+    #     ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/aux_control/best_1g.json"],
+    #     ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/aux_control/best_5g.json"],
+    #     ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/info/best.json"],
+    #     ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/reward/best.json"],
+    #     # ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/input_decoder/best.json"],
+    #     # ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/nas_v2_delta/best.json"],
+    #     # ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/successor_as/best.json"],
+    #     # ["run_dqn_ul", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_cl/best.json"],
+    #
+    # ], prev_file=0, line_per_file=1, num_run=5, device=0) # 1 per 8 hours
+
     rep_learning([
         # ["run_dqn_ul", "config/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/sweep_hs_8.json"],
         # ["run_dqn_ul", "config/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/sweep_hs_16.json"],
@@ -182,13 +224,24 @@ if __name__ == '__main__':
       #  ["run_dqn", "config/test_cl/gridhard/nonlinear_vf/online_property/dqn_ortho/sweep_0.01.json"],
 #        ["run_dqn", "config/test_cl/gridhard/nonlinear_vf/online_property/dqn_aug/sweep.json"],
 #        ["run_dqn_aux", "config/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/sweep_finall.json"],
-        ["run_dqn_aux", "config/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dynamic_awareness/sweep_uniform.json"],
+     #   ["run_dqn_aux", "config/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dynamic_awareness/sweep_uniform.json"],
         #       ["run_dqn_aux", "config/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/successor_as/sweep_aug_vf.json"],
  #       ["run_dqn_aux", "config/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/successor_as/sweep_aug_aux.json"],
 #        ["run_dqn_ul", "config/test_cl/gridhard/linear_vf/online_property/dqn_fta_cl/best.json"],
-    ], prev_file=0, line_per_file=1, num_run=5, device=0) # 1 per 8 hours
+#    ], prev_file=0, line_per_file=1, num_run=5, device=0) # 1 per 8 hours
 #    rep_learning([
 #        ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/input_decoder/sweep.json"],
 #        ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/nas_v2_delta/sweep.json"],
 #        ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/successor_as/sweep.json"],
 #    ], prev_file=400, line_per_file=3, num_run=5, device=1) # 1 per 8 hours
+        ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/input_decoder/best.json"],
+        ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/nas_v2_delta/best.json"],
+        ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/successor_as/best.json"],
+        ["run_dqn_ul", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_cl/best.json"],
+
+        ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/input_decoder/best.json"],
+        ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/nas_v2_delta/best.json"],
+        ["run_dqn_aux", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/successor_as/best.json"],
+        ["run_dqn_ul", "config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_cl/best.json"],
+
+    ], prev_file=110, line_per_file=3, num_run=5, device=1)

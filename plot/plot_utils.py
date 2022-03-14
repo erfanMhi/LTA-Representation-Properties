@@ -34,13 +34,13 @@ def perform_filter(controls, properties, perc):
     ctarget, ptarget = controls[target], properties[target]
     return ctarget, ptarget
 
-def property_filter(allg_transf_perf, allp_properties, perc):
+def property_filter(allg_transf_perf, allp_properties, perc, rank):
     """
     allg_transf_perf = {goal: {rep : {run: x}}}
     allp_properties = {property: {rep : {run: x}}}
     perc = {property: [low, high]}
     """
-    def filter(properties, perc):
+    def filter_perc(properties, perc):
         concate = []
         keys = []
         for rep in properties.keys():
@@ -55,12 +55,40 @@ def property_filter(allg_transf_perf, allp_properties, perc):
         print("\nProperty threshold {} - {}\n".format(low, high))
         return getkeys
 
-    if perc is None:
+    def filter_rank(properties, rank):
+        concate = []
+        keys = []
+        for rep in properties.keys():
+            for run in properties[rep].keys():
+                concate.append(properties[rep][run])
+                keys.append((rep, run))
+        sorted_conc = np.array(concate)
+        sorted_conc.sort()
+        concate = np.array(concate)
+        low = sorted_conc[rank[0]]
+        high = sorted_conc[min(len(concate)-1, rank[1])]
+        idx = np.where((concate>=low) & (concate<=high))[0]
+        # print(concate)
+        # print(idx)
+        # input()
+        getkeys = [keys[i] for i in idx]
+        print("\nProperty threshold {} - {}\n".format(low, high))
+        return getkeys
+
+    if perc is None and rank is None:
         return allg_transf_perf, allp_properties
-    for pk in perc:
+    assert not ((perc is not None) and (rank is not None))
+    notnone = perc if perc is not None else rank
+    for pk in notnone:
         new_trans = {}
         new_prop = {}
-        reprun_keys = filter(allp_properties[pk], perc[pk])
+        if rank is not None and perc is None:
+            reprun_keys = filter_rank(allp_properties[pk], rank[pk])
+        elif rank is None and perc is not None:
+            reprun_keys = filter_perc(allp_properties[pk], perc[pk])
+        else:
+            raise NotImplementedError
+
         for goal in allg_transf_perf.keys():
             new_trans[goal] = {}
         for prop in allp_properties.keys():
@@ -162,11 +190,13 @@ def load_info(paths, param, key, label=None, path_key="control"):
     return all_rt
 
 # def load_return(paths, total_param, start_param):
-def load_return(paths, setting_list, search_lr=False, key="return"):
+def load_return(paths, setting_list, search_lr=False, key="return", path_key="control"):
     all_rt = {}
     for i in paths:
-        path = i["control"]
+        path = i[path_key]
         # print("Loading returns from", path)
+        if search_lr and type(path) == list:
+            path = path[0]
         returns = extract_return_all(path, setting_list, search_lr=search_lr, key=key)#total_param, start_param)
         all_rt[i["label"]] = returns
     return all_rt
@@ -179,15 +209,28 @@ def get_avg(all_res):
     ste = std / np.sqrt(all_res.shape[0])
     return mu, ste
 
-def draw_curve(all_res, ax, label, color=None, style="-", alpha=1, linewidth=1.5, draw_ste=True):
+def draw_curve(all_res, ax, label, color=None, style="-", alpha=1, linewidth=1.5, draw_ste=True, xcoord=None, break_point=None):
     if len(all_res) == 0:
         return None
     mu, ste = get_avg(all_res)
-    if color is None:
-        p = ax.plot(mu, label=label, alpha=alpha, linestyle=style, linewidth=linewidth)
-        # color = p.get_color()
+    if xcoord is None:
+        xcoord = list(range(1, len(mu)+1))
+    if break_point is None:
+        if color is None:
+            p = ax.plot(xcoord, mu, label=label, alpha=alpha, linestyle=style, linewidth=linewidth)
+            # color = p.get_color()
+        else:
+            ax.plot(xcoord, mu, label=label, color=color, alpha=alpha, linestyle=style, linewidth=linewidth)
     else:
-        ax.plot(mu, label=label, color=color, alpha=alpha, linestyle=style, linewidth=linewidth)
+        if color is None:
+            p = ax.plot(xcoord[:break_point], mu[:break_point], label=label, alpha=alpha, linestyle=style, linewidth=linewidth)
+            p = ax.plot(xcoord[break_point:], mu[break_point:], label=label, alpha=alpha, linestyle=style, linewidth=linewidth)
+            # color = p.get_color()
+        else:
+            ax.plot(xcoord[:break_point], mu[:break_point], label=label, color=color, alpha=alpha, linestyle=style, linewidth=linewidth)
+            ax.plot(xcoord[break_point-1:], mu[break_point-1:], label=label, color='#353839', alpha=alpha, linestyle=style, linewidth=linewidth)
+            ax.plot(xcoord[break_point-1:break_point], mu[break_point-1:break_point], marker="o", markersize=1.5, markeredgecolor=color, markerfacecolor=color)
+            print(xcoord[break_point:break_point+1], mu[break_point:break_point+1])
     if draw_ste:
         ax.fill_between(list(range(len(mu))), mu - ste * 2, mu + ste * 2, color=color, alpha=0.1, linewidth=0.)
     print(label, "auc =", np.sum(mu))
@@ -197,7 +240,55 @@ def draw_cut(cuts, all_res, ax, color, ymin):
     mu = all_res.mean(axis=0)
     x_mean = cuts.mean()
     x_max = cuts.max()
+    # print('x_max: ', x_max)
+    # print('mu: ', mu)
+    # print(len(mu))
+    # print('x_max_onward: ', mu[int(x_max):])
     ax.vlines(x_max, ymin, np.interp(x_max, list(range(len(mu))), mu), ls=":", colors=color, alpha=0.5, linewidth=1)
+
+def is_converged(cuts, all_res, err_interval=0.04):
+    """
+    Checks whether the property line converged after the cut (early-stopping moment)
+    """
+    mu = all_res.mean(axis=0)
+    x_max = cuts.max()
+    # print('x_max: ', x_max)
+    # print('mu: ', mu)
+    # print(len(mu))
+    # print('x_max_onward: ', mu[int(x_max):])
+    conv_point = mu[int(x_max)]
+    if x_max > 10:
+        print('x_max: ', x_max)
+    
+    # print(mu)
+    for point in mu[int(x_max):]:
+        if conv_point - err_interval <= point <= conv_point + err_interval:
+            continue
+        else:
+            return False
+    return True
+
+def convergence_intensity(cuts, all_res):
+    """
+    Checks whether the property line converged after the cut (early-stopping moment)
+    """
+    mu = all_res.mean(axis=0)
+    x_max = cuts.max()
+    # print('x_max: ', x_max)
+    # print('mu: ', mu)
+    # print(len(mu))
+    # print('x_max_onward: ', mu[int(x_max):])
+    conv_point = mu[int(x_max)]
+    if x_max > 10:
+        print('x_max: ', x_max)
+    
+    # print(mu)
+    intensity = 0
+    for point in mu[int(x_max):]:
+        intensity += np.abs(conv_point-point)
+    return intensity 
+
+
 
 def extract_from_single_run(file, key, label=None, before_step=None):
     with open(file, "r") as f:
@@ -451,12 +542,11 @@ def extract_property_setting(path, setting, file_name, keyword):
                 all_runs[int(file.split("_run")[0].split("/")[-1])] = value
     return all_runs
 
-def load_online_property(group, target_key, reverse=False, normalize=False, cut_at_step=None, p_label=None):
+def load_online_property(group, target_key, reverse=False, normalize=False, cut_at_step=None, p_label=None, fixed_rep=False):
     all_property = {}
     temp = []
     for i in group:
         cas = cut_at_step[i["label"]] if cut_at_step else None
-
         if target_key in ["return"]:
             path = i["control"]
             if type(path) == list:
@@ -470,19 +560,28 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
                 values[run] = np.array(returns[run]).sum()
 
         elif target_key in ["interf"]:
-            path = i["online_measure"]
-            if type(path) == list:
-                setting = path[1]
-                path = path[0]
+            if fixed_rep:
+                path = i["fixrep_measure"]
+                if type(path) == list:
+                    setting = path[1]
+                    path = path[0]
+                else:
+                    setting = 0
+                values, _ = extract_from_setting(path, setting, target_key, final_only=True)
             else:
-                setting = 0
-            returns, _ = extract_from_setting(path, setting, target_key, final_only=False, cut_at_step=cas)
-            values = {}
-            for run in returns:
-                t = np.array(returns[run])[1:] # remove the first measure, which is always nan
-                pct = np.percentile(t, 90)
-                target_idx = np.where(t >= pct)[0]
-                values[run] = np.mean(t[target_idx]) # average over the top x percentiles only
+                path = i["online_measure"]
+                if type(path) == list:
+                    setting = path[1]
+                    path = path[0]
+                else:
+                    setting = 0
+                returns, _ = extract_from_setting(path, setting, target_key, final_only=False, cut_at_step=cas)
+                values = {}
+                for run in returns:
+                    t = np.array(returns[run])[1:] # remove the first measure, which is always nan
+                    pct = np.percentile(t, 90)
+                    target_idx = np.where(t >= pct)[0]
+                    values[run] = np.mean(t[target_idx]) # average over the top x percentiles only
 
         else:
             path = i["online_measure"]
@@ -499,15 +598,31 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
             temp.append(values[run])
 
     if reverse or normalize:
-        mx = np.max(np.array(temp))
-        mn = np.min(np.array(temp))
+        outlier_remove = False
+        # mx = np.max(np.array(temp))
+        # mn = np.min(np.array(temp))
+        # print(target_key, mn, mx)
+        # if target_key == "interf":
+        #     srt = np.array(temp).argsort()
+        #     mx = np.array(temp)[srt[-2]]
         for i in group:
             for run in all_property[i["label"]]:
                 ori = all_property[i["label"]][run]
-                if reverse:
-                    all_property[i["label"]][run] = 1.0 - (ori - mn) / (mx - mn)
                 if normalize:
+                    mn, mx = normalize_prop[target_key]
+                    
+                if normalize and reverse:
+                    all_property[i["label"]][run] = 1.0 - (ori - mn) / (mx - mn)
+                elif normalize:
                     all_property[i["label"]][run] = (ori - mn) / (mx - mn)
+                elif reverse:
+                    all_property[i["label"]][run] = 1.0 - ori#(ori - mn) / (mx - mn)
+                # # print(target_key, ori, mn, mx, all_property[i["label"]][run])
+                # if target_key == "interf" and all_property[i["label"]][run] <= 0:
+                #     base = [i["label"], run]
+                #     outlier_remove = True
+        # if outlier_remove:
+        #     del all_property[base[0]][base[1]]
 
     return all_property
 
@@ -574,18 +689,30 @@ def box_plot(ax1, color, data, xpos, width):
     bp = ax1.boxplot(data, positions=xpos, widths=width, patch_artist=True)
     set_box_color(bp, color=color)
 
-def draw_label(targets, save_path, ncol, emphasize=None):
+def draw_label(targets, save_path, ncol, emphasize=None, with_style=True, with_color=True):
+    def get_linestyle(label):
+        linestyle = curve_styles[label] if with_style else s_default[0]
+        return linestyle
+
+    def get_color(label):
+        color = violin_colors[label] if with_color else "C0"
+        return color
+
     plt.figure(figsize=(0.1, 2))
     if emphasize:
         for label in emphasize:
-            plt.plot([], color=violin_colors[label], linestyle=curve_styles[label], label=label, alpha=1, linewidth=2)
+            plt.plot([], color=get_color(label), linestyle=get_linestyle(label), label=label, alpha=1, linewidth=2)
     for label in targets:
-        if emphasize and label not in emphasize:
-            plt.plot([], color=violin_colors[label], linestyle=curve_styles[label], label=label, alpha=0.4)
-        elif emphasize and label in emphasize:
-            pass
+        if type(label) == dict:
+            key = list(label.keys())[0]
+            plt.plot([], color=label[key][0], linestyle=label[key][1], label=key)
         else:
-            plt.plot([], color=violin_colors[label], linestyle=curve_styles[label], label=label)
+            if emphasize and label not in emphasize:
+                plt.plot([], color=get_color(label), linestyle=get_linestyle(label), label=label, alpha=0.4)
+            elif emphasize and label in emphasize:
+                pass
+            else:
+                plt.plot([], color=get_color(label), linestyle=get_linestyle(label), label=label)
     plt.axis('off')
     plt.legend(ncol=ncol)
     plt.savefig("plot/img/{}.pdf".format(save_path), dpi=300, bbox_inches='tight')
@@ -605,7 +732,7 @@ def exp_smooth(ary, alpha):
         # print(alpha, new[i-1:i+1], ary[i])
     return new
 
-def load_property(all_groups, property_key=None, perc=None, relationship=None, targets=[], early_stopped=False, p_label=None):
+def load_property(all_groups, property_key=None, perc=None, relationship=None, targets=[], early_stopped=False, p_label=None, fix_rep=False):
     if len(targets) > 0:
         temp = []
         for g in all_groups:
@@ -618,8 +745,10 @@ def load_property(all_groups, property_key=None, perc=None, relationship=None, t
     all_groups, all_group_dict = merge_groups(all_groups)
     # print(all_groups, "\n\n", all_group_dict, "\n")
     reverse = True if property_key in ["lipschitz", "interf"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
+    normalize = True if property_key in ["lipschitz", "interf"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
+    # normalize = True if property_key in ["lipschitz"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
     model_saving = load_info(all_group_dict, 0, "model", path_key="online_measure") if early_stopped else None
-    properties = load_online_property(all_group_dict, property_key, reverse=reverse, cut_at_step=model_saving, p_label=p_label)
+    properties = load_online_property(all_group_dict, property_key, reverse=reverse, normalize=normalize, cut_at_step=model_saving, p_label=p_label, fixed_rep=fix_rep)
 
     return properties, all_group_dict
 
@@ -648,10 +777,19 @@ def correlation_calc(all_group_dict, control, properties, perc=None, relationshi
 
 def correlation_load(all_paths_dict, goal_ids, total_param=None, xlim=[],
                      property_keys = {"lipschitz": "Complexity Reduction", "distance": "Dynamics Awareness", "ortho": "Orthogonality", "interf":"Noninterference", "diversity":"Diversity", "sparsity":"Sparsity"},
-                     property_perc = None):
+                     property_perc = None, property_rank = None, get_overall=False):
     labels = [i["label"] for i in all_paths_dict]
 
-    all_goals_auc = pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels)
+    # all_goals_auc = pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels)
+    pklfile = "plot/temp_data/all_goals_auc_{}.pkl".format(property_key)
+    if os.path.isfile(pklfile):
+        with open(pklfile, "rb") as f:
+            all_goals_auc = pickle.load(f)
+        print("Load from {}".format(pklfile))
+    else:
+        all_goals_auc = pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels)
+        with open(pklfile, "wb") as f:
+            pickle.dump(all_goals_auc, f)
 
     formated_path = {}
     for goal in goal_ids:
@@ -672,24 +810,44 @@ def correlation_load(all_paths_dict, goal_ids, total_param=None, xlim=[],
         transf_perf, temp_lables = load_property([formated_path[goal]], property_key="return", early_stopped=True)
         allg_transf_perf[goal] = copy.deepcopy(transf_perf)
 
-    allg_transf_perf, allp_properties = property_filter(allg_transf_perf, allp_properties, property_perc)
+    allg_transf_perf, allp_properties = property_filter(allg_transf_perf, allp_properties, property_perc, property_rank)
     filtered_lables = []
     for obj in temp_lables:
         if obj["label"] in allg_transf_perf[106].keys():
             filtered_lables.append(obj)
 
     all_goals_cor = {}
+    overall_cor = {}
     for pk in property_keys.keys():
         all_goals_cor[pk] = {}
+
+        avg_transf_perf = {}
+        for rep in allg_transf_perf[106].keys():
+            avg_transf_perf[rep] = {}
+            for run in allg_transf_perf[106][rep].keys():
+                avg_transf_perf[rep][run] = []
+
         for goal in goal_ids:
             cor = correlation_calc(filtered_lables, allg_transf_perf[goal], allp_properties[pk], perc=None, relationship=None)
             all_goals_cor[pk][goal] = cor
-
+            for rep in allg_transf_perf[goal].keys():
+                for run in allg_transf_perf[goal][rep].keys():
+                    avg_transf_perf[rep][run].append(allg_transf_perf[goal][rep][run])
+        
+        for rep in allg_transf_perf[106].keys():
+            for run in allg_transf_perf[106][rep].keys():
+                ary = np.array(avg_transf_perf[rep][run])
+                avg_transf_perf[rep][run] = np.mean(ary)
+        overall_cor[pk] = correlation_calc(filtered_lables, avg_transf_perf, allp_properties[pk], perc=None, relationship=None)
+        
+    if get_overall:
+        return all_goals_cor, overall_cor, property_keys
     return all_goals_cor, property_keys
 
-def pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels, top_runs=[0, 1.0]):
+def pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels, top_runs=[0, 1.0], get_each_run=False):
 
     all_goals_auc = {}
+    all_goals_independent = {}
     for goal in goal_ids:
         print("Loading auc from goal id {}".format(goal))
         single_goal_paths_dict = copy.deepcopy(all_paths_dict)
@@ -698,6 +856,7 @@ def pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels, top_run
         control = load_return(single_goal_paths_dict, total_param, search_lr=True)  # , start_param)
 
         rep_auc = {}
+        independent_run = {}
         for idx, label in enumerate(labels):
             print("\n", idx, label)
             all_params = control[label]
@@ -737,9 +896,12 @@ def pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels, top_run
             best_auc = np.average(take_runs, axis=0).sum()
 
             rep_auc[label] = [best_auc, best_param_folder, best_param]
+            independent_run[label] = take_runs
             print("{}, best param {}".format(label, best_param))
         all_goals_auc[goal] = rep_auc
-
+        all_goals_independent[goal] = independent_run
+    if get_each_run:
+        return all_goals_auc, all_goals_independent
     return all_goals_auc
 
 def label_filter(targets, all_paths):
@@ -749,3 +911,19 @@ def label_filter(targets, all_paths):
             filtered.append(item)
     return filtered
 
+def align_yaxis(ax1, v1, ax2, v2):
+    """adjust ax2 ylimit so that v2 in ax2 is aligned to v1 in ax1"""
+    # _, y1 = ax1.transData.transform((0, v1))
+    # _, y2 = ax2.transData.transform((0, v2))
+    # inv = ax2.transData.inverted()
+    # _, dy = inv.transform((0, 0)) - inv.transform((0, y1-y2))
+    # miny, maxy = ax2.get_ylim()
+    # ax2.set_ylim(miny+dy, maxy+dy)
+    ax1_ylim = ax1.get_ylim()
+    ax2_ylim = ax2.get_ylim()
+    prop = (v1 - ax1_ylim[0]) / (ax1_ylim[1] - ax1_ylim[0])
+    # new_y_low = v2 - (ax2_ylim[1] - ax2_ylim[0]) * prop
+    # new_y_high = new_y_low + (ax2_ylim[1] - ax2_ylim[0])
+    # ax2.set_ylim(new_y_low, new_y_high)
+    new_y_high = ax2_ylim[0] + (v2 - ax2_ylim[0]) / prop
+    ax2.set_ylim(ax2_ylim[0], new_y_high)

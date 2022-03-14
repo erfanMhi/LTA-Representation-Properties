@@ -432,8 +432,6 @@ def correlation_overall(all_paths_dict, goal_ids, ax, total_param=None, xlim=[],
     ax.bar(xticks_pos, ordered_cor, color="#3498db", capsize=10)
     ax.axhline(y=0,c="black", ls="--")
     xticks_labels = [property_keys[pk] for pk in ordered_prop]
-    yticks = [-0.6, -0.4, 0, 0.4, 0.6]
-    ax.set_yticks(yticks, yticks, fontsize=14)
     ax.set_xticks(xticks_pos, xticks_labels, rotation=90, fontsize=14)
     for i, c in enumerate(ordered_cor):
         ax.text(xticks_pos[i]-0.4, 0.1, "{:.2f}".format(c), color='black', fontweight='bold')
@@ -990,39 +988,59 @@ def simple_maze():
         "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
         "FTA+ATC",
     ]
-    fig, axs = plt.subplots(1, 3, figsize=(12, 6))
-    correlation_overall(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, axs[0], xlim=[0, 11],
-                       property_rank={"ortho": [90, np.inf]})
-    axs[0].set_title("High Orthogonality")
-    correlation_overall(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, axs[1], xlim=[0, 11],
-                       property_rank={"diversity": [106, np.inf]})
-    axs[1].set_title("High Diversity")
-    correlation_overall(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, axs[2], xlim=[0, 11],
-                       property_rank={"lipschitz": [96, np.inf]})
-    axs[2].set_title("High Complexity Reduction")
-    plt.tight_layout()
-    plt.savefig("plot/img/nonlinear/high_prop.pdf", dpi=300, bbox_inches='tight')
-    plt.close()
-
-    fig, axs = plt.subplots(1, 3, figsize=(12, 6))
-    correlation_overall(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, axs[0], xlim=[0, 11],
-                       property_rank={"ortho": [0, 89]})
-    axs[0].set_title("Low Orthogonality")
-    correlation_overall(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, axs[1], xlim=[0, 11],
-                       property_rank={"diversity": [0, 105]})
-    axs[1].set_title("Low Diversity")
-    correlation_overall(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, axs[2], xlim=[0, 11],
-                       property_rank={"lipschitz": [0, 95]})
-    axs[2].set_title("Low Complexity Reduction")
-    plt.tight_layout()
-    plt.savefig("plot/img/nonlinear/low_prop.pdf", dpi=300, bbox_inches='tight')
-    plt.close()
-
-    fig, ax = plt.subplots(1, 1, figsize=(12, 6))
-    correlation_overall(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ax, xlim=[0, 11])
-    plt.tight_layout()
-    plt.savefig("plot/img/nonlinear/all_prop.pdf", dpi=300, bbox_inches='tight')
-    plt.close()
+    
+    # yticks = [0]
+    #
+    # fig, axs = plt.subplots(1, 3, figsize=(12, 6))
+    # correlation_overall(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, axs[0], xlim=[0, 11],
+    #                    property_rank={"ortho": [90, np.inf]})
+    # axs[0].set_yticks(yticks, yticks, fontsize=14)
+    # axs[0].set_title("High Orthogonality", fontsize=14)
+    # axs[0].set_ylabel("Correlation", fontsize=14)
+    # correlation_overall(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, axs[1], xlim=[0, 11],
+    #                    property_rank={"diversity": [106, np.inf]})
+    # axs[1].set_yticks([], [])
+    # axs[1].set_title("High Diversity", fontsize=14)
+    # correlation_overall(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, axs[2], xlim=[0, 11],
+    #                    property_rank={"lipschitz": [96, np.inf]})
+    # axs[2].set_yticks([], [])
+    # axs[2].set_title("High Complexity Reduction", fontsize=14)
+    # for i in range(len(axs)):
+    #     axs[i].set_ylim(-0.8, 0.8)
+    # plt.tight_layout()
+    # plt.savefig("plot/img/nonlinear/high_prop.pdf", dpi=300, bbox_inches='tight')
+    # plt.close()
+    #
+    # fig, axs = plt.subplots(1, 3, figsize=(12, 6))
+    # correlation_overall(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, axs[0], xlim=[0, 11],
+    #                    property_rank={"ortho": [0, 89]})
+    # axs[0].set_yticks(yticks, yticks, fontsize=14)
+    # axs[0].set_title("Low Orthogonality", fontsize=14)
+    # axs[0].set_ylabel("Correlation", fontsize=14)
+    # correlation_overall(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, axs[1], xlim=[0, 11],
+    #                    property_rank={"diversity": [0, 105]})
+    # axs[1].set_yticks([], [])
+    # axs[1].set_title("Low Diversity", fontsize=14)
+    # correlation_overall(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, axs[2], xlim=[0, 11],
+    #                    property_rank={"lipschitz": [0, 95]})
+    # axs[2].set_yticks([], [])
+    # axs[2].set_title("Low Complexity Reduction", fontsize=14)
+    # for i in range(len(axs)):
+    #     axs[i].set_ylim(-0.8, 0.8)
+    # plt.tight_layout()
+    # plt.savefig("plot/img/nonlinear/low_prop.pdf", dpi=300, bbox_inches='tight')
+    # plt.close()
+    #
+    # fig, ax = plt.subplots(1, 1, figsize=(4, 6))
+    # correlation_overall(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ax, xlim=[0, 11])
+    # ax.set_yticks(yticks, yticks, fontsize=14)
+    # ax.set_title("All Representations", fontsize=14)
+    # ax.set_ylabel("Correlation", fontsize=14)
+    # for i in range(len(axs)):
+    #     axs[i].set_ylim(-0.8, 0.8)
+    # plt.tight_layout()
+    # plt.savefig("plot/img/nonlinear/all_prop.pdf", dpi=300, bbox_inches='tight')
+    # plt.close()
 
 
 

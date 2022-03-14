@@ -1,6 +1,7 @@
 import os
 import re
 import copy
+import pickle
 import numpy as np
 from operator import itemgetter
 import matplotlib.pyplot as plt
@@ -779,7 +780,7 @@ def correlation_load(all_paths_dict, goal_ids, total_param=None, xlim=[],
     labels = [i["label"] for i in all_paths_dict]
 
     # all_goals_auc = pick_best_perfs(all_paths_dict, goal_ids, total_param, xlim, labels)
-    pklfile = "plot/temp_data/all_goals_auc_{}.pkl".format(property_key)
+    pklfile = "plot/temp_data/all_goals_auc_lipschitz.pkl" #same result for all properties
     if os.path.isfile(pklfile):
         with open(pklfile, "rb") as f:
             all_goals_auc = pickle.load(f)

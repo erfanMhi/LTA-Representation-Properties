@@ -987,9 +987,22 @@ def online_lipschitz(agent, state_all, label=None):
         diff_phi_all = np.array(diff_phi_all)
         max_dv = diff_v_all.max()
         max_dphi = diff_phi_all.max()
-        normalized_dv = diff_v_all / max_dv 
-        normalized_dphi = diff_phi_all / max_dphi 
-        
+        print('max_dv: ', max_dv)
+        print('max_dphi: ', max_dphi)
+
+        if max_dv != 0:
+            normalized_dv = diff_v_all / max_dv
+        else:
+            normalized_dv = diff_v_all
+
+        if max_dphi != 0:
+            normalized_dphi = diff_phi_all / max_dphi
+        else:
+            normalized_dphi = diff_phi_all
+
+        print('normalized_dv: ', normalized_dv.mean())
+        print('normalized_dphi: ', normalized_dphi.mean())
+
         # Removing the indexes with zero value of representation difference
         nonzero_idx = normalized_dphi!=0
         normalized_dv = normalized_dv[nonzero_idx]
@@ -1071,6 +1084,12 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
     early_model_saved = False
 
     while True:
+        # if agent.total_steps and agent.total_steps % agent.cfg.log_interval == 0:
+        #     states, actions, rewards, next_states, terminals = list(map(lambda x: np.asarray(x), zip(*agent.replay.data)))
+        #     np.save('replay_states_{}.npy'.format(agent.total_steps), np.array(states))
+        #     np.save('replay_actions_{}.npy'.format(agent.total_steps), np.array(actions))
+        #     np.save('replay_next_states_{}.npy'.format(agent.total_steps), np.array(next_states))
+
         if agent.cfg.log_interval and not agent.total_steps % agent.cfg.log_interval:
             if agent.cfg.tensorboard_logs: agent.log_tensorboard()
             mean, median, min, max = agent.log_file(elapsed_time=agent.cfg.log_interval / (time.time() - t0))
@@ -1082,6 +1101,7 @@ def run_steps_onlineProperty(agent): # We should add sparsity and regression
                 early_model_saved = True
                 agent.cfg.logger.info('Save early-stopping model')
             t0 = time.time()
+
 
         if agent.cfg.eval_interval and not agent.total_steps % agent.cfg.eval_interval:
             # agent.eval_episodes(elapsed_time=agent.cfg.log_interval / (time.time() - t0))

@@ -335,7 +335,7 @@ class DQNAgent(base.Agent):
             ui = np.clip(ac.mean(), 0, np.inf) # average over samples
             self.update_interfs.append(ui)
  
-        states, actions, next_states, rewards, terminals = self.cfg.eval_dataset.sample()
+        states, actions, next_states, rewards, terminals = self.cfg.eval_dataset.get_buffer()
         states = self.cfg.state_normalizer(states)
         next_s = self.cfg.state_normalizer(next_states)
         actions = actions.reshape([-1, 1])

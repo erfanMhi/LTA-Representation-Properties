@@ -332,7 +332,16 @@ def property_scatter(property_keys, all_paths_dict, groups, title):
 def performance_scatter(all_paths_dict, groups, title, goal_ids, xlim=[], ylim=[]):
     labels = [i["label"] for i in all_paths_dict]
 
-    _, all_goals_independent = pick_best_perfs(all_paths_dict, goal_ids, None, xlim, labels, get_each_run=True)
+    # _, all_goals_independent = pick_best_perfs(all_paths_dict, goal_ids, None, xlim, labels, get_each_run=True)
+    pklfile = "plot/temp_data/all_goals_independent_best_perf.pkl"
+    if os.path.isfile(pklfile):
+        with open(pklfile, "rb") as f:
+            all_goals_independent = pickle.load(f)
+        print("Load from {}".format(pklfile))
+    else:
+        _, all_goals_independent = pick_best_perfs(all_paths_dict, goal_ids, None, xlim, labels, get_each_run=True)
+        with open(pklfile, "wb") as f:
+            pickle.dump(all_goals_independent, f)
 
     overall_trans = []
     groups_keys = list(groups.keys())
@@ -348,7 +357,10 @@ def performance_scatter(all_paths_dict, groups, title, goal_ids, xlim=[], ylim=[
 
     fig = plt.figure(1)
     ax = fig.add_subplot(111)
-    ax.boxplot(overall_trans)
+    bp = ax.boxplot(overall_trans)
+    no_aux_med = bp['medians'][0].get_ydata()[0]
+    # ax.axhline(no_aux_med, c="C1", ls="--")
+    # ax.text(7, 5.9, "No Aux\nMedian", c="C1", fontsize=25)
     ax.set_ylim(ylim[0], ylim[1])
     ax.set_yticks(ylim, labels=ylim, fontsize=28)
     ax.set_xticklabels(groups_keys, fontsize=28, rotation=90)
@@ -780,12 +792,12 @@ def main():
         "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
         "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC",
     ]
-    # property_keys.pop("return")
-    # for key_pair in itertools.combinations(property_keys.keys(), 2):
-    #     pair = {}
-    #     pair[key_pair[0]] = property_keys[key_pair[0]]
-    #     pair[key_pair[1]] = property_keys[key_pair[1]]
-    #     pair_property(pair, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), [106], ranks, xlim=[0, 11], with_auc=False)
+    property_keys.pop("return")
+    for key_pair in itertools.combinations(property_keys.keys(), 2):
+        pair = {}
+        pair[key_pair[0]] = property_keys[key_pair[0]]
+        pair[key_pair[1]] = property_keys[key_pair[1]]
+        pair_property(pair, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), [106], ranks, xlim=[0, 11], with_auc=False)
 
     groups = {
         "ReLU": ["ReLU", "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward",
@@ -880,7 +892,7 @@ def main():
     #                   "sparsity": 13,}
     titles = {
         "lipschitz": "Complexity\nReduction",
-        "distance": "Dynamic\nAwareness",
+        "distance": "Dynamics\nAwareness",
         "ortho": "Orthogonality",
         "interf": "Non-\ninterference",
         "diversity": "Diversity",
@@ -993,10 +1005,9 @@ def main():
     # fig.tight_layout()
     # plt.savefig("plot/img/nonlinear/accum_all.pdf", dpi=300, bbox_inches='tight')
 
-    fig, axs = plt.subplots(2, 6, figsize=(28, 4), gridspec_kw={'height_ratios': [4, 1]})
+    
+    fig, axs = plt.subplots(4, 6, figsize=(28, 8), gridspec_kw={'height_ratios': [4, 1, 4, 1]})
     for i, key in enumerate(["lipschitz", "distance", "diversity", "ortho", "sparsity", "interf"]):
-        # property_accumulate(key, label_filter(targets, gh_transfer_sweep_v13), goal_ids, "linear/accumAUC/accum_{}".format(key),
-        #                     xlim=[0, 11])
         yticks = [5, 7.5, 10] if i == 0 else []
         xticks = []
         property_accumulate(key, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids,
@@ -1011,9 +1022,6 @@ def main():
                             show_only="FTA"
                             )
         axs[0, i].set_title(titles[key], fontsize=30)
-    plt.savefig("plot/img/nonlinear/accum_fta.pdf", dpi=300, bbox_inches='tight')
-
-    fig, axs = plt.subplots(2, 6, figsize=(28, 4), gridspec_kw={'height_ratios': [4, 1]})
     for i, key in enumerate(["lipschitz", "distance", "diversity", "ortho", "sparsity", "interf"]):
         yticks = [5, 7.5, 10] if i == 0 else []
         xticks = "min-max"  # []#
@@ -1025,11 +1033,14 @@ def main():
                             yticks=yticks,
                             xticks=xticks,
                             highlight=highlight_idxs[key],
-                            given_ax=axs[0, i], ax_below=axs[1, i],
+                            given_ax=axs[2, i], ax_below=axs[3, i],
                             show_only="ReLU"  # "FTA"#
                             )
-        axs[0, i].set_title(titles[key], fontsize=30)
-    plt.savefig("plot/img/nonlinear/accum_relu.pdf", dpi=300, bbox_inches='tight')
+        # axs[2, i].set_title(titles[key], fontsize=30)
+    plt.savefig("plot/img/nonlinear/accum_all.pdf", dpi=300, bbox_inches='tight')
+    plt.close()
+    plt.clf()
+
 
     # fig, axs = plt.subplots(1, 6, figsize=(28, 4))
     # for i, key in enumerate(["lipschitz", "diversity", "ortho", "distance", "interf", "sparsity"]):

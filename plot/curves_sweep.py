@@ -221,7 +221,7 @@ def performance_change(all_paths_dict, goal_ids, ranks, title, total_param=None,
                 color = "#34495e"  # violin_colors[label]
                 alpha = 1
             else:
-                color = "#bdc3c7"  # violin_colors[label]
+                color = "#616466"  # violin_colors[label]
                 alpha = 0.5
             plt.plot(curves[label], color=color, alpha=alpha)
         else:
@@ -812,8 +812,8 @@ def simple_maze():
         "FTA+ATC", "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+XY", "FTA+Decoder",
         "Scratch", "Input", "Random", "Scratch(FTA)"  # "Scratch(L)", "Random(L)",
     ]
-    # performance_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks, "nonlinear/maze_transfer_chosen_(smooth0.1)", xlim=[0, 11], ylim=[0, 11], smooth=0.1,
-    #                    xy_label=False, data_label=False, linewidth=3, figsize=(8, 6), color_by_activation=True)
+    performance_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks, "nonlinear/maze_transfer_chosen_(smooth0.1)", xlim=[0, 11], ylim=[0, 11], smooth=0.1,
+                       xy_label=False, data_label=False, linewidth=3, figsize=(8, 6), color_by_activation=True)
     #                    # in_plot_label=[{"ReLU": ["#e74c3c", "-", 0.5]}, {"FTA":["#3498db", "-", 0.5]},
     #                    #                {"Scratch": ["#34495e", "-", 1]}, {"Random & Input": ["#bdc3c7", "-", 0.5]}])#, emphasize=emphasize)
     # performance_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks, "nonlinear/temp", xlim=[0, 11], ylim=[0, 11], smooth=0.1,

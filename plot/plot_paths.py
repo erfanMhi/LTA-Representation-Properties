@@ -23,7 +23,8 @@ property_keys = {"lipschitz": "Complexity Reduction",
                  "return": ""}
 
 normalize_prop = {
-    "lipschitz": [0.00727, 0.35973],
+    # "lipschitz": [0.00727, 0.35973],
+    "lipschitz": [0.02308, 1.87652],
     "interf": [0.0, 0.07027447]
 }
 
@@ -7719,7 +7720,7 @@ gh_nonlinear_original_sweep_v13_largeReLU = [
      }
 ]
 
-gh_nonlinear_transfer_sweep_v13_largeReLU_wrongInterf = [
+gh_nonlinear_transfer_sweep_v13_largeReLU = [
     {"label": "ReLU",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn/sweep/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/", 3],
@@ -7873,7 +7874,7 @@ gh_nonlinear_transfer_sweep_v13_largeReLU_wrongInterf = [
      },
     {"label": "ReLU(L)+ATC",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_cl/sweep_large/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_cl/best/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_cl/best_large/", 0],
      "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_large_cl/best/", 0],
      },
     {"label": "FTA+ATC",
@@ -7905,7 +7906,7 @@ gh_nonlinear_transfer_sweep_v13_largeReLU_wrongInterf = [
      },
 ]
 
-gh_nonlinear_transfer_sweep_v13_largeReLU = [
+gh_nonlinear_transfer_sweep_v13_largeReLU_fixed = [
     {"label": "ReLU",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn/sweep/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/best/", 0],

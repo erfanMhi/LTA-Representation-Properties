@@ -415,24 +415,35 @@ def check_aux(agent):
 def online_orthogonality(agent, states, label):
     states = agent.cfg.state_normalizer(states)
     rhos = []
-    for i in range(10):
-        random = agent.cfg.test_rng.choice(list(range(len(states))), size=100,  replace=False)
-        s = states[random]
-        with torch.no_grad():
-            reps = agent.rep_net(s)
-        # Vincent's thesis
-        # reps = reps.detach().numpy()
+    with torch.no_grad():
+        reps = agent.rep_net(states)
         reps = torch_utils.to_np(reps.detach())
-        dot_prod = np.matmul(reps, reps.T)
+
+    for i in range(10):
+        # random = agent.cfg.test_rng.choice(list(range(len(states))), size=100,  replace=False)
+        random_idx = list(range(len(states)))
+        agent.cfg.test_rng.shuffle(random_idx)
+
+        dot_prod = np.multiply(reps, reps[random_idx]).sum(axis=1)
         norm = np.linalg.norm(reps, axis=1).reshape((-1, 1))
-        norm_prod = np.matmul(norm, norm.T)
+        norm_prod = np.multiply(norm, norm[random_idx]).sum(axis=1)
         if len(np.where(norm_prod==0)[0]) != 0:
             norm_prod[np.where(norm_prod==0)] += 1e-05
-
         normalized = np.abs(np.divide(dot_prod, norm_prod))
-        rho = (normalized.sum() - np.diagonal(normalized).sum()) / (normalized.shape[0] * (normalized.shape[0]-1))
+        rho = normalized.mean()
         rhos.append(rho)
-        # rho = np.sum(reps1 * reps2, axis=1).mean() / (np.linalg.norm(reps1, axis=1).mean() * np.linalg.norm(reps2, axis=1).mean())
+
+        # dot_prod = np.matmul(reps, reps.T)
+        # norm = np.linalg.norm(reps, axis=1).reshape((-1, 1))
+        # norm_prod = np.matmul(norm, norm.T)
+        # if len(np.where(norm_prod==0)[0]) != 0:
+        #     norm_prod[np.where(norm_prod==0)] += 1e-05
+        #
+        # normalized = np.abs(np.divide(dot_prod, norm_prod))
+        # rho = (normalized.sum() - np.diagonal(normalized).sum()) / (normalized.shape[0] * (normalized.shape[0]-1))
+        # rhos.append(rho)
+        # # rho = np.sum(reps1 * reps2, axis=1).mean() / (np.linalg.norm(reps1, axis=1).mean() * np.linalg.norm(reps2, axis=1).mean())
+
     rho = 1 - np.array(rhos).mean()
     if label is None:
         log_str = 'total steps %d, total episodes %3d, ' \
@@ -954,30 +965,37 @@ def online_lipschitz(agent, state_all, label=None):
         ratio_dv_dphi_all = []
         diff_v_all = []
         diff_phi_all = []
+        with torch.no_grad():
+            phi_s = agent.rep_net(agent.cfg.state_normalizer(state_all))
+            values = agent.val_net(phi_s)
+        states = state_all
+        N = len(states)
         for i in range(10):
-            random = agent.cfg.test_rng.choice(list(range(len(state_all))), size=100, replace=False)
-            states = state_all[random]
-            with torch.no_grad():
-                phi_s = agent.rep_net(agent.cfg.state_normalizer(states))#.numpy()
-                values = agent.val_net(phi_s)
-
-            num_states = len(states)
-            N = num_states * (num_states - 1) // 2
+            # random = agent.cfg.test_rng.choice(list(range(len(state_all))), size=100, replace=False)
+            random_idx = list(range(len(state_all)))
+            agent.cfg.test_rng.shuffle(random_idx)
+            
+            # diff_v = torch_utils.to_np(torch.abs(values - values[random_idx])).max(axis=1)
+            # diff_phi = np.linalg.norm(torch_utils.to_np(phi_s - phi_s[random_idx]), axis=1)
+            #
+            # diff_v_all.append(torch_utils.to_np(torch.abs(values.max(axis=1) - values[random_idx].max(axis=1)))) # for specialization
+            # diff_phi_all += list(diff_phi) # for specialization
+            
             diff_v = np.zeros(N)
             diff_phi = np.zeros(N)
-
             idx = 0
             for i in range(len(states)):
-                for j in range(i + 1, len(states)):
-                    phi_i, phi_j = phi_s[i], phi_s[j]
-                    vi, vj = values[i], values[j]
-                    diff_v[idx] = torch.abs(vi - vj).max().item() # for lipschitz
-                    diff_phi[idx] = np.linalg.norm(torch_utils.to_np(phi_i - phi_j))  # for lipschitz
+                # for j in range(i + 1, len(states)):
+                j = random_idx[i]
+                phi_i, phi_j = phi_s[i], phi_s[j]
+                vi, vj = values[i], values[j]
+                diff_v[idx] = torch.abs(vi - vj).max().item() # for lipschitz
+                diff_phi[idx] = np.linalg.norm(torch_utils.to_np(phi_i - phi_j))  # for lipschitz
 
-                    diff_v_all.append(torch.abs(vi.max() - vj.max()).item()) # for specialization
-                    diff_phi_all.append(diff_phi[idx]) # for specialization
+                diff_v_all.append(torch.abs(vi.max() - vj.max()).item()) # for specialization
+                diff_phi_all.append(diff_phi[idx]) # for specialization
 
-                    idx += 1
+                idx += 1
 
             dv_dphi = np.divide(diff_v, diff_phi, out=np.zeros_like(diff_phi), where=diff_phi != 0)
             ratio_dv_dphi_all.append(dv_dphi)
@@ -987,8 +1005,8 @@ def online_lipschitz(agent, state_all, label=None):
         diff_phi_all = np.array(diff_phi_all)
         max_dv = diff_v_all.max()
         max_dphi = diff_phi_all.max()
-        print('max_dv: ', max_dv)
-        print('max_dphi: ', max_dphi)
+        # print('max_dv: ', max_dv)
+        # print('max_dphi: ', max_dphi)
 
         if max_dv != 0:
             normalized_dv = diff_v_all / max_dv
@@ -1000,8 +1018,8 @@ def online_lipschitz(agent, state_all, label=None):
         else:
             normalized_dphi = diff_phi_all
 
-        print('normalized_dv: ', normalized_dv.mean())
-        print('normalized_dphi: ', normalized_dphi.mean())
+        # print('normalized_dv: ', normalized_dv.mean())
+        # print('normalized_dphi: ', normalized_dphi.mean())
 
         # Removing the indexes with zero value of representation difference
         nonzero_idx = normalized_dphi!=0

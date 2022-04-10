@@ -603,9 +603,7 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
         # mx = np.max(np.array(temp))
         # mn = np.min(np.array(temp))
         # print(target_key, mn, mx)
-        # if target_key == "interf":
-        #     srt = np.array(temp).argsort()
-        #     mx = np.array(temp)[srt[-2]]
+
         for i in group:
             for run in all_property[i["label"]]:
                 ori = all_property[i["label"]][run]

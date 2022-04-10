@@ -23,9 +23,8 @@ property_keys = {"lipschitz": "Complexity Reduction",
                  "return": ""}
 
 normalize_prop = {
-    # "lipschitz": [0.00727, 0.35973],
-    "lipschitz": [0.02308, 1.87652],
-    "interf": [0.0, 0.07027447]
+    "lipschitz": [0.00728, 0.34935],
+    "interf": [0.0, 0.0908278]
 }
 
 def cmap(idx, total):

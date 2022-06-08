@@ -11,37 +11,19 @@ c_default = ["#332288","#88CCEE", "#4A7BB7", #"#0077BB", # purple, blue
              "#CC6677","#882255", "#AA4499","#FEDA8B",#"#F4A582",#red
              "#BBBBBB",  # grey
              ]
-c_contrast = ["#3498db", #"#332288",#, "#4A7BB7", #"#0077BB", # purple, blue
-             "#e74c3c", "#CC6677",#"#882255", "#AA4499","#FEDA8B",#"#F4A582",#red
-             "#44AA99",#"#117733","#999933", #"#D9F0D3", # green
-             "#DDCC77",#"#EE7733", # yellow
-             "#BBBBBB",  # grey
-             ]
-
-
-atc_color = "#F4A582"
 s_default = ["-", "--", ":"]
 m_default = ["o", "^"]
-property_keys = {"lipschitz": "Complexity\nReduction",
-                 "diversity":"Diversity",
-                 "distance": "Dynamics\nAwareness",
-                 "interf":"Noninterference",
+property_keys = {"lipschitz": "Complexity Reduction",
+                 "distance": "Dynamics Awareness",
                  "ortho": "Orthogonality",
+                 "interf":"Noninterference",
+                 "diversity":"Diversity",
                  "sparsity":"Sparsity",
                  "return": ""}
 
-
-
-# with property based auxiliary tasks
 normalize_prop = {
-    "lipschitz": [1.3429999999999998e-05, 5.787],
-    "interf": [0.0, 0.4378]
-}
-
-# Without property-based auxiliary tasks
-normalize_prop = {
-    "lipschitz": [1.3429999999999998e-05, 0.43774588999999997],
-    "interf": [0.0, 0.43775]
+    "lipschitz": [0.00727, 0.35973],
+    "interf": [0.0, 0.07027447]
 }
 
 def cmap(idx, total):
@@ -82,7 +64,7 @@ violin_colors = {
 
     "ReLU": c_default[0],
     "ReLU+Control": c_default[2],
-    "ReLU+Control1g": c_default[2],
+    "ReLU+VirtualVF1": c_default[2],
     "ReLU+VirtualVF5": c_default[3],
     "ReLU+XY": c_default[4],
     "ReLU+XY+color": c_default[5],
@@ -94,18 +76,19 @@ violin_colors = {
     "ReLU+NAS": c_default[8],
     "ReLU+Reward": c_default[9],
     "ReLU+SF": c_default[10],
-
+    "ReLU+ATC": c_default[11],
+    
     "ReLU+divConstr": c_default[11],
 
     "ReLU(L)": c_default[0],
-    "ReLU(L)+Control1g": c_default[2],
+    "ReLU(L)+VirtualVF1": c_default[2],
     "ReLU(L)+VirtualVF5": c_default[3],
     "ReLU(L)+XY": c_default[4],
     "ReLU(L)+Decoder": c_default[7],
     "ReLU(L)+NAS": c_default[8],
     "ReLU(L)+Reward": c_default[9],
     "ReLU(L)+SF": c_default[10],
-    "ReLU+ATC": atc_color,
+    "ReLU(L)+ATC": c_default[11],
 
     "FTA": c_default[0],
     "FTA(no target)": c_default[0],
@@ -118,7 +101,7 @@ violin_colors = {
     "FTA eta=0.8": c_default[12],
 
     "FTA+Control": c_default[2],
-    "FTA+Control1g": c_default[2],
+    "FTA+VirtualVF1": c_default[2],
     "FTA+VirtualVF5": c_default[3],
     "FTA+XY": c_default[4],
     "FTA+XY+color": c_default[5],
@@ -130,35 +113,8 @@ violin_colors = {
     "FTA+NAS": c_default[8],
     "FTA+Reward": c_default[9],
     "FTA+SF": c_default[10],
-
-    "FTA+SF+AuxAug": c_default[2],
-    "FTA+SF+VFAug": c_default[3],
-    "FTA+SF+Aug": c_default[4],
-
-    "ReLU+Aug": c_default[6],
-    "FTA+Aug": c_default[7],
-    "ReLU+ATC+NoAug": c_default[4],
-    "ReLU+Ortho": c_default[8],
-    "ReLU+Ortho (prop)": c_default[7],
-    "ReLU(L)+Ortho": c_default[3],
-    "ReLU(L)+ATC": atc_color,
-
-
-    "ReLU+Diversity": c_default[6],
-    "ReLU(L)+Diversity": c_default[7],
-
-    "ReLU+Laplacian": c_default[3],
-    "ReLU+Laplacian (0)": c_default[4],
-    "ReLU+Laplacian (0.1)": c_default[5],
-    "ReLU+Laplacian (0.25)": c_default[6],
-    "ReLU+Laplacian (0.5)": c_default[7],
-    "ReLU+Laplacian (0.75)": c_default[8],
-
-    "ReLU+DA": c_default[5],
-    "ReLU+DO": c_default[6],
-    "ReLU+Laplacian (prop)": c_default[3],
-    "FTA+ATC": atc_color,
-
+    "FTA+ATC": c_default[11],
+    
     "Random": 'red',
     "Random(L)": 'red',
     "Input": 'brown',
@@ -172,31 +128,26 @@ violin_colors = {
     "ReLU close50": c_default[3],
     "ReLU close75": c_default[4],
     
-    "ReLU+Laplacian (non-standard)": c_default[6],
-    "ReLU+Laplacian (standard)": c_default[7],
-    "ReLU(L)+Laplacian (standard)": c_default[8],
+    "Linear": "C0",
+    "Nonlinear": "C1",
+    "Other rep": "grey",
 
-    "ReLU+CompOrtho": c_default[4],
-    "ReLU+CR+O": c_default[4],
-    "ReLU(L)+CR+O": c_default[4],
-    "FTA+CR+O": c_default[5],
 
-    
-    "ReLU+CR": c_default[11],
-    "ReLU(L)+CR": c_default[12],
-    "FTA+CR": c_default[11],
-
-    # "ReLU+Laplacian": c_default[9],
+    "ReLU+Laplacian": c_default[9],
     "ReLU(L)+Laplacian": c_default[10],
     "FTA+Laplacian": c_default[9],
 
-    # "ReLU+DynaOrtho": c_default[8],
-    "ReLU+DA+O": c_default[7],
-    "ReLU(L)+DA+O": c_default[8],
-    "FTA+DA+O": c_default[7],   
+    "ReLU+DynaOrtho": c_default[8],
+    "ReLU(L)+DynaOrtho": c_default[7],
+    "FTA+DynaOrtho": c_default[6],
 
-    "ReLU(L)+DO": c_default[7],
-    "FTA+DO": c_default[6],
+    "ReLU+CO": c_default[8],
+    "ReLU(L)+DynaOrtho": c_default[7],
+    "FTA+DynaOrtho": c_default[6],
+
+    
+
+
 }
 
 curve_styles = {
@@ -209,7 +160,7 @@ curve_styles = {
 
     "ReLU": s_default[1],
     "ReLU+Control": s_default[1],
-    "ReLU+Control1g": s_default[1],
+    "ReLU+VirtualVF1": s_default[1],
     "ReLU+VirtualVF5": s_default[1],
     "ReLU+XY": s_default[1],
     "ReLU+XY+color": s_default[1],
@@ -222,25 +173,17 @@ curve_styles = {
     "ReLU+Control+XY+Color": s_default[1],
     "ReLU+divConstr": s_default[1],
     "ReLU+ATC": s_default[1],
-    "ReLU+Laplacian": s_default[1],
-    "ReLU+Laplacian (0)": s_default[1],
-    "ReLU+Laplacian (0.1)": s_default[1],
-    "ReLU+Laplacian (0.25)": s_default[1],
-    "ReLU+Laplacian (0.5)": s_default[1],
-    "ReLU+Laplacian (0.75)": s_default[1],
-
-    "ReLU+Laplacian (prop)": s_default[1],
 
     "ReLU(L)": s_default[2],
-    "ReLU(L)+Control1g": s_default[2],
+    "ReLU(L)+VirtualVF1": s_default[2],
     "ReLU(L)+VirtualVF5": s_default[2],
     "ReLU(L)+XY": s_default[2],
     "ReLU(L)+Decoder": s_default[2],
     "ReLU(L)+NAS": s_default[2],
     "ReLU(L)+Reward": s_default[2],
     "ReLU(L)+SF": s_default[2],
-    "ReLU(L)+ATC": s_default[2], 
-
+    "ReLU(L)+ATC": s_default[2],
+    
     "FTA": s_default[0],
     "FTA(no target)": s_default[0],
 
@@ -252,7 +195,7 @@ curve_styles = {
     "FTA eta=0.8": s_default[0],
 
     "FTA+Control": s_default[0],
-    "FTA+Control1g": s_default[0],
+    "FTA+VirtualVF1": s_default[0],
     "FTA+VirtualVF5": s_default[0],
     "FTA+XY": s_default[0],
     "FTA+XY+color": s_default[0],
@@ -266,27 +209,8 @@ curve_styles = {
     "FTA+ATC": s_default[0],
 
 
-    "FTA+SF+AuxAug": s_default[0],
-    "FTA+SF+VFAug": s_default[0],
-    "FTA+SF+Aug": s_default[0],   
 
-    "ReLU+Aug": s_default[1],
-    "FTA+Aug": s_default[1],
-    "ReLU+ATC+NoAug": s_default[1],
-    "ReLU+Ortho": s_default[1],
-    "ReLU+Ortho (prop)": s_default[1],
-    "ReLU(L)+Ortho": s_default[1],
-
-    "ReLU+Laplacian (non-standard)": s_default[1],
-    "ReLU+Laplacian (standard)": s_default[1],
-    "ReLU(L)+Laplacian (standard)": s_default[1],
-    "ReLU+DA": s_default[1],
-    "ReLU+DO": s_default[1],
-
-
-    "ReLU+Diversity": s_default[1],
-    "ReLU(L)+Diversity": s_default[1],
-
+    
     "Random": s_default[0],
     "Random(L)": s_default[2],
     "Input": s_default[0],
@@ -299,34 +223,15 @@ curve_styles = {
     "ReLU close25": s_default[0],
     "ReLU close50": s_default[0],
     "ReLU close75": s_default[0],
-
-    "ReLU+CompOrtho": s_default[1],
-    "ReLU+CR+O": s_default[1],
-    "ReLU(L)+CR+O": s_default[2],
-    "FTA+CR+O": s_default[0],
-
-    "ReLU+CR": s_default[0],
-    "ReLU(L)+CR": s_default[0],
-    "FTA+CR": s_default[1],
-
-    # "ReLU+Laplacian": c_default[9],
-    "ReLU(L)+Laplacian": s_default[2],
-    "FTA+Laplacian": s_default[0],
-
-    # "ReLU+DynaOrtho": c_default[8],
-    "ReLU+DA+O": s_default[1],
-    "ReLU(L)+DA+O": s_default[2],
-    "FTA+DA+O": s_default[0],  
-    "ReLU(L)+DO":s_default[2],
-    "FTA+DO":s_default[0]
     
+    "Other rep": s_default[0],
 }
 
 marker_styles = {
         "ReLU": m_default[1],
         "ReLU+Color": m_default[1],
         "ReLU+Control": m_default[1],
-        "ReLU+Control1g": m_default[1],
+        "ReLU+VirtualVF1": m_default[1],
         "ReLU+VirtualVF5": m_default[1],
         "ReLU+XY": m_default[1],
         "ReLU+XY+color": m_default[1],
@@ -336,16 +241,7 @@ marker_styles = {
         "ReLU+Reward": m_default[1],
         "ReLU+SF": m_default[1],
         "ReLU+divConstr": m_default[1],
-        "ReLU+ATC": m_default[1],
-    "ReLU+Laplacian": m_default[1],
 
-    "ReLU+Laplacian (0)": m_default[1],
-    "ReLU+Laplacian (0.1)": m_default[1],
-    "ReLU+Laplacian (0.25)": m_default[1],
-    "ReLU+Laplacian (0.5)": m_default[1],
-    "ReLU+Laplacian (0.75)": m_default[1],
-
-    "ReLU+Laplacian (prop)": m_default[1],
     "FTA": m_default[0],
     "FTA(no target)": m_default[0],
 
@@ -358,7 +254,7 @@ marker_styles = {
 
     "FTA+Color": m_default[0],
     "FTA+Control": m_default[0],
-    "FTA+Control1g": m_default[0],
+    "FTA+VirtualVF1": m_default[0],
     "FTA+VirtualVF5": m_default[0],
     "FTA+XY": m_default[0],
     "FTA+XY+color": m_default[0],
@@ -367,24 +263,6 @@ marker_styles = {
     "FTA+NAS": m_default[0],
     "FTA+Reward": m_default[0],
     "FTA+SF": m_default[0],
-    "FTA+ATC": m_default[0],
-
-    "FTA+SF+AuxAug": m_default[0],
-    "FTA+SF+VFAug": m_default[0],
-    "FTA+SF+Aug": m_default[0],   
-    
-     "FTA+Aug": m_default[0],
-    "ReLU+Aug": m_default[1],
-    "ReLU+ATC+NoAug": m_default[1],
-    
-    "ReLU+Ortho": m_default[1],
-    "ReLU+Ortho (prop)": m_default[1],
-    "ReLU(L)+Ortho": m_default[1],
-
-    "ReLU+Diversity": m_default[1],
-    "ReLU(L)+Diversity": m_default[1],
-
-    "ReLU(L)+ATC":m_default[1], 
 
     "Random": m_default[0],
     "Input": m_default[0],
@@ -395,31 +273,6 @@ marker_styles = {
     "ReLU close50": m_default[0],
     "ReLU close75": m_default[0],
 
-    "ReLU+Laplacian (non-standard)": m_default[1],
-    "ReLU+Laplacian (standard)": m_default[1],
-    "ReLU(L)+Laplacian (standard)": m_default[1],
-    "ReLU+DA": m_default[1],
-    "ReLU+DO": m_default[1],
-
-    "ReLU+CompOrtho": m_default[1],
-    "ReLU+CR+O": m_default[1],
-    "ReLU(L)+CR+O": m_default[1],
-    "FTA+CR+O": m_default[0],
-    
-    "ReLU+CR": m_default[0],
-    "ReLU(L)+CR": s_default[0],
-    "FTA+CR": s_default[1],
-
-    # "ReLU+Laplacian": c_default[9],
-    "ReLU(L)+Laplacian": m_default[1],
-    "FTA+Laplacian": m_default[0],
-
-    # "ReLU+DynaOrtho": c_default[8],
-    "ReLU+DA+O": m_default[1],
-    "ReLU(L)+DA+O": m_default[1],
-    "FTA+DA+O": m_default[0],  
-    "ReLU(L)+DO":m_default[1],
-    "FTA+DO":m_default[0]
 }
 
 mc_learn_sweep = [
@@ -438,10 +291,10 @@ gh_online_sweep = [
     {"label": "ReLU",
      "control": "data/output/test_v7/gridhard/linear_vf/representation/dqn/sweep/",
      },
-    # {"label": "ReLU+Control1g",
+    # {"label": "ReLU+VirtualVF1",
     #  "control": "data/output/test_v7/gridhard/linear_vf/representation/dqn_aux/aux_control/sweep_1g/",
     #  },
-    # {"label": "ReLU+Control5g",
+    # {"label": "ReLU+VirtualVF5",
     #  "control": "data/output/test_v7/gridhard/linear_vf/representation/dqn_aux/aux_control/sweep_5g/",
     #  },
     {"label": "ReLU+Control1g (0.9)",
@@ -477,10 +330,10 @@ gh_online_sweep = [
     {"label": "FTA eta=0.8",
      "control": "data/output/test_v7/gridhard/linear_vf/representation/dqn_lta/eta_study_0.8_sweep/",
      },
-    # {"label": "FTA+Control1g",
+    # {"label": "FTA+VirtualVF1",
     #  "control": "data/output/test_v7/gridhard/linear_vf/representation/dqn_lta_aux/aux_control/sweep_1g/",
     #  },
-    # {"label": "FTA+Control5g",
+    # {"label": "FTA+VirtualVF5",
     #  "control": "data/output/test_v7/gridhard/linear_vf/representation/dqn_lta_aux/aux_control/sweep_5g/",
     #  },
     {"label": "FTA+Control1g (0.9)",
@@ -642,10 +495,10 @@ gh_diff_early_sweep = [
     {"label": "ReLU",
      "control": "data/output/test_v7/gridhard/linear_vf/control/early_stop/different_task/fix_rep/dqn/sweep/",
      },
-    {"label": "ReLU+Control1g",
+    {"label": "ReLU+VirtualVF1",
      "control": "data/output/test_v7/gridhard/linear_vf/control/early_stop/different_task/fix_rep/dqn_aux/aux_control/sweep_1g/",
      },
-    {"label": "ReLU+Control5g",
+    {"label": "ReLU+VirtualVF5",
      "control": "data/output/test_v7/gridhard/linear_vf/control/early_stop/different_task/fix_rep/dqn_aux/aux_control/sweep_5g/",
      },
     {"label": "ReLU+Control1g (0.9)",
@@ -681,10 +534,10 @@ gh_diff_early_sweep = [
     {"label": "FTA eta=0.8",
      "control": "data/output/test_v7/gridhard/linear_vf/control/early_stop/different_task/fix_rep/dqn_lta/eta_study_0.8_sweep/",
      },
-    {"label": "FTA+Control1g",
+    {"label": "FTA+VirtualVF1",
      "control": "data/output/test_v7/gridhard/linear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/aux_control/sweep_1g/",
      },
-    {"label": "FTA+Control5g",
+    {"label": "FTA+VirtualVF5",
      "control": "data/output/test_v7/gridhard/linear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/aux_control/sweep_5g/",
      },
     {"label": "FTA+Control1g (0.9)",
@@ -724,10 +577,10 @@ gh_diff_tune_early_sweep = [
     {"label": "ReLU",
      "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn/sweep/",
      },
-    {"label": "ReLU+Control1g",
+    {"label": "ReLU+VirtualVF1",
      "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn_aux/aux_control/sweep_1g/",
      },
-    {"label": "ReLU+Control5g",
+    {"label": "ReLU+VirtualVF5",
      "control": "data/output/test/gridhard/control/early_stop/different_task/fine_tune/dqn_aux/aux_control/sweep_5g/",
      },
     {"label": "ReLU+XY",
@@ -757,10 +610,10 @@ gh_diff_tune_early_sweep = [
     {"label": "FTA eta=0.8",
      "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn_lta/eta_study_0.8_sweep/",
      },
-    {"label": "FTA+Control1g",
+    {"label": "FTA+VirtualVF1",
      "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn_lta_aux/aux_control/sweep_1g/",
      },
-    {"label": "FTA+Control5g",
+    {"label": "FTA+VirtualVF5",
      "control": "data/output/test/gridhard/control/different_task/fine_tune/dqn_lta_aux/aux_control/sweep_5g/",
      },
     {"label": "FTA+XY",
@@ -787,10 +640,10 @@ gh_online = [
     {"label": "ReLU",
      "control": "data/output/result/gridhard/linear_vf/online_property/dqn/best/",
      },
-    {"label": "ReLU+Control1g",
+    {"label": "ReLU+VirtualVF1",
      "control": "data/output/result/gridhard/linear_vf/online_property/dqn_aux/aux_control/best_1g_gamma0.9/",
      },
-    {"label": "ReLU+Control5g",
+    {"label": "ReLU+VirtualVF5",
      "control": "data/output/result/gridhard/linear_vf/online_property/dqn_aux/aux_control/best_5g_gamma0.9/",
      },
     {"label": "ReLU+XY",
@@ -820,10 +673,10 @@ gh_online = [
     {"label": "FTA eta=0.8",
      "control": "data/output/result/gridhard/linear_vf/online_property/dqn_lta/eta_study_0.8_best/",
      },
-    {"label": "FTA+Control1g",
+    {"label": "FTA+VirtualVF1",
      "control": "data/output/result/gridhard/linear_vf/online_property/dqn_lta_aux/aux_control/best_1g_gamma0.9/",
      },
-    {"label": "FTA+Control5g",
+    {"label": "FTA+VirtualVF5",
      "control": "data/output/result/gridhard/linear_vf/online_property/dqn_lta_aux/aux_control/best_5g_gamma0.9/",
      },
     {"label": "FTA+XY",
@@ -848,11 +701,11 @@ gh_same_early = [
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/same_task/fix_rep/dqn/best/",
      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn/best/"
      },
-    {"label": "ReLU+Control1g",
+    {"label": "ReLU+VirtualVF1",
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/same_task/fix_rep/dqn_aux/aux_control/best_1g_gamma0.9/",
      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_aux/aux_control/best_1g_gamma0.9/"
      },
-    {"label": "ReLU+Control5g",
+    {"label": "ReLU+VirtualVF5",
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/same_task/fix_rep/dqn_aux/aux_control/best_5g_gamma0.9/",
      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_aux/aux_control/best_5g_gamma0.9/"
      },
@@ -892,11 +745,11 @@ gh_same_early = [
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/same_task/fix_rep/dqn_lta/eta_study_0.8_best/",
      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta/eta_study_0.8_best/"
      },
-    {"label": "FTA+Control1g",
+    {"label": "FTA+VirtualVF1",
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/same_task/fix_rep/dqn_lta_aux/aux_control/best_1g_gamma0.9/",
      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta_aux/aux_control/best_1g_gamma0.9/"
      },
-    {"label": "FTA+Control5g",
+    {"label": "FTA+VirtualVF5",
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/same_task/fix_rep/dqn_lta_aux/aux_control/best_5g_gamma0.9/",
      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta_aux/aux_control/best_5g_gamma0.9/"
      },
@@ -938,11 +791,11 @@ gh_similar_early = [
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/similar_task/fix_rep/dqn/best/",
      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn/best/"
      },
-    {"label": "ReLU+Control1g",
+    {"label": "ReLU+VirtualVF1",
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/similar_task/fix_rep/dqn_aux/aux_control/best_1g_gamma0.9/",
      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_aux/aux_control/best_1g_gamma0.9/"
      },
-    {"label": "ReLU+Control5g",
+    {"label": "ReLU+VirtualVF5",
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/similar_task/fix_rep/dqn_aux/aux_control/best_5g_gamma0.9/",
      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_aux/aux_control/best_5g_gamma0.9/"
      },
@@ -982,11 +835,11 @@ gh_similar_early = [
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/similar_task/fix_rep/dqn_lta/eta_study_0.8_best/",
      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta/eta_study_0.8_best/"
      },
-    {"label": "FTA+Control1g",
+    {"label": "FTA+VirtualVF1",
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/similar_task/fix_rep/dqn_lta_aux/aux_control/best_1g_gamma0.9/",
      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta_aux/aux_control/best_1g_gamma0.9/"
      },
-    {"label": "FTA+Control5g",
+    {"label": "FTA+VirtualVF5",
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/similar_task/fix_rep/dqn_lta_aux/aux_control/best_5g_gamma0.9/",
      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta_aux/aux_control/best_5g_gamma0.9/"
      },
@@ -1025,11 +878,11 @@ gh_diff_early = [
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fix_rep/dqn/best/",
      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn/best/"
      },
-    {"label": "ReLU+Control1g",
+    {"label": "ReLU+VirtualVF1",
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fix_rep/dqn_aux/aux_control/best_1g_gamma0.9/",
      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_aux/aux_control/best_1g_gamma0.9/"
      },
-    {"label": "ReLU+Control5g",
+    {"label": "ReLU+VirtualVF5",
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fix_rep/dqn_aux/aux_control/best_5g_gamma0.9/",
      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_aux/aux_control/best_5g_gamma0.9/"
      },
@@ -1069,11 +922,11 @@ gh_diff_early = [
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fix_rep/dqn_lta/eta_study_0.8_best/",
      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta/eta_study_0.8_best/"
      },
-    {"label": "FTA+Control1g",
+    {"label": "FTA+VirtualVF1",
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/aux_control/best_1g_gamma0.9/",
      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta_aux/aux_control/best_1g_gamma0.9/"
      },
-    {"label": "FTA+Control5g",
+    {"label": "FTA+VirtualVF5",
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fix_rep/dqn_lta_aux/aux_control/best_5g_gamma0.9/",
      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta_aux/aux_control/best_5g_gamma0.9/"
      },
@@ -1116,11 +969,11 @@ gh_diff_tune_early = [
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn/best/",
      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn/best/"
      },
-    {"label": "ReLU+Control1g",
+    {"label": "ReLU+VirtualVF1",
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_aux/aux_control/best_1g_gamma0.9/",
      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_aux/aux_control/best_1g_gamma0.9/"
      },
-    {"label": "ReLU+Control5g",
+    {"label": "ReLU+VirtualVF5",
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_aux/aux_control/best_5g_gamma0.9/",
      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_aux/aux_control/best_5g_gamma0.9/"
      },
@@ -1160,11 +1013,11 @@ gh_diff_tune_early = [
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta/eta_study_0.8_best/",
      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta/eta_study_0.8_best/"
      },
-    {"label": "FTA+Control1g",
+    {"label": "FTA+VirtualVF1",
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta_aux/aux_control/best_1g_gamma0.9/",
      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta_aux/aux_control/best_1g_gamma0.9/"
      },
-    {"label": "FTA+Control5g",
+    {"label": "FTA+VirtualVF5",
      "control": "data/output/result/gridhard/linear_vf/control/early_stop/different_task/fine_tune/dqn_lta_aux/aux_control/best_5g_gamma0.9/",
      "online_measure": "data/output/result/gridhard/linear_vf/online_property/dqn_lta_aux/aux_control/best_5g_gamma0.9/"
      },
@@ -1199,11 +1052,11 @@ gh_same_last = [
      "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn/best/"
      },
-    {"label": "ReLU+Control1g",
+    {"label": "ReLU+VirtualVF1",
      "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_aux/aux_control/best_1g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/aux_control/best_1g/"
      },
-    {"label": "ReLU+Control5g",
+    {"label": "ReLU+VirtualVF5",
      "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_aux/aux_control/best_5g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq128/aux_control/best_5g/"
      },
@@ -1243,11 +1096,11 @@ gh_same_last = [
      "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_lta/eta_study_0.8_best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.8_best/"
      },
-    {"label": "FTA+Control1g",
+    {"label": "FTA+VirtualVF1",
      "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_lta_aux/aux_control/best_1g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_1g/"
      },
-    {"label": "FTA+Control5g",
+    {"label": "FTA+VirtualVF5",
      "control": "data/output/test/gridhard/control/last/same_task/fix_rep/dqn_lta_aux/aux_control/best_5g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_5g/"
      },
@@ -1286,11 +1139,11 @@ gh_similar_last = [
      "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn/best/"
      },
-    {"label": "ReLU+Control1g",
+    {"label": "ReLU+VirtualVF1",
      "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/aux_control/best_1g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/aux_control/best_1g/"
      },
-    {"label": "ReLU+Control5g",
+    {"label": "ReLU+VirtualVF5",
      "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/aux_control/best_5g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq128/aux_control/best_5g/"
      },
@@ -1330,11 +1183,11 @@ gh_similar_last = [
      "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_lta/eta_study_0.8_best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.8_best/"
      },
-    {"label": "FTA+Control1g",
+    {"label": "FTA+VirtualVF1",
      "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_lta_aux/aux_control/best_1g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_1g/"
      },
-    {"label": "FTA+Control5g",
+    {"label": "FTA+VirtualVF5",
      "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_lta_aux/aux_control/best_5g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_5g/"
      },
@@ -1373,11 +1226,11 @@ gh_diff_last = [
      "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn/best/"
      },
-    {"label": "ReLU+Control1g",
+    {"label": "ReLU+VirtualVF1",
      "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/aux_control/best_1g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/aux_control/best_1g/"
      },
-    {"label": "ReLU+Control5g",
+    {"label": "ReLU+VirtualVF5",
      "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/aux_control/best_5g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq128/aux_control/best_5g/"
      },
@@ -1417,11 +1270,11 @@ gh_diff_last = [
      "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_lta/eta_study_0.8_best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.8_best/"
      },
-    {"label": "FTA+Control1g",
+    {"label": "FTA+VirtualVF1",
      "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_lta_aux/aux_control/best_1g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_1g/"
      },
-    {"label": "FTA+Control5g",
+    {"label": "FTA+VirtualVF5",
      "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_lta_aux/aux_control/best_5g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_5g/"
      },
@@ -1460,11 +1313,11 @@ gh_diff_tune_last = [
      "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn/best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn/best/"
      },
-    {"label": "ReLU+Control1g",
+    {"label": "ReLU+VirtualVF1",
      "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/aux_control/best_1g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/aux_control/best_1g/"
      },
-    {"label": "ReLU+Control5g",
+    {"label": "ReLU+VirtualVF5",
      "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/aux_control/best_5g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq128/aux_control/best_5g/"
      },
@@ -1504,11 +1357,11 @@ gh_diff_tune_last = [
      "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_lta/eta_study_0.8_best/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta/eta_study_0.8_best/"
      },
-    {"label": "FTA+Control1g",
+    {"label": "FTA+VirtualVF1",
      "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_lta_aux/aux_control/best_1g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_1g/"
      },
-    {"label": "FTA+Control5g",
+    {"label": "FTA+VirtualVF5",
      "control": "data/output/test/gridhard/control/last/different_task/fine_tune/dqn_lta_aux/aux_control/best_5g/",
      "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_5g/"
      },
@@ -1771,11 +1624,11 @@ crgb_diff_last = [
     "control": "data/output/test/picky_eater/control/different_task/fix_rep/dqn/best_final/",
      "online_measure": "data/output/test/picky_eater/online_property/dqn/best/"
      },
-#     {"label": "ReLU+Control1g",
+#     {"label": "ReLU+VirtualVF1",
      # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/aux_control/best_1g/",
      # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/aux_control/best_1g/"
      # },
-    # {"label": "ReLU+Control5g",
+    # {"label": "ReLU+VirtualVF5",
      # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/aux_control/best_5g/",
      # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq128/aux_control/best_5g/"
      # },
@@ -1803,11 +1656,11 @@ crgb_diff_last = [
      "control": "data/output/test/picky_eater/control/different_task/fix_rep/dqn_lta/best_final/",
      "online_measure": "data/output/test/picky_eater/online_property/dqn_lta/best/"
      },
-#     {"label": "LTA+Control1g",
+#     {"label": "LTA+VirtualVF1",
      # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_lta_aux/aux_control/best_1g/",
      # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_1g/"
      # },
-    # {"label": "LTA+Control5g",
+    # {"label": "LTA+VirtualVF5",
      # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_lta_aux/aux_control/best_5g/",
      # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_5g/"
      # },
@@ -1910,11 +1763,11 @@ crgb_similar_last = [
      "control": "data/output/test/gridhard/control/similar_task/fix_rep/dqn/best_final/",
      "online_measure": "data/output/test/gridhard/online_property/dqn/best/"
      },
-#     {"label": "ReLU+Control1g",
+#     {"label": "ReLU+VirtualVF1",
      # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/aux_control/best_1g/",
      # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/aux_control/best_1g/"
      # },
-    # {"label": "ReLU+Control5g",
+    # {"label": "ReLU+VirtualVF5",
      # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/aux_control/best_5g/",
      # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq128/aux_control/best_5g/"
      # },
@@ -1942,11 +1795,11 @@ crgb_similar_last = [
       "control": "data/output/test/picky_eater/control/similar_task/fix_rep/dqn_lta/best_final/",
       "online_measure": "data/output/test/picky_eater/online_property/dqn_lta/best/"
       },
-    # {"label": "LTA+Control1g",
+    # {"label": "LTA+VirtualVF1",
      # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_lta_aux/aux_control/best_1g/",
      # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_1g/"
      # },
-    # {"label": "LTA+Control5g",
+    # {"label": "LTA+VirtualVF5",
      # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_lta_aux/aux_control/best_5g/",
      # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_5g/"
      # },
@@ -2128,11 +1981,11 @@ crgb_diff_early = [
     "control": "data/output/test/picky_eater/control/different_task/fix_rep/dqn/best_early/",
      "online_measure": "data/output/test/picky_eater/online_property/dqn/best/"
      },
-#     {"label": "ReLU+Control1g",
+#     {"label": "ReLU+VirtualVF1",
      # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/aux_control/best_1g/",
      # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/aux_control/best_1g/"
      # },
-    # {"label": "ReLU+Control5g",
+    # {"label": "ReLU+VirtualVF5",
      # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_aux/aux_control/best_5g/",
      # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq128/aux_control/best_5g/"
      # },
@@ -2160,11 +2013,11 @@ crgb_diff_early = [
      "control": "data/output/test/picky_eater/control/different_task/fix_rep/dqn_lta/best_early/",
      "online_measure": "data/output/test/picky_eater/online_property/dqn_lta/best/"
      },
-#     {"label": "LTA+Control1g",
+#     {"label": "LTA+VirtualVF1",
      # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_lta_aux/aux_control/best_1g/",
      # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_1g/"
      # },
-    # {"label": "LTA+Control5g",
+    # {"label": "LTA+VirtualVF5",
      # "control": "data/output/test/gridhard/control/last/different_task/fix_rep/dqn_lta_aux/aux_control/best_5g/",
      # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_5g/"
      # },
@@ -2487,11 +2340,11 @@ crgb_similar_early = [
      "control": "data/output/test/gridhard/control/similar_task/fix_rep/dqn/best_early/",
      "online_measure": "data/output/test/gridhard/online_property/dqn/best/"
      },
-#     {"label": "ReLU+Control1g",
+#     {"label": "ReLU+VirtualVF1",
      # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/aux_control/best_1g/",
      # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq8/aux_control/best_1g/"
      # },
-    # {"label": "ReLU+Control5g",
+    # {"label": "ReLU+VirtualVF5",
      # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_aux/aux_control/best_5g/",
      # "online_measure": "data/output/test/gridhard/online_property/dqn_aux/freq128/aux_control/best_5g/"
      # },
@@ -2519,11 +2372,11 @@ crgb_similar_early = [
       "control": "data/output/test/picky_eater/control/similar_task/fix_rep/dqn_lta/best_early/",
       "online_measure": "data/output/test/picky_eater/online_property/dqn_lta/best/"
       },
-    # {"label": "LTA+Control1g",
+    # {"label": "LTA+VirtualVF1",
      # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_lta_aux/aux_control/best_1g/",
      # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_1g/"
      # },
-    # {"label": "LTA+Control5g",
+    # {"label": "LTA+VirtualVF5",
      # "control": "data/output/test/gridhard/control/last/similar_task/fix_rep/dqn_lta_aux/aux_control/best_5g/",
      # "online_measure": "data/output/test/gridhard/online_property/dqn_lta_aux/aux_control/best_5g/"
      # },
@@ -7427,10 +7280,10 @@ gh_original_sweep_v13 = [
     {"label": "ReLU",
      "control": "data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn/sweep/",
      },
-    {"label": "ReLU+Control1g",
+    {"label": "ReLU+VirtualVF1",
      "control": "data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_aux/aux_control/sweep_1g_gamma0.9_slow_sync/",
      },
-    {"label": "ReLU+Control5g",
+    {"label": "ReLU+VirtualVF5",
      "control": "data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_aux/aux_control/sweep_5g_gamma0.9_slow_sync_smallw/",
      },
     {"label": "ReLU+Info",
@@ -7460,10 +7313,10 @@ gh_original_sweep_v13 = [
     {"label": "FTA eta=0.8",
      "control": "data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta/eta_study_0.8_sweep/",
      },
-    {"label": "FTA+Control1g",
+    {"label": "FTA+VirtualVF1",
      "control": "data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta_aux/aux_control/sweep_1g_gamma0.9_slow_sync/",
      },
-    {"label": "FTA+Control5g",
+    {"label": "FTA+VirtualVF5",
      "control": "data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta_aux/aux_control/sweep_5g_gamma0.9_slow_sync_smallw/",
      },
     {"label": "FTA+Info",
@@ -7487,10 +7340,10 @@ gh_transfer_samelr_v13 = [
     {"label": "ReLU",
      "control": "data/output/test_v13/gridhard/linear_vf/original_0909/transfer/goal_id_{}/dqn/same_lr/",
      },
-    # {"label": "ReLU+Control1g",
+    # {"label": "ReLU+VirtualVF1",
     #  "control": "data/output/test_v13/gridhard/linear_vf/original_0909/transfer/goal_id_{}/dqn_aux/aux_control/same_lr_1g/",
     #  },
-    # {"label": "ReLU+Control5g",
+    # {"label": "ReLU+VirtualVF5",
     #  "control": "data/output/test_v13/gridhard/linear_vf/original_0909/transfer/goal_id_{}/dqn_aux/aux_control/same_lr_5g/",
     #  },
     {"label": "ReLU+XY",
@@ -7520,10 +7373,10 @@ gh_transfer_samelr_v13 = [
     {"label": "FTA eta=0.8",
      "control": "data/output/test_v13/gridhard/linear_vf/original_0909/transfer/goal_id_{}/dqn_lta/eta_study_0.8_same_lr/",
      },
-    # {"label": "FTA+Control1g",
+    # {"label": "FTA+VirtualVF1",
     #  "control": "data/output/test_v13/gridhard/linear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/aux_control/same_lr_1g/",
     #  },
-    # {"label": "FTA+Control5g",
+    # {"label": "FTA+VirtualVF5",
     #  "control": "data/output/test_v13/gridhard/linear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/aux_control/same_lr_5g/",
     #  },
     # {"label": "FTA+XY",
@@ -7551,11 +7404,11 @@ gh_transfer_sweep_v13 = [
      "control": "data/output/test_v13/gridhard/linear_vf/original_0909/transfer/goal_id_{}/dqn/sweep/",
      "online_measure": ["data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn/sweep/", 1]
      },
-    {"label": "ReLU+Control1g",
+    {"label": "ReLU+VirtualVF1",
      "control": "data/output/test_v13/gridhard/linear_vf/original_0909/transfer/goal_id_{}/dqn_aux/aux_control/sweep_1g_slow_sync/",
      "online_measure": ["data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_aux/aux_control/sweep_1g_gamma0.9_slow_sync/", 1],
      },
-    {"label": "ReLU+Control5g",
+    {"label": "ReLU+VirtualVF5",
      "control": "data/output/test_v13/gridhard/linear_vf/original_0909/transfer/goal_id_{}/dqn_aux/aux_control/sweep_5g_slow_sync_smallw/",
      "online_measure": ["data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_aux/aux_control/sweep_5g_gamma0.9_slow_sync_smallw/", 1],
      },
@@ -7579,6 +7432,10 @@ gh_transfer_sweep_v13 = [
      "control": "data/output/test_v13/gridhard/linear_vf/original_0909/transfer/goal_id_{}/dqn_aux/successor_as/sweep/",
      "online_measure": ["data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_aux/successor_as/sweep/", 1],
      },
+    {"label": "ReLU+ATC",
+     "control": "data/output/test_v13/gridhard/linear_vf/original_0909/transfer/goal_id_{}/dqn_cl/sweep/",
+     "online_measure": ["data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_cl/best/", 0],
+     },
     {"label": "FTA eta=0.2",
      "control": "data/output/test_v13/gridhard/linear_vf/original_0909/transfer/goal_id_{}/dqn_lta/eta_study_0.2_sweep/",
      "online_measure": ["data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta/eta_study_0.2_sweep/", 1],
@@ -7595,11 +7452,11 @@ gh_transfer_sweep_v13 = [
      "control": "data/output/test_v13/gridhard/linear_vf/original_0909/transfer/goal_id_{}/dqn_lta/eta_study_0.8_sweep/",
      "online_measure": ["data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta/eta_study_0.8_sweep/", 2],
      },
-    {"label": "FTA+Control1g",
+    {"label": "FTA+VirtualVF1",
      "control": "data/output/test_v13/gridhard/linear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/aux_control/sweep_1g_slow_sync/",
      "online_measure": ["data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta_aux/aux_control/sweep_1g_gamma0.9_slow_sync/", 2],
      },
-    {"label": "FTA+Control5g",
+    {"label": "FTA+VirtualVF5",
      "control": "data/output/test_v13/gridhard/linear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/aux_control/sweep_5g_slow_sync_smallw/",
      "online_measure": ["data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta_aux/aux_control/sweep_5g_gamma0.9_slow_sync_smallw/", 2],
      },
@@ -7623,6 +7480,10 @@ gh_transfer_sweep_v13 = [
      "control": "data/output/test_v13/gridhard/linear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/successor_as/sweep/",
      "online_measure": ["data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta_aux/successor_as/sweep/", 2],
      },
+    {"label": "FTA+ATC",
+     "control": "data/output/test_v13/gridhard/linear_vf/original_0909/transfer/goal_id_{}/dqn_fta_cl/sweep/",
+     "online_measure": ["data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_fta_cl/best/", 0],
+     },
     {"label": "Scratch",
      # "control": "data/output/test_v13/gridhard/linear_vf/learning_scratch/goal_id_{}/dqn/fix_eps_sweep/",
      "control": "data/output/test_v13/gridhard/linear_vf/learning_scratch/goal_id_{}/dqn/sweep/",
@@ -7635,6 +7496,9 @@ gh_transfer_sweep_v13 = [
      "control": "data/output/test_v13/gridhard/linear_vf/learning_scratch/goal_id_{}/input/sweep/",
      "online_measure": ["data/output/test_v13/gridhard/linear_vf/fixrep_property/input/best/", 0],
      },
+    {"label": "Scratch(FTA)",
+     "control": "data/output/test_v13/gridhard/linear_vf/learning_scratch/goal_id_{}/dqn_lta/eta_study_0.2_sweep/",
+     },
     # {"label": "ReLU+divConstr",
     #  "control": "data/output/test_v13/gridhard/linear_vf/original_0909/transfer/goal_id_{}/dqn_div_constr/sweep_w0.0001_last/",
     #  "online_measure": ["data/output/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_div_constr/sweep_w0.0001/", 1],
@@ -7645,10 +7509,10 @@ gh_nonlinear_original_sweep_v13 = [
     {"label": "ReLU",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/",
      },
-    {"label": "ReLU+Control1g",
+    {"label": "ReLU+VirtualVF1",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/aux_control/sweep_1g/",
      },
-    {"label": "ReLU+Control5g",
+    {"label": "ReLU+VirtualVF5",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/aux_control/sweep_5g/",
      },
     {"label": "ReLU+Info",
@@ -7678,10 +7542,10 @@ gh_nonlinear_original_sweep_v13 = [
     {"label": "FTA eta=0.8",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.8_sweep/",
      },
-    {"label": "FTA+Control1g",
+    {"label": "FTA+VirtualVF1",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/aux_control/sweep_1g/",
      },
-    {"label": "FTA+Control5g",
+    {"label": "FTA+VirtualVF5",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/aux_control/sweep_5g/",
      },
     {"label": "FTA+Info",
@@ -7706,11 +7570,11 @@ gh_nonlinear_transfer_sweep_v13 = [
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn/sweep/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/", 3]
      },
-    {"label": "ReLU+Control1g",
+    {"label": "ReLU+VirtualVF1",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/aux_control/sweep_1g/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/aux_control/sweep_1g/", 2],
      },
-    {"label": "ReLU+Control5g",
+    {"label": "ReLU+VirtualVF5",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/aux_control/sweep_5g/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/aux_control/sweep_5g/", 2],
      },
@@ -7750,11 +7614,11 @@ gh_nonlinear_transfer_sweep_v13 = [
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta/eta_study_0.8_sweep/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.8_sweep/", 2],
      },
-    {"label": "FTA+Control1g",
+    {"label": "FTA+VirtualVF1",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/aux_control/sweep_1g/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/aux_control/sweep_1g/", 1],
      },
-    {"label": "FTA+Control5g",
+    {"label": "FTA+VirtualVF5",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/aux_control/sweep_5g/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/aux_control/sweep_5g/", 1],
      },
@@ -7795,10 +7659,10 @@ gh_nonlinear_original_sweep_v13_largeReLU = [
     {"label": "ReLU",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large/sweep/",
      },
-    {"label": "ReLU+Control1g",
+    {"label": "ReLU+VirtualVF1",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/aux_control/sweep_1g/",
      },
-    {"label": "ReLU+Control5g",
+    {"label": "ReLU+VirtualVF5",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/aux_control/sweep_5g/",
      },
     {"label": "ReLU+Info",
@@ -7821,129 +7685,166 @@ gh_nonlinear_original_sweep_v13_largeReLU = [
 gh_nonlinear_transfer_sweep_v13_largeReLU = [
     {"label": "ReLU",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/best/", 0]
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/", 3],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn/sweep/", 0]
      },
-
-    {"label": "No Aux",
-     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/best/", 0]
-     },
-
     {"label": "ReLU+VirtualVF1",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/aux_control/sweep_1g/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/aux_control/best_1g/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/aux_control/sweep_1g/", 2],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_aux/aux_control/sweep_1g/", 0],
      },
     {"label": "ReLU+VirtualVF5",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/aux_control/sweep_5g/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/aux_control/best_5g/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/aux_control/sweep_5g/", 2],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_aux/aux_control/sweep_5g/", 0],
      },
-
-    {"label": "VF5",
-     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/aux_control/sweep_5g/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/aux_control/best_5g/", 0],
-     },
-
-
     {"label": "ReLU+XY",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/info/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/info/best/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/info/sweep/", 2],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_aux/info/sweep/", 0],
      },
     {"label": "ReLU+Decoder",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/input_decoder/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/input_decoder/best/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/input_decoder/sweep/", 3],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_aux/input_decoder/sweep/", 0],
      },
     {"label": "ReLU+NAS",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/nas_v2_delta/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/nas_v2_delta/best/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/nas_v2_delta/sweep/", 3],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_aux/nas_v2_delta/sweep/", 0],
      },
     {"label": "ReLU+Reward",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/reward/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/reward/best/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/reward/sweep/", 2],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_aux/reward/sweep/", 0],
      },
     {"label": "ReLU+SF",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/successor_as/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/successor_as/best/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/successor_as/sweep/", 3],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_aux/successor_as/sweep/", 0],
      },
     {"label": "ReLU(L)",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_large/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large/best/", 0]
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large/sweep/", 3],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_large/sweep/", 0]
      },
     {"label": "ReLU(L)+VirtualVF1",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_large_aux/aux_control/sweep_1g/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/aux_control/best_1g/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/aux_control/sweep_1g/", 3],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_large_aux/aux_control/sweep_1g/", 0],
      },
     {"label": "ReLU(L)+VirtualVF5",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_large_aux/aux_control/sweep_5g/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/aux_control/best_5g/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/aux_control/sweep_5g/", 2],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_large_aux/aux_control/sweep_5g/", 0],
      },
     {"label": "ReLU(L)+XY",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_large_aux/info/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/info/best/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/info/sweep/", 2],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_large_aux/info/sweep/", 0],
      },
     {"label": "ReLU(L)+Decoder",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_large_aux/input_decoder/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/input_decoder/best/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/input_decoder/sweep/", 3],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_large_aux/input_decoder/sweep/", 0],
      },
     {"label": "ReLU(L)+NAS",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_large_aux/nas_v2_delta/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/nas_v2_delta/best/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/nas_v2_delta/sweep/", 4],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_large_aux/nas_v2_delta/sweep/", 0],
      },
     {"label": "ReLU(L)+Reward",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_large_aux/reward/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/reward/best/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/reward/sweep/", 3],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_large_aux/reward/sweep/", 0],
      },
     {"label": "ReLU(L)+SF",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_large_aux/successor_as/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/successor_as/best/", 0],
-     },
-    {"label": "ReLU(L)+ATC",
-     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep_large",
-     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_large", 0]
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/successor_as/sweep/", 3],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_large_aux/successor_as/sweep/", 0],
      },
     {"label": "FTA eta=0.2",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta/eta_study_0.2_sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.2_best/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.2_sweep/", 2],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_lta/eta_study_0.2_sweep/", 0],
      },
     {"label": "FTA eta=0.4",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta/eta_study_0.4_sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.4_best/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.4_sweep/", 1],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_lta/eta_study_0.4_sweep/", 0],
      },
     {"label": "FTA eta=0.6",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta/eta_study_0.6_sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.6_best/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.6_sweep/", 2],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_lta/eta_study_0.6_sweep/", 0],
      },
     {"label": "FTA eta=0.8",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta/eta_study_0.8_sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.8_best/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.8_sweep/", 2],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_lta/eta_study_0.8_sweep/", 0],
      },
     {"label": "FTA+VirtualVF1",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/aux_control/sweep_1g/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/aux_control/best_1g/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/aux_control/sweep_1g/", 1],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_lta_aux/aux_control/sweep_1g/", 0],
      },
     {"label": "FTA+VirtualVF5",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/aux_control/sweep_5g/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/aux_control/best_5g/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/aux_control/sweep_5g/", 1],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_lta_aux/aux_control/sweep_5g/", 0],
      },
     {"label": "FTA+XY",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/info/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/info/best/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/info/sweep/", 1],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_lta_aux/info/sweep/", 0],
      },
     {"label": "FTA+Decoder",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/input_decoder/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/input_decoder/best/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/input_decoder/sweep/", 1],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_lta_aux/input_decoder/sweep/", 0],
      },
     {"label": "FTA+NAS",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/nas_v2_delta/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/nas_v2_delta/best/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/nas_v2_delta/sweep/", 2],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_lta_aux/nas_v2_delta/sweep/", 0],
      },
     {"label": "FTA+Reward",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/reward/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/reward/best/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/reward/sweep/", 2],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_lta_aux/reward/sweep/", 0],
      },
     {"label": "FTA+SF",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/successor_as/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/successor_as/best/",0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/successor_as/sweep/", 2],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_lta_aux/successor_as/sweep/", 0],
      },
+
+    {"label": "ReLU+ATC",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep/",
+    #  "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best/", 0],
+    #  },
+    # {"label": "ReLU(L)+ATC",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep_large/",
+    #  "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_large/", 0],
+    #  },
+    # {"label": "FTA+ATC",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_cl/sweep/",
+    #  "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_cl/best/", 0],
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_cl/sweep/",
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_cl/best/", 0],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_cl/best/", 0],
+     },
+    {"label": "ReLU(L)+ATC",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_cl/sweep_large/",
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_cl/best_large/", 0],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_large_cl/best/", 0],
+     },
+    {"label": "FTA+ATC",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_fta_cl/sweep/",
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_fta_cl/best/", 0],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_lta_cl/best/", 0],
+     },
+
     {"label": "Scratch",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/learning_scratch/goal_id_{}/dqn/sweep/",
      },
@@ -7955,6 +7856,9 @@ gh_nonlinear_transfer_sweep_v13_largeReLU = [
      "control": "data/output/test_v13/gridhard/nonlinear_vf/learning_scratch/goal_id_{}/input/sweep/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/fixrep_property/input/best/", 0],
      },
+    {"label": "Scratch(FTA)",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/learning_scratch/goal_id_{}/dqn_lta/eta_study_0.2_sweep/",
+     },
     {"label": "Scratch(L)",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/learning_scratch/goal_id_{}/dqn_large/sweep/",
      },
@@ -7962,223 +7866,6 @@ gh_nonlinear_transfer_sweep_v13_largeReLU = [
      "control": "data/output/test_v13/gridhard/nonlinear_vf/learning_scratch/goal_id_{}/random_large/sweep/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/fixrep_property/random_large/best/", 0],
      },
-    {"label": "ReLU+ATC",
-     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep",
-     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best", 0]
-     },
-
-    {"label": "FTA+ATC",
-     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_cl/sweep",
-     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_cl/best", 0]
-     },
-
-    # {
-    #     "label": "ReLU+Laplacian (prop)",
-    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_extend",
-    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_extend", 0]
-    #  },
-
-    #  {
-    #      "label": "ReLU+Laplacian",
-    #      "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_property_final",
-    #      "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_final",
-    #                         0],
-    #      # "best": "13"
-    #      "best": "8"
-    #  },
-    # {
-    #     "label": "ReLU+Laplacian",
-    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_property_large_final",
-    #     "online_measure": [
-    #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_large_final",
-    #         0],
-    # },
-
-    # {
-    #     "label": "ReLU+Laplacian (prop)",
-    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_property_extra",
-    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_extra", 0]
-    #  },
-    # {
-    #     "label": "ReLU+Laplacian",
-    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_extra",
-    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_extra", 0]
-    #  },
-    {
-        "label": "ReLU+Diversity",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/diversity/sweep_v6_small",
-        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/best_v7_small", 0]
-     },
-    {
-        "label": "ReLU+Ortho",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/orthogonality/sweep",
-        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/orthogonality/best", 0]
-     },
-    # {
-    #     "label": "ReLU+Ortho (prop)",
-    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_ortho/sweep_0.001",
-    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_ortho/best_0.001", 0]
-    #  },
-    {
-        "label": "ReLU+Ortho (prop)",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/orthogonality/sweep_property",
-        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/orthogonality/best_property", 0]
-     },
-    #     {"label": "ReLU+Ortho",
-    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_ortho/best_0.001" 
-    #  },
-    # {
-    #     "label": "ReLU+Laplacian",
-    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_property_finall",
-    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_finall", 0]
-    #  },
-    {
-        "label": "ReLU+DynaOrtho",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/dyna_ortho/sweep_property",
-        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dyna_ortho/best_property", 0]
-     },
-    {
-        "label": "ReLU+Laplacian (0)",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/dyna_ortho/sweep_property",
-        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dyna_ortho/best_property", 0]
-     },
-    {
-        "label": "ReLU+Laplacian (0.1)",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_0.1",
-        "online_measure": [
-            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_0.1",
-            0],
-    },
-    {
-        "label": "ReLU+Laplacian (0.25)",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_0.25",
-        "online_measure": [
-            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_0.25",
-            0],
-    },
-    {
-        "label": "ReLU+Laplacian (0.5)",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_0.5",
-        "online_measure": [
-            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_0.5",
-            0],
-    },
-    {
-        "label": "ReLU+Laplacian (0.75)",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_0.75",
-        "online_measure": [
-            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_0.75",
-            0],
-    },
-    {
-        "label": "ReLU+DA",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/dynamic_awareness/sweep_property_uniform",
-        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dynamic_awareness/best_property_uniform", 0]
-     },
-    {
-        "label": "ReLU+CompOrtho",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/comp_ortho/sweep",
-        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/comp_ortho/best", 0]
-     },
-
-    {
-        "label": "ReLU+CR+O",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/comp_ortho/sweep",
-        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/comp_ortho/best", 0]
-     },
-
-    {
-        "label": "ReLU(L)+CR+O",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/comp_ortho/sweep_large",
-        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/comp_ortho/best_large", 0]
-     },
-
-    {
-        "label": "FTA+CR+O",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_aux/comp_ortho/sweep",
-        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/comp_ortho/best", 0]
-     },
-    # {
-    #     "label": "ReLU+CR",
-    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/complexity_reduction/sweep_property",
-    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/complexity_reduction/best_property", 0]
-    #  },
-    # {
-    #     "label": "ReLU+CR",
-    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/complexity_reduction/sweep",
-    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/complexity_reduction/best", 0]
-    #  },
-    {
-        "label": "ReLU+CR",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/complexity_reduction/sweep",
-        "online_measure": [
-            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/complexity_reduction/best",
-            0],
-    },
-    {
-        "label": "ReLU(L)+CR",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/complexity_reduction/sweep_large",
-        "online_measure": [
-            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/complexity_reduction/best_large",
-            0],
-    },
-    {
-        "label": "FTA+CR",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_aux/complexity_reduction/sweep",
-        "online_measure": [
-            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/complexity_reduction/best",
-            0],
-    },
-
-    {
-        "label": "ReLU+DA+O",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/dyna_ortho/sweep_property",
-        "online_measure": [
-            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dyna_ortho/best_property",
-            0],
-    },
-    {
-        "label": "ReLU(L)+DA+O",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/dyna_ortho/sweep_large",
-        "online_measure": [
-            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dyna_ortho/best_large",
-            0],
-    },
-    {
-        "label": "FTA+DA+O",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_aux/dyna_ortho/sweep",
-        "online_measure": [
-            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/dyna_ortho/best",
-            0],
-    },
-    {
-        "label": "ReLU+Laplacian",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep",
-        "online_measure": [
-            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best",
-            0],
-    },
-    # {
-    #     "label": "ReLU+Laplacian (0)",
-    #     "control": "data/output/test_temp/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_0",
-    #     "online_measure": [
-    #         "data/output/test_temp/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_0",
-    #         0],
-    # },
-    {
-        "label": "ReLU(L)+Laplacian",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_large",
-        "online_measure": [
-            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_large",
-            0],
-    },
-    {
-        "label": "FTA+Laplacian",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_aux/laplacian/sweep",
-        "online_measure": [
-            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/laplacian/best",
-            0],
-    },
 ]
 
 ghmg_original_sweep_v13 = [
@@ -8257,114 +7944,120 @@ ghmg_transfer_last_sweep_v13 = [
 ]
 
 
-gh_nonlinear_transfer_aug_study = [
+
+
+gh_nonlinear_transfer_sweep_v13_largeReLU = [
     {"label": "ReLU",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/", 3]
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/best/", 0]
      },
-    {"label": "ReLU+Control1g",
+    {"label": "ReLU+VirtualVF1",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/aux_control/sweep_1g/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/aux_control/sweep_1g/", 2],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/aux_control/best_1g/", 0],
      },
-    {"label": "ReLU+Control5g",
+    {"label": "ReLU+VirtualVF5",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/aux_control/sweep_5g/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/aux_control/sweep_5g/", 2],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/aux_control/best_5g/", 0],
      },
     {"label": "ReLU+XY",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/info/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/info/sweep/", 2],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/info/best/", 0],
      },
     {"label": "ReLU+Decoder",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/input_decoder/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/input_decoder/sweep/", 3],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/input_decoder/best/", 0],
      },
     {"label": "ReLU+NAS",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/nas_v2_delta/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/nas_v2_delta/sweep/", 3],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/nas_v2_delta/best/", 0],
      },
     {"label": "ReLU+Reward",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/reward/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/reward/sweep/", 2],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/reward/best/", 0],
      },
     {"label": "ReLU+SF",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/successor_as/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/successor_as/sweep/", 3],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/successor_as/best/", 0],
      },
     {"label": "ReLU(L)",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_large/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large/sweep/", 3]
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large/best/", 0]
      },
-    {"label": "ReLU(L)+Control1g",
+    {"label": "ReLU(L)+VirtualVF1",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_large_aux/aux_control/sweep_1g/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/aux_control/sweep_1g/", 3],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/aux_control/best_1g/", 0],
      },
-    {"label": "ReLU(L)+Control5g",
+    {"label": "ReLU(L)+VirtualVF5",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_large_aux/aux_control/sweep_5g/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/aux_control/sweep_5g/", 2],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/aux_control/best_5g/", 0],
      },
     {"label": "ReLU(L)+XY",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_large_aux/info/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/info/sweep/", 2],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/info/best/", 0],
      },
     {"label": "ReLU(L)+Decoder",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_large_aux/input_decoder/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/input_decoder/sweep/", 3],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/input_decoder/best/", 0],
      },
     {"label": "ReLU(L)+NAS",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_large_aux/nas_v2_delta/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/nas_v2_delta/sweep/", 4],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/nas_v2_delta/best/", 0],
      },
     {"label": "ReLU(L)+Reward",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_large_aux/reward/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/reward/sweep/", 3],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/reward/best/", 0],
      },
     {"label": "ReLU(L)+SF",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_large_aux/successor_as/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/successor_as/sweep/", 3],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/successor_as/best/", 0],
+     },
+    {"label": "ReLU(L)+ATC",
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_large_cl/sweep",
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_cl/best", 0]
      },
     {"label": "FTA eta=0.2",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta/eta_study_0.2_sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.2_sweep/", 2],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.2_best/", 0],
      },
     {"label": "FTA eta=0.4",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta/eta_study_0.4_sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.4_sweep/", 1],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.4_best/", 0],
      },
     {"label": "FTA eta=0.6",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta/eta_study_0.6_sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.6_sweep/", 2],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.6_best/", 0],
      },
     {"label": "FTA eta=0.8",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta/eta_study_0.8_sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.8_sweep/", 2],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.8_best/", 0],
      },
-    {"label": "FTA+Control1g",
+    {"label": "FTA+VirtualVF1",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/aux_control/sweep_1g/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/aux_control/sweep_1g/", 1],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/aux_control/best_1g/", 0],
      },
-    {"label": "FTA+Control5g",
+    {"label": "FTA+VirtualVF5",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/aux_control/sweep_5g/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/aux_control/sweep_5g/", 1],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/aux_control/best_5g/", 0],
      },
     {"label": "FTA+XY",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/info/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/info/sweep/", 1],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/info/best/", 0],
      },
     {"label": "FTA+Decoder",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/input_decoder/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/input_decoder/sweep/", 1],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/input_decoder/best/", 0],
      },
     {"label": "FTA+NAS",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/nas_v2_delta/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/nas_v2_delta/sweep/", 2],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/nas_v2_delta/best/", 0],
      },
     {"label": "FTA+Reward",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/reward/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/reward/sweep/", 2],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/reward/best/", 0],
      },
     {"label": "FTA+SF",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/successor_as/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/successor_as/sweep/", 2],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/successor_as/best/",0],
      },
     {"label": "Scratch",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/learning_scratch/goal_id_{}/dqn/sweep/",
@@ -8385,180 +8078,100 @@ gh_nonlinear_transfer_aug_study = [
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/fixrep_property/random_large/best/", 0],
      },
     {"label": "ReLU+ATC",
-     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep",
-     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best", 0]
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_cl/sweep",
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_cl/best", 0]
      },
+
     {"label": "FTA+ATC",
-     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_cl/sweep",
-     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_cl/best", 0]
+     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_cl/sweep",
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_cl/best", 0]
      },
-    {"label": "ReLU+Aug",
-     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aug/sweep",
-     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aug/best", 0]
-     },
-    {"label": "FTA+SF+Aug",
-     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_aux/successor_as/sweep_aug",
-     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/successor_as/best_aug", 0]
-     },
-    {"label": "FTA+SF+AuxAug",
-     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_aux/successor_as/sweep_aug_aux",
-     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/successor_as/best_aug_aux", 0]
-     },
-    {"label": "FTA+SF+VFAug",
-     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_aux/successor_as/sweep_aug_vf",
-     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/successor_as/best_aug_vf", 0]
-     },
-    {"label": "ReLU+ATC+NoAug",
-     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep_sp_0",
-     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_sp_0", 0]
-     },
-    {"label": "FTA+Aug",
-     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_aug/sweep",
-     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aug/best", 0]
-     },
-]
 
-gh_nonlinear_transfer_cs_study = [
-    {"label": "ReLU(L)+Ortho",
-     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_ortho/best_large_1" ,
-     },
-    {"label": "ReLU+Ortho",
-     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_ortho/best_0.001" 
-     },
-    {"label": "ReLU+Aug",
-     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aug/best"
-     },
-    {"label": "FTA eta=0.2",
-     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.2_sweep/"
-     },
-    {"label": "FTA+SF+Aug",
-     "control": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/successor_as/best_aug", 0]
-     },
-    {"label": "FTA+SF+AuxAug",
-     "control": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/successor_as/best_aug_aux", 0]
-     },
-    {"label": "FTA+SF+VFAug",
-     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_aux/successor_as/sweep_aug_vf",
-     "control": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/successor_as/best_aug_vf", 0]
-     },
-]
-
-
-laplacian_rep_full = [
-    # {  
-    #     "label": "ReLU(L)+Ortho",
-    #     "control": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_final",
-    # },
-    # {"label": "ReLU+Ortho",
-    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_ortho/best_0.001" 
-    #  },
-    # {"label": "ReLU+Aug",
-    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aug/best"
-    #  },
-    # {"label": "FTA eta=0.2",
-    #  "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.2_sweep/"
-    #  },
-    # {"label": "FTA+SF+Aug",
-    #  "control": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/successor_as/best_aug", 0]
-    #  },
-    # {"label": "FTA+SF+AuxAug",
-    #  "control": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/successor_as/best_aug_aux", 0]
-    #  },
-    # {"label": "FTA+SF+VFAug",
-    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_aux/successor_as/sweep_aug_vf",
-    #  "control": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/successor_as/best_aug_vf", 0]
-    #  },
-    #  {
-    #      "label": "ReLU+Ortho",
-    #      "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep",
-    #      "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_final", 0],
-    #  },    
-     {
-         "label": "ReLU+Laplacian (non-standard)",
-         "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_extend",
-         "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_extend", 0],
-     },    
-    #  {
-    #      "label": "FTA eta=0.2",
-    #      "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_extra",
-    #      "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_final"],
-    #  },   
-    #  {
-    #      "label": "FTA eta=0.4",
-    #      "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_property_extra",
-    #      "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_final"],
-    #  },
     # {
-    #      "label": "ReLU+Laplacian (standard)",
+    #     "label": "ReLU+Laplacian (prop)",
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_extend",
+    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_extend", 0]
+    #  },
+
+    #  {
+    #      "label": "ReLU+Laplacian",
     #      "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_property_final",
-    #      "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_final", 0],
+    #      "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_final",
+    #                         0],
+    #      # "best": "13"
+    #      "best": "8"
     #  },
     # {
-    #      "label": "ReLU(L)+Laplacian (standard)",
-    #      "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_property_large_final",
-    #      "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_large_final", 0],
-    #  },
-    {"label": "ReLU",
-     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/", 1]
-     },
-    {"label": "FTA+SF",
-     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/successor_as/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/successor_as/sweep/", 2],
-     },
-]
-
-nonlinear_maze_online_dynamic = [
-    {
-        "label": "ReLU+ATC",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/dynamic_awareness/sweep_property",
-        "online_measure": [
-            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dynamic_awareness/best_property",
-            0],
-    },
-    # {
-    #     "label": "FTA+ATC",
-    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/dynamic_awareness/sweep_large_property",
+    #     "label": "ReLU+Laplacian",
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_property_large_final",
     #     "online_measure": [
-    #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dynamic_awareness/best_property_large",
+    #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_large_final",
     #         0],
     # },
-   {"label": "ReLU",
-    "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn/sweep/",
-    "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/", 3]
-    },
-    {"label": "FTA+SF",
-     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/successor_as/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/successor_as/sweep/", 2],
-     },
-]
 
-
-nonlinear_maze_online_complexity_reduction_sweep = [
+    # {
+    #     "label": "ReLU+Laplacian (prop)",
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_property_extra",
+    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_extra", 0]
+    #  },
+    # {
+    #     "label": "ReLU+Laplacian",
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_extra",
+    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_extra", 0]
+    #  },
     {
-        "label": "ReLU+CR",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/complexity_reduction/sweep",
-        "best": "25"
-    },
-
-
-   # {
-   #     "label": "ReLU+ATC",
-   #     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dyna_ortho/best_property",
-   #     "best": "1"
-   # },
-   # {
-   #     "label": "FTA+ATC",
-   #     "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_finall",
-   #     "best": "42"
-   # },
-   {"label": "ReLU",
-    #"control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn/sweep/",
-    "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/",
-    },
-]
-
-nonlinear_maze_transfer_complexity_reduction = [
+        "label": "ReLU+Diversity",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/diversity/sweep_v6_small",
+        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/best_v7_small", 0]
+     },
+    {
+        "label": "ReLU+Ortho",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/orthogonality/sweep",
+        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/orthogonality/best", 0]
+     },
+    # {
+    #     "label": "ReLU+Ortho (prop)",
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_ortho/sweep_0.001",
+    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_ortho/best_0.001", 0]
+    #  },
+    {
+        "label": "ReLU+Ortho (prop)",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/orthogonality/sweep_property",
+        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/orthogonality/best_property", 0]
+     },
+    #     {"label": "ReLU+Ortho",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_ortho/best_0.001" 
+    #  },
+    {
+        "label": "ReLU+Laplacian",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_property_finall",
+        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_finall", 0]
+     },
+    {
+        "label": "ReLU+DynaOrtho",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/dyna_ortho/sweep_property",
+        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dyna_ortho/best_property", 0]
+     },
+    {
+        "label": "ReLU+DA",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/dynamic_awareness/sweep_property_uniform",
+        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dynamic_awareness/best_property_uniform", 0]
+     },
+    {
+        "label": "ReLU+CompOrtho",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/comp_ortho/sweep_property",
+        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/comp_ortho/best_property", 0]
+     },
+    # {
+    #     "label": "ReLU+CR",
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/complexity_reduction/sweep_property",
+    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/complexity_reduction/best_property", 0]
+    #  },
+    # {
+    #     "label": "ReLU+CR",
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/complexity_reduction/sweep",
+    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/complexity_reduction/best", 0]
+    #  },
     {
         "label": "ReLU+CR",
         "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/complexity_reduction/sweep",
@@ -8580,37 +8193,47 @@ nonlinear_maze_transfer_complexity_reduction = [
             "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/complexity_reduction/best",
             0],
     },
+
+    {
+        "label": "ReLU+DO",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/dyna_ortho/sweep_property",
+        "online_measure": [
+            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dyna_ortho/best_property",
+            0],
+    },
+    {
+        "label": "ReLU(L)+DO",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/dyna_ortho/sweep_large",
+        "online_measure": [
+            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dyna_ortho/best_large",
+            0],
+    },
+    {
+        "label": "FTA+DO",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/dyna_ortho/goal_id_{}/dqn_fta_aux/dyna_ortho/sweep",
+        "online_measure": [
+            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/dyna_ortho/best",
+            0],
+    },
+    {
+        "label": "ReLU+Laplacian",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep",
+        "online_measure": [
+            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best",
+            0],
+    },
+    {
+        "label": "ReLU(L)+Laplacian",
+        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_large",
+        "online_measure": [
+            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_large",
+            0],
+    },
     # {
-    #     "label": "FTA+ATC",
-    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/dynamic_awareness/sweep_large_property",
+    #     "label": "FTA+DO",
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/dyna_ortho/goal_id_{}/dqn_fta_aux/dyna_ortho/sweep",
     #     "online_measure": [
-    #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dynamic_awareness/best_property_large",
+    #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/dyna_ortho/best",
     #         0],
     # },
-   {"label": "ReLU",
-    "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn/sweep/",
-    "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/", 3]
-    },
-    {"label": "FTA+SF",
-     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/successor_as/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/successor_as/sweep/", 2],
-     },
-    {"label": "FTA eta=0.2",
-     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta/eta_study_0.2_sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.2_sweep/", 2],
-     },
-    {"label": "FTA eta=0.4",
-     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta/eta_study_0.4_sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.4_sweep/", 1],
-     },
-    {"label": "FTA eta=0.6",
-     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta/eta_study_0.6_sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.6_sweep/", 2],
-     },
-    {"label": "FTA eta=0.8",
-     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta/eta_study_0.8_sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.8_sweep/", 2],
-     },
-
-
 ]

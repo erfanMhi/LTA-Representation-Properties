@@ -31,10 +31,8 @@ def discounted_sampling(ranges, discount):
         samples = np.floor(samples).astype(np.int64)
     return samples
 
-
 def uniform_sampling(ranges):
     return discounted_sampling(ranges, discount=1.0)
-
 
 def overlap(l1, l2):
     if isinstance(l1[0], int):
@@ -140,8 +138,10 @@ class Replay:
         step2_indices = step1_indices + intervals
         s1 = []
         s2 = []
-
+        # print('discount: ', discount)
         for epi_idx, step1_idx, step2_idx in zip(episodes_idx, step1_indices, step2_indices):
+            # print('s1: ', (epi_idx[0] + step1_idx) % self.memory_size)
+            # print('s2: ', (epi_idx[0] + step2_idx) % self.memory_size)
             s1.append(self.data[(epi_idx[0] + step1_idx) % self.memory_size])
             s2.append(self.data[(epi_idx[0] + step2_idx) % self.memory_size])
 

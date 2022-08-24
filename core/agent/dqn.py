@@ -107,6 +107,7 @@ class DQNAgent(base.Agent):
         self.update_stats(reward, done)
         if self.cfg.update_network:
             self.update()
+        return self.env.prev_state, action, done
 
     def policy(self, state, eps):
         
@@ -355,15 +356,16 @@ class DQNAgent(base.Agent):
             self.itera_interfs.append(np.array(self.update_interfs).mean())
         self.update_interfs = []
 
-    def log_interference(self, label=None):
+    def log_interference(self, label=None, empty_interf=True):
         if len(self.itera_interfs) > 0:
-            self.itera_interfs = np.array(self.itera_interfs)
-            pct = np.percentile(self.itera_interfs, 90)
-            target_idx = np.where(self.itera_interfs >= pct)[0]
-            itf = np.mean(self.itera_interfs[target_idx])
+            itera_interfs = np.array(self.itera_interfs)
+            pct = np.percentile(itera_interfs, 90)
+            target_idx = np.where(itera_interfs >= pct)[0]
+            itf = np.mean(itera_interfs[target_idx])
         else:
             itf = np.nan
-        self.itera_interfs = []
+        if empty_interf:
+            self.itera_interfs = []
 
         if label is None:
             log_str = 'total steps %d, total episodes %3d, ' \
@@ -373,6 +375,8 @@ class DQNAgent(base.Agent):
             log_str = 'total steps %d, total episodes %3d, ' \
                       '%s Interference: %.8f/'
             self.cfg.logger.info(log_str % (self.total_steps, len(self.episode_rewards), label, itf))
+
+        return itf
 
     def visualize_vf(self):
         """

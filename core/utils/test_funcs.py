@@ -339,6 +339,8 @@ def online_distance(agent, base_obs, similar_obs, different_idx, label=None):
               '%s Distance: %.8f/'
         agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, prop))
 
+    return prop
+
 def run_linear_probing(agent):
     env = agent.env
     validation, truth, _, _ = generate_linear_probing_dataset(env, agent.cfg)
@@ -454,7 +456,7 @@ def online_orthogonality(agent, states, label):
               '%s Orthogonality: %.8f/'
         agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, rho))
  
-
+    return rho
 # def test_robustness(agent):
 #     rs = np.random.RandomState(0)
 #     img, _, _, _, _, _ = generate_distance_dataset(agent.cfg)
@@ -538,6 +540,8 @@ def online_sparsity(agent, img, label):
         log_str = 'total steps %d, total episodes %3d, ' \
               '%s Instance Sparsity: %.8f, %s Lifetime Sparsity: %.8f'
         agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, instance_sparsity, label, lifetime_sparsity))
+
+    return instance_sparsity
 
 # def test_sparsity(agent):
 #     img, _, _, _, _, _ = generate_distance_dataset(agent.cfg)
@@ -903,7 +907,8 @@ def online_interference(agent, state_all, next_s_all, action_all, reward_all, te
         log_str = 'total steps %d, total episodes %3d, ' \
                   '%s Interference: %.8f/'
         agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, np.array(rhos).mean()))
- 
+
+    return np.array(rhos).mean()
 # def test_decorrelation(agent):
 #     state_all, next_s_all, _, action_all, reward_all, terminal_all = generate_distance_dataset(agent.cfg)
 #     with torch.no_grad():
@@ -1059,6 +1064,8 @@ def online_lipschitz(agent, state_all, label=None):
                   '%s Diversity: %.5f/'
         agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, normalized_div))
 
+    return mean, normalized_div # lipshitz, diversity
+
 
 def online_mutual_info(agent, states, label, class_):
     with torch.no_grad():
@@ -1210,6 +1217,133 @@ def run_steps_onlineProperty(agent):
                 # target net changes, calculate interference for the beginning and ending of iteration
                 agent.update_interference(calc_accuracy_change=False)
                 #agent.iteration_interference()
+
+def run_steps_onlineProperty_data_vis(agent):
+    t0 = time.time()
+    agent.populate_returns()
+
+    datasets = generate_distance_datasets(agent.cfg)
+    if agent.cfg.evaluate_interference:
+        totalsize = np.sum(np.array([len(dataset[0]) for dataset in datasets]))
+        agent.cfg.eval_dataset = Replay(memory_size=totalsize, batch_size=agent.cfg.batch_size)
+        for dataset in datasets:
+            state_all, next_s_all, _, action_all, reward_all, terminal_all, _, _ = dataset
+            for i in range(len(state_all)):
+                agent.cfg.eval_dataset.feed(
+                    [state_all[i], action_all[i], next_s_all[i], reward_all[i], int(terminal_all[i])])
+
+        agent.cfg.logger.info('Save eval_dataset buffer')
+        agent.update_interference(calc_accuracy_change=True)
+        agent.iteration_interference()
+
+    early_model_saved = False
+    episode_num_list = []
+    step_num_list = []
+    returns = []
+    properties_list = []
+    agent_pos_list = []
+    agent_action_list = []
+    agent_terminate_list = []
+    episode_counter = -1
+    step = 0
+    while True:
+        # We start logging after an episode is finished and certain number of episodes are done
+        episode_num = len(agent.episode_rewards)
+        is_episode_new = agent.reset
+        if is_episode_new:
+            episode_counter += 1
+            step = 0
+            if episode_counter-1 % agent.cfg.log_episode_interval == 0:
+                agent.itera_interfs = []
+        make_logs = agent.cfg.log_episode_interval and not episode_counter % agent.cfg.log_episode_interval and (0 < step < agent.cfg.step_log_num+1)
+        if make_logs:
+            if agent.cfg.tensorboard_logs: agent.log_tensorboard()
+            mean, median, min, max = agent.log_file(elapsed_time=agent.cfg.log_interval / (time.time() - t0))
+            returns.append(mean)
+            if agent.cfg.save_params and agent.cfg.save_early is not None and \
+                    mean >= agent.cfg.save_early["mean"] and \
+                    min >= agent.cfg.save_early["min"] and \
+                    (not early_model_saved):
+                agent.save(early=True)
+                early_model_saved = True
+                agent.cfg.logger.info('Save early-stopping model')
+            t0 = time.time()
+
+        if make_logs:
+            # agent.eval_episodes(elapsed_time=agent.cfg.log_interval / (time.time() - t0))
+            if agent.cfg.visualize:
+                agent.visualize()
+            if agent.cfg.save_params:
+                agent.save()
+            if agent.cfg.evaluate_interference:  # dataset is saved in agent
+
+                interf_property = agent.log_interference(empty_interf=False)
+            for dataset in datasets:
+                state_all, next_s_all, different_idx, action_all, reward_all, terminal_all, label, class_all = dataset
+                if agent.cfg.evaluate_fixinterference:  # dataset is saved in agent
+                    fixinterf_property = online_interference(agent, state_all, next_s_all, action_all, reward_all, terminal_all, label)
+
+                if agent.cfg.evaluate_lipschitz or agent.cfg.evaluate_diversity:
+                    lip_property, div_property = online_lipschitz(agent, state_all, label)
+                    # agent.log_lipschitz()
+                if agent.cfg.evaluate_distance:
+                    dist_property = online_distance(agent, state_all, next_s_all, different_idx, label)
+                if agent.cfg.evaluate_orthogonality:
+                    ortho_property = online_orthogonality(agent, state_all, label)
+                # if agent.cfg.evaluate_decorrelation:
+                #     online_decorrelation(agent, state_all, label)
+                if agent.cfg.evaluate_sparsity:
+                    spa_property = online_sparsity(agent, state_all, label)
+
+                properties = (interf_property, lip_property, div_property, dist_property, ortho_property, spa_property)
+                properties_list.append(properties)
+                episode_num_list.append(episode_counter)
+                step_num_list.append(step)
+
+            t0 = time.time()
+        #print(agent.cfg.max_episodes)
+        if agent.cfg.max_episodes < episode_counter:
+            break
+
+        if agent.cfg.max_steps and agent.total_steps >= agent.cfg.max_steps:
+            if agent.cfg.save_params:
+                agent.save()
+            if not early_model_saved and agent.cfg.save_params:
+                agent.save(early=True)
+                early_model_saved = True
+                agent.cfg.logger.info('Save the last learned model as the early-stopping model')
+            break
+
+        if agent.cfg.evaluate_interference:
+
+            if (not agent.cfg.use_target_network or (
+                    agent.total_steps + 1) % agent.cfg.target_network_update_freq == 0):
+                # target net changes, calculate interference for the beginning and ending of iteration
+                agent.update_interference(calc_accuracy_change=True)
+                agent.iteration_interference()
+
+        prev_state, action, done = agent.step()
+        if make_logs:
+            agent_pos_list.append(prev_state)
+            agent_action_list.append(action)
+            agent_terminate_list.append(done)
+
+            print('episode: ', episode_counter)
+            print('step: ', step)
+        step += 1
+        if agent.cfg.evaluate_interference:
+            if (not agent.cfg.use_target_network or agent.total_steps % agent.cfg.target_network_update_freq == 0):
+                # target net changes, calculate interference for the beginning and ending of iteration
+                agent.update_interference(calc_accuracy_change=False)
+                # agent.iteration_interference()
+
+    np.save(agent.cfg.log_file_name + '_properties.npy', np.array(properties_list))
+    np.save(agent.cfg.log_file_name + '_episode_num.npy', np.array(episode_num_list))
+    np.save(agent.cfg.log_file_name + '_step_num_list.npy', np.array(step_num_list))
+    np.save(agent.cfg.log_file_name + '_agent_pos_list.npy', np.array(agent_pos_list))
+    np.save(agent.cfg.log_file_name + '_agent_action_list.npy', np.array(agent_action_list))
+    np.save(agent.cfg.log_file_name + '_agent_terminate_list.npy', np.array(agent_terminate_list))
+
 
 def draw(state):
     import matplotlib.pyplot as plt

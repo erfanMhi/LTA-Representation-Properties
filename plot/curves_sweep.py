@@ -1,22 +1,25 @@
 import os
 import sys
 import copy
-import numpy as np
 import itertools
+
+import numpy as np
+import matplotlib.pyplot as plt
 import pickle
 
-import matplotlib.pyplot as plt
 
 sys.path.insert(0, '..')
 print(sys.path)
+
 from plot.plot_paths import *
 from plot.plot_utils import *
 from experiment.sweeper import Sweeper
 
 print("Change dir to", os.getcwd())
-
 os.chdir("..")
 print(os.getcwd())
+
+plt.style.use('ggplot')
 
 
 # def arrange_order(dict1):
@@ -198,6 +201,7 @@ def performance_change(all_paths_dict, goal_ids, ranks, title, total_param=None,
     #     pickle.dump(curves, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     plt.figure(figsize=figsize)
+    plt.grid(False)
     avg_decrease = {"FTA": [], "ReLU": [], "ReLU(L)": []}
     for label in filtered_labels:
         if emphasize and (label not in emphasize):
@@ -208,22 +212,28 @@ def performance_change(all_paths_dict, goal_ids, ranks, title, total_param=None,
             # if label == "ReLU+ATC":
             #     color = "purple"
             #     alpha = 1
+            label_name = ''
             if label.split("+")[0] == "ReLU":
                 color = "#e74c3c"
                 alpha = 0.5
+                label_name = "ReLU"
             elif label.split("+")[0] == "ReLU(L)":
                 color = "#8e44ad"
                 alpha = 0.5
+                label_name = "ReLU(L)"
             elif label.split("+")[0] == "FTA" or label.split(" ")[0] == "FTA":
                 color = "#3498db"
                 alpha = 0.5
+                label_name = "FTA"
             elif label in ["Scratch", "Scratch(FTA)", "Scratch(L)"]:
                 color = "#34495e"  # violin_colors[label]
                 alpha = 1
+                label_name = r'\textsc{Scratch}'               
             else:
-                color = "#bdc3c7"  # violin_colors[label]
+                color = "#616466"  # violin_colors[label]
                 alpha = 0.5
-            plt.plot(curves[label], color=color, alpha=alpha)
+                label_name = label
+            plt.plot(curves[label], color=color, alpha=alpha, label=label_name)
         else:
             plt.plot(curves[label], color=violin_colors[label], linestyle=curve_styles[label], label=label,
                      linewidth=linewidth, zorder=100)
@@ -245,7 +255,17 @@ def performance_change(all_paths_dict, goal_ids, ranks, title, total_param=None,
     plt.gca().spines['top'].set_visible(False)
 
     if data_label:
-        plt.legend()
+        if color_by_activation:
+            plt.legend()
+            # ax = plt.gca()
+            # handles, labels = ax.get_legend_handles_labels()
+            # display = (0,len(filtered_labels))
+            # ax.legend([handle for i,handle in enumerate(handles) if i in display],
+            #     [label for i,label in enumerate(labels) if i in display], loc = 'best')
+        else:
+            plt.legend()
+
+
     if in_plot_label:
         # plt.get_legend().remove()
         for label in in_plot_label:
@@ -257,6 +277,9 @@ def performance_change(all_paths_dict, goal_ids, ranks, title, total_param=None,
     if xy_label:
         plt.xlabel('Goal Ranks')
         plt.ylabel('AUC')
+    plt.grid(False)
+    ax = plt.gca()
+    ax.patch.set_alpha(0.3) 
     plt.savefig("plot/img/{}.pdf".format(title), dpi=300, bbox_inches='tight')
     print("Save in plot/img/{}".format(title))
     # plt.show()
@@ -453,8 +476,6 @@ def correlation_overall(all_paths_dict, goal_ids, ax, total_param=None, xlim=[],
     ax.bar(xticks_pos, ordered_cor, color="#3498db", capsize=10)
     ax.axhline(y=0, c="black", ls="--")
     xticks_labels = [property_keys[pk] for pk in ordered_prop]
-    yticks = [-0.6, -0.4, 0, 0.4, 0.6]
-    ax.set_yticks(yticks, yticks, fontsize=14)
     ax.set_xticks(xticks_pos, xticks_labels, rotation=90, fontsize=14)
     for i, c in enumerate(ordered_cor):
         ax.text(xticks_pos[i] - 0.4, 0.1, "{:.2f}".format(c), color='black', fontweight='bold')
@@ -599,6 +620,7 @@ def figure3(paths_dicts_all, subtitles, baselines, groups, goal_ids, ranks, titl
                     runs = all_goals_independent[goal][label]
                     aucs = runs.sum(axis=1)
                     bidx = 0 if label.split("+")[0] == "ReLU" else 1
+                    print(aucs, bases[bidx])
                     impr = aucs / bases[bidx]
                     impr_all_label.append(impr.mean())
                 improvement[0] = np.array(impr_all_label).mean()
@@ -609,6 +631,7 @@ def figure3(paths_dicts_all, subtitles, baselines, groups, goal_ids, ranks, titl
             avg_improve = ranked_improve.mean(axis=1)
             std_improve = 1.96 * np.std(ranked_improve, axis=1) / np.sqrt(len(ranked_improve[0]))
             subp_data[:, gk_idx] = avg_improve
+            print(subp_data[:, gk_idx])
             subp_error[:, gk_idx] = std_improve
             subp_label.append(group_key)
         ready_plot.append(subp_data)
@@ -708,16 +731,17 @@ def figure3(paths_dicts_all, subtitles, baselines, groups, goal_ids, ranks, titl
         xticks_pos = np.array(list(range(0, len(subp_data[0]))))
         # for bs_idx, improv in enumerate(subp_data):
         improv = subp_data[0]
+        print('imp: ', improv)
         bs_idx = 0
         xtcks = []
         colors = []
         for lb in ready_label[idx]:
             xtck_lst = lb.split("+")
             if len(xtck_lst) == 1:
-                xtck = "No-aux"
+                xtck = r'\textsc{No-Aux}'
             else:
                 # xtck = xtck_lst[1]
-                xtck = "With-aux"
+                xtck = r'\textsc{With-Aux}'
             xtcks.append(xtck)
 
             if xtck_lst[0] == "ReLU":
@@ -754,8 +778,12 @@ def figure3(paths_dicts_all, subtitles, baselines, groups, goal_ids, ranks, titl
         align_yaxis(ax, 1, rhs_axs, all_bases[idx][:, 0].sum() / all_bases[idx][:, 1].sum())
         rhs_axs.set_yticks([1], [1], fontsize=12, color="#236591")
 
+        ax.grid(False)
+        ax.xaxis.grid(True)
+        rhs_axs.grid(False)
+        rhs_axs.xaxis.grid(True)
         for i, v in enumerate(improv):
-            rhs_axs.text(xticks_pos[i] - 0.4, v_pos(v, rhs_axs.get_ylim()), "{:.2f}".format(v), color='black',
+            rhs_axs.text(xticks_pos[i] - 0.3, v_pos(v, rhs_axs.get_ylim()), "{:.2f}".format(v), color='black',
                          fontsize=12)
 
 
@@ -768,17 +796,9 @@ def simple_maze():
     for i in ranks:
         ranks[i] += 1
 
-    targets = [
-        "ReLU",
-        "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
-        "ReLU+ATC",
-        # "ReLU(L)",
-        # "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF",
-        # "ReLU(L)+ATC",
-        "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
-        "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC",
-        "Scratch", "Scratch(FTA)", "Input", "Random",  # "Scratch(L)", "Random(L)",
-    ]
+
+
+
     # learning_curve(gh_nonlinear_transfer_sweep_v13_largeReLU, "maze learning sweep")
 
     goal_ids = [106,
@@ -793,27 +813,103 @@ def simple_maze():
                 13, 1, 14, 0,
                 ]
 
+
+
+    targets = [
+        "ReLU",
+        "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+        "ReLU+ATC", "ReLU+Laplacian",
+        "ReLU(L)",
+        "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF",
+        "ReLU(L)+ATC", "ReLU(L)+Laplacian",
+        # "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
+        # "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC", "FTA+Laplacian",
+        "Scratch", #"Scratch(FTA)",
+        "Input", "Random",  
+        "Scratch(L)", 
+        # "Random(L)",
+
+        
+    ]
+
+
+    # performance_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks, "nonlinear/maze_transfer_relu_vs_relul_(smooth0.1)", xlim=[0, 11], ylim=[0, 11], smooth=0.1, xy_label=False, data_label=False, linewidth=3, figsize=(8, 6), color_by_activation=True)
+
+    targets = [
+        "ReLU",
+        "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+        "ReLU+ATC", "ReLU+Laplacian",
+        # "ReLU(L)",
+        # "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF",
+        # "ReLU(L)+ATC", "ReLU(L)+Laplacian",
+        # "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
+        # "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC", "FTA+Laplacian",
+        "Scratch", "Scratch(FTA)", "Input", "Random",  # "Scratch(L)", "Random(L)",
+    ]
+
+    # performance_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks, "nonlinear/maze_transfer_chosen_(smooth0.1)_relu_added", xlim=[0, 11], ylim=[0, 11], smooth=0.1, xy_label=False, data_label=False, linewidth=3, figsize=(8, 6), color_by_activation=True)
+    # return
     emphasize = [
         "ReLU+VirtualVF5", "ReLU+SF",
         "FTA eta=0.2", "FTA+SF", "FTA+NAS",
         "Scratch", "Scratch(FTA)", "Random", "Input",
     ]
-    # performance_change(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/maze transfer chosen (smooth 0.1)", xlim=[0, 11], ylim=[0, 11], smooth=0.1,
-    #                    xy_label=False, data_label=False, linewidth=3, figsize=(8, 6), emphasize=emphasize)
+    # performance_change(label_filter(targets, gh_transfer_sweep_v13), goal_ids, ranks, "linear/maze transfer chosen (smooth 0.1)", xlim=[0, 11], ylim=[0, 11], smooth=0.1, xy_label=False, data_label=False, linewidth=3, figsize=(8, 6), emphasize=emphasize)
     emphasize = [
         "ReLU",
         "ReLU+VirtualVF5",
         "FTA eta=0.2",
         "FTA+VirtualVF5",
     ]
+
+    ########################################## DA+O performance ####################################
     targets = [
-        "ReLU",
-        "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
-        "ReLU+ATC",
-        "FTA eta=0.6", "FTA eta=0.8", "FTA eta=0.2", "FTA eta=0.4",
-        "FTA+ATC", "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+XY", "FTA+Decoder",
-        "Scratch", "Input", "Random", "Scratch(FTA)"  # "Scratch(L)", "Random(L)",
+       "ReLU",
+        # "ReLU(L)",
+        "FTA eta=0.2",
+       # "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", 
+       "ReLU+ATC", # One of the best reps
+       # "ReLU+ATC", "ReLU+Laplacian",
+        # "FTA eta=0.6", "FTA eta=0.8",, "FTA eta=0.4",
+        # "FTA+ATC", "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+XY", "FTA+Decoder", "FTA+Laplacian",
+        "Scratch", 
+        # "Scratch(L)",
+        "Scratch(FTA)",
+        "Input", "Random", 
+        # "Scratch(L)",
+        #  "Random(L)",
+
+
+        # "ReLU(L)",
+        # "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF",
+        # "ReLU(L)+ATC", "ReLU(L)+Laplacian",
+
+        # "ReLU+CR+O",
+        # "ReLU(L)+CR+O",
+        # "FTA+CR+O",
+
+
+        "ReLU+DA+O",
+        # "ReLU(L)+DA+O",
+        "FTA+DA+O",
     ]
+    performance_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks, "nonlinear/maze_transfer_dao_(smooth0.1)_without_relul", xlim=[0, 11], ylim=[0, 11], smooth=0.1, xy_label=False, data_label=False, linewidth=3, figsize=(8, 6), color_by_activation=False)
+    return
+    # targets = [
+    #     "ReLU",
+    #     #"ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+    #     #"ReLU+ATC", 
+    #     "ReLU+Laplacian",
+    #     "ReLU(L)",
+    #     # "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF",
+    #     # "ReLU(L)+ATC",
+    #      "ReLU(L)+Laplacian",
+    #   "FTA eta=0.2",
+    #   #  "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
+    #    # "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC", 
+    #    "FTA+Laplacian",
+    #     "Scratch", "Scratch(FTA)", "Input", "Random",  # "Scratch(L)", "Random(L)",
+    # ]
     # performance_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks, "nonlinear/maze_transfer_chosen_(smooth0.1)", xlim=[0, 11], ylim=[0, 11], smooth=0.1,
     #                    xy_label=False, data_label=False, linewidth=3, figsize=(8, 6), color_by_activation=True)
     #                    # in_plot_label=[{"ReLU": ["#e74c3c", "-", 0.5]}, {"FTA":["#3498db", "-", 0.5]},
@@ -821,6 +917,96 @@ def simple_maze():
     # performance_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks, "nonlinear/temp", xlim=[0, 11], ylim=[0, 11], smooth=0.1,
     #                    xy_label=False, data_label=False, linewidth=3, figsize=(8, 6), emphasize=emphasize)
 
+    ########################################## ReLU performance ####################################
+    targets = [
+
+        "ReLU",
+        "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
+        "ReLU+ATC", "ReLU+Laplacian",
+            # "FTA eta=0.2",
+
+        # "ReLU+ATC", "ReLU+Aug",
+        # # "ReLU(L)+ATC", "ReLU(L)+AUG"
+        # "FTA+ATC", "FTA+Aug"
+        # "ReLU(L)+SF",
+        # "ReLU(L)+ATC",
+        # "Input", "Scratch(L)", "Random(L)",
+
+        # "ReLU+ATC", #"ReLU+Aug",
+        #  "ReLU(L)+ATC",# "ReLU(L)+AUG"
+        # "FTA+ATC", #"FTA+Aug"
+    
+        # "ReLU+ATC-Aug",
+        # "ReLU(L)+ATC-Aug",
+        # "FTA+ATC-Aug",
+
+        # "ReLU+Aug",
+        # "ReLU(L)+Aug",
+        # "FTA+Aug",
+    ]
+    # performance_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks, "nonlinear/maze_transfer_only_relu_(smooth0.1)", xlim=[0, 11], ylim=[0, 11], smooth=0.1, xy_label=False, data_label=True, linewidth=3, figsize=(8, 6), color_by_activation=False)
+    ########################################## CRO performance ####################################
+    targets = [
+       "ReLU",
+       "ReLU(L)",
+       "FTA eta=0.2",
+       # "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", 
+       "ReLU+ATC",
+       # "ReLU+ATC", "ReLU+Laplacian",
+        # "FTA eta=0.6", "FTA eta=0.8",, "FTA eta=0.4",
+        # "FTA+ATC", "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+XY", "FTA+Decoder", "FTA+Laplacian",
+        "Scratch", "Input", "Random", 
+        "Scratch(FTA)",
+        # "Scratch(L)",
+        #  "Random(L)",
+ 
+
+        # "ReLU(L)",
+        # "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF",
+        # "ReLU(L)+ATC", "ReLU(L)+Laplacian",
+
+        "ReLU+CR+O",
+        "ReLU(L)+CR+O",
+        "FTA+CR+O",
+
+
+        # "ReLU+DA+O",
+        # "ReLU(L)+DA+O",
+        # "FTA+DA+O",
+    ]
+
+    # performance_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks, "nonlinear/maze_transfer_cro_(smooth0.1)", xlim=[0, 11], ylim=[0, 11], smooth=0.1, xy_label=False, data_label=False, linewidth=3, figsize=(8, 6), color_by_activation=False)
+
+
+    ########################################## ATC performance ####################################
+    targets = [
+       "ReLU",
+       "ReLU(L)",
+       "FTA eta=0.2",
+            # "FTA eta=0.2",
+
+        # "ReLU+ATC", "ReLU+Aug",
+        # # "ReLU(L)+ATC", "ReLU(L)+AUG"
+        # "FTA+ATC", "FTA+Aug"
+        # "ReLU(L)+SF",
+        # "ReLU(L)+ATC",
+        # "Input", "Scratch(L)", "Random(L)",
+
+        "ReLU+ATC", #"ReLU+Aug",
+        "ReLU(L)+ATC",# "ReLU(L)+AUG"
+        "FTA+ATC", #"FTA+Aug"
+    
+        "ReLU+ATC-Aug",
+        "ReLU(L)+ATC-Aug",
+        "FTA+ATC-Aug",
+
+        "ReLU+Aug",
+        "ReLU(L)+Aug",
+        "FTA+Aug",
+    ]
+    # performance_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks, "nonlinear/maze_transfer_atc_(smooth0.1)", xlim=[0, 11], ylim=[0, 11], smooth=0.1, xy_label=False, data_label=True, linewidth=3, figsize=(8, 6), color_by_activation=False)
+
+    
     targets = [
         "ReLU(L)",
         "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward",
@@ -828,6 +1014,7 @@ def simple_maze():
         "ReLU(L)+ATC",
         "Input", "Scratch(L)", "Random(L)",
     ]
+
     # performance_change(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ranks, "nonlinear/maze_transfer_relul_(smooth0.1)", xlim=[0, 11], ylim=[0, 11], smooth=0.1,
     #                    xy_label=False, data_label=False, linewidth=3, figsize=(8, 6), color_by_activation=True)
 
@@ -857,12 +1044,13 @@ def simple_maze():
     ]
     baselines = ["Scratch", "Scratch(FTA)"]
     # performance_change_vf_difference(targets, {"Linear": gh_transfer_sweep_v13, "Nonlinear": gh_nonlinear_transfer_sweep_v13_largeReLU}, goal_ids, ranks, "maze better than baseline (smooth 0.1)",
-    #                               xlim=[0, 11], ylim=[], smooth=0.1,
-    #                               xy_label=False, data_label=False, figsize=(8, 6), baselines=baselines)
+                                #   xlim=[0, 11], ylim=[], smooth=0.1,
+                                #   xy_label=False, data_label=False, figsize=(8, 6), baselines=baselines)
     # draw_label(["The degree that non-linear VF is better than linear VF"],
     #            "auc bar label", ncol=1, with_style=False, with_color=False)
     # draw_label(["Linear", "Nonlinear"],
     #            "auc bar label", ncol=2, with_style=False)
+    plt.rcParams['text.usetex'] = True
     targets = [
         "ReLU",
         "ReLU+VirtualVF5",
@@ -882,6 +1070,7 @@ def simple_maze():
     }
     fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(6, 2))
     plt.subplots_adjust(wspace=0.3, hspace=None)
+    
     figure3([label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU)], ["Non-linear"],
             baselines, groups, goal_ids, ranks, "result1",
             xlim=[], xy_label=True, data_label=True, figsize=(8, 6), ax=axs[0])
@@ -894,6 +1083,7 @@ def simple_maze():
         "Scratch",
         "Scratch(FTA)",
     ]
+
     groups = {
         "ReLU": ["ReLU"],
         # "ReLU+Aux": ["ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC"],
@@ -903,12 +1093,12 @@ def simple_maze():
         "FTA+NAS": ["FTA+NAS"],
     }
 
-    # figure3([label_filter(targets, gh_transfer_sweep_v13)], ["Linear"],
-    #         baselines, groups, goal_ids, ranks, "result1",
-    #         xlim=[], xy_label=True, data_label=True, figsize=(8, 6), ax=axs[1])
+    figure3([label_filter(targets, gh_transfer_sweep_v13)], ["Linear"],
+            baselines, groups, goal_ids, ranks, "result1",
+            xlim=[], xy_label=True, data_label=True, figsize=(8, 6), ax=axs[1])
 
     plt.savefig("plot/img/result1.pdf", dpi=300, bbox_inches='tight')
-
+    return 
     targets = [
         "ReLU",
         "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF",
@@ -1028,32 +1218,58 @@ def simple_maze():
         "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF",
         "FTA+ATC",
     ]
+    
+    # yticks = [0]
+    #
     # fig, axs = plt.subplots(1, 3, figsize=(12, 6))
     # correlation_overall(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, axs[0], xlim=[0, 11],
     #                    property_rank={"ortho": [90, np.inf]})
-    # axs[0].set_title("High Orthogonality")
+    # axs[0].set_yticks(yticks, yticks, fontsize=14)
+    # axs[0].set_title("High Orthogonality", fontsize=14)
+    # axs[0].set_ylabel("Correlation", fontsize=14)
     # correlation_overall(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, axs[1], xlim=[0, 11],
     #                    property_rank={"diversity": [106, np.inf]})
-    # axs[1].set_title("High Diversity")
+    # axs[1].set_yticks([], [])
+    # axs[1].set_title("High Diversity", fontsize=14)
     # correlation_overall(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, axs[2], xlim=[0, 11],
     #                    property_rank={"lipschitz": [96, np.inf]})
-    # axs[2].set_title("High Complexity Reduction")
+    # axs[2].set_yticks([], [])
+    # axs[2].set_title("High Complexity Reduction", fontsize=14)
+    # for i in range(len(axs)):
+    #     axs[i].set_ylim(-0.8, 0.8)
     # plt.tight_layout()
     # plt.savefig("plot/img/nonlinear/high_prop.pdf", dpi=300, bbox_inches='tight')
     # plt.close()
-
+    #
     # fig, axs = plt.subplots(1, 3, figsize=(12, 6))
     # correlation_overall(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, axs[0], xlim=[0, 11],
     #                    property_rank={"ortho": [0, 89]})
-    # axs[0].set_title("Low Orthogonality")
+    # axs[0].set_yticks(yticks, yticks, fontsize=14)
+    # axs[0].set_title("Low Orthogonality", fontsize=14)
+    # axs[0].set_ylabel("Correlation", fontsize=14)
     # correlation_overall(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, axs[1], xlim=[0, 11],
     #                    property_rank={"diversity": [0, 105]})
-    # axs[1].set_title("Low Diversity")
+    # axs[1].set_yticks([], [])
+    # axs[1].set_title("Low Diversity", fontsize=14)
     # correlation_overall(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, axs[2], xlim=[0, 11],
     #                    property_rank={"lipschitz": [0, 95]})
-    # axs[2].set_title("Low Complexity Reduction")
+    # axs[2].set_yticks([], [])
+    # axs[2].set_title("Low Complexity Reduction", fontsize=14)
+    # for i in range(len(axs)):
+    #     axs[i].set_ylim(-0.8, 0.8)
     # plt.tight_layout()
     # plt.savefig("plot/img/nonlinear/low_prop.pdf", dpi=300, bbox_inches='tight')
+    # plt.close()
+    #
+    # fig, ax = plt.subplots(1, 1, figsize=(4, 6))
+    # correlation_overall(label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), goal_ids, ax, xlim=[0, 11])
+    # ax.set_yticks(yticks, yticks, fontsize=14)
+    # ax.set_title("All Representations", fontsize=14)
+    # ax.set_ylabel("Correlation", fontsize=14)
+    # for i in range(len(axs)):
+    #     axs[i].set_ylim(-0.8, 0.8)
+    # plt.tight_layout()
+    # plt.savefig("plot/img/nonlinear/all_prop.pdf", dpi=300, bbox_inches='tight')
     # plt.close()
 
     # fig, ax = plt.subplots(1, 1, figsize=(12, 6))
@@ -1091,4 +1307,3 @@ def maze_multigoals():
 if __name__ == '__main__':
     simple_maze()
     # maze_multigoals()
-

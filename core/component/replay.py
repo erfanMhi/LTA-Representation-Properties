@@ -122,6 +122,13 @@ class Replay:
 
         return batch_data
 
+    def get_buffer(self, batch_size=None):
+        if batch_size is None:
+            batch_size = self.batch_size
+        sampled_data = [self.data[ind] for ind in range(len(self.data))]
+        batch_data = list(map(lambda x: np.asarray(x), zip(*sampled_data)))
+        return batch_data
+
     def _get_episode_length(self, episode_range):
         if episode_range[0] > episode_range[1]:
             return  self.memory_size-episode_range[0] + episode_range[1]

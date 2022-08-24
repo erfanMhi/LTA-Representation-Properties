@@ -1,10 +1,9 @@
 {
-    "config_class": "DQNAuxAgentConfig",
+    "config_class": "DQNAuxCLConfig",
     "fixed_parameters": {
-        "exp_name": "test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_large_aux/input_decoder/sweep",
+        "exp_name": "test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_cl/best_large",
         "env_name": "GridHardRGBGoalAll",
-        "goal_id": 106,
-        "agent": "DQNAuxAgent",
+        "agent": "DQNAuxCLAgent",
         "discount": 0.99,
         "state_norm_coef": 255.0,
 
@@ -22,9 +21,8 @@
             },
             "in_dim": [15, 15, 3],
             "out_dim": 640,
-            "load_params": true,
-            "train_rep": false,
-            "path": "test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/input_decoder/best/{}_run/0_param_setting/parameters/rep_net_earlystop"
+            "load_params": false,
+            "train_rep": true
         },
 
         "val_fn_config": {
@@ -33,20 +31,17 @@
             "init_type": "xavier"
         },
 
-        "aux_config": [
-            {"aux_fn_type":  "deconv", "aux_in_dim": 640, "aux_out_dim": [15, 15, 3], "aux_task": "input_decoder",
-            "deconv_architecture": {
-                "fc_layers": {
-                    "hidden_units": [1024]
-                },
-                "deconv_layers": [
-                   {"in": 16,  "out": 32, "kernel": 4, "stride": 2, "pad": 2, "out_pad":0},
-                   {"in": 32,  "out": 3, "kernel": 4, "stride": 1, "pad": 1, "out_pad":0}
-                ]
-            },
-            "aux_weight": 0.0001
-            }
-        ],
+        "ul_delta_T": 3,
+        "ul_latent_size": 640,
+        "ul_anchor_hidden_sizes": 64,
+        "ul_random_shift_pad": 4,
+        "ul_random_shift_prob": 0.1,
+        "ul_weight": 1.0,
+        "ul_batch_size": 32,
+        "ul_learning_rate": 0.001,
+        "ul_target_update_tau": 0.01,
+        "ul_target_update_interval": 1,
+
         "replay": true,
         "memory_size": 100000,
         "batch_size": 32,
@@ -55,9 +50,9 @@
         "use_target_network": true,
         "target_network_update_freq": 64,
 
-        "max_steps": 64,
-        "log_interval": 64,
-        "eval_interval": 64,
+        "max_steps": 300000,
+        "log_interval": 10000,
+        "eval_interval": 10000,
         "eval_episodes": 5,
         "save_interval": 0,
         "timeout": 100,
@@ -66,20 +61,20 @@
         "save_early": {"mean": 1.0, "min": 1.0},
 
         "online_property": true,
-        "tensorboard_logs": false,
-        "save_params": false,
+        "tensorboard_logs": true,
+        "save_params": true,
         "visualize": false,
-        "evaluate_lipschitz": false,
-        "evaluate_distance": false,
-        "evaluate_orthogonality": false,
+        "evaluate_lipschitz": true,
+        "evaluate_distance": true,
+        "evaluate_orthogonality": true,
         "evaluate_interference": true,
-        "evaluate_fixinterference": false,
-        "evaluate_diversity": false,
-        "evaluate_sparsity": false,
+        "evaluate_diversity": true,
+        "evaluate_sparsity": true,
         "distance_paths": [{"current": "../dataset/gridhard/random_dqn/distance_current_states.npy", "action": "../dataset/gridhard/random_dqn/distance_actions.npy", "next": "../dataset/gridhard/random_dqn/distance_next_states.npy", "reward": "../dataset/gridhard/random_dqn/distance_rewards.npy", "terminal": "../dataset/gridhard/random_dqn/distance_terminals.npy"}]
     },
     "sweep_parameters": {
         "learning_rate": [0.00003],
+        "ul_learning_rate": [0.00001],
         "goal_id": [106]
     }
 }

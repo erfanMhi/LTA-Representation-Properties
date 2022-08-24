@@ -1,6 +1,7 @@
 import os
 import re
 import copy
+import pickle
 import numpy as np
 from operator import itemgetter
 import matplotlib.pyplot as plt
@@ -376,7 +377,9 @@ def extract_from_single_run(file, key, label=None, before_step=None):
                 # used only when extract property for early-stopping model
                 if before_step is not None:
                     current_step = int(info.split("steps")[1].split(",")[0])
-                    if current_step == before_step:
+                    # print('current_step: ', current_step)
+                    # print('before_step: ', before_step)
+                    if current_step == before_step[0]:
                         return returns
             #Fruit state-values (green, 2) LOG: steps 0, episodes   0, values 0.0001073884 (mean)
             if "Fruit" in i_list[0] and key in ["action-values", "state-values"]:
@@ -481,6 +484,7 @@ def extract_from_setting(find_in, setting, key="return", final_only=False, label
                 #print(file)
                 res = extract_from_single_run(file, key, label, before_step=before_step)
                 # print(res)
+                # print(file)
                 if final_only:
                     # print("--", res)
                     res = res[-1]
@@ -506,7 +510,7 @@ def extract_return_all(path, setting_list, search_lr=False, key="return"):
         for p in all_param:
             idx = int(p.split("_param")[0])
             setting_list.append(idx)
-        print(setting_list)
+        # print(setting_list)
         setting_list.sort()
     all_sets = {}
     for setting in setting_list:
@@ -545,6 +549,7 @@ def extract_property_setting(path, setting, file_name, keyword):
 def load_online_property(group, target_key, reverse=False, normalize=False, cut_at_step=None, p_label=None, fixed_rep=False):
     all_property = {}
     temp = []
+    #print(group)
     for i in group:
         cas = cut_at_step[i["label"]] if cut_at_step else None
         if target_key in ["return"]:
@@ -575,6 +580,7 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
                     path = path[0]
                 else:
                     setting = 0
+                
                 returns, _ = extract_from_setting(path, setting, target_key, final_only=False, cut_at_step=cas)
                 values = {}
                 for run in returns:
@@ -584,6 +590,7 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
                     values[run] = np.mean(t[target_idx]) # average over the top x percentiles only
 
         else:
+            # print('case: ', cas)
             path = i["online_measure"]
             if type(path) == list:
                 setting = path[1]
@@ -597,7 +604,7 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
         for run in values:
             temp.append(values[run])
 
-    if reverse or normalize:
+    if (reverse or normalize):
         outlier_remove = False
         # mx = np.max(np.array(temp))
         # mn = np.min(np.array(temp))
@@ -605,18 +612,52 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
         # if target_key == "interf":
         #     srt = np.array(temp).argsort()
         #     mx = np.array(temp)[srt[-2]]
+        mn = float('+inf')
+        mx = float('-inf')
+        max_group = ''
+        min_group = ''
         for i in group:
             for run in all_property[i["label"]]:
+                ori = all_property[i["label"]][run]
+
+                if 'DA+O' in i["label"] or 'CR+O' in i["label"]:
+                    print(i["label"], ' ', ori)
+
+                if ori > mx:
+                    mx = ori
+                    max_group = i["label"]
+                #print(all_property[i["label"]][run])
+                if ori < mn:
+                    mn = ori
+                    min_group = i["label"]
+
+        # print(all_property)
+        print(target_key)
+        print('mn: ', mn, ' mx: ', mx)
+        print('mn group: ', min_group, ' mx group: ', max_group)
+
+
+        for i in group:
+            for run in all_property[i["label"]].keys():
                 ori = all_property[i["label"]][run]
                 if normalize:
                     mn, mx = normalize_prop[target_key]
                     
+                    #print('mn, mx: ', mn, mx)
+                # if ori> mx:
+                #     print('shit')
+                #     print(ori)
                 if normalize and reverse:
                     all_property[i["label"]][run] = 1.0 - (ori - mn) / (mx - mn)
+                    # all_property[i["label"]][run] = - ori 
                 elif normalize:
                     all_property[i["label"]][run] = (ori - mn) / (mx - mn)
                 elif reverse:
                     all_property[i["label"]][run] = 1.0 - ori#(ori - mn) / (mx - mn)
+                if all_property[i["label"]][run] < 0:
+                    print(i["label"])
+                    print(ori)
+                    print()
                 # # print(target_key, ori, mn, mx, all_property[i["label"]][run])
                 # if target_key == "interf" and all_property[i["label"]][run] <= 0:
                 #     base = [i["label"], run]
@@ -748,9 +789,43 @@ def load_property(all_groups, property_key=None, perc=None, relationship=None, t
     normalize = True if property_key in ["lipschitz", "interf"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
     # normalize = True if property_key in ["lipschitz"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
     model_saving = load_info(all_group_dict, 0, "model", path_key="online_measure") if early_stopped else None
+    # print('model saving: ', model_saving)
     properties = load_online_property(all_group_dict, property_key, reverse=reverse, normalize=normalize, cut_at_step=model_saving, p_label=p_label, fixed_rep=fix_rep)
 
+
     return properties, all_group_dict
+
+
+def load_property_in_step(all_groups, property_key=None, perc=None, relationship=None, targets=[], early_stopped=False, p_label=None, fix_rep=False, step=10000):
+    if len(targets) > 0:
+        temp = []
+        for g in all_groups:
+            t = []
+            for i in g:
+                if i["label"] in targets:
+                    t.append(i)
+            temp.append(t)
+        all_groups = temp
+    all_groups, all_group_dict = merge_groups(all_groups)
+    # print(all_groups, "\n\n", all_group_dict, "\n")
+    reverse = True if property_key in ["lipschitz", "interf"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
+    normalize = True if property_key in ["lipschitz", "interf"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
+    # normalize = True if property_key in ["lipschitz"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
+    model_saving = load_info(all_group_dict, 0, "model", path_key="online_measure") if early_stopped else None
+    print(model_saving)
+    for agent_key in model_saving:
+        for run_key in model_saving[agent_key]:
+            print(agent_key, run_key)
+            model_saving[agent_key][run_key][0] = step
+    
+    #print('model saving: ', model_saving)
+
+        
+    properties = load_online_property(all_group_dict, property_key, reverse=reverse, normalize=normalize, cut_at_step=model_saving, p_label=p_label, fixed_rep=fix_rep)
+
+
+    return properties, all_group_dict
+
 
 def correlation_calc(all_group_dict, control, properties, perc=None, relationship=None):
     labels = [i["label"] for i in all_group_dict]

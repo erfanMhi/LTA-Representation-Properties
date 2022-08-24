@@ -1,3 +1,4 @@
+import copy
 import os
 
 import numpy as np
@@ -177,104 +178,112 @@ class GridHardTabular(GridHardRGB):
                             reward_model[state_idx, a] = 1.0
                     
         return transition_matrix, reward_model
+if __name__ == '__main__':
 
-nos = 173
-optimal_policies = []
-max_x_dim = 15
-max_y_dim = 15
-start_state = 1
-for goal_state in range(nos):
-    env = GridHardTabular(goal_state, 0)
-    env.reset()
+    nos = 173
+    optimal_policies = []
+    optimal_vs = np.zeros((nos, nos))
+    max_x_dim = 15
+    max_y_dim = 15
+    start_state = 1
+    for goal_state in range(nos):
+        env = GridHardTabular(goal_state, 0)
+        env.reset()
 
-    P, R = env.get_the_model()
-    nos = env.nos  # no of states
-    noa = env.action_dim
-    
-    delta = 0.00
-    gamma = 0.99
-    max_diff = 0
-    
-    V = np.zeros(nos)
-    for time in range(0, 10000):
-        Vnew = np.zeros(nos)
+        P, R = env.get_the_model()
+        nos = env.nos  # no of states
+        noa = env.action_dim
+
+        delta = 0.00
+        gamma = 0.99
+        max_diff = 0
+
+        V = np.zeros(nos)
+        for time in range(0, 10000):
+            Vnew = np.zeros(nos)
+            for i in range(nos):
+                for a in range(noa):
+                    cur_val = 0
+                    for j in np.nonzero(P[i][a])[0]:
+                        cur_val += P[i][a][j]*V[j]
+
+                    if goal_state == i:
+                        cur_val *= 0.
+                    else:
+                        cur_val *= gamma
+                    cur_val += R[i][a]
+
+                    Vnew[i] = max(Vnew[i], cur_val)
+            max_diff = 0
+            for i in range(nos):
+                max_diff = max(max_diff, abs(V[i]-Vnew[i]))
+
+            V = Vnew
+
+            if(max_diff == delta):
+                print('Goal {} Converged'.format(goal_state))
+                break
+
+        # one final iteration to determine the policy
+        Vmax = np.zeros(nos)
+        optimal_policy = np.zeros((nos, noa))
+        optimal_actions = [[] for _ in range(nos)]
         for i in range(nos):
             for a in range(noa):
                 cur_val = 0
-                for j in np.nonzero(P[i][a])[0]:
+                for j in range(nos):
                     cur_val += P[i][a][j]*V[j]
-
                 if goal_state == i:
                     cur_val *= 0.
                 else:
                     cur_val *= gamma
                 cur_val += R[i][a]
+                if(Vmax[i] < cur_val):
+                    Vmax[i] = max(Vmax[i], cur_val)
 
-                Vnew[i] = max(Vnew[i], cur_val)
-        max_diff = 0
+            for a in range(noa):
+                cur_val = 0
+                for j in range(nos):
+                    cur_val += P[i][a][j]*V[j]
+                if goal_state == i:
+                    cur_val *= 0
+                else:
+                    cur_val *= gamma
+                cur_val += R[i][a]
+                if(Vmax[i] == cur_val):
+                    optimal_actions[i].append(a)
+
+            for a in optimal_actions[i]:
+                optimal_policy[i, a] = 1.
+            optimal_policy[i, :] = optimal_policy[i, :]/np.sum(optimal_policy[i, :])
+        optimal_policies.append(optimal_policy)
+
+        if goal_state == 106:
+            Vmax_106 = copy.deepcopy(Vmax)
+        optimal_vs[goal_state] = Vmax
+
+    delta = 0.00
+    gamma = 0.99
+    max_diff = 0
+
+    su_rep = []
+    for goal_state in range(nos):
+        env = GridHardTabular(goal_state, 0)
+        env.reset()
+
+        nos = env.nos  # no of states
+        policy_model = np.zeros((nos, nos))
+
+        noa = env.action_dim
+        P, R = env.get_the_model()
         for i in range(nos):
-            max_diff = max(max_diff, abs(V[i]-Vnew[i]))
-            
-        V = Vnew
-        
-        if(max_diff == delta):
-            print('Goal {} Converged'.format(goal_state))
-            break
-
-    # one final iteration to determine the policy
-    Vmax = np.zeros(nos)
-    optimal_policy = np.zeros((nos, noa))
-    optimal_actions = [[] for _ in range(nos)]
-    for i in range(nos):
-        for a in range(noa):
-            cur_val = 0
             for j in range(nos):
-                cur_val += P[i][a][j]*V[j]
-            if goal_state == i:
-                cur_val *= 0.
-            else:
-                cur_val *= gamma
-            cur_val += R[i][a]
-            if(Vmax[i] < cur_val):
-                Vmax[i] = max(Vmax[i], cur_val)
+                policy_model[i][j] = np.dot(P[i, :, j], optimal_policies[goal_state][i, :])
 
-        for a in range(noa):
-            cur_val = 0
-            for j in range(nos):
-                cur_val += P[i][a][j]*V[j]
-            if goal_state == i:
-                cur_val *= 0
-            else:
-                cur_val *= gamma
-            cur_val += R[i][a]
-            if(Vmax[i] == cur_val):
-                optimal_actions[i].append(a)
-                
-        for a in optimal_actions[i]:
-            optimal_policy[i, a] = 1.
-        optimal_policy[i, :] = optimal_policy[i, :]/np.sum(optimal_policy[i, :])
-    optimal_policies.append(optimal_policy)
+        policy_model[goal_state, :] = np.zeros(nos)
+        sr = np.linalg.inv(np.identity(nos) - gamma * policy_model)
+        su_rep.append(sr)
 
-delta = 0.00
-gamma = 0.99
-max_diff = 0
-
-su_rep = []
-for goal_state in range(nos):
-    env = GridHardTabular(goal_state, 0)
-    env.reset()
-
-    nos = env.nos  # no of states
-    policy_model = np.zeros((nos, nos))
-
-    noa = env.action_dim
-    P, R = env.get_the_model()
-    for i in range(nos):
-        for j in range(nos):
-            policy_model[i][j] = np.dot(P[i, :, j], optimal_policies[goal_state][i, :])
-            
-    policy_model[goal_state, :] = np.zeros(nos)
-    sr = np.linalg.inv(np.identity(nos) - gamma * policy_model)
-    su_rep.append(sr)
-
-np.save('gridhard_srs.npy', np.array(su_rep))
+    # np.save('data/dataset/gridhard/srs/gridhard_srs.npy', np.array(su_rep))
+    # np.save('data/dataset/gridhard/srs/gridhard_vmax.npy', np.array(Vmax_106))
+    np.save('data/dataset/gridhard/srs/gridhard_vs.npy', np.array(optimal_vs))

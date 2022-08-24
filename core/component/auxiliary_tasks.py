@@ -143,7 +143,8 @@ class NASv2(AuxTask):
         target = self.compute_target(phi, self.cfg.agent.rep_net(next_states))
         shift = len(prediction) // 2
         attractive = self.loss(prediction - target, torch.zeros_like(prediction))
-        target = torch.cat([target[shift:], target[:shift]])
+
+        target = torch.cat([target[shift:], target[:shift]]) # TODO: I should look into this.
         distance = torch.sum((prediction - target) ** 2, dim=1)
         repulsive = torch.max(torch.zeros_like(distance), 1 - distance).mean()
 
@@ -183,7 +184,7 @@ class SuccessorFeaturesAS(AuxTask):
 
         prediction = self.aux_predictor(phi, action)
         with torch.no_grad():
-            target = (1 - self.lmbda) * nphi + self.lmbda * self.aux_target_predictor(nphi, action_next)
+            target = (1 - self.lmbda) * nphi + self.lmbda * self.aux_target_predictor(nphi, action_next) #TODO: Related works 
 
         loss = self.loss(prediction, target)
 

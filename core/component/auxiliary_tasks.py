@@ -455,6 +455,38 @@ class CountBlocks(AuxTask):
         return loss
 
 
+class Orthogonality(AuxTask): # Selected
+    def __init__(self, aux_predictor, cfg):
+        super().__init__(aux_predictor, cfg)
+        self.loss = self.orthogonal_loss
+        self.batch_indices = torch.arange(self.cfg.batch_size).long().to(cfg.device)
+        self.env = cfg.env_fn()
+
+    def orthogonal_loss(self, phi, weight):
+        dot_prod = torch.mm(phi, phi.T)
+        d = phi.shape[1]
+        n = phi.shape[0]
+        norms = dot_prod[torch.arange(n), torch.arange(n)]
+        part1 = dot_prod.pow(2).sum() - norms.pow(2).sum()
+        part1 = part1 / ((n - 1) * n)
+        part2 = - 2 * norms.mean() / d
+        return part1 + part2
+
+    #def orthogonal_loss(self, p1, p2):
+    #    d = p1.shape[1]
+    #    l = ((p1 * p2).sum(dim=1).pow(2) - 2*torch.norm(p1, dim=1).pow(2)/d).mean()
+    #    return l
+
+    def compute_loss(self, phi, q):
+        #self.batch_indices = torch.arange(phi.shape[0]).long().to(phi.device)
+        #random_idx = self.batch_indices.roll(1)
+        #phi2 = phi[random_idx]
+        loss = self.loss(phi, 1.)
+        self.total_steps += 1
+        if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/aux/orthogonality', loss.item(), self.total_steps)
+        return loss
+
 class Orthogonal(AuxTask):
     def __init__(self, aux_predictor, cfg, weight):
         super().__init__(aux_predictor, cfg)
@@ -477,13 +509,460 @@ class Orthogonal(AuxTask):
         return loss
 
 
+class OrthogonalV1(AuxTask):
+    def __init__(self, aux_predictor, cfg):
+        super().__init__(aux_predictor, cfg)
+        self.loss = self.orthogonal_loss
+        self.batch_indices = torch.arange(self.cfg.batch_size).long().to(cfg.device)
+        self.env = cfg.env_fn()
+
+    def orthogonal_loss(self, p1, p2, weight):
+        l = ((p1 * p2).sum(dim=1).pow(2) - torch.norm(p1, dim=1).pow(2) - torch.norm(p2, dim=1).pow(2)).mean()
+        l = weight * l
+        return l
+
+    def compute_loss(self, transition, phi, nphi):
+        random_idx = torch.randperm(phi.size()[0]).to(phi.device)
+        phi2 = phi[random_idx]
+        loss = self.loss(phi, phi2, 1)
+        if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/aux/orthogonal', loss.item(), self.total_steps)
+        return loss
+
+class OrthogonalV2(AuxTask):
+    def __init__(self, aux_predictor, cfg):
+        super().__init__(aux_predictor, cfg)
+        self.batch_indices = torch.arange(self.cfg.batch_size).long().to(cfg.device)
+        self.env = cfg.env_fn()
+
+    def compute_loss(self, transition, phi, nphi):
+        dot_prod = torch.mm(phi, phi.T).pow(2)
+        dot_prod[torch.arange(dot_prod.shape[0]), torch.arange(dot_prod.shape[1])] = torch.sqrt(torch.diag(dot_prod)) * -1
+        loss = dot_prod.sum()
+        if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/aux/orthogonal', loss.item(), self.total_steps)
+        return loss
+
+class Laplacian(AuxTask):
+    def __init__(self, aux_predictor, cfg, beta):
+        super().__init__(aux_predictor, cfg)
+        self.loss = self.orthogonal_loss
+        self.batch_indices = torch.arange(self.cfg.batch_size).long().to(cfg.device)
+        self.env = cfg.env_fn()
+        self.beta = beta
+
+#    def orthogonal_loss(self, p1, p2, weight):
+#        d = p1.shape[1]
+#
+#        l = ((p1 * p2).sum(dim=1).pow(2) - 2*torch.norm(p1, dim=1).pow(2)/d).mean()
+#        l = weight * l
+#        return l
+
+    def orthogonal_loss(self, phi):
+        dot_prod = torch.mm(phi, phi.T)
+        d = phi.shape[1]
+        n = phi.shape[0]
+        norms = dot_prod[torch.arange(n), torch.arange(n)]
+        part1 = dot_prod.pow(2).sum() - norms.pow(2).sum()
+        part1 = part1 / ((n - 1) * n)
+        part2 = - 2 * norms.mean() / d
+        return part1 + part2
+
+    def compute_loss(self, ortho_phi, sim_phi, sim_nphi):
+        #random_idx = torch.randperm(phi.size()[0]).to(phi.device)
+       # _, inverse_indices = torch.unique(phi, dim=0, return_inverse=True)
+        #print(phi.shape)
+       # unique_indices = inverse_indices.unique()
+        # print(inverse_indices)
+        # print(inverse_indices.shape)
+        # print(inverse_indices)
+       # nphi, phi = nphi[unique_indices] , phi[unique_indices]
+        # print('nphi: ', nphi.shape)
+        if ortho_phi.shape[0] == 1:
+            return 0
+#        self.batch_indices = torch.arange(ortho_phi.shape[0]).long().to(ortho_phi.device)
+#        random_idx = self.batch_indices.roll(1)
+        #print(random_idx)
+#        phi2 = ortho_phi[random_idx]
+        # print(torch.unique(phi2, dim=0).shape)
+        # for i in range(phi.shape[0]):
+        #     #print('what: ', torch.eq(phi[i], phi2[i]))
+        #     if all(torch.eq(phi[i], phi2[i])):
+        #         print('shit')
+        #         print(phi[i])
+        #         print(phi2[i])
+        # print(phi.size())
+        # print(nphi.size())
+        # ortho_loss = self.loss(ortho_phi, phi2, self.beta)
+        ortho_loss = self.loss(ortho_phi)
+        sim_loss = torch.norm(sim_phi - sim_nphi, dim=1).pow(2).mean()
+        loss = self.beta * ortho_loss + sim_loss
+        self.total_steps += 1
+        if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/aux/laplacian', loss.item(), self.total_steps)
+        return loss
+
+class DynaOrtho(AuxTask):
+    def __init__(self, aux_predictor, cfg, beta):
+        super().__init__(aux_predictor, cfg)
+        self.loss = self.orthogonal_loss
+        self.batch_indices = torch.arange(self.cfg.batch_size).long().to(cfg.device)
+        self.env = cfg.env_fn()
+        self.beta = beta
+
+#    def orthogonal_loss(self, p1, p2, weight):
+#        d = p1.shape[1]
+#
+#        l = ((p1 * p2).sum(dim=1).pow(2) - 2*torch.norm(p1, dim=1).pow(2)/d).mean()
+#        l = weight * l
+#        return l
+
+    def orthogonal_loss(self, phi):
+        dot_prod = torch.mm(phi, phi.T)
+        d = phi.shape[1]
+        n = phi.shape[0]
+        norms = dot_prod[torch.arange(n), torch.arange(n)]
+        part1 = dot_prod.pow(2).sum() - norms.pow(2).sum()
+        part1 = part1 / ((n - 1) * n)
+        part2 = - 2 * norms.mean()
+        return part1 + part2
+
+    def compute_loss(self, ortho_phi, sim_phi, sim_nphi):
+        if ortho_phi.shape[0] == 1:
+            return 0
+
+        ortho_loss = self.loss(ortho_phi)
+        sim_loss = torch.norm(sim_phi - sim_nphi, dim=1).pow(2).mean()
+        loss = self.beta * ortho_loss + sim_loss
+        self.total_steps += 1
+        if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/aux/dyna_ortho', loss.item(), self.total_steps)
+        return loss
+
+
+class DynamicAwarenessUniform(AuxTask):
+    def __init__(self, aux_predictor, cfg, beta):
+        super().__init__(aux_predictor, cfg)
+        self.loss = self.orthogonal_loss
+        self.batch_indices = torch.arange(self.cfg.batch_size).long().to(cfg.device)
+        self.env = cfg.env_fn()
+        self.beta = beta
+
+    def orthogonal_loss(self, phi):
+        d = phi.shape[1]
+        n = phi.shape[0]
+        difference = (phi[:, None, :] - phi).reshape(n*n, d)
+        norms = torch.norm(difference, dim=1).pow(2).mean()
+        return -norms
+
+    def compute_loss(self, ortho_phi, sim_phi, sim_nphi):
+        if ortho_phi.shape[0] == 1:
+            return 0
+
+        ortho_loss = self.loss(ortho_phi)
+        sim_loss = torch.norm(sim_phi - sim_nphi, dim=1).pow(2).mean()
+        loss = self.beta * ortho_loss + sim_loss
+        self.total_steps += 1
+        if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/aux/dyna_ortho', loss.item(), self.total_steps)
+        return loss
 
 
 
+class DynamicAwareness(AuxTask):
+    def __init__(self, aux_predictor, cfg):
+        super().__init__(aux_predictor, cfg)
+        self.batch_indices = torch.arange(self.cfg.batch_size).long().to(cfg.device)
+        self.env = cfg.env_fn()
+
+    def compute_loss(self, transition, phi, nphi):
+        loss = torch.norm(phi - nphi, dim=1).pow(2).mean()
+        self.total_steps += 1
+        if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/aux/dynamic_awareness', loss.item(), self.total_steps)
+        return loss
 
 
+class Diversity(AuxTask):
+    """
+    Implemented based on https://openreview.net/forum?id=HJlNpoA5YQ
+    """
+    def __init__(self, aux_predictor, cfg):
+        super().__init__(aux_predictor, cfg)
+        self.batch_indices = torch.arange(self.cfg.batch_size).long().to(cfg.device)
+        self.env = cfg.env_fn()
+        self.epsilon = 1e-8
+
+    def compute_loss(self, phi, q):
+        #random_idx = torch.randperm(phi.size()[0]).to(phi.device)
+        self.batch_indices = torch.arange(phi.shape[0]).long().to(phi.device)
+        random_idx = self.batch_indices.roll(1)
+        phi2 = phi[random_idx]
+        q2 = q[random_idx]
+        d_v = (q[self.batch_indices, q.argmax(1)] - q2[self.batch_indices, q2.argmax(1)]).pow(2) # ALERT: If I don't detach this, it effects the weights of the value function as well
+        d_s = torch.norm(phi - phi2.detach(), dim=1)
+        # # print('dv: ', d_v)
+        # print('ds: ', d_s)
+        loss = (d_v/(d_s + self.epsilon)).mean()
+        #print('loss: ', loss)
+        if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/aux/diversity', loss.item(), self.total_steps)
+        return loss
+
+class DiversityV1(AuxTask):
+    """
+    Implemented based on https://openreview.net/forum?id=HJlNpoA5YQ
+    """
+    def __init__(self, aux_predictor, cfg):
+        super().__init__(aux_predictor, cfg)
+        self.batch_indices = torch.arange(self.cfg.batch_size).long().to(cfg.device)
+        self.env = cfg.env_fn()
+        self.epsilon = 1e-8
+
+    def compute_loss(self, phi, q):
+        #random_idx = torch.randperm(phi.size()[0]).to(phi.device)
+        self.batch_indices = torch.arange(phi.shape[0]).long().to(phi.device)
+        random_idx = self.batch_indices.roll(1)
+        phi2 = phi[random_idx]
+        # q2 = q[random_idx]
+        # d_v = (q[self.batch_indices, q.argmax(1)] - q2[self.batch_indices, q2.argmax(1)]).pow(2).detach()
+        d_s = torch.norm(phi - phi2.detach(), dim=1)
+        # # print('dv: ', d_v)
+        # print('ds: ', d_s)
+        # loss = (d_v/(d_s + self.epsilon)).mean()
+        loss = 1/(d_s.mean()+self.epsilon)
+        #print('loss: ', loss)
+        if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/aux/diversity', loss.item(), self.total_steps)
+        return loss
+
+class DiversityV2(AuxTask):
+    """
+    Implemented based on https://openreview.net/forum?id=HJlNpoA5YQ
+    """
+    def __init__(self, aux_predictor, cfg):
+        super().__init__(aux_predictor, cfg)
+        self.batch_indices = torch.arange(self.cfg.batch_size).long().to(cfg.device)
+        self.env = cfg.env_fn()
+        self.epsilon = 0.01
+
+    def compute_loss(self, phi, q):
+        #random_idx = torch.randperm(phi.size()[0]).to(phi.device)
+        self.batch_indices = torch.arange(phi.shape[0]).long().to(phi.device)
+        random_idx = self.batch_indices.roll(1)
+        phi2 = phi[random_idx]
+        if any(self.batch_indices == random_idx):
+            print((self.batch_indices == random_idx).sum())
+        # q2 = q[random_idx]
+        # d_v = (q[self.batch_indices, q.argmax(1)] - q2[self.batch_indices, q2.argmax(1)]).pow(2).detach()
+        d_s = torch.norm(phi - phi2.detach(), dim=1)
+        # # print('dv: ', d_v)
+        # print('ds: ', d_s)
+        # loss = (d_v/(d_s + self.epsilon)).mean()
+        loss = -d_s.mean()
+        #print('loss: ', loss)
+        if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/aux/diversity', loss.item(), self.total_steps)
+        return loss
 
 
+class DiversityV3(AuxTask):
+    """
+    Implemented based on https://openreview.net/forum?id=HJlNpoA5YQ
+    """
+    def __init__(self, aux_predictor, cfg):
+        super().__init__(aux_predictor, cfg)
+        self.batch_indices = torch.arange(self.cfg.batch_size).long().to(cfg.device)
+        self.env = cfg.env_fn()
+        self.epsilon = 1e-8
+
+    def compute_loss(self, phi, q):
+        #random_idx = torch.randperm(phi.size()[0]).to(phi.device)
+        self.batch_indices = torch.arange(phi.shape[0]).long().to(phi.device)
+        random_idx = self.batch_indices.roll(1)
+        phi2 = phi[random_idx]
+        q2 = q[random_idx]
+        d_v = (q[self.batch_indices, q.argmax(1)] - q2[self.batch_indices, q2.argmax(1)]).pow(2) # ALERT: If I don't detach this, it effects the weights of the value function as well
+        #d_s = torch.norm(phi - phi2.detach(), dim=1)
+        # # print('dv: ', d_v)
+        # print('ds: ', d_s)
+        loss = d_v.mean()
+        #print('loss: ', loss)
+        if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/aux/diversity', loss.item(), self.total_steps)
+        return loss
+
+
+class DiversityV4(AuxTask):
+    """
+    Implemented based on https://openreview.net/forum?id=HJlNpoA5YQ
+    """
+    def __init__(self, aux_predictor, cfg):
+        super().__init__(aux_predictor, cfg)
+        self.batch_indices = torch.arange(self.cfg.batch_size).long().to(cfg.device)
+        self.env = cfg.env_fn()
+        self.epsilon = 1e-8
+
+    def compute_loss(self, phi, q):
+        #random_idx = torch.randperm(phi.size()[0]).to(phi.device)
+        self.batch_indices = torch.arange(phi.shape[0]).long().to(phi.device)
+        random_idx = self.batch_indices.roll(1)
+        phi2 = phi[random_idx]
+        q2 = q[random_idx]
+        d_v = (q[self.batch_indices, q.argmax(1)] - q2[self.batch_indices, q2.argmax(1)]).pow(2) # ALERT: If I don't detach this, it effects the weights of the value function as well
+        d_s = torch.norm(phi - phi2.detach(), dim=1).detach()
+        # # print('dv: ', d_v)
+        # print('ds: ', d_s)
+        loss = (d_v/(d_s + self.epsilon)).mean()
+        #print('loss: ', loss)
+        if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/aux/diversity', loss.item(), self.total_steps)
+        return loss
+
+class DiversityV5(AuxTask):
+    """
+    Implemented based on https://openreview.net/forum?id=HJlNpoA5YQ
+    """
+    def __init__(self, aux_predictor, cfg):
+        super().__init__(aux_predictor, cfg)
+        self.batch_indices = torch.arange(self.cfg.batch_size).long().to(cfg.device)
+        self.env = cfg.env_fn()
+        self.epsilon = 1e-8
+
+    def compute_loss(self, phi, q):
+        #random_idx = torch.randperm(phi.size()[0]).to(phi.device)
+        self.batch_indices = torch.arange(phi.shape[0]).long().to(phi.device)
+        random_idx = self.batch_indices.roll(1)
+        phi2 = phi[random_idx]
+        q2 = q[random_idx]
+        d_v = (q[self.batch_indices, q.argmax(1)] - q2[self.batch_indices, q2.argmax(1)]).pow(2).detach() # ALERT: If I don't detach this, it effects the weights of the value function as well
+        d_s = torch.norm(phi - phi2.detach(), dim=1)
+        # # print('dv: ', d_v)
+        # print('ds: ', d_s)
+        loss = (d_v/(d_s + self.epsilon)).mean()
+        #print('loss: ', loss)
+        if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/aux/diversity', loss.item(), self.total_steps)
+        return loss
+
+class DiversityV6(AuxTask): #NOTE:SELECTED
+    """
+    Implemented based on https://openreview.net/forum?id=HJlNpoA5YQ
+    """
+    def __init__(self, aux_predictor, cfg):
+        super().__init__(aux_predictor, cfg)
+        self.batch_indices = torch.arange(self.cfg.batch_size).long().to(cfg.device)
+        self.env = cfg.env_fn()
+        self.epsilon = 1e-8
+
+    def compute_loss(self, phi, q):
+        #random_idx = torch.randperm(phi.size()[0]).to(phi.device)
+        self.batch_indices = torch.arange(phi.shape[0]).long().to(phi.device)
+        random_idx = self.batch_indices.roll(1)
+        phi2 = phi[random_idx]
+        q2 = q[random_idx]
+        d_v = (q[self.batch_indices, q.argmax(1)] - q2[self.batch_indices, q2.argmax(1)]).pow(2) # ALERT: If I don't detach this, it effects the weights of the value function as well
+        d_s = torch.norm(phi - phi2, dim=1)
+
+        normalized_d_v = d_v / (d_v.max().clone().detach() + self.epsilon)
+        normalized_d_s = d_s / (d_s.max().clone().detach() + self.epsilon)
+        # # print('dv: ', d_v)
+        # print('ds: ', d_s)
+        loss = (normalized_d_v/(normalized_d_s + self.epsilon)).mean()
+        #print('loss: ', loss)
+        if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/aux/diversity', loss.item(), self.total_steps)
+        return loss
+
+class DiversityV7(AuxTask):
+    """
+    Implemented based on https://openreview.net/forum?id=HJlNpoA5YQ
+    """
+    def __init__(self, aux_predictor, cfg):
+        super().__init__(aux_predictor, cfg)
+        self.batch_indices = torch.arange(self.cfg.batch_size).long().to(cfg.device)
+        self.env = cfg.env_fn()
+        self.epsilon = 1e-8
+
+    def compute_loss(self, phi, q):
+        #random_idx = torch.randperm(phi.size()[0]).to(phi.device)
+        self.batch_indices = torch.arange(phi.shape[0]).long().to(phi.device)
+        random_idx = self.batch_indices.roll(1)
+        phi2 = phi[random_idx]
+        q2 = q[random_idx]
+        d_v = (q[self.batch_indices, q.argmax(1)] - q2[self.batch_indices, q2.argmax(1)]).pow(2) # ALERT: If I don't detach this, it effects the weights of the value function as well
+        d_s = torch.norm(phi - phi2, dim=1)
+
+        normalized_d_v = d_v
+        normalized_d_s = d_s
+        # # print('dv: ', d_v)
+        # print('ds: ', d_s)
+        loss = (normalized_d_v/(normalized_d_s + self.epsilon)).mean()
+
+        #print('loss: ', loss)
+        if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/aux/diversity', loss.item(), self.total_steps)
+
+        return loss
+
+class DiversityV8(AuxTask):
+    """
+    Implemented based on https://openreview.net/forum?id=HJlNpoA5YQ
+    """
+    def __init__(self, aux_predictor, cfg):
+        super().__init__(aux_predictor, cfg)
+        self.batch_indices = torch.arange(self.cfg.batch_size).long().to(cfg.device)
+        self.env = cfg.env_fn()
+        self.epsilon = 1e-8
+
+    def compute_loss(self, phi, q):
+        #random_idx = torch.randperm(phi.size()[0]).to(phi.device)
+        self.batch_indices = torch.arange(phi.shape[0]).long().to(phi.device)
+        random_idx = self.batch_indices.roll(1)
+        phi2 = phi[random_idx]
+        q2 = q[random_idx]
+        d_v = torch.norm(q - q2, dim=1) # ALERT: If I don't detach this, it effects the weights of the value function as well
+        d_s = torch.norm(phi - phi2, dim=1)
+
+        normalized_d_v = d_v
+        normalized_d_s = d_s
+        # # print('dv: ', d_v)
+        # print('ds: ', d_s)
+        loss = (normalized_d_v/(normalized_d_s + self.epsilon)).mean()
+
+        #print('loss: ', loss)
+        if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/aux/diversity', loss.item(), self.total_steps)
+
+        return loss
+
+class DiversityV9(AuxTask):
+    """
+    Implemented based on https://openreview.net/forum?id=HJlNpoA5YQ
+    """
+    def __init__(self, aux_predictor, cfg):
+        super().__init__(aux_predictor, cfg)
+        self.batch_indices = torch.arange(self.cfg.batch_size).long().to(cfg.device)
+        self.env = cfg.env_fn()
+        self.epsilon = 1e-8
+
+    def compute_loss(self, phi, q):
+        #random_idx = torch.randperm(phi.size()[0]).to(phi.device)
+        self.batch_indices = torch.arange(phi.shape[0]).long().to(phi.device)
+        random_idx = self.batch_indices.roll(1)
+        phi2 = phi[random_idx]
+        q2 = q[random_idx]
+        d_v = torch.norm(q - q2, dim=1) # ALERT: If I don't detach this, it effects the weights of the value function as well
+        d_s = torch.norm(phi - phi2, dim=1)
+
+        normalized_d_v = d_v / (d_v.max().clone().detach() + self.epsilon)
+        normalized_d_s = d_s / (d_s.max().clone().detach() + self.epsilon)
+
+        loss = (normalized_d_v/(normalized_d_s + self.epsilon)).mean()
+
+        if self.cfg.tensorboard_logs and self.total_steps % self.cfg.tensorboard_interval == 0:
+            self.cfg.logger.tensorboard_writer.add_scalar('dqn_aux/aux/diversity', loss.item(), self.total_steps)
+        return loss
 
 class AuxFactory:
     @classmethod
@@ -614,9 +1093,61 @@ class AuxFactory:
                 aux_tasks.append(lambda cfg, aux_predictor=aux_predictor, aux_config=aux_config:
                                  CountBlocks(aux_predictor=aux_predictor,
                                                 color=aux_config["color"], cfg=cfg))
+            elif aux_config['aux_task'] == 'orthogonality':
+                aux_tasks.append(lambda cfg, aux_predictor=aux_predictor, aux_config=aux_config:
+                                 Orthogonality(aux_predictor=aux_predictor, cfg=cfg))
             elif aux_config['aux_task'] == 'orthogonal':
                 aux_tasks.append(lambda cfg, aux_predictor=aux_predictor, aux_config=aux_config:
                                  Orthogonal(aux_predictor=aux_predictor, cfg=cfg, weight=aux_config["aux_weight"]))
+            elif aux_config['aux_task'] == 'orthogonal_v1':
+                aux_tasks.append(lambda cfg, aux_predictor=aux_predictor, aux_config=aux_config:
+                                 OrthogonalV1(aux_predictor=aux_predictor, cfg=cfg))
+            elif aux_config['aux_task'] == 'orthogonal_v2':
+                aux_tasks.append(lambda cfg, aux_predictor=aux_predictor, aux_config=aux_config:
+                                 OrthogonalV2(aux_predictor=aux_predictor, cfg=cfg))
+            elif aux_config['aux_task'] == 'laplacian':
+                aux_tasks.append(lambda cfg, aux_predictor=aux_predictor, aux_config=aux_config:
+                                 Laplacian(aux_predictor=aux_predictor, cfg=cfg, beta=aux_config["beta"]))
+            elif aux_config['aux_task'] == 'diversity':
+                aux_tasks.append(lambda cfg, aux_predictor=aux_predictor, aux_config=aux_config:
+                                 Diversity(aux_predictor=aux_predictor, cfg=cfg))
+            elif aux_config['aux_task'] == 'diversity_v1':
+                aux_tasks.append(lambda cfg, aux_predictor=aux_predictor, aux_config=aux_config:
+                                 DiversityV1(aux_predictor=aux_predictor, cfg=cfg))
+            elif aux_config['aux_task'] == 'diversity_v2':
+                aux_tasks.append(lambda cfg, aux_predictor=aux_predictor, aux_config=aux_config:
+                                 DiversityV2(aux_predictor=aux_predictor, cfg=cfg))
+            elif aux_config['aux_task'] == 'diversity_v3':
+                aux_tasks.append(lambda cfg, aux_predictor=aux_predictor, aux_config=aux_config:
+                                 DiversityV3(aux_predictor=aux_predictor, cfg=cfg))
+            elif aux_config['aux_task'] == 'diversity_v4':
+                aux_tasks.append(lambda cfg, aux_predictor=aux_predictor, aux_config=aux_config:
+                                 DiversityV4(aux_predictor=aux_predictor, cfg=cfg))
+            elif aux_config['aux_task'] == 'diversity_v5':
+                aux_tasks.append(lambda cfg, aux_predictor=aux_predictor, aux_config=aux_config:
+                                 DiversityV5(aux_predictor=aux_predictor, cfg=cfg))
+            elif aux_config['aux_task'] == 'diversity_v6':
+                aux_tasks.append(lambda cfg, aux_predictor=aux_predictor, aux_config=aux_config:
+                                 DiversityV6(aux_predictor=aux_predictor, cfg=cfg))
+            elif aux_config['aux_task'] == 'diversity_v7':
+                aux_tasks.append(lambda cfg, aux_predictor=aux_predictor, aux_config=aux_config:
+                                 DiversityV7(aux_predictor=aux_predictor, cfg=cfg))
+            elif aux_config['aux_task'] == 'diversity_v8':
+                aux_tasks.append(lambda cfg, aux_predictor=aux_predictor, aux_config=aux_config:
+                                 DiversityV8(aux_predictor=aux_predictor, cfg=cfg))
+            elif aux_config['aux_task'] == 'diversity_v9':
+                aux_tasks.append(lambda cfg, aux_predictor=aux_predictor, aux_config=aux_config:
+                                 DiversityV9(aux_predictor=aux_predictor, cfg=cfg))
+            elif aux_config['aux_task'] == 'dynamic_awareness':
+                aux_tasks.append(lambda cfg, aux_predictor=aux_predictor, aux_config=aux_config:
+                                 DynamicAwareness(aux_predictor=aux_predictor, cfg=cfg))
+            elif aux_config['aux_task'] == 'dynamic_awareness_uniform':
+                aux_tasks.append(lambda cfg, aux_predictor=aux_predictor, aux_config=aux_config:
+                                 DynamicAwarenessUniform(aux_predictor=aux_predictor, cfg=cfg, beta=aux_config["beta"])) # Laplacian is used intentionally here            DynamicAwarenessUniform
+            elif aux_config['aux_task'] == 'dyna_ortho':
+                aux_tasks.append(lambda cfg, aux_predictor=aux_predictor, aux_config=aux_config:
+                                 Laplacian(aux_predictor=aux_predictor, cfg=cfg, beta=aux_config["beta"])) # Laplacian is used intentionally here
+
             else:
                 raise NotImplementedError
 

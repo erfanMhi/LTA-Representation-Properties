@@ -48,7 +48,7 @@ from distutils.dir_util import copy_tree
 from plot_paths import *
 
 def walk_through():
-    for sweep in maze_target_diff_sweep_v12_30g:
+    for sweep in nonlinear_maze_online_dyna_ortho_laplacian:
         # root = "../data/output/test/gridhard/control/last/different_task/fine_tune/dqn_aux/aux_control/sweep_5g/" 
         root = "../" + sweep['control']
         print(root)
@@ -65,7 +65,7 @@ def walk_through():
             #         os.rename(file1, file2)
 
             for name in subdirs:
-                if "{}_param_setting".format(sweep['best']) in name:
+                if "{}_param_setting".format(sweep['best']) == name:
                     # set = int(name.split("_param_setting")[0])
                     # set += 5
                     file1 = os.path.join(path, name)
@@ -74,7 +74,7 @@ def walk_through():
 
 
                     print(file1)
-                    file2 = file1.replace('sweep', 'best')
+                    file2 = file1.replace('sweep', 'best_property')
                     #remove_tree(file2)
                     file2 = file2.replace(file2.split('/')[-1], '0_param_setting')
                     #tmp_root + "/" + file1.split("/")[-2] + "/{}_param_setting".format(0)
@@ -286,6 +286,6 @@ for i in range(173):
                            new_root="../data/output/test_v13/gridhard/linear_vf/learning_scratch/goal_id_{}/dqn/sweep/".format(i))
     if check == False:
         print("{},".format(i), end=" ")
-# walk_through()
+walk_through()
 # check_log()
 # check_json()

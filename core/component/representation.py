@@ -34,7 +34,7 @@ class OnlineRepresentation(DefaultRepresentation):
         else:
             raise NotImplementedError
 
-
+ 
 class ModularRepresentation(DefaultRepresentation):
     def __init__(self, cfg):
         super().__init__(cfg)

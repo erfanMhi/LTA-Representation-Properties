@@ -90,7 +90,7 @@ def property_scatter_radar_circle(property_keys, all_paths_dict, groups, title):
     plt.savefig("plot/img/radar_plot/{}.pdf".format(title), dpi=300, bbox_inches='tight')
     print("Save in {}".format(title))
 
-def property_radar_animation(property_keys, all_paths_dict, groups, title):
+def property_radar_animation(property_keys, all_paths_dict, groups, plot_name):
     # plt.style.use('ggplot')
 
 
@@ -299,7 +299,7 @@ def property_radar_animation(property_keys, all_paths_dict, groups, title):
                         frames = 16, interval = 20)
     
     #plt.show()
-    anim.save('radar_plot.mp4', 
+    anim.save('radar_plot'+ plot_name + '.mp4', 
             writer = 'ffmpeg', fps = 2)
 
     # plt.savefig("plot/img/radar_plot/{}_poly.pdf".format(title), dpi=300, bbox_inches='tight')
@@ -323,12 +323,18 @@ def main():
 
     targets = [
         "ReLU",
-        "ReLU+VirtualVF1", "ReLU+VirtualVF5", "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC",
+        "ReLU+VirtualVF1", 
+       # "ReLU+VirtualVF5",
+         "ReLU+XY", "ReLU+Decoder", "ReLU+NAS", "ReLU+Reward", "ReLU+SF", "ReLU+ATC",
         "ReLU(L)",
-        "ReLU(L)+VirtualVF1", "ReLU(L)+VirtualVF5", "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF", "ReLU(L)+ATC",
+        "ReLU(L)+VirtualVF1", 
+        #"ReLU(L)+VirtualVF5", 
+        "ReLU(L)+XY", "ReLU(L)+Decoder", "ReLU(L)+NAS", "ReLU(L)+Reward", "ReLU(L)+SF", "ReLU(L)+ATC",
         "FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8",
-        "FTA+VirtualVF1", "FTA+VirtualVF5", "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC",
-
+        "FTA+VirtualVF1", 
+        #"FTA+VirtualVF5",
+         "FTA+XY", "FTA+Decoder", "FTA+NAS", "FTA+Reward", "FTA+SF", "FTA+ATC",
+        "ReLU+DA+O",
         # New
         # "ReLU+CompOrtho", "ReLU+CR",
         # "ReLU+Laplacian", "ReLU+DynaOrtho",
@@ -383,7 +389,8 @@ def main():
         # "FTA": ["FTA eta=0.8"],
         # "FTA+VirtualVF5": ["FTA+VirtualVF5"],
         "No Aux": ["ReLU"],
-        "VF5": ["ReLU+VirtualVF5"],
+        # "VF5": ["ReLU+VirtualVF5"],
+        "DA+O": ["ReLU+DA+O"],
     #    "ReLU+ATC": ["ReLU+ATC"]
     }
 
@@ -391,7 +398,7 @@ def main():
     property_keys.pop("interf")
 
     # property_scatter(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, "nonlinear/group-activation")
-    property_radar_animation(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, "ReLU")
+    property_radar_animation(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, 'DAO')
     # property_scatter_radar_polygon(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, "ReLU")
     # groups = {
     #     "No Aux": ["FTA eta=0.8"],

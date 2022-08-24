@@ -2,21 +2,114 @@ import os
 import numpy as np
 import pickle
 import random
+import collections
+
+
+
+def discounted_sampling(ranges, discount):
+    """Draw samples from the discounted distribution over 0, ...., n - 1,
+    where n is a range. The input ranges is a batch of such n`s.
+
+    The discounted distribution is defined as
+    p(y = i) = (1 - discount) * discount^i / (1 - discount^n).
+
+    This function implement inverse sampling. We first draw
+    seeds from uniform[0, 1) then pass them through the inverse cdf
+    floor[ log(1 - (1 - discount^n) * seeds) / log(discount) ]
+    to get the samples.
+    """
+    assert np.min(ranges) >= 1
+    assert discount >= 0 and discount <= 1
+    seeds = np.random.uniform(size=ranges.shape)
+    if discount == 0:
+        samples = np.zeros_like(seeds, dtype=np.int64)
+    elif discount == 1:
+        samples = np.floor(seeds * ranges).astype(np.int64)
+    else:
+        samples = (np.log(1 - (1 - np.power(discount, ranges)) * seeds)
+                / np.log(discount))
+        samples = np.floor(samples).astype(np.int64)
+    return samples
+
+
+def uniform_sampling(ranges):
+    return discounted_sampling(ranges, discount=1.0)
+
+
+def overlap(l1, l2):
+    if isinstance(l1[0], int):
+        return l1[0] <= l2[1] and l1[1] >= l2[0]
+    if isinstance(l1[0], tuple):
+        for in1 in l1:
+            for in2 in l2:
+                if overlap(in1, in2):
+                    return True
+        return False
+    else:
+        ValueError('List values are not valid: {}, {}'.format(l1, l2))
+
 
 class Replay:
     def __init__(self, memory_size, batch_size):
         self.memory_size = memory_size
         self.batch_size = batch_size
         self.data = []
+        self.episode_start = 0
+        self.episodes_idx = []
+        self.overlap_start = 0
         self.pos = 0
 
-    def feed(self, experience):
+    def num_episodes(self):
+        return len(self.episodes_idx)
+
+    def feed(self, experience, done=False):
         if self.pos >= len(self.data):
             self.data.append(experience)
-        else:
+            if done:
+                if self.episode_start != self.pos and self.episode_start+1 != self.pos:
+                    self.episodes_idx.append((self.episode_start, self.pos))
 
+        else:
             self.data[self.pos] = experience
+
+            if done:
+                # print('ep idx: ', self.episodes_idx)
+                # print('ep start: ', self.episode_start)
+                # print('ep end: ', self.pos)
+                found_first_overlap = False
+
+                if self.pos < self.episode_start:
+                    episode_intervals = [(self.episode_start, self.memory_size-1), (0, self.pos)]
+                else:
+                    episode_intervals = [(self.episode_start, self.pos)]
+
+                remove_idxs = []
+                for idx, ep in enumerate(self.episodes_idx):
+                    if ep[0] > ep[1]:
+                        prev_episode_intervals = [(ep[0], self.memory_size - 1), (0, ep[1])]
+                    else:
+                        prev_episode_intervals = [(ep[0],  ep[1])]
+                    # print(episode_intervals, prev_episode_intervals)
+                    if overlap(episode_intervals, prev_episode_intervals):
+                        if not found_first_overlap:
+                            self.overlap_start = idx
+
+                        found_first_overlap = True
+                        remove_idxs.append(idx)
+
+                if found_first_overlap:
+                    for r_idx in sorted(remove_idxs, reverse=True):
+                        self.episodes_idx.pop(r_idx)
+                else:
+                    self.overlap_start += 1
+
+                if self.episode_start != self.pos and self.episode_start+1 != self.pos:
+                    self.episodes_idx.insert(self.overlap_start, (self.episode_start, self.pos))
+
         self.pos = (self.pos + 1) % self.memory_size
+
+        if done:
+            self.episode_start = self.pos
 
     def feed_batch(self, experience):
         for exp in experience:
@@ -30,6 +123,49 @@ class Replay:
         batch_data = list(map(lambda x: np.asarray(x), zip(*sampled_data)))
 
         return batch_data
+
+    def get_buffer(self, batch_size=None):
+        if batch_size is None:
+            batch_size = self.batch_size
+        sampled_data = [self.data[ind] for ind in range(len(self.data))]
+        batch_data = list(map(lambda x: np.asarray(x), zip(*sampled_data)))
+        return batch_data
+
+    def _get_episode_length(self, episode_range):
+        if episode_range[0] > episode_range[1]:
+            return  self.memory_size-episode_range[0] + episode_range[1]
+        else:
+            return  episode_range[1] - episode_range[0] + 1
+
+    def sample_pairs(self, discount=0.0):
+        episodes_idx = self._sample_episodes(self.batch_size)
+        step_ranges = np.array(list(map(self._get_episode_length, episodes_idx)))
+        # print('step_ranges: ', step_ranges)
+        step1_indices = uniform_sampling(step_ranges - 1)
+        intervals = discounted_sampling(step_ranges - step1_indices - 1, discount=discount) + 1
+        # print('intervals: ', intervals)
+        step2_indices = step1_indices + intervals
+        s1 = []
+        s2 = []
+
+        for epi_idx, step1_idx, step2_idx in zip(episodes_idx, step1_indices, step2_indices):
+            s1.append(self.data[(epi_idx[0] + step1_idx) % self.memory_size])
+            s2.append(self.data[(epi_idx[0] + step2_idx) % self.memory_size])
+
+        # if self.pos % 1000 == 0:
+        #     print('Pairs info')
+        #     print(epi_idx)
+        #     print((epi_idx[0] + step1_idx) % self.memory_size)
+        #     print((epi_idx[0] + step2_idx) % self.memory_size)
+        #     print(step1_indices)
+        #     print(step2_indices)
+        s1 = list(map(lambda x: np.asarray(x), zip(*s1)))
+        s2 = list(map(lambda x: np.asarray(x), zip(*s2)))
+        return s1[0], s2[0] # just giving back episodes
+
+    def _sample_episodes(self, batch_size):
+        indices = np.random.randint(len(self.episodes_idx), size=batch_size)
+        return [self.episodes_idx[i] for i in indices]
 
     def sample_array(self, batch_size=None):
         if batch_size is None:
@@ -129,11 +265,14 @@ class MemoryOptimizedReplayBuffer(object):
 
     def can_sample(self, batch_size=None):
         """Returns true if `batch_size` different transitions can be sampled from the buffer."""
+
         if batch_size is None:
             batch_size = self.batch_size
+
 #        print(batch_size)
 #        print(self.num_in_buffer)
 #        return batch_size + 1 <= self.num_in_buffer
+
         return bool(self.num_in_buffer)
 
     def _encode_sample(self, idxes):

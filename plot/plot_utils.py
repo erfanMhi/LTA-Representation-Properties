@@ -1,6 +1,7 @@
 import os
 import re
 import copy
+import pickle
 import numpy as np
 from operator import itemgetter
 import matplotlib.pyplot as plt
@@ -469,7 +470,7 @@ def extract_from_single_run(file, key, label=None, before_step=None):
 #
 
 def extract_from_setting(find_in, setting, key="return", final_only=False, label=None, cut_at_step=None):
-    setting_folder = "{}_param_setting".format(setting)
+    setting_folder = "/{}_param_setting".format(setting)
     all_runs = {}
     lr = -1
     assert os.path.isdir(find_in), ("\nERROR: {} is not a directory\n".format(find_in))
@@ -480,13 +481,14 @@ def extract_from_setting(find_in, setting, key="return", final_only=False, label
                 file = os.path.join(path, name)
                 run_num = int(file.split("_run")[0].split("/")[-1])
                 before_step = None if cut_at_step is None else cut_at_step[run_num]
+                #print(file)
                 res = extract_from_single_run(file, key, label, before_step=before_step)
                 # print(res)
+                # print(file)
                 if final_only:
                     # print("--", res)
                     res = res[-1]
                 all_runs[run_num] = res
-
                 lr = extract_from_single_run(file, "learning_rate", label, before_step=before_step)
     return all_runs, lr
 
@@ -508,9 +510,11 @@ def extract_return_all(path, setting_list, search_lr=False, key="return"):
         for p in all_param:
             idx = int(p.split("_param")[0])
             setting_list.append(idx)
+        # print(setting_list)
         setting_list.sort()
     all_sets = {}
     for setting in setting_list:
+
         res, lr = extract_from_setting(path, setting, key=key)
         if search_lr:
             all_sets["{}_{}".format(setting, lr)] = res
@@ -600,7 +604,7 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
         for run in values:
             temp.append(values[run])
 
-    if reverse or normalize:
+    if (reverse or normalize):
         outlier_remove = False
         # mx = np.max(np.array(temp))
         # mn = np.min(np.array(temp))
@@ -610,27 +614,50 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
         #     mx = np.array(temp)[srt[-2]]
         mn = float('+inf')
         mx = float('-inf')
+        max_group = ''
+        min_group = ''
         for i in group:
             for run in all_property[i["label"]]:
-                if all_property[i["label"]][run] > mx:
-                    mx = all_property[i["label"]][run]
+                ori = all_property[i["label"]][run]
+
+                if 'DA+O' in i["label"] or 'CR+O' in i["label"]:
+                    print(i["label"], ' ', ori)
+
+                if ori > mx:
+                    mx = ori
+                    max_group = i["label"]
                 #print(all_property[i["label"]][run])
-                if all_property[i["label"]][run] < mn:
-                    mn = all_property[i["label"]][run]
+                if ori < mn:
+                    mn = ori
+                    min_group = i["label"]
+
+        # print(all_property)
         print(target_key)
         print('mn: ', mn, ' mx: ', mx)
+        print('mn group: ', min_group, ' mx group: ', max_group)
+
+
         for i in group:
-            for run in all_property[i["label"]]:
+            for run in all_property[i["label"]].keys():
                 ori = all_property[i["label"]][run]
                 if normalize:
                     mn, mx = normalize_prop[target_key]
                     
+                    #print('mn, mx: ', mn, mx)
+                # if ori> mx:
+                #     print('shit')
+                #     print(ori)
                 if normalize and reverse:
                     all_property[i["label"]][run] = 1.0 - (ori - mn) / (mx - mn)
+                    # all_property[i["label"]][run] = - ori 
                 elif normalize:
                     all_property[i["label"]][run] = (ori - mn) / (mx - mn)
                 elif reverse:
                     all_property[i["label"]][run] = 1.0 - ori#(ori - mn) / (mx - mn)
+                if all_property[i["label"]][run] < 0:
+                    print(i["label"])
+                    print(ori)
+                    print()
                 # # print(target_key, ori, mn, mx, all_property[i["label"]][run])
                 # if target_key == "interf" and all_property[i["label"]][run] <= 0:
                 #     base = [i["label"], run]
@@ -762,7 +789,7 @@ def load_property(all_groups, property_key=None, perc=None, relationship=None, t
     normalize = True if property_key in ["lipschitz", "interf"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
     # normalize = True if property_key in ["lipschitz"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
     model_saving = load_info(all_group_dict, 0, "model", path_key="online_measure") if early_stopped else None
-    print('model saving: ', model_saving)
+    # print('model saving: ', model_saving)
     properties = load_online_property(all_group_dict, property_key, reverse=reverse, normalize=normalize, cut_at_step=model_saving, p_label=p_label, fixed_rep=fix_rep)
 
 
@@ -785,8 +812,10 @@ def load_property_in_step(all_groups, property_key=None, perc=None, relationship
     normalize = True if property_key in ["lipschitz", "interf"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
     # normalize = True if property_key in ["lipschitz"] else False # normalize interference and lipschitz, for non-interference and complexity reduction measure
     model_saving = load_info(all_group_dict, 0, "model", path_key="online_measure") if early_stopped else None
+    print(model_saving)
     for agent_key in model_saving:
         for run_key in model_saving[agent_key]:
+            print(agent_key, run_key)
             model_saving[agent_key][run_key][0] = step
     
     #print('model saving: ', model_saving)

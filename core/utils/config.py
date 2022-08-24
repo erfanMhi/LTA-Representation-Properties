@@ -185,6 +185,7 @@ class DQNAgentConfig(Config):
         self.evaluate_distance = False
         self.evaluate_orthogonality = False
         self.evaluate_interference = False
+        self.evaluate_fixinterference = False
         # self.evaluate_decorrelation = False
         self.evaluate_diversity = False
         self.evaluate_sparsity = False
@@ -195,6 +196,12 @@ class DQNAgentConfig(Config):
 
         self.activation_config = {'name': 'None'}
         self.online_property = False
+
+
+        self.random_shift_pad = 4
+        self.random_shift_prob = 0.0
+
+        self.ortho_loss_weight = 0.0
 
     def get_print_attrs(self):
         attrs = dict(self.__dict__)
@@ -261,6 +268,8 @@ class DQNAuxAgentConfig(DQNAgentConfig):
         super().__init__()
         self.agent = 'DQNAuxAgent'
         self.visualize_aux_distance = False
+        self.aux_random_shift_pad = 4
+        self.aux_random_shift_prob = 0.0 
 
     def get_print_attrs(self):
         attrs = super().get_print_attrs()

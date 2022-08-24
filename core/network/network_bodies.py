@@ -26,7 +26,7 @@ class FCBody(nn.Module):
         self.feature_dim = dims[-1]
 
     def forward(self, x):
-        for layer in self.layers:
+        for idx, layer in enumerate(self.layers):
             # print(layer(x).min(), layer(x).max())
             x = self.activation(layer(x))
         return x
@@ -68,7 +68,7 @@ class ConvBody(nn.Module):
 
     def forward(self, x):
         x = functional.relu(self.layers[0](self.shape_image(x)))
-        for layer in self.layers[1:]:
+        for idx, layer in enumerate(self.layers[1:]):
             x = functional.relu(layer(x))
         # return x.view(x.size(0), -1)
         return x.reshape(x.size(0), -1)

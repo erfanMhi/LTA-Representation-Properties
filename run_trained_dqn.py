@@ -46,81 +46,81 @@ if __name__ == '__main__':
     """
     Collect World
     """
-    datasets = []
-
-
-    # Greed Data
-    agent = trained_dqn.TrainedDQNAgent(cfg)
-    # run_funcs.run_steps(agent)
-    run_funcs.data_collection_steps(agent)
-    sampled_states_green = np.array(agent.sampled_states)
-    sampled_next_green = np.array(agent.sampled_next_states)
-    sampled_different_green = np.array(agent.sampled_different)
-    sampled_action_green = np.array(agent.sampled_actions)
-    sampled_reward_green = np.array(agent.sampled_rewards)
-    sampled_termin_green = np.array(agent.sampled_termins)
-
-    datasets.append((sampled_states_green, sampled_next_green, sampled_different_green, sampled_action_green, sampled_reward_green, sampled_termin_green))
-
-    # Red Data
-    torch_utils.random_seed(args.id + 5)
-    cfg.id = args.id + 5
-    agent = trained_dqn.TrainedDQNAgent(cfg)
-    # run_funcs.run_steps(agent)
-    run_funcs.data_collection_steps(agent)
-    sampled_states_red = np.array(agent.sampled_states)
-    sampled_next_red = np.array(agent.sampled_next_states)
-    sampled_different_red = np.array(agent.sampled_different)
-    sampled_action_red = np.array(agent.sampled_actions)
-    sampled_reward_red = np.array(agent.sampled_rewards)
-    sampled_termin_red = np.array(agent.sampled_termins)
-
-    for k in range(len(sampled_states_red)):
-        im = np.copy(sampled_states_red[k])
-        sampled_states_red[k][:, :, 0] = im[:, :, 1]
-        sampled_states_red[k][:, :, 1] = im[:, :, 0]
-        im2 = np.copy(sampled_next_red[k])
-        sampled_next_red[k][:, :, 0] = im2[:, :, 1]
-        sampled_next_red[k][:, :, 1] = im2[:, :, 0]
-        im3 = np.copy(sampled_different_red[k])
-        sampled_different_red[k][:, :, 0] = im2[:, :, 1]
-        sampled_different_red[k][:, :, 1] = im2[:, :, 0]
-
-    datasets.append((sampled_states_red, sampled_next_red, sampled_different_red, sampled_action_red, sampled_reward_red, sampled_termin_red))
-
-    # Random Data
-    agent = trained_dqn.RandomAgent(cfg)
-    # run_funcs.run_steps(agent)
-    run_funcs.data_collection_steps(agent)
-    sampled_states_random = np.array(agent.sampled_states)
-    sampled_next_random = np.array(agent.sampled_next_states)
-    sampled_different_random = np.array(agent.sampled_different)
-    sampled_action_random = np.array(agent.sampled_actions)
-    sampled_reward_random = np.array(agent.sampled_rewards)
-    sampled_termin_random = np.array(agent.sampled_termins)
-
-    datasets.append((sampled_states_random, sampled_next_random, sampled_different_random, sampled_action_random, sampled_reward_random, sampled_termin_random))
-
-    # save_path = os.path.join(cfg.get_log_dir(), os.pardir, os.pardir, os.pardir, "lip_sampled_states.npy")
-    # sampled_states = np.concatenate([sampled_states_green, sampled_states_red])
-    # np.save(save_path, sampled_states)
-
-    # id 10
-    # save_path = os.path.join(cfg.get_log_dir(), os.pardir, os.pardir, os.pardir, "retaining_test_states.npy")
-    # sampled_states = np.concatenate([sampled_states_green, sampled_states_red])
-    # np.save(save_path, sampled_states)
-
-    save_path_s = os.path.join(cfg.get_log_dir(), os.pardir, os.pardir, os.pardir, "distance_current_states_sameEP_{}.npy")
-    save_path_sp = os.path.join(cfg.get_log_dir(), os.pardir, os.pardir, os.pardir, "distance_next_states_sameEP_{}.npy")
-    save_path_diff = os.path.join(cfg.get_log_dir(), os.pardir, os.pardir, os.pardir, "distance_different_states_sameEP_{}.npy")
-    save_path_a = os.path.join(cfg.get_log_dir(), os.pardir, os.pardir, os.pardir, "distance_actions_sameEP_{}.npy")
-    save_path_r = os.path.join(cfg.get_log_dir(), os.pardir, os.pardir, os.pardir, "distance_rewards_sameEP_{}.npy")
-    save_path_g = os.path.join(cfg.get_log_dir(), os.pardir, os.pardir, os.pardir, "distance_terminals_sameEP_{}.npy")
-
-    paths = (save_path_s, save_path_sp, save_path_diff, save_path_a, save_path_r, save_path_g)
-    for i, label in enumerate(['green', 'red', 'random']):
-        for j, path in enumerate(paths):
-            np.save(path.format(label), datasets[i][j])
+    # datasets = []
+    #
+    #
+    # # Greed Data
+    # agent = trained_dqn.TrainedDQNAgent(cfg)
+    # # run_funcs.run_steps(agent)
+    # run_funcs.data_collection_steps(agent)
+    # sampled_states_green = np.array(agent.sampled_states)
+    # sampled_next_green = np.array(agent.sampled_next_states)
+    # sampled_different_green = np.array(agent.sampled_different)
+    # sampled_action_green = np.array(agent.sampled_actions)
+    # sampled_reward_green = np.array(agent.sampled_rewards)
+    # sampled_termin_green = np.array(agent.sampled_termins)
+    #
+    # datasets.append((sampled_states_green, sampled_next_green, sampled_different_green, sampled_action_green, sampled_reward_green, sampled_termin_green))
+    #
+    # # Red Data
+    # torch_utils.random_seed(args.id + 5)
+    # cfg.id = args.id + 5
+    # agent = trained_dqn.TrainedDQNAgent(cfg)
+    # # run_funcs.run_steps(agent)
+    # run_funcs.data_collection_steps(agent)
+    # sampled_states_red = np.array(agent.sampled_states)
+    # sampled_next_red = np.array(agent.sampled_next_states)
+    # sampled_different_red = np.array(agent.sampled_different)
+    # sampled_action_red = np.array(agent.sampled_actions)
+    # sampled_reward_red = np.array(agent.sampled_rewards)
+    # sampled_termin_red = np.array(agent.sampled_termins)
+    #
+    # for k in range(len(sampled_states_red)):
+    #     im = np.copy(sampled_states_red[k])
+    #     sampled_states_red[k][:, :, 0] = im[:, :, 1]
+    #     sampled_states_red[k][:, :, 1] = im[:, :, 0]
+    #     im2 = np.copy(sampled_next_red[k])
+    #     sampled_next_red[k][:, :, 0] = im2[:, :, 1]
+    #     sampled_next_red[k][:, :, 1] = im2[:, :, 0]
+    #     im3 = np.copy(sampled_different_red[k])
+    #     sampled_different_red[k][:, :, 0] = im2[:, :, 1]
+    #     sampled_different_red[k][:, :, 1] = im2[:, :, 0]
+    #
+    # datasets.append((sampled_states_red, sampled_next_red, sampled_different_red, sampled_action_red, sampled_reward_red, sampled_termin_red))
+    #
+    # # Random Data
+    # agent = trained_dqn.RandomAgent(cfg)
+    # # run_funcs.run_steps(agent)
+    # run_funcs.data_collection_steps(agent)
+    # sampled_states_random = np.array(agent.sampled_states)
+    # sampled_next_random = np.array(agent.sampled_next_states)
+    # sampled_different_random = np.array(agent.sampled_different)
+    # sampled_action_random = np.array(agent.sampled_actions)
+    # sampled_reward_random = np.array(agent.sampled_rewards)
+    # sampled_termin_random = np.array(agent.sampled_termins)
+    #
+    # datasets.append((sampled_states_random, sampled_next_random, sampled_different_random, sampled_action_random, sampled_reward_random, sampled_termin_random))
+    #
+    # # save_path = os.path.join(cfg.get_log_dir(), os.pardir, os.pardir, os.pardir, "lip_sampled_states.npy")
+    # # sampled_states = np.concatenate([sampled_states_green, sampled_states_red])
+    # # np.save(save_path, sampled_states)
+    #
+    # # id 10
+    # # save_path = os.path.join(cfg.get_log_dir(), os.pardir, os.pardir, os.pardir, "retaining_test_states.npy")
+    # # sampled_states = np.concatenate([sampled_states_green, sampled_states_red])
+    # # np.save(save_path, sampled_states)
+    #
+    # save_path_s = os.path.join(cfg.get_log_dir(), os.pardir, os.pardir, os.pardir, "distance_current_states_sameEP_{}.npy")
+    # save_path_sp = os.path.join(cfg.get_log_dir(), os.pardir, os.pardir, os.pardir, "distance_next_states_sameEP_{}.npy")
+    # save_path_diff = os.path.join(cfg.get_log_dir(), os.pardir, os.pardir, os.pardir, "distance_different_states_sameEP_{}.npy")
+    # save_path_a = os.path.join(cfg.get_log_dir(), os.pardir, os.pardir, os.pardir, "distance_actions_sameEP_{}.npy")
+    # save_path_r = os.path.join(cfg.get_log_dir(), os.pardir, os.pardir, os.pardir, "distance_rewards_sameEP_{}.npy")
+    # save_path_g = os.path.join(cfg.get_log_dir(), os.pardir, os.pardir, os.pardir, "distance_terminals_sameEP_{}.npy")
+    #
+    # paths = (save_path_s, save_path_sp, save_path_diff, save_path_a, save_path_r, save_path_g)
+    # for i, label in enumerate(['green', 'red', 'random']):
+    #     for j, path in enumerate(paths):
+    #         np.save(path.format(label), datasets[i][j])
 
     """
     Grid world

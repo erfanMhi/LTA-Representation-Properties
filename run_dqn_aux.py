@@ -1,5 +1,6 @@
 import os
 import argparse
+import numpy as np
 
 import core.environment.env_factory as environment
 import core.network.net_factory as network
@@ -35,7 +36,23 @@ if __name__ == '__main__':
         if not os.path.isfile(path):
             print("Data File {} doesn't exist. {}".format(cfg.run, path))
             exit(1)
- 
+            
+    if cfg.rep_config["load_params"]:
+        run_num = int(args.id / cfg.cumulative)
+        cfg.rep_config["path"] = cfg.rep_config["path"].format(run_num)
+        path = os.path.join(cfg.data_root, cfg.rep_config["path"])
+        if not os.path.isfile(path):
+            print("Run {} doesn't exist. {}".format(run_num, path))
+            exit(1)
+
+    if "load_params" in cfg.val_fn_config.keys() and cfg.val_fn_config["load_params"]:
+        run_num = int(args.id / cfg.cumulative)
+        cfg.val_fn_config["path"] = cfg.val_fn_config["path"].format(run_num)
+        path = os.path.join(cfg.data_root, cfg.val_fn_config["path"])
+        if not os.path.isfile(path):
+            print("Run {} doesn't exist. {}".format(run_num, path))
+            exit(1)
+
     cfg.rep_activation_fn = activations.ActvFactory.get_activation_fn(cfg)
     cfg.rep_fn = representation.RepFactory.get_rep_fn(cfg)
     cfg.env_fn = environment.EnvFactory.create_env_fn(cfg)
@@ -55,6 +72,7 @@ if __name__ == '__main__':
     # Initializing the agent and running the experiment
     agent = getattr(dqn_aux, cfg.agent)(cfg)
     if cfg.online_property:
+        agent.cfg.test_rng = np.random.RandomState(cfg.seed)
         test_funcs.run_steps_onlineProperty(agent)
     else:
         run_funcs.run_steps(agent)

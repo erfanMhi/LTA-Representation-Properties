@@ -1,5 +1,6 @@
 import os
 import argparse
+import numpy as np
 
 import core.environment.env_factory as environment
 import core.network.net_factory as network
@@ -66,6 +67,7 @@ if __name__ == '__main__':
     # agent = dqn.DQNAgent(cfg)
     agent = getattr(dqn_switch, cfg.agent)(cfg)
     if cfg.online_property:
+        agent.cfg.test_rng = np.random.RandomState(cfg.seed)
         test_funcs.run_steps_onlineProperty(agent)
     else:
         run_funcs.run_steps(agent)

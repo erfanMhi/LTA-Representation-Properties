@@ -1,24 +1,26 @@
 import time
-import torch
 import os
 import copy
 import string
+from itertools import combinations
+from importlib import import_module
 
+
+import torch
 import pickle as pkl
 import numpy as np
-# import sklearn.metrics as sklm
 import sklearn.feature_selection as sklf
-
 import core.network.optimizer as optimizer
 import core.component.linear_probing_tasks as linear_probing_tasks
+# import sklearn.metrics as sklm
 
-from importlib import import_module
-from itertools import combinations
+
 from core.utils import torch_utils
 from core.environment.gridworlds import GridHardXY
 from core.agent import linear_probing, dqn, laplace
 from core.utils import schedule, logger
 from core.component.replay import Replay
+
 
 def dqn_rep_distance_viz(agent):
     agent.visualize()
@@ -520,7 +522,7 @@ def online_sparsity(agent, img, label):
     # print(zeros)
     # print(np.sum(zeros))
     # print(len(np.where(rep==0)[0]))
-    zeros = (rep==0).astype(int) #TODO: Recheck with chen
+    zeros = (rep==0).astype(int) #TODO
 
     # lifetime sparsity
     lifetime_inact = np.sum(zeros, axis=0)
@@ -542,6 +544,38 @@ def online_sparsity(agent, img, label):
         agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, instance_sparsity, label, lifetime_sparsity))
 
     return instance_sparsity
+
+
+def online_dead_neurons_ratio(agent, img, label):
+    
+    with torch.no_grad():
+        img = agent.cfg.state_normalizer(img)
+        # rep = agent.rep_net(img).detach().numpy()
+        rep = torch_utils.to_np(agent.rep_net(img))
+    # print('rep: ', rep.shape)
+    # rep = rep.reshape((rep.shape[0], rep.shape[1], 1))
+    # print('new rep: ', rep.shape)
+    # zeros = np.all(rep==0, axis=2).astype(int)
+    # print('zeros: ', zeros.shape)
+    # print(zeros)
+    # print(np.sum(zeros))
+    # print(len(np.where(rep==0)[0]))
+    # zeros = (rep==0).astype(int)
+
+    dead_neurons = np.sum(rep, axis=0) == 0
+    print('dead_neurons: ', np.sum(rep, axis=0))
+    dead_neurons_ratio = dead_neurons.mean()
+
+    if label is None:
+        log_str = 'total steps %d, total episodes %3d, ' \
+              'Dead Neurons: %.8f'
+        agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), dead_neurons_ratio))
+    else: 
+        log_str = 'total steps %d, total episodes %3d, ' \
+              'Dead Neurons: %.8f'
+        agent.cfg.logger.info(log_str % (agent.total_steps, len(agent.episode_rewards), label, dead_neurons_ratio))
+
+    return dead_neurons_ratio
 
 # def test_sparsity(agent):
 #     img, _, _, _, _, _ = generate_distance_dataset(agent.cfg)
@@ -1153,6 +1187,8 @@ def run_steps_onlineProperty(agent):
                 #     online_decorrelation(agent, state_all, label)
                 if agent.cfg.evaluate_sparsity:
                     online_sparsity(agent, state_all, label)
+                if agent.cfg.evaluate_dead_neurons:
+                   online_dead_neurons_ratio(agent, state_all, label) 
                 # if agent.cfg.evaluate_mutual_info:
                 #     online_mutual_info(agent, state_all, label, class_all)
 
@@ -1294,6 +1330,8 @@ def run_steps_onlineProperty_data_vis(agent):
                 #     online_decorrelation(agent, state_all, label)
                 if agent.cfg.evaluate_sparsity:
                     spa_property = online_sparsity(agent, state_all, label)
+                if agent.cfg.evaluate_dead_neurons:
+                    spa_property = online_dead_neurons_ratio(agent, state_all, label)
 
                 properties = (interf_property, lip_property, div_property, dist_property, ortho_property, spa_property)
                 properties_list.append(properties)

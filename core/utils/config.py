@@ -353,6 +353,7 @@ class QLearningAgentConfig(Config):
         # self.evaluate_decorrelation = False
         self.evaluate_diversity = False
         self.evaluate_sparsity = False
+        self.evaluate_dead_neurons = False
         self.evaluate_regression = False
         self.save_params = False
         self.save_early = None

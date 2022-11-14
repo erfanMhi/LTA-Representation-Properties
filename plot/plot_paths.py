@@ -31,7 +31,12 @@ property_keys = {"lipschitz": "Complexity\nReduction",
                  "sparsity":"Sparsity",
                  "return": ""}
 
-
+atari_property_keys = {"CR": "Complexity\nReduction",
+                       "DIV":"Diversity",
+                       "DA": "Dynamics\nAwareness",
+                       "ORTH": "Orthogonality",
+                       "SPRS":"Sparsity",
+                       }
 
 # with property based auxiliary tasks
 # normalize_prop = {
@@ -41,7 +46,8 @@ property_keys = {"lipschitz": "Complexity\nReduction",
 
 # without laplacian and property based aux tasks
 normalize_prop = {
-    "lipschitz": [0.00396, 0.72852],
+    # "lipschitz": [4.84, 14.052], # max
+    "lipschitz": [0.00396, 0.72852], # mean
     "interf": [4.56e-06, 0.0923223]
 }
 #4.56e-06  mx:  0.0923223
@@ -106,7 +112,7 @@ RANDOM_COLOR = "#616466"
 RELU_ATC = "#9b59b6"
 
 
-VF5_COLOR = "#1abc9c"
+VF5_COLOR = "#2980b9"#"#1abc9c"
 Laplacian_COLOR = "#f1c40f"
 ATC_COLOR = "#34495e"
 ATC_NOAUG_COLOR ="#34495e"
@@ -7853,7 +7859,7 @@ gh_nonlinear_original_sweep_v13 = [
 gh_nonlinear_transfer_sweep_v13 = [
     {"label": "ReLU",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/", 3]
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep/", 3],
      },
     {"label": "ReLU+VirtualVF1",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/aux_control/sweep_1g/",
@@ -7886,46 +7892,57 @@ gh_nonlinear_transfer_sweep_v13 = [
     {"label": "FTA eta=0.2",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta/eta_study_0.2_sweep/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.2_sweep/", 2],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_lta/eta_study_0.2_sweep/", 0],
      },
     {"label": "FTA eta=0.4",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta/eta_study_0.4_sweep/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.4_sweep/", 1],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_lta/eta_study_0.4_sweep/", 0],
      },
     {"label": "FTA eta=0.6",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta/eta_study_0.6_sweep/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.6_sweep/", 2],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_lta/eta_study_0.6_sweep/", 0],
      },
     {"label": "FTA eta=0.8",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta/eta_study_0.8_sweep/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta/eta_study_0.8_sweep/", 2],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_lta/eta_study_0.8_sweep/", 0],
      },
     {"label": "FTA+VirtualVF1",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/aux_control/sweep_1g/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/aux_control/sweep_1g/", 1],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_lta_aux/aux_control/sweep_1g/", 0],
      },
     {"label": "FTA+VirtualVF5",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/aux_control/sweep_5g/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/aux_control/sweep_5g/", 1],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_lta_aux/aux_control/sweep_5g/", 0],
      },
     {"label": "FTA+XY",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/info/sweep/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/info/sweep/", 1],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_lta_aux/info/sweep/", 0],
      },
     {"label": "FTA+Decoder",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/input_decoder/sweep/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/input_decoder/sweep/", 1],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_lta_aux/input_decoder/sweep/", 0],
      },
     {"label": "FTA+NAS",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/nas_v2_delta/sweep/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/nas_v2_delta/sweep/", 2],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_lta_aux/nas_v2_delta/sweep/", 0],
      },
     {"label": "FTA+Reward",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/reward/sweep/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/reward/sweep/", 2],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_lta_aux/reward/sweep/", 0],
      },
     {"label": "FTA+SF",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_lta_aux/successor_as/sweep/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_lta_aux/successor_as/sweep/", 2],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_lta_aux/successor_as/sweep/", 0],
      },
     {"label": "Scratch",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/learning_scratch/goal_id_{}/dqn/sweep/",
@@ -7970,7 +7987,8 @@ gh_nonlinear_original_sweep_v13_largeReLU = [
 gh_nonlinear_transfer_sweep_v13_largeReLU = [
     {"label": "ReLU",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/best/", 0]
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/best/", 0],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn/sweep/", 0]
      },
 
     {"label": "No Aux",
@@ -7981,10 +7999,12 @@ gh_nonlinear_transfer_sweep_v13_largeReLU = [
     {"label": "ReLU+VirtualVF1",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/aux_control/sweep_1g/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/aux_control/best_1g/", 0],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_aux/aux_control/sweep_1g/", 0],
      },
     {"label": "ReLU+VirtualVF5",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/aux_control/sweep_5g/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/aux_control/best_5g/", 0],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_aux/aux_control/sweep_5g/", 0],
      },
 
     {"label": "VF5",
@@ -7996,22 +8016,27 @@ gh_nonlinear_transfer_sweep_v13_largeReLU = [
     {"label": "ReLU+XY",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/info/sweep/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/info/best/", 0],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_aux/info/sweep/", 0],
      },
     {"label": "ReLU+Decoder",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/input_decoder/sweep/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/input_decoder/best/", 0],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_aux/input_decoder/sweep/", 0],
      },
     {"label": "ReLU+NAS",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/nas_v2_delta/sweep/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/nas_v2_delta/best/", 0],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_aux/nas_v2_delta/sweep/", 0],
      },
     {"label": "ReLU+Reward",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/reward/sweep/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/reward/best/", 0],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_aux/reward/sweep/", 0],
      },
     {"label": "ReLU+SF",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/successor_as/sweep/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/successor_as/best/", 0],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_aux/successor_as/sweep/", 0],
      },
     # {"label": "ReLU(L)",
     #  "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_large/sweep/",
@@ -8020,10 +8045,12 @@ gh_nonlinear_transfer_sweep_v13_largeReLU = [
     {"label": "ReLU(L)+VirtualVF1",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_large_aux/aux_control/sweep_1g/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/aux_control/best_1g/", 0],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_large_aux/aux_control/sweep_1g/", 0],
      },
     {"label": "ReLU(L)+VirtualVF5",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_large_aux/aux_control/sweep_5g/",
      "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large_aux/aux_control/best_5g/", 0],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_large_aux/aux_control/sweep_5g/", 0],
      },
     # {"label": "ReLU(L)+XY",
     #  "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_large_aux/info/sweep/",
@@ -8095,7 +8122,8 @@ gh_nonlinear_transfer_sweep_v13_largeReLU = [
     #  },
     {"label": "ReLU(L)",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_large/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large/best/", 0]
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_large/best/", 0],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_large/sweep/", 0],
      },
     {"label": "ReLU(L)+XY",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_large_aux/info/sweep/",
@@ -8200,7 +8228,8 @@ gh_nonlinear_transfer_sweep_v13_largeReLU = [
      },
     {"label": "Random",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/learning_scratch/goal_id_{}/random/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/fixrep_property/random/best/", 0],
+     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/fixrep_property/random/best_paperMeasure/", 0],
+     "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/fixrep_property/random/best/", 0],
      },
     {"label": "Input",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/learning_scratch/goal_id_{}/input/sweep/",

@@ -22,7 +22,8 @@ property_keys = {"lipschitz": "Complexity Reduction",
                  "return": ""}
 
 normalize_prop = {
-    "lipschitz": [0.00727, 0.35973],
+    # "lipschitz": [4.84, 14.052], # max
+    "lipschitz": [0.00727, 0.35973], # mean
     "interf": [0.0, 0.07027447]
 }
 

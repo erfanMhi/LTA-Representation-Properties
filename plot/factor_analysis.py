@@ -4,6 +4,7 @@ import sys
 import copy
 import numpy as np
 import itertools
+import pandas as pd
 from sklearn import ensemble, metrics
 import scipy
 import seaborn as sns
@@ -398,10 +399,11 @@ def property_scatter_radar_circle(property_keys, all_paths_dict, groups, title):
 
 def property_scatter_radar_polygon(property_keys, all_paths_dict, groups, title, file_name, axis=None, legend_on=False):
     plt.style.use('ggplot')
+    plt.rcParams['lines.linewidth'] = 3
 
     all_goals_prop = {}
     for pk in property_keys.keys():
-        properties, _ = load_property([all_paths_dict], property_key=pk, early_stopped=True)
+        properties, _ = load_property([all_paths_dict], property_key=pk, early_stopped=True, fix_rep=False)
         all_goals_prop[pk] = properties
 
     N = len(property_keys)
@@ -422,17 +424,17 @@ def property_scatter_radar_polygon(property_keys, all_paths_dict, groups, title,
     #print(angles)
     #angles=np.concatenate((angles,[angles[0]]))
     #property_names.append(property_names[0])
-    for ti, di, tex in zip([0.6]*6, [0, 0.17, 0.17*2, 0.17*3, 0.17*4, 0.17*5], [0, 0.2, 0.4, 0.6, 0.8, 1]):
-        ax.text(ti, di, tex, ha='center', va='center', fontsize=18)
+    
+    # for ti, di, tex in zip([0.6]*6, [0, 0.17, 0.17*2, 0.17*3, 0.17*4, 0.17*5], [0, 0.2, 0.4, 0.6, 0.8, 1]):
+    #     ax.text(ti, di, tex, ha='center', va='center', fontsize=18)
     ax.set_rgrids([0, 0.2, 0.4, 0.6, 0.8, 1], angle=10, fontsize=0)
     ax.set_title(title, weight='bold', position=(0.5, 1.1),
-                horizontalalignment='center', verticalalignment='center', fontsize=28)
+                horizontalalignment='center', verticalalignment='center', fontsize=43)
     # if nr == 1:
     #     axes = [axes]
     allprop_means = []
     allprop_stds = []
     for ni, name in enumerate(group_name):
-        
         allp = []
         allprop_mean = []
         allprop_std = []
@@ -493,14 +495,16 @@ def property_scatter_radar_polygon(property_keys, all_paths_dict, groups, title,
     
     ax.set_varlabels(property_names)
     # ax.set_thetagrids(angles * 180/np.pi, property_names)
-    ax.tick_params(axis='x', which='major', pad=25)
+    ax.tick_params(axis='x', which='major', pad=55)
 
 
-    plt.grid(True)
+    plt.grid(True, color='lightgrey')
     plt.tight_layout()
-    plt.xticks(fontsize=20)
+    plt.xticks(fontsize=35)
     if legend_on:
-        plt.legend(bbox_to_anchor=(0.75, 0.95), loc='upper left', fontsize=20)
+        # plt.legend(bbox_to_anchor=(0.75, 0.95), loc='upper left', fontsize=20)
+        plt.legend(bbox_to_anchor=(0.69, 1.2), loc='upper left', fontsize=33)
+        # plt.legend(bbox_to_anchor=(-0.28, 1.2), loc='upper left', fontsize=33)
     # ax.set_xlim(0.0, 1.0)
     ax.set_ylim(0.0, 1.0)
     # ax.tick_params(axis='y', which='minor', length=6, width=2, colors='r',
@@ -508,6 +512,92 @@ def property_scatter_radar_polygon(property_keys, all_paths_dict, groups, title,
     # radar_ax.set_ylim(0., 1.)
     # legend = ax.legend(labels, loc=(0.9, .95),
     #                           labelspacing=0.1, fontsize='small')
+    ax.patch.set_alpha(0.3) #background color
+    if axis is None:
+        plt.savefig("plot/img/radar_plot/{}_poly.pdf".format(file_name), dpi=300, bbox_inches='tight')
+        print("Save in {}".format(file_name))
+
+# def load_property_csv(pth_dict):
+def load_property_csv(pth):
+    # res_all_pth = {}
+    # for pth in pth_dict:
+    df = pd.read_csv(pth)
+    learned_rep = df.loc[df['representation'] == 'learned']
+    random_rep = df.loc[df['representation'] == 'random']
+    res = {"Learned": {}, "Random": {}}
+    for key in atari_property_keys:
+        learned_prop = learned_rep.loc[df['type'] == key]
+        lp_mean = learned_prop.mean().to_numpy()[0]
+        lp_err = learned_prop.std().to_numpy()[0] / len(learned_prop) * 1.96
+        res["Learned"][key] = [lp_mean, lp_err]
+    for key in atari_property_keys:
+        random_prop = random_rep.loc[df['type'] == key]
+        lp_mean = random_prop.mean().to_numpy()[0]
+        lp_err = random_prop.std().to_numpy()[0] / len(random_prop) * 1.96
+        res["Random"][key] = [lp_mean, lp_err]
+    # res_all_pth[pth] = res
+    # return res_all_pth
+    return res
+
+def property_scatter_radar_atari(property_keys, env_path, groups, title, file_name, axis=None, legend_on=True):
+    plt.style.use('ggplot')
+    plt.rcParams['lines.linewidth'] = 3
+
+    all_goals_prop = load_property_csv(env_path)
+
+    N = len(property_keys)
+    theta = radar_factory(N, frame='polygon')
+    group_name = list(groups.keys())
+    color_group_name = [groups[name][0] for name in group_name]
+    # fig, axes = plt.subplots(nrows=nr, ncols=nc, figsize=(8, 3*nr))
+    
+    if axis is None:
+        fig, ax = plt.subplots(figsize=(9, 9), nrows=1, ncols=1,
+                                subplot_kw=dict(projection='radar'))
+    else:
+        ax = axis
+
+    property_key = list(property_keys.keys())
+    property_names = [property_keys[key] for key in property_key]
+    ax.set_rgrids([0, 0.2, 0.4, 0.6, 0.8, 1], angle=10, fontsize=0)
+    ax.set_title(title, weight='bold', position=(0.5, 1.1),
+                horizontalalignment='center', verticalalignment='center', fontsize=38)
+    allprop_means = []
+    allprop_stds = []
+    for ni, name in enumerate(group_name):
+        allprop_mean = []
+        allprop_std = []
+        for pi, pk in enumerate(property_key):
+            print(name, pk, all_goals_prop[name][pk])
+            allprop_mean.append(all_goals_prop[name][pk][0])
+            allprop_std.append(all_goals_prop[name][pk][1])
+        allprop_mean, allprop_std = np.array(allprop_mean), np.array(allprop_std)
+        ax.plot(theta, allprop_mean, 'o--', color=violin_colors[color_group_name[ni]], label=name)
+        ax.fill(theta, allprop_mean, alpha=0.25, color=violin_colors[color_group_name[ni]])
+        allprop_means.append(allprop_mean)
+        allprop_stds.append(allprop_std)
+    # print(allprop_means)
+    
+    for ni, name in enumerate(group_name):
+        allprop_mean = allprop_means[ni]
+        allprop_std = allprop_stds[ni]
+
+        for th_idx, th in enumerate(theta): # Generating Error Bars
+            # print(th_idx)
+            ax.plot([th, th], [allprop_mean[th_idx]-allprop_std[th_idx], allprop_mean[th_idx]+allprop_std[th_idx]], '.-', color=violin_colors[color_group_name[ni]], alpha=0.65, linewidth=4, markersize=8)
+
+    # print(property_names)
+    
+    ax.set_varlabels(property_names)
+    ax.tick_params(axis='x', which='major', pad=45)
+
+
+    plt.grid(True, color='lightgrey')
+    plt.tight_layout()
+    plt.xticks(fontsize=30)
+    if legend_on:
+        plt.legend(bbox_to_anchor=(0.72, 1.08), loc='upper left', fontsize=28)
+    ax.set_ylim(0.0, 1.0)
     ax.patch.set_alpha(0.3) #background color
     if axis is None:
         plt.savefig("plot/img/radar_plot/{}_poly.pdf".format(file_name), dpi=300, bbox_inches='tight')
@@ -1034,6 +1124,8 @@ def main():
         "ReLU+DA+O",
         "ReLU(L)+DA+O",
         "FTA+DA+O",
+        
+        "Random"
 
         # New
         # "ReLU+CompOrtho", "ReLU+CR",
@@ -1094,9 +1186,8 @@ def main():
 
     groups = {
         "No Aux": ["ReLU"],
-
         "VF5": ["ReLU+VirtualVF5"],
-
+        "Random": ["Random"]
     }
 
     # property_keys.pop("return")
@@ -1104,6 +1195,28 @@ def main():
 
     # property_scatter(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, "nonlinear/group-activation")
     property_scatter_radar_polygon(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, "RELU", "ReLU_VF5")
+
+    groups = {
+        "No Aux": ["FTA eta=0.2", "FTA eta=0.4", "FTA eta=0.6", "FTA eta=0.8"],
+        "VF5": ["FTA+VirtualVF5"],
+        "Random": ["Random"]
+    }
+    property_scatter_radar_polygon(property_keys, label_filter(targets, gh_nonlinear_transfer_sweep_v13_largeReLU), groups, "FTA", "FTA_VF5", legend_on=False)
+
+    atari_transfer = {
+        "breakout": "data/output/atari_transfer/property_breakout.csv",
+        "freeway": "data/output/atari_transfer/property_freeway.csv",
+        "invaders": "data/output/atari_transfer/property_space_invaders.csv",
+    }
+    groups = {
+        "Learned": ["ReLU"],
+        "Random": ["Random"]
+    }
+    property_scatter_radar_atari(atari_property_keys, atari_transfer["breakout"], groups, "Breakout", "Breakout", legend_on=True)
+    property_scatter_radar_atari(atari_property_keys, atari_transfer["freeway"], groups, "Freeway", "Freeway", legend_on=False)
+    property_scatter_radar_atari(atari_property_keys, atari_transfer["invaders"], groups, "Invaders", "Invaders", legend_on=False)
+
+
 
     groups = {
         "No Aux": ["ReLU(L)"],

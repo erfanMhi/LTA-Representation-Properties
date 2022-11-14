@@ -295,7 +295,6 @@ def extract_from_single_run(file, key, label=None, before_step=None):
     with open(file, "r") as f:
         content = f.readlines()
     returns = []
-
     check = True
     # check = False
     # for num, l in enumerate(content):
@@ -304,10 +303,10 @@ def extract_from_single_run(file, key, label=None, before_step=None):
     #         check=True
 
     for num, l in enumerate(content):
+        # print(l, num, len(content), key)
         if "|" in l:
             info = l.split("|")[1].strip()
             i_list = info.split(" ")
-            #print('i_list: ', i_list)
             if key == "learning_rate" and "learning_rate:" in i_list:
                 returns = i_list[1]
                 return returns
@@ -323,9 +322,11 @@ def extract_from_single_run(file, key, label=None, before_step=None):
                 elif key == "lipschitz" and "Lipschitz:" in i_list:
                     if label is None:
                         returns.append(float(i_list[i_list.index("Lipschitz:") + 1].split("/")[1].strip()))  # mean
+                        # returns.append(float(i_list[i_list.index("Lipschitz:") + 1].split("/")[0].strip()))  # max
                     else:
                         if label in i_list:
                             returns.append(float(i_list[i_list.index("Lipschitz:") + 1].split("/")[1].strip()))  # mean
+                            # returns.append(float(i_list[i_list.index("Lipschitz:") + 1].split("/")[0].strip()))  # max
                 elif key == "distance" and "Distance:" in i_list:
                     if label is None:
                         returns.append(float(i_list[i_list.index("Distance:") + 1].split("/")[0].strip()))
@@ -379,7 +380,7 @@ def extract_from_single_run(file, key, label=None, before_step=None):
                     current_step = int(info.split("steps")[1].split(",")[0])
                     # print('current_step: ', current_step)
                     # print('before_step: ', before_step)
-                    if current_step == before_step[0]:
+                    if current_step == before_step[0] and current_step != 0:
                         return returns
             #Fruit state-values (green, 2) LOG: steps 0, episodes   0, values 0.0001073884 (mean)
             if "Fruit" in i_list[0] and key in ["action-values", "state-values"]:
@@ -410,7 +411,6 @@ def extract_from_single_run(file, key, label=None, before_step=None):
                     if label_match_fruit.group(0) == match_fruit.group(0) and label_match_rm_fruits.group(0) == match_rm_fruits.group(0) and 'Fruit-directed' in info and ') directed' in label:
                             returns.append(float(i_list[i_list.index("values")+1].split("/")[0].strip())) # mean
  
-            
             if "early-stopping" in i_list and key == "model":
                 cut = num - 1 # last line
                 # converge_at = int(content[cut].split("total steps")[1].split(",")[0])
@@ -486,7 +486,7 @@ def extract_from_setting(find_in, setting, key="return", final_only=False, label
                 # print(res)
                 # print(file)
                 if final_only:
-                    # print("--", res)
+                    # print("--", res, key, path)
                     res = res[-1]
                 all_runs[run_num] = res
                 lr = extract_from_single_run(file, "learning_rate", label, before_step=before_step)
@@ -564,6 +564,7 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
             for run in returns:
                 values[run] = np.array(returns[run]).sum()
 
+        # elif target_key in ["interf", "diversity"]:
         elif target_key in ["interf"]:
             if fixed_rep:
                 path = i["fixrep_measure"]
@@ -643,7 +644,7 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
                 if normalize:
                     mn, mx = normalize_prop[target_key]
                     
-                    #print('mn, mx: ', mn, mx)
+                    # print('mn, mx: ', mn, mx)
                 # if ori> mx:
                 #     print('shit')
                 #     print(ori)

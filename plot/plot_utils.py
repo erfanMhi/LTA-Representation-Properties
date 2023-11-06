@@ -564,8 +564,9 @@ def load_online_property(group, target_key, reverse=False, normalize=False, cut_
             for run in returns:
                 values[run] = np.array(returns[run]).sum()
 
+        # elif target_key in ["interf", "diversity", "sparsity"]:
         # elif target_key in ["interf", "diversity"]:
-        elif target_key in ["interf"]:
+        elif target_key in ["interf", "lipschitz"]:
             if fixed_rep:
                 path = i["fixrep_measure"]
                 if type(path) == list:
@@ -792,8 +793,8 @@ def load_property(all_groups, property_key=None, perc=None, relationship=None, t
     model_saving = load_info(all_group_dict, 0, "model", path_key="online_measure") if early_stopped else None
     # print('model saving: ', model_saving)
     properties = load_online_property(all_group_dict, property_key, reverse=reverse, normalize=normalize, cut_at_step=model_saving, p_label=p_label, fixed_rep=fix_rep)
-
-
+    # print(properties, property_key)
+    
     return properties, all_group_dict
 
 

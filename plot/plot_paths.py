@@ -46,17 +46,19 @@ atari_property_keys = {"CR": "Complexity\nReduction",
 
 # without laplacian and property based aux tasks
 normalize_prop = {
-    # "lipschitz": [4.84, 14.052], # max
+    # # "lipschitz": [4.84, 14.052], # max
     "lipschitz": [0.00396, 0.72852], # mean
     "interf": [4.56e-06, 0.0923223]
+    # "lipschitz": [0.00728, 0.34935],
+    # "interf": [0.0, 0.0908278]
 }
 #4.56e-06  mx:  0.0923223
 
-#with Laplacian
-normalize_prop = {
-    "lipschitz": [0.00396, 5.06266],
-    "interf": [1.905e-05, 0.0923223]
-}
+# #with Laplacian
+# normalize_prop = {
+#     "lipschitz": [0.00396, 5.06266],
+#     "interf": [1.905e-05, 0.0923223]
+# }
 
 # Without Laplacian But with auxiliary losses
 # normalize_prop = {
@@ -7991,10 +7993,10 @@ gh_nonlinear_transfer_sweep_v13_largeReLU = [
      "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn/sweep/", 0]
      },
 
-    {"label": "No Aux",
-     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn/sweep/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/best/", 0]
-     },
+    # {"label": "No Aux",
+    #  "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn/sweep/",
+    #  "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/best/", 0]
+    #  },
 
     {"label": "ReLU+VirtualVF1",
      "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/aux_control/sweep_1g/",
@@ -8007,10 +8009,10 @@ gh_nonlinear_transfer_sweep_v13_largeReLU = [
      "fixrep_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/fixrep_property/dqn_aux/aux_control/sweep_5g/", 0],
      },
 
-    {"label": "VF5",
-     "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/aux_control/sweep_5g/",
-     "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/aux_control/best_5g/", 0],
-     },
+    # {"label": "VF5",
+    #  "control": "data/output/test_v13/gridhard/nonlinear_vf/original_0909/transfer/goal_id_{}/dqn_aux/aux_control/sweep_5g/",
+    #  "online_measure": ["data/output/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn_aux/aux_control/best_5g/", 0],
+    #  },
 
 
     {"label": "ReLU+XY",
@@ -8261,254 +8263,254 @@ gh_nonlinear_transfer_sweep_v13_largeReLU = [
     #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_extend", 0]
     #  },
 
-    {"label": "ReLU+ATC-Aug",
-     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep_sp_0",
-     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_sp_0", 0]
-     },
-
-    {"label": "ReLU(L)+ATC-Aug",
-     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep_large_sp_0",
-     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_large_sp_0", 0]
-     },
-
-    {"label": "FTA+ATC-Aug",
-     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_cl/sweep_sp_0",
-     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_cl/best_sp_0", 0]
-     },
-
-
-    {"label": "ReLU+Aug",
-     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aug/sweep",
-     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aug/best", 0]
-     },
-    {"label": "ReLU(L)+Aug",
-     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aug/sweep_large",
-     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aug/best_large", 0]
-     },
-    {"label": "FTA+Aug",
-     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_aug/sweep",
-     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aug/best", 0]
-     },
-
-
-
-     {
-         "label": "ReLU+Laplacian",
-         "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_0.9",
-         "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_0.9",
-                            0],
-         # "best": "13"
-         "best": "8"
-     },
-     {
-         "label": "ReLU(L)+Laplacian",
-         "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_large_0.9",
-         "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_large_0.9",
-                            0],
-         # "best": "13"
-         "best": "8"
-     },
-     {
-         "label": "FTA+Laplacian",
-         "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_aux/laplacian/sweep_0.9",
-         "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/laplacian/best_0.9",
-                            0],
-         # "best": "13"
-         "best": "8"
-     },
+    # {"label": "ReLU+ATC-Aug",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep_sp_0",
+    #  "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_sp_0", 0]
+    #  },
+    #
+    # {"label": "ReLU(L)+ATC-Aug",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_cl/sweep_large_sp_0",
+    #  "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_cl/best_large_sp_0", 0]
+    #  },
+    #
+    # {"label": "FTA+ATC-Aug",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_cl/sweep_sp_0",
+    #  "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_cl/best_sp_0", 0]
+    #  },
+    #
+    #
+    # {"label": "ReLU+Aug",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aug/sweep",
+    #  "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aug/best", 0]
+    #  },
+    # {"label": "ReLU(L)+Aug",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aug/sweep_large",
+    #  "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aug/best_large", 0]
+    #  },
+    # {"label": "FTA+Aug",
+    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_aug/sweep",
+    #  "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aug/best", 0]
+    #  },
+    #
+    #
+    #
+    #  {
+    #      "label": "ReLU+Laplacian",
+    #      "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_0.9",
+    #      "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_0.9",
+    #                         0],
+    #      # "best": "13"
+    #      "best": "8"
+    #  },
+    #  {
+    #      "label": "ReLU(L)+Laplacian",
+    #      "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_large_0.9",
+    #      "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_large_0.9",
+    #                         0],
+    #      # "best": "13"
+    #      "best": "8"
+    #  },
+    #  {
+    #      "label": "FTA+Laplacian",
+    #      "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_aux/laplacian/sweep_0.9",
+    #      "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/laplacian/best_0.9",
+    #                         0],
+    #      # "best": "13"
+    #      "best": "8"
+    #  },
+    # # {
+    # #     "label": "ReLU+Laplacian",
+    # #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_property_large_final",
+    # #     "online_measure": [
+    # #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_large_final",
+    # #         0],
+    # # },
+    #
+    # # {
+    # #     "label": "ReLU+Laplacian (prop)",
+    # #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_property_extra",
+    # #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_extra", 0]
+    # #  },
+    # # {
+    # #     "label": "ReLU+Laplacian",
+    # #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_extra",
+    # #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_extra", 0]
+    # #  },
     # {
-    #     "label": "ReLU+Laplacian",
-    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_property_large_final",
-    #     "online_measure": [
-    #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_large_final",
-    #         0],
-    # },
-
-    # {
-    #     "label": "ReLU+Laplacian (prop)",
-    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_property_extra",
-    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_extra", 0]
+    #     "label": "ReLU+Diversity",
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/diversity/sweep_v6_small",
+    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/best_v7_small", 0]
     #  },
     # {
-    #     "label": "ReLU+Laplacian",
-    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_extra",
-    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_extra", 0]
+    #     "label": "ReLU+Ortho",
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/orthogonality/sweep",
+    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/orthogonality/best", 0]
     #  },
-    {
-        "label": "ReLU+Diversity",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/diversity/sweep_v6_small",
-        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/diversity/best_v7_small", 0]
-     },
-    {
-        "label": "ReLU+Ortho",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/orthogonality/sweep",
-        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/orthogonality/best", 0]
-     },
+    # # {
+    # #     "label": "ReLU+Ortho (prop)",
+    # #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_ortho/sweep_0.001",
+    # #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_ortho/best_0.001", 0]
+    # #  },
     # {
     #     "label": "ReLU+Ortho (prop)",
-    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_ortho/sweep_0.001",
-    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_ortho/best_0.001", 0]
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/orthogonality/sweep_property",
+    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/orthogonality/best_property", 0]
     #  },
-    {
-        "label": "ReLU+Ortho (prop)",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/orthogonality/sweep_property",
-        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/orthogonality/best_property", 0]
-     },
-    #     {"label": "ReLU+Ortho",
-    #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_ortho/best_0.001" 
-    #  },
+    # #     {"label": "ReLU+Ortho",
+    # #  "control": "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_ortho/best_0.001"
+    # #  },
+    # # {
+    # #     "label": "ReLU+Laplacian",
+    # #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_property_finall",
+    # #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_finall", 0]
+    # #  },
     # {
-    #     "label": "ReLU+Laplacian",
-    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_property_finall",
-    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_property_finall", 0]
-    #  },
-    {
-        "label": "ReLU+DynaOrtho",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/dyna_ortho/sweep_property",
-        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dyna_ortho/best_property", 0]
-     },
-    # {
-    #     "label": "ReLU+Laplacian (0)",
+    #     "label": "ReLU+DynaOrtho",
     #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/dyna_ortho/sweep_property",
     #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dyna_ortho/best_property", 0]
     #  },
+    # # {
+    # #     "label": "ReLU+Laplacian (0)",
+    # #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/dyna_ortho/sweep_property",
+    # #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dyna_ortho/best_property", 0]
+    # #  },
+    # # {
+    # #     "label": "ReLU+Laplacian (0.1)",
+    # #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_0.1",
+    # #     "online_measure": [
+    # #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_0.1",
+    # #         0],
+    # # },
+    # # {
+    # #     "label": "ReLU+Laplacian (0.25)",
+    # #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_0.25",
+    # #     "online_measure": [
+    # #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_0.25",
+    # #         0],
+    # # },
+    # # {
+    # #     "label": "ReLU+Laplacian (0.5)",
+    # #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_0.5",
+    # #     "online_measure": [
+    # #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_0.5",
+    # #         0],
+    # # },
+    # # {
+    # #     "label": "ReLU+Laplacian (0.75)",
+    # #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_0.75",
+    # #     "online_measure": [
+    # #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_0.75",
+    # #         0],
+    # # },
     # {
-    #     "label": "ReLU+Laplacian (0.1)",
-    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_0.1",
-    #     "online_measure": [
-    #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_0.1",
-    #         0],
-    # },
-    # {
-    #     "label": "ReLU+Laplacian (0.25)",
-    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_0.25",
-    #     "online_measure": [
-    #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_0.25",
-    #         0],
-    # },
-    # {
-    #     "label": "ReLU+Laplacian (0.5)",
-    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_0.5",
-    #     "online_measure": [
-    #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_0.5",
-    #         0],
-    # },
-    # {
-    #     "label": "ReLU+Laplacian (0.75)",
-    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_0.75",
-    #     "online_measure": [
-    #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_0.75",
-    #         0],
-    # },
-    {
-        "label": "ReLU+DA",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/dynamic_awareness/sweep_property_uniform",
-        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dynamic_awareness/best_property_uniform", 0]
-     },
-    {
-        "label": "ReLU+CompOrtho",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/comp_ortho/sweep",
-        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/comp_ortho/best", 0]
-     },
-
-    {
-        "label": "ReLU+CR+O",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/comp_ortho/sweep",
-        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/comp_ortho/best", 0]
-     },
-
-    {
-        "label": "ReLU(L)+CR+O",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/comp_ortho/sweep_large",
-        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/comp_ortho/best_large", 0]
-     },
-
-    {
-        "label": "FTA+CR+O",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_aux/comp_ortho/sweep",
-        "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/comp_ortho/best", 0]
-     },
-    # {
-    #     "label": "ReLU+CR",
-    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/complexity_reduction/sweep_property",
-    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/complexity_reduction/best_property", 0]
+    #     "label": "ReLU+DA",
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/dynamic_awareness/sweep_property_uniform",
+    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dynamic_awareness/best_property_uniform", 0]
     #  },
+    # {
+    #     "label": "ReLU+CompOrtho",
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/comp_ortho/sweep",
+    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/comp_ortho/best", 0]
+    #  },
+    #
+    # {
+    #     "label": "ReLU+CR+O",
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/comp_ortho/sweep",
+    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/comp_ortho/best", 0]
+    #  },
+    #
+    # {
+    #     "label": "ReLU(L)+CR+O",
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/comp_ortho/sweep_large",
+    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/comp_ortho/best_large", 0]
+    #  },
+    #
+    # {
+    #     "label": "FTA+CR+O",
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_aux/comp_ortho/sweep",
+    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/comp_ortho/best", 0]
+    #  },
+    # # {
+    # #     "label": "ReLU+CR",
+    # #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/complexity_reduction/sweep_property",
+    # #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/complexity_reduction/best_property", 0]
+    # #  },
+    # # {
+    # #     "label": "ReLU+CR",
+    # #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/complexity_reduction/sweep",
+    # #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/complexity_reduction/best", 0]
+    # #  },
     # {
     #     "label": "ReLU+CR",
     #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/complexity_reduction/sweep",
-    #     "online_measure": ["data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/complexity_reduction/best", 0]
-    #  },
-    {
-        "label": "ReLU+CR",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/complexity_reduction/sweep",
-        "online_measure": [
-            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/complexity_reduction/best",
-            0],
-    },
-    {
-        "label": "ReLU(L)+CR",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/complexity_reduction/sweep_large",
-        "online_measure": [
-            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/complexity_reduction/best_large",
-            0],
-    },
-    {
-        "label": "FTA+CR",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_aux/complexity_reduction/sweep",
-        "online_measure": [
-            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/complexity_reduction/best",
-            0],
-    },
-
-    {
-        "label": "ReLU+DA+O",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/dyna_ortho/sweep_property",
-        "online_measure": [
-            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dyna_ortho/best_property",
-            0],
-    },
-    {
-        "label": "ReLU(L)+DA+O",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/dyna_ortho/sweep_large",
-        "online_measure": [
-            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dyna_ortho/best_large",
-            0],
-    },
-    {
-        "label": "FTA+DA+O",
-        "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_aux/dyna_ortho/sweep",
-        "online_measure": [
-            "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/dyna_ortho/best",
-            0],
-    },
-    # {
-    #     "label": "ReLU+Laplacian",
-    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep",
     #     "online_measure": [
-    #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best",
+    #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/complexity_reduction/best",
     #         0],
     # },
     # {
-    #     "label": "ReLU+Laplacian (0)",
-    #     "control": "data/output/test_temp/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_0",
+    #     "label": "ReLU(L)+CR",
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/complexity_reduction/sweep_large",
     #     "online_measure": [
-    #         "data/output/test_temp/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_0",
+    #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/complexity_reduction/best_large",
     #         0],
     # },
     # {
-    #     "label": "ReLU(L)+Laplacian",
-    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_large",
+    #     "label": "FTA+CR",
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_aux/complexity_reduction/sweep",
     #     "online_measure": [
-    #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_large",
+    #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/complexity_reduction/best",
+    #         0],
+    # },
+    #
+    # {
+    #     "label": "ReLU+DA+O",
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/dyna_ortho/sweep_property",
+    #     "online_measure": [
+    #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dyna_ortho/best_property",
     #         0],
     # },
     # {
-    #     "label": "FTA+Laplacian",
-    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_aux/laplacian/sweep",
+    #     "label": "ReLU(L)+DA+O",
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/dyna_ortho/sweep_large",
     #     "online_measure": [
-    #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/laplacian/best",
+    #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/dyna_ortho/best_large",
     #         0],
     # },
+    # {
+    #     "label": "FTA+DA+O",
+    #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_aux/dyna_ortho/sweep",
+    #     "online_measure": [
+    #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/dyna_ortho/best",
+    #         0],
+    # },
+    # # {
+    # #     "label": "ReLU+Laplacian",
+    # #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep",
+    # #     "online_measure": [
+    # #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best",
+    # #         0],
+    # # },
+    # # {
+    # #     "label": "ReLU+Laplacian (0)",
+    # #     "control": "data/output/test_temp/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_0",
+    # #     "online_measure": [
+    # #         "data/output/test_temp/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_0",
+    # #         0],
+    # # },
+    # # {
+    # #     "label": "ReLU(L)+Laplacian",
+    # #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_aux/laplacian/sweep_large",
+    # #     "online_measure": [
+    # #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_aux/laplacian/best_large",
+    # #         0],
+    # # },
+    # # {
+    # #     "label": "FTA+Laplacian",
+    # #     "control": "data/output/test_cl/gridhard/nonlinear_vf/transfer_new/goal_id_{}/dqn_fta_aux/laplacian/sweep",
+    # #     "online_measure": [
+    # #         "data/output/test_cl/gridhard/nonlinear_vf/online_property/dqn_fta_aux/laplacian/best",
+    # #         0],
+    # # },
 ]
 
 ghmg_original_sweep_v13 = [

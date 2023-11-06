@@ -522,7 +522,9 @@ def online_sparsity(agent, img, label):
     # print(zeros)
     # print(np.sum(zeros))
     # print(len(np.where(rep==0)[0]))
-    zeros = (rep==0).astype(int) #TODO
+    
+    zeros = (rep==0).astype(int)
+    # zeros = (rep<1e-8).astype(int)
 
     # lifetime sparsity
     lifetime_inact = np.sum(zeros, axis=0)
@@ -1028,10 +1030,12 @@ def online_lipschitz(agent, state_all, label=None):
                 j = random_idx[i]
                 phi_i, phi_j = phi_s[i], phi_s[j]
                 vi, vj = values[i], values[j]
-                diff_v[idx] = torch.abs(vi - vj).max().item() # for lipschitz
+                # diff_v[idx] = torch.abs(vi - vj).max().item() # for lipschitz, d_q
+                diff_v[idx] = torch.abs(vi.max() - vj.max()).item() # for lipschitz, d_v
                 diff_phi[idx] = np.linalg.norm(torch_utils.to_np(phi_i - phi_j))  # for lipschitz
 
-                diff_v_all.append(torch.abs(vi.max() - vj.max()).item()) # for specialization
+                # diff_v_all.append(torch.abs(vi - vj).max().item()) # for specialization, d_q
+                diff_v_all.append(torch.abs(vi.max() - vj.max()).item()) # for specialization, d_v
                 diff_phi_all.append(diff_phi[idx]) # for specialization
 
                 idx += 1
@@ -1187,8 +1191,8 @@ def run_steps_onlineProperty(agent):
                 #     online_decorrelation(agent, state_all, label)
                 if agent.cfg.evaluate_sparsity:
                     online_sparsity(agent, state_all, label)
-                if agent.cfg.evaluate_dead_neurons:
-                   online_dead_neurons_ratio(agent, state_all, label) 
+                # if agent.cfg.evaluate_dead_neurons:
+                #    online_dead_neurons_ratio(agent, state_all, label)
                 # if agent.cfg.evaluate_mutual_info:
                 #     online_mutual_info(agent, state_all, label, class_all)
 
@@ -1232,6 +1236,7 @@ def run_steps_onlineProperty(agent):
             t0 = time.time()
         
         if agent.cfg.max_steps and agent.total_steps >= agent.cfg.max_steps:
+        # if agent.total_steps >= agent.cfg.max_steps:
             if agent.cfg.save_params:
                 agent.save()
             if not early_model_saved and agent.cfg.save_params:
@@ -1246,7 +1251,7 @@ def run_steps_onlineProperty(agent):
                 # target net changes, calculate interference for the beginning and ending of iteration
                 agent.update_interference(calc_accuracy_change=True)
                 agent.iteration_interference()
-
+        
         agent.step()
         if agent.cfg.evaluate_interference:
             if (not agent.cfg.use_target_network or agent.total_steps % agent.cfg.target_network_update_freq==0):

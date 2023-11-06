@@ -14,7 +14,7 @@ from core.utils import normalizer
 from core.component import representation
 from experiment.sweeper import Sweeper
 
-os.chdir("..")
+# os.chdir("..")
 print("Change dir to", os.getcwd())
 
 def load_cfg(json, param, run_num):
@@ -135,10 +135,10 @@ def visualize_distance(json, param, run_num, title, mode="to_goal"):
     distance_heatmap(mode, state_coords, goal_states, goal_coords, reps, goal_rep, title)
 
 def visualize_umap(json, param, runs=[0], title="umap"):
-    id2rank = np.load("data/dataset/gridhard/srs/goal(9, 9)_simrank.npy", allow_pickle=True).item()
+    id2rank = np.load("../data/dataset/gridhard/srs/goal(9, 9)_simrank.npy", allow_pickle=True).item()
     for id in id2rank:
         id2rank[id] += 1  # format rank
-    id2coord = np.load("data/dataset/gridhard/srs/goal(9, 9)_id2coord.npy", allow_pickle=True).item()
+    id2coord = np.load("../data/dataset/gridhard/srs/goal(9, 9)_id2coord.npy", allow_pickle=True).item()
     coord2id = exchange_kv(id2coord)
 
     fig, ax = plt.subplots(nrows=1, ncols=len(runs), figsize=(3 * len(runs), 2.5))
@@ -165,22 +165,24 @@ if __name__ == '__main__':
     # visualize_distance("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta_aux/successor_as/sweep.json", 2, 0, "distancepair-fta+sf", mode="pair")
 
     runs = list(range(5))
-    visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn/sweep.json", 1, runs, "umap-relu")
-    visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_aux/aux_control/sweep_1g_gamma0.9.json", 1, runs, "umap-relu+VirtualVF1")
-    visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_aux/aux_control/sweep_5g_gamma0.9.json", 0, runs, "umap-relu+VirtualVF5")
-    visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_aux/info/sweep.json", 1, runs, "umap-relu+info")
-    visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_aux/input_decoder/sweep.json", 1, runs, "umap-relu+decoder")
-    visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_aux/nas_v2_delta/sweep.json", 1, runs, "umap-relu+nas")
-    visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_aux/reward/sweep.json", 0, runs, "umap-relu+rwd")
-    visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_aux/successor_as/sweep.json", 1, runs, "umap-relu+sf")
-    visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta/eta_study_0.2_sweep.json", 1, runs, "umap-fta")
-    visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta/eta_study_0.4_sweep.json", 1, runs, "umap-fta0.4")
-    visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta/eta_study_0.6_sweep.json", 1, runs, "umap-fta0.6")
-    visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta/eta_study_0.8_sweep.json", 2, runs, "umap-fta0.8")
-    visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta_aux/aux_control/sweep_1g_gamma0.9.json", 2, runs, "umap-fta+VirtualVF5")
-    visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta_aux/aux_control/sweep_5g_gamma0.9.json", 2, runs, "umap-fta+VirtualVF1")
-    visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta_aux/info/sweep.json", 1, runs, "umap-fta+info")
-    visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta_aux/input_decoder/sweep.json", 2, runs, "umap-fta+decoder")
-    visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta_aux/nas_v2_delta/sweep.json", 2, runs, "umap-fta+nas")
-    visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta_aux/reward/sweep.json", 1, runs, "umap-fta+rwd")
-    visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta_aux/successor_as/sweep.json", 2, runs, "umap-fta+sf")
+    # visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn/sweep.json", 1, runs, "umap-relu")
+    # visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_aux/aux_control/sweep_1g_gamma0.9.json", 1, runs, "umap-relu+VirtualVF1")
+    # visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_aux/aux_control/sweep_5g_gamma0.9.json", 0, runs, "umap-relu+VirtualVF5")
+    # visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_aux/info/sweep.json", 1, runs, "umap-relu+info")
+    # visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_aux/input_decoder/sweep.json", 1, runs, "umap-relu+decoder")
+    # visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_aux/nas_v2_delta/sweep.json", 1, runs, "umap-relu+nas")
+    # visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_aux/reward/sweep.json", 0, runs, "umap-relu+rwd")
+    # visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_aux/successor_as/sweep.json", 1, runs, "umap-relu+sf")
+    # visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta/eta_study_0.2_sweep.json", 1, runs, "umap-fta")
+    # visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta/eta_study_0.4_sweep.json", 1, runs, "umap-fta0.4")
+    # visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta/eta_study_0.6_sweep.json", 1, runs, "umap-fta0.6")
+    # visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta/eta_study_0.8_sweep.json", 2, runs, "umap-fta0.8")
+    # visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta_aux/aux_control/sweep_1g_gamma0.9.json", 2, runs, "umap-fta+VirtualVF5")
+    # visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta_aux/aux_control/sweep_5g_gamma0.9.json", 2, runs, "umap-fta+VirtualVF1")
+    # visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta_aux/info/sweep.json", 1, runs, "umap-fta+info")
+    # visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta_aux/input_decoder/sweep.json", 2, runs, "umap-fta+decoder")
+    # visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta_aux/nas_v2_delta/sweep.json", 2, runs, "umap-fta+nas")
+    # visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta_aux/reward/sweep.json", 1, runs, "umap-fta+rwd")
+    # visualize_umap("experiment/config/test_v13/gridhard/linear_vf/original_0909/online_property/dqn_lta_aux/successor_as/sweep.json", 2, runs, "umap-fta+sf")
+    
+    visualize_umap("../experiment/config/test_v13/gridhard/nonlinear_vf/original_0909/online_property/dqn/sweep.json", 1, runs, "umap-relu")

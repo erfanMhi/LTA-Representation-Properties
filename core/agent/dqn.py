@@ -101,13 +101,14 @@ class DQNAgent(base.Agent):
 #         if done or self.ep_steps+1 == self.timeout:
 #             print(self.ep_steps)
 #             print(done)
-        self.replay.feed([self.state, action, reward, next_state, int(done)], (bool(done) or self.ep_steps+1 == self.timeout))
+#         self.replay.feed([self.state, action, reward, next_state, int(done)], (bool(done) or self.ep_steps+1 == self.timeout))
+        self.replay.feed([self.state, action, reward, next_state, int(done)])
         self.state = next_state
         # print('action: ', action)
         self.update_stats(reward, done)
         if self.cfg.update_network:
             self.update()
-        return self.env.prev_state, action, done
+        # return self.env.prev_state, action, done
 
     def policy(self, state, eps):
         

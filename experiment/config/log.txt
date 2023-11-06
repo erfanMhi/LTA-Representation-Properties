@@ -1,0 +1,29 @@
+test_v1:
+-- use uniform init for lta. Sweep learning rate in 0.003, 0.001, 0.0003, 0.0001, ...
+
+test_v2:
+-- use uniform init for all rep. Sweep learning rate using 2^x.
+
+test_v3:
+-- use uniform init for all rep. Sweep learning rate in 0.003, 0.001, 0.0003, 0.0001, ...
+-- save early stopping representation model, when mean and min return in queue both larger than or equal to some threshold.
+
+test:
+-- add diversity measure
+-- update interference measure
+-- keep the parameter seep result from v3
+
+test_v5:
+-- tune aux task loss weights
+
+test_v6:
+-- nonlinear value function + linear aux task function
+
+test_v9:
+-- a bad final result. The parameter of maze and picky eater are kept the same, but transfer learning doesn't have advantage compared to learning from scratch
+
+test_v10:
+-- Maze: generate 10 goals, 5 can be seen in the source task, 5 can be seen in the target task
+
+test_v13:
+-- Use Maze only, set every other state as transfer goal, check how AUC decreases as the goal moving further
